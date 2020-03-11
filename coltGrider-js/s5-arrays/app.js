@@ -37,9 +37,31 @@ colors[colors.length - 1]; //'yellow'
 
  // MODIFYING ARRAYS
 
- 
+// specify the index and assign a new value to it
+// Note: this will overwrite the existing value assigned to that index
+
+shoppingList[shoppingList.length] = 'potatoes'; //adds at the end of the array
 
  
+// ARRAY METHODS
+// Push - add to end
+// Pop - remove from end
+// Shift - remove from start
+// Unshift - add to start
+
+// Note: when using these methods, you're mutating the original array itself
+
+let topSongs = [
+    'song1',
+    'song2',
+    'song3',
+    'song4'
+]
+
+topSongs.push('song5'); // add to the end
+
+const nextSong = topSongs.pop(); //capture the last item in the array with pop() method and store it in the variable nextSong. That last item will be removed from the array
+
 
 
 
