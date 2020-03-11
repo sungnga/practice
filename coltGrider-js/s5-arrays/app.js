@@ -72,6 +72,31 @@ const nextSong = topSongs.pop(); //returns the last item in the array with pop()
 
 dishesToDo.unshift('fork', 'knife') // can pass in multiple items with all these methods
 
+// CONCAT
+// concat() method creates a new array
+
+let fruits = ['apple', 'bannana'];
+let veggies = ['aparagus', 'brussel sprouts'];
+let meats = ['steak', 'chicken breast'];
+
+console.log(fruits.concat(veggies));
+let allFood = fruits.concat(veggies, meats);
 
 
+// INCLUDES AND INDEXOF
 
+// includes() is a boolean method. Returns true or false. It checks to see if the array contains the specified element
+
+let ingredients = [
+    'water',
+    'corn starch',
+    'flour',
+    'cheese',
+    'butter'
+];
+
+ingredients.includes('fish'); //returns false
+
+if (ingredients.includes('flour')) {
+    console.log('I am gluten free, I cannot eat that!')
+}
