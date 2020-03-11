@@ -48,6 +48,14 @@ shoppingList[shoppingList.length] = 'potatoes'; //adds at the end of the array
 // Pop - remove from end
 // Shift - remove from start
 // Unshift - add to start
+// concat - merge arrays
+// includes - look for a value
+// indexOf - just like str.indexOf
+// join - creates a string from arr
+// reverse - reverses an array!
+// slice - copy portion of an arr
+// splice - remove/replace elements
+// sort - sorts an arr
 
 // Note: when using these methods, you're mutating the original array itself
 
@@ -60,9 +68,9 @@ let topSongs = [
 
 topSongs.push('song5'); // add to the end
 
-const nextSong = topSongs.pop(); //capture the last item in the array with pop() method and store it in the variable nextSong. That last item will be removed from the array
+const nextSong = topSongs.pop(); //returns the last item in the array with pop() method and store it in the variable nextSong. That last item will be removed from the array
 
-
+dishesToDo.unshift('fork', 'knife') // can pass in multiple items with all these methods
 
 
 
