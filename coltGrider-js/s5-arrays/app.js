@@ -84,7 +84,6 @@ let allFood = fruits.concat(veggies, meats);
 
 
 // INCLUDES AND INDEXOF
-
 // includes() is a boolean method. Returns true or false. It checks to see if the array contains the specified element
 
 let ingredients = [
@@ -130,3 +129,32 @@ let animals = ['shark', 'salmon', 'whale', 'bear', 'lizard', 'tortoise']
 let swimmers = animals.slice(0, 3);
 
 swimmers //(3) ["shark", "salmon", "whale"]
+
+
+// SPLICE
+// splice() changes the contents of an array by removing or replacing existing elements and/or adding new elements IN PLACE
+// an array containing the deleted elements
+// if only one element is removed, an array of one element is returned 
+// if no elements are removed, an empty array is returned
+
+let animals = ['shark', 'salmon', 'whale', 'bear', 'lizard', 'tortoise']
+
+//splice(startIdx, deleteCount, itemsToInsert);
+
+//inserting an item
+//'at index 1, delete 0 items and insert "octopus"'
+animals.splice(1, 0, 'octopus'); //[] <--it's empty cuz it didn't delete anything by passing in 0 as 2nd arg
+
+animals //(7) ["shark", "octopus", "salmon"....]
+
+//deleting items
+//'at index 5, delete 2 items'
+animals.splice(3, 2); //(2) ["whale", "bear"] <--returns the elements being deleted
+
+animals //(5) ["shark", "octopus", "salmon", "lizard", "tortoise"] <--the removed items is gone from the arr
+
+//replacing items
+//'at index 0, delete 2 items and replace them with "orca" and "grizzly"'
+animals.splice(0, 2, 'orca', 'grizzly');
+
+animals //["shark", "octopus", "salmon", "orca", "grizzly"]
