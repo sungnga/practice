@@ -4,7 +4,9 @@
 // - Understand Reference Types
 // - Use common Array/Object methods    
 
+// ===============
 // ARRAYS
+// ===============
 // ordered collections of values.
 
 
@@ -43,7 +45,9 @@ colors[colors.length - 1]; //'yellow'
 shoppingList[shoppingList.length] = 'potatoes'; //adds at the end of the array
 
  
+// ===============
 // ARRAY METHODS
+// ===============
 // Push - add to end
 // Pop - remove from end
 // Shift - remove from start
@@ -164,13 +168,65 @@ animals //["shark", "octopus", "salmon", "orca", "grizzly"]
 // sorts the elements of an array IN PLACE and returns the sorted array
 // the default sort order is built upon converting the elements into strings, then comparing their sequences of UTF-16 code units values
 
-let people = ['robin', 'angie', 'jolene', 'maggie', 'roxanne'];
+let people = [ 'Mrs. Robsinson', 'Angie', 'Jolene', 'Maggie May', 'Roxanne' ];
+
+people.sort();
+// ["Angie", "Jolene", "Maggie May", "Mrs. Robsinson", "Roxanne"]
 
 let nums = [34, 10, 100000, 67, 99];
 
-nums.sort() //(5) [10, 100000, 34, 67, 99]
+nums.sort()
+//(5) [10, 100000, 34, 67, 99]
+
 //NOTE: BECAUSE OF THIS ODD BEHAVIOR, PEOPLE USUALLY DON'T USE SORT() METHOD AS IS. INSTEAD, THEY PASS IN A FUNCTION TO THE SORT() METHOD TO TELL IT HOW TO SORT
 
-// ===================
+
+// ===============
+// WORKING WITH NESTED ARRAYS
+// ===============
+
+const animalPairs = [
+	[ 'doe', [ 'buck', 'stag' ] ],
+	[ 'ewe', 'ram' ],
+	[ 'peahen', 'peacock' ]
+];
+
+//To access 'ewe'
+animalPairs[1][0];
+
+//To access 'buck'
+animalPairs[0][1][0];
+
+//Updating a sub-array:
+animalPairs[0][1].push('hart');
+//apparently some people call male deer 'harts'.  idk.
+
+
+// ===============
+// VALUE TYPES
+// ===============
+//Value Types - the variable stores the actual value:
+
+let x = 100;
+let y = x;
+
+//If we change x
+x = 99;
+//y is unchanged
+y; //100
+
+// ===============
 // REFERENCE TYPES
-// ===================
+// ===============
+
+// Array variables do not hold the actual array
+//Instead, they store a REFERENCE to the array
+
+let nums = [ 2, 4, 6, 8 ];
+let myNums = nums; //myNums references the same array
+
+// If we change nums
+nums.push('BOO!');
+
+//My nums is also changed:
+myNums; //[2, 4, 6, 8, "BOO!"]
