@@ -158,3 +158,19 @@ animals //(5) ["shark", "octopus", "salmon", "lizard", "tortoise"] <--the remove
 animals.splice(0, 2, 'orca', 'grizzly');
 
 animals //["shark", "octopus", "salmon", "orca", "grizzly"]
+
+
+// SORT
+// sorts the elements of an array IN PLACE and returns the sorted array
+// the default sort order is built upon converting the elements into strings, then comparing their sequences of UTF-16 code units values
+
+let people = ['robin', 'angie', 'jolene', 'maggie', 'roxanne'];
+
+let nums = [34, 10, 100000, 67, 99];
+
+nums.sort() //(5) [10, 100000, 34, 67, 99]
+//NOTE: BECAUSE OF THIS ODD BEHAVIOR, PEOPLE USUALLY DON'T USE SORT() METHOD AS IS. INSTEAD, THEY PASS IN A FUNCTION TO THE SORT() METHOD TO TELL IT HOW TO SORT
+
+// ===================
+// REFERENCE TYPES
+// ===================
