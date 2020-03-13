@@ -100,3 +100,33 @@ ingredients.includes('fish'); //returns false
 if (ingredients.includes('flour')) {
     console.log('I am gluten free, I cannot eat that!')
 }
+
+// indexOf() returns the first index at which a given element can be found in the array or -1 if it is not present
+
+ingredients.indexOf('water'); //0 
+
+// REVERSE
+// reverses the content of the array. will mutate the original array
+
+// JOIN
+// will combine all the elements into a single string
+// by default, it separates by a comma, but can replace it w/ anything you want
+// if the arr values are not string, it will convert them into strings, and then join them into a string
+
+let letter = ['T', 'C', 'E', 'P', 'S', 'E', 'R'];
+
+letters.join(); //"T,C,E,P,S,E,R"
+letters.join('&'); //"T&C&E&P&S&E&R"
+letters.reverse().join('.') //"R.E.S.P.E.C.T"
+
+
+// SLICE
+// if no arg passed in, it will make a copy of the arr (common use case to make a copy of an array)
+// returns a shallow copy of a portion of an array into a new array object selected from begin to end (end not included) where begin and end represent the index of items in that array
+// the original will not be modified
+
+let animals = ['shark', 'salmon', 'whale', 'bear', 'lizard', 'tortoise']
+
+let swimmers = animals.slice(0, 3);
+
+swimmers //(3) ["shark", "salmon", "whale"]
