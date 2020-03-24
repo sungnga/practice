@@ -139,14 +139,3 @@ const movieTemplate = (movieDetail) => {
         </article>
     `;    
 }
-
-
-// ******************************
-// Issues with Implementation
-// ******************************
-// All code touches everything
-// Autocomplete widget was supposed to be reusable!
-// Autocomplete has knowledge of what a movie object is
-// Autocomplete has knowledge of what to shwo for each option
-// Autocomplete has knowledge of what to do when a movie is clicked
-// Many global variables that refer to specific elements - it will be really hard to show a second autocomplete on the screen
