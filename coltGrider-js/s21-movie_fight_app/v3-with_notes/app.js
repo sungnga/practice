@@ -147,6 +147,8 @@ const movieTemplate = (movieDetail) => {
 
     console.log(awards)
 
+    //html element with movie details
+    //data-value attribute in each article contains the dataset for the properties
     return `
         <article class="media">
             <figure class="media-left">
