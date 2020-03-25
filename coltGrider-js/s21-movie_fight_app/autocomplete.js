@@ -1,5 +1,6 @@
 const createAutocomplete = ({root, renderOption, onOptionSelect, inputValue, fetchData}) => {
-    //specify where to render the autocomplete to
+    //specify where to render the autocomplete
+    //define these html elements inside the placeholder element called root
     root.innerHTML = `
         <label><b>Search</b></label>
         <input class="input" />

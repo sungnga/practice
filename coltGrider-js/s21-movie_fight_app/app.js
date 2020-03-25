@@ -1,9 +1,5 @@
-//create an autocomplete widget by calling the createAutocomplete() function
-//pass in the necessary parameters as an object
-createAutocomplete({
-    ////specify where to render the autocomplete to
-    //target the div element with class autocomplete
-    root: document.querySelector('.autocomplete'),
+//separate out any reusable functions & properties that are not unique when the createAutoComplete() is called
+const autoCompleteConfig = {
     //how to show an individual item
     renderOption(movie) {
         //check to see if the value of image source is N/A
@@ -12,10 +8,6 @@ createAutocomplete({
             <img src="${imgSrc}" />
             ${movie.Title} (${movie.Year})
         `;
-    },
-    //what to do when someone clicks on one
-    onOptionSelect(movie) {
-        onMovieSelect(movie)
     },
     //what to backfill when the user clicks on one
     inputValue(movie) {
@@ -37,11 +29,53 @@ createAutocomplete({
     
         return response.data.Search;
     }
+}
+
+//create an autocomplete widget by calling the createAutocomplete() function
+//pass in the necessary parameters as an object
+createAutocomplete({
+    //Spread operation of autoCompleteConfig object
+    ...autoCompleteConfig,
+    //specify where to render the autocomplete to
+    //target the div element with left-autocomplete id
+    //add in any properties that is unique pertaining to this particular functionality. Add in this root property
+    root: document.querySelector('#left-autocomplete'),
+    //what to do when someone clicks on one
+    onOptionSelect(movie) {
+        //when a user clicks on an item, hide the tutorial
+        document.querySelector('.tutorial').classList.add('is-hidden');
+        //pass in a second arg to where you want the summary to show
+        //3rd arg the movie will display on the left side
+        onMovieSelect(movie, document.querySelector('#left-summary'), 'left');
+    }
 })
 
+//create a second search input
+createAutocomplete({
+    //Spread operation of autoCompleteConfig object
+    ...autoCompleteConfig,
+    //specify where to render the autocomplete to
+    //target the div element with id right-autocomplete
+    //add in this root property
+    root: document.querySelector('#right-autocomplete'),
+    //what to do when someone clicks on one
+    onOptionSelect(movie) {
+        //when a user clicks on an item, hide the tutorial
+        document.querySelector('.tutorial').classList.add('is-hidden');
+        //pass in a second arg to where you want the summary to show
+        //3rd arg the movie will display on the right side
+        onMovieSelect(movie, document.querySelector('#right-summary'), 'right');
+    },
+})
+
+let leftMovie;
+let rightMovie;
 //make this an async function
 //get detailed info about a particular movie
-const onMovieSelect = async movie => {
+//2nd arg is the DOM element where the summary will go
+//3rd arg indicates which side of the movie will go
+const onMovieSelect = async (movie, summaryElement, side) => {
+    //save the promise value to response
     const response = await axios.get('http://www.omdbapi.com/', {
         params: {
             apikey: '4510e0c9',
@@ -50,12 +84,68 @@ const onMovieSelect = async movie => {
         }
     });
     console.log(response.data);
-    //select the div tag with id summary. Add the content using innerHTML. That content comes from calling the helper function movieTemplate() where the data of the movie is passed in as arg
-    document.querySelector('#summary').innerHTML = movieTemplate(response.data)
+    //select the element(referenced as summaryElement). Add the content using innerHTML. That content comes from calling the helper function movieTemplate() where the data of the movie is passed in as arg
+    summaryElement.innerHTML = movieTemplate(response.data)
+    //check to see if it's the left or right side
+    //set the movie data to the corresponding variable
+    if (side === 'left') {
+        leftMovie = response.data;
+    } else {
+        rightMovie = response.data;
+    }
+    //check leftMovie and rightMovie are defined. If true, run the runcomparison() function
+    if (leftMovie && rightMovie) {
+        runComparison();
+    }
+};
+
+const runComparison = () => {
+    const leftSideStats = document.querySelectorAll('#left-summary .notification');
+    const rightSideStats = document.querySelectorAll('#right-summary .notification');
+
+    //iterate thru the list of articles in leftSideStas. leftStat represents each article that has the data-value
+    //index is to retrieve the index of the list
+    leftSideStats.forEach((leftStat, index) => {
+        //set the right side stats to the corresponding index of the left side stats and assign each one to rightStat
+        const rightStat = rightSideStats[index];
+        console.log(leftStat, rightStat);
+        //to get the value from the data-value attribute in each article. Also convert from string to number
+        const leftSideValue = parseInt(leftStat.dataset.value);
+        const rightSideValue = parseInt(rightStat.dataset.value);
+        if (rightSideValue > leftSideValue) {
+            //in Bulma css, class is-primary has green background color
+            leftStat.classList.remove('is-primary');
+            //class is-warning has yellow background color
+            leftStat.classList.add('is-warning')
+        } else {
+            rightStat.classList.remove('is-primary');
+            rightStat.classList.add('is-warning');
+        }
+    })
 };
 
 //a helper function that displays details of a movie
 const movieTemplate = (movieDetail) => {
+    //retrieve the dollar amount and turn it into an integer and remove the $ symble and commas
+    const dollars = parseInt(movieDetail.BoxOffice.replace(/\$/g, '').replace(/,/g, ''));
+    const metascore = parseInt(movieDetail.Metascore);
+    const imdbRating = parseFloat(movieDetail.imdbRating);
+    const imdbVotes = parseInt(movieDetail.imdbVotes.replace(/,/g, ''));
+
+    //split() will return an array
+    //reduce() will iterate thru the array and returns a single total value. Initial prev value is set to 0
+    const awards = movieDetail.Awards.split(' ').reduce((prev, word) => {
+        const value = parseInt(word);
+        //check to see if the value is not a number (NaN). If true, return the prev value
+        if (isNaN(value)) {
+            return prev;
+        } else {
+            return prev + value;
+        }
+    }, 0)
+
+    console.log(awards)
+
     return `
         <article class="media">
             <figure class="media-left">
@@ -71,23 +161,23 @@ const movieTemplate = (movieDetail) => {
                 </div>
             </div>
         </article>
-        <article class="notification is-primary">
-            <p class="title">${movieDetail.Award}</p>
+        <article data-value=${awards} class="notification is-primary">
+            <p class="title">${movieDetail.Awards}</p>
             <p class="subtitle">Awards</p>
         </article>
-        <article class="notification is-primary">
+        <article data-value=${dollars} class="notification is-primary">
             <p class="title">${movieDetail.BoxOffice}</p>
             <p class="subtitle">Box Office</p>
         </article>
-        <article class="notification is-primary">
+        <article data-value=${metascore} class="notification is-primary">
             <p class="title">${movieDetail.Metascore}</p>
             <p class="subtitle">Metascore</p>
         </article>
-        <article class="notification is-primary">
+        <article data-value=${imdbRating} class="notification is-primary">
             <p class="title">${movieDetail.imdbRating}</p>
             <p class="subtitle">IMDB Rating</p>
         </article>
-        <article class="notification is-primary">
+        <article data-value=${imdbVotes} class="notification is-primary">
             <p class="title">${movieDetail.imdbVotes}</p>
             <p class="subtitle">IMDB Votes</p>
         </article>
