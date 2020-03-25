@@ -31,7 +31,7 @@ const autoCompleteConfig = {
     }
 }
 
-//create an autocomplete widget by calling the createAutocomplete() function
+//this function creates an autocomplete widget
 //pass in the necessary parameters as an object
 createAutocomplete({
     //Spread operation of autoCompleteConfig object
