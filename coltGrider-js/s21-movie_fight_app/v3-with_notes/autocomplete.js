@@ -15,7 +15,7 @@ const createAutocomplete = ({root, renderOption, onOptionSelect, inputValue, fet
     const dropdown = root.querySelector('.dropdown');
     const resultsWrapper = root.querySelector('.results');
     
-    //apply debounce function by passing as arg to onInput() function
+    //apply debounce function by passing as arg to onInput() function. Debounce helper function is in utils.js
     //the callback function inside this debounce() will be received into debounce() as FUNC
     //lastly, the returned function from debounce() will be assigned to onInput() function
     const onInput = debounce(async event => {
