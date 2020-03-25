@@ -1,89 +1,43 @@
-const fetchData = async (searchTerm) => {
-    const response = await axios.get('http://www.omdbapi.com/', {
-        params: {
-            apikey: '4510e0c9',
-            s: searchTerm
-        }
-    });
-
-    //handling an errored response
-    if (response.data.Error) {
-        return [];
-    }
-
-    return response.data.Search;
-};
-
-//creating the autocomplete widget
-const root = document.querySelector('.autocomplete');
-root.innerHTML = `
-    <label><b>Search For a Movie</b></label>
-    <input class="input" />
-    <div class="dropdown">
-        <div class="dropdown-menu">
-            <div class="dropdown-content results"></div>
-        </div>
-    </div>
-`;
-
-const input = document.querySelector('input');
-const dropdown = document.querySelector('.dropdown');
-const resultsWrapper = document.querySelector('.results');
-
-//apply debounce function by passing as arg to onInput function
-//the callback function inside this debounce() will be received into debounce() as FUNC
-//lastly, the returned function from debounce() will be assigned to onInput() function
-const onInput = debounce(async event => {
-    //call fetchData with the value from the input element
-    //fetchData() returns the data from api. Assign this data to variable movies
-    //NOTE: remember that fetchData() is an async function. It takes sometime for the data to return. Therefore need to mark the fetchdata() here with keyword 'await' and onInput() function with 'async'. Else it will return the promise, not the data
-    const movies = await fetchData(event.target.value);
-    console.log(movies)
-
-    //if no movies is returned, close the dropdown and exit the function
-    if (!movies.length) {
-        dropdown.classList.remove('is-active');
-        return;
-    }
-
-    //clear out the list of results before fetching new query
-    resultsWrapper.innerHTML = '';
-    dropdown.classList.add('is-active');
-    //loop thru the movies array, create a new div element and pass in details of each movie(array item) into it
-    for (let movie of movies) {
-        const option = document.createElement('a');
+//create an autocomplete widget by calling the createAutocomplete() function
+//pass in the necessary parameters as an object
+createAutocomplete({
+    ////specify where to render the autocomplete to
+    //target the div element with class autocomplete
+    root: document.querySelector('.autocomplete'),
+    //how to show an individual item
+    renderOption(movie) {
         //check to see if the value of image source is N/A
         const imgSrc = movie.Poster === 'N/A' ? '' : movie.Poster;
-        option.classList.add('dropdown-item')
-        //add content to the new anchor tag
-        option.innerHTML = `
+        return `
             <img src="${imgSrc}" />
-            ${movie.Title}
+            ${movie.Title} (${movie.Year})
         `;
-
-        //listen for a click event if the user clicks on an item in the menu option
-        //Update the input value to the movie title being clicked on. Then collapse the dropdown menu
-        //do a followup request to get detailed info of the selected movie
-        option.addEventListener('click', () => {
-            dropdown.classList.remove('is-active');
-            input.value = movie.Title;
-            onMovieSelect(movie);
-        })
-        //append the new option/anchor tag(as a child) inside the div with class results
-        resultsWrapper.appendChild(option);
+    },
+    //what to do when someone clicks on one
+    onOptionSelect(movie) {
+        onMovieSelect(movie)
+    },
+    //what to backfill when the user clicks on one
+    inputValue(movie) {
+        return movie.Title
+    },
+    //how to fetch the data
+    async fetchData(searchTerm) {
+        const response = await axios.get('http://www.omdbapi.com/', {
+            params: {
+                apikey: '4510e0c9',
+                s: searchTerm
+            }
+        });
+    
+        //handling an errored response
+        if (response.data.Error) {
+            return [];
+        }
+    
+        return response.data.Search;
     }
-}, 1000);
-
-//the input event is triggered when the user changes the text inside that input element
-input.addEventListener('input', onInput)
-
-//check to see if the user clicks on anywhere other than the elements contain in root. If true, close the dropdown menu
-document.addEventListener('click', event => {
-    //if the element being clicked on is not contained inside the root(the autocomplete element), set dropdown menu as not active
-    if (!root.contains(event.target)) {
-        dropdown.classList.remove('is-active');
-    }
-});
+})
 
 //make this an async function
 //get detailed info about a particular movie
