@@ -7,11 +7,48 @@
 //node.js documenation: nodejs.org/api
 
 const chokidar = require('chokidar');
+const debounce = require('lodash.debounce');
+const program = require('caporal');
+const fs = require('fs');
+//requiring just the spawn function here
+const { spawn } = require('child_process');
+//formatting text
+const chalk = require('chalk'); 
 
-chokidar.watch('.')
-    .on('add', () => console.log('FILE ADDED'))
-    .on('change', () => console.log('FILE CHANGED'))
-    .on('unlink', () => console.log('FILE UNLINKED'))
+program
+    .version('0.0.1')
+    .argument('[filename]', 'Name of a file to execute')
+    .action(async ({filename}) => {
+        //check to see if filename exists. If not, we'll default to using index.js
+        const name = filename || 'index.js';
+        try {       
+            //check to see if the filename exists
+            await fs.promises.access(name);
+        } catch (err) {
+            throw new Error(`Could not find the file ${name}`)
+        }
+        
+        //the returned child process object
+        let proc;
+        const start = debounce(() => {
+            //check to see if proc is already defined. If true, kill the child process
+            if (proc) {
+                proc.kill();
+            }
+            console.log(chalk.blueBright('>>>>>>>>>> Starting process...'));
+            //whenever we call spawn(), we assign the returned child process to proc
+            proc = spawn('node', [name], { stdio: 'inherit' });
+        }, 100);
+        
+        chokidar.watch('.')
+            //NOTE that we're just referencing 'start' and not invoking it
+            .on('add', start)
+            .on('change', start)
+            .on('unlink', start)
+    });
+
+program.parse(process.argv);
+
 
 
 
