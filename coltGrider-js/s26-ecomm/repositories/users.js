@@ -62,20 +62,73 @@ class UsersRepository {
     randomId() {
         return crypto.randomBytes(4).toString('hex');
     }
+
+    // Finds the user with the given Id
+    async getOne(id) {
+        // Get all the records from getAll() method
+        const records = await this.getAll();
+        // Iterate through the records and return the first match to the given Id
+        return records.find(record => record.id === id);
+    }
+
+    // Delete the user with the given Id
+    async delete(id) {
+        const records = await this.getAll();
+        // Return true only if the record.id is NOT the same as id
+        const filteredRecords = records.filter(record => record.id !== id);
+        // Pass the filteredRecords back to the json file
+        await this.writeAll(filteredRecords);
+    }
+
+    // Updates the user with the given id using the given attribute
+    async update(id, attrs) {
+        const records = await this.getAll();
+        // Find the record with the matching id
+        const record = records.find(record => record.id === id);
+
+        if (!record) {
+            throw new Error(`Record with id ${id} not found`)
+        }
+        // Update the found record with the given attributes
+        Object.assign(record, attrs);
+        await this.writeAll(records);
+    }
+
+    // Finds one user with the given filters
+    async getOneBy(filters) {
+        const records = await this.getAll();
+
+        // Iterating through an ARRAY
+        for (let record of records) {
+            let found = true;
+            // Iterating through an OBJECT
+            for (let key in filters) {
+                // If the filter key does not match with the key in record, set found to false
+                if (record[key] !== filters[key]) {
+                    found = false;
+                }
+            }
+            // If found is still true, return the record
+            if (found) {
+                return record;
+            }
+        }
+    }
 }
 
 const test = async () => {
     // Access to our users repository
     const repo = new UsersRepository('user.json');
-    // Save a record to it
-    // create() function is an async function
-    await repo.create({ email: 'test@test.com', password: 'password' })
-    // Get all the records we have saved
-    // Whatever we get back from getAll() assign it to users
-    const users = await repo.getAll();
+
+    const user = await repo.getOneBy({ email: 'user@test.com' });
+
+    console.log(user);
+
+    //await repo.create({ email: 'user1@test.com' });
+    //await repo.update('c64303e2', { password: 'mypassword' });
     // Console log them out
     // The return of users should now be an array object
-    console.log(users)
+    //console.log(user)
 };
 
 test()
