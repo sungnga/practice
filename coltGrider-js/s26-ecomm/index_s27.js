@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const usersRepo = require('./repositories/users')
 
 // app describes all the things our web server can do
 const app = express();
@@ -21,8 +22,22 @@ app.get('/', (req, res) => {
 });
 
 //ROUTE HANDLER
-app.post('/', (req, res) => {
+app.post('/', async (req, res) => {
+    // req.body contains the object with properties from form element above
     console.log(req.body)
+    const { email, password, passwordConfirmation } = req.body;
+
+    const existingUser = await usersRepo.getOneBy({ email });
+    
+    // If a user is defined
+    if (existingUser) {
+        return res.send('Email is use');
+    }
+
+    if (password !== passwordConfirmation) {
+        return res.send('Passwords must match');
+    }
+
     res.send('Account created!!!!');
 });
 

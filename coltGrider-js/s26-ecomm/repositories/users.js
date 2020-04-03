@@ -116,19 +116,4 @@ class UsersRepository {
     }
 }
 
-const test = async () => {
-    // Access to our users repository
-    const repo = new UsersRepository('user.json');
-
-    const user = await repo.getOneBy({ email: 'user@test.com' });
-
-    console.log(user);
-
-    //await repo.create({ email: 'user1@test.com' });
-    //await repo.update('c64303e2', { password: 'mypassword' });
-    // Console log them out
-    // The return of users should now be an array object
-    //console.log(user)
-};
-
-test()
+module.exports = new UsersRepository('users.json');
