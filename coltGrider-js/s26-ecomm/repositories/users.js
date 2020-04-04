@@ -48,7 +48,9 @@ class UsersRepository {
         // Add the new user
         records.push(attrs);
         
-        await this.writeAll(records)
+        await this.writeAll(records);
+
+        return attrs;
     }
 
     // Writes all users to a users.json file

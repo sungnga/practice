@@ -1,11 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const usersRepo = require('./repositories/users')
+const cookieSession = require('cookie-session');
+const usersRepo = require('./repositories/users');
 
 // app describes all the things our web server can do
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieSession({
+    keys: ['ldkjflksajdfierwjdsalfj']
+}));
 
 // ROUTE HANDLER
 app.get('/', (req, res) => {
@@ -38,8 +42,16 @@ app.post('/', async (req, res) => {
         return res.send('Passwords must match');
     }
 
+    // Create a user in our user repo to represent this person
+    const user = await usersRepo.create({ email, password });
+    
+    // Store the id of that user inside the users cookie
+    // The additional property that gets added in to the req object is the session property. Added by the cookie session library
+    // The session property is an object and any information inside there will be maintained by the cookie session
+    req.session.userId === user.id;
+
     res.send('Account created!!!!');
-});
+}); 
 
 app.listen(3000, () => {
     console.log('Listening');
