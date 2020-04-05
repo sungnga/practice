@@ -12,9 +12,10 @@ app.use(cookieSession({
 }));
 
 // ROUTE HANDLER
-app.get('/', (req, res) => {
+app.get('/signup', (req, res) => {
     res.send(`
         <div>
+            Your id is: ${req.session.userId}
             <form method="POST">
                 <input name="email" placeholder="email" />
                 <input name="password" placeholder="password" />
@@ -26,7 +27,7 @@ app.get('/', (req, res) => {
 });
 
 //ROUTE HANDLER
-app.post('/', async (req, res) => {
+app.post('/signup', async (req, res) => {
     // req.body contains the object with properties from form element above
     console.log(req.body)
     const { email, password, passwordConfirmation } = req.body;
@@ -48,7 +49,7 @@ app.post('/', async (req, res) => {
     // Store the id of that user inside the users cookie
     // The additional property that gets added in to the req object is the session property. Added by the cookie session library
     // The session property is an object and any information inside there will be maintained by the cookie session
-    req.session.userId === user.id;
+    req.session.userId = user.id;
 
     res.send('Account created!!!!');
 }); 
