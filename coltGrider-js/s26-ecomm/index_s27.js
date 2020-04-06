@@ -73,19 +73,26 @@ app.get('/signin', (req, res) => {
 })
 
 app.post('/signin', async (req, res) => {
+    // All of the form data is contained inside the req.body property
+    // Destructure out the email and password cuz those are the names we use in input elements
     const { email, password } = req.body;
 
+    // Use getOneBy() when we want to seach by a given criteria
+    // Search a user with email provided
     const user = await usersRepo.getOneBy({ email });
 
+    // If no user is found it will return undefined
     if (!user) {
         return res.send('Email not found');
     }
 
-    if (user.passord !== password) {
+    if (user.password !== password) {
         return res.send('Invalid password');
     }
 
-    res.session.userId = user.id;
+    // This here is what makes a user be authenticated with our app
+    // Set the session userId to the id of the user we just retrieved from our database
+    req.session.userId = user.id;
 
     res.send('You are signed in!!!')
 })
