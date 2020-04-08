@@ -1,33 +1,18 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const cookieSession = require('cookie-session');
-const usersRepo = require('./repositories/users');
+const usersRepo = require('../../repositories/users');
+const signupTemplate = require('../../views/admin/auth/signup');
+const signinTemplate = require('../../views/admin/auth/signin')
 
-// app describes all the things our web server can do
-const app = express();
-
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieSession({
-    keys: ['ldkjflksajdfierwjdsalfj']
-}));
+// It's like an app object that keeps track of all route handlers that we setup. The only difference is with this router, we can link it back up to our app inside index.js file
+const router = express.Router();
 
 // ROUTE HANDLER
-app.get('/signup', (req, res) => {
-    res.send(`
-        <div>
-            Your id is: ${req.session.userId}
-            <form method="POST">
-                <input name="email" placeholder="email" />
-                <input name="password" placeholder="password" />
-                <input name="passwordConfirmation" placeholder="password confirmation" />
-                <button>Sign Up</button>
-            </form>
-        </div>
-    `);
+// Replace app with router
+router.get('/signup', (req, res) => {
+    res.send(signupTemplate({ req }));
 });
 
-//ROUTE HANDLER
-app.post('/signup', async (req, res) => {
+router.post('/signup', async (req, res) => {
     // req.body contains the object with properties from form element above
     console.log(req.body)
     const { email, password, passwordConfirmation } = req.body;
@@ -54,25 +39,17 @@ app.post('/signup', async (req, res) => {
     res.send('Account created!!!!');
 }); 
 
-app.get('/signout', (req, res) => {
+router.get('/signout', (req, res) => {
     // Clear out all the information stored in the cookie session
     req.session = null;
     res.send('You are logged out')
 })
 
-app.get('/signin', (req, res) => {
-    res.send(`
-        <div>
-            <form method="POST">
-                <input name="email" placeholder="email" />
-                <input name="password" placeholder="password" />
-                <button>Sign In</button>
-            </form>
-        </div>
-    `)
+router.get('/signin', (req, res) => {
+    res.send(signinTemplate());
 })
 
-app.post('/signin', async (req, res) => {
+router.post('/signin', async (req, res) => {
     // All of the form data is contained inside the req.body property
     // Destructure out the email and password cuz those are the names we use in input elements
     const { email, password } = req.body;
@@ -101,19 +78,6 @@ app.post('/signin', async (req, res) => {
     req.session.userId = user.id;
 
     res.send('You are signed in!!!')
-})
-
-app.listen(3000, () => {
-    console.log('Listening');
 });
 
-
-
-// *************************************************
-// OBJECTIVE: LEARN TO WRITE DATA STORE FROM SCRATCH
-// *************************************************
-// This is not good use for real-life production. Here's why:
-// Will error if we try to open/write to the same file twice at the same time
-// Wont work if we have multiple servers running on different machines
-// We have to write to the FS every time we want to update some data
-// Nonetheless, it is a good exercise when learning Javascript! 
+module.exports = router;
