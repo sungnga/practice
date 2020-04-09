@@ -1,4 +1,6 @@
 const express = require('express');
+// Destructuring the check function from express-validator middleware
+const { check, validationResult } = require('express-validator');
 const usersRepo = require('../../repositories/users');
 const signupTemplate = require('../../views/admin/auth/signup');
 const signinTemplate = require('../../views/admin/auth/signin')
@@ -10,11 +12,17 @@ const router = express.Router();
 // Replace app with router
 router.get('/signup', (req, res) => {
     res.send(signupTemplate({ req }));
-});
+}); 
 
-router.post('/signup', async (req, res) => {
+router.post('/signup', [
+    check('email').trim().normalizeEmail().isEmail(),
+    check('password').trim().isLength({min: 4, max: 20}),
+    check('passwordConfirmation').trim().isLength({min: 4, max: 20})
+], async (req, res) => {
     // req.body contains the object with properties from form element above
-    console.log(req.body)
+    console.log(req.body);
+    const errors = validationResult(req); 
+    console.log(errors);
     const { email, password, passwordConfirmation } = req.body;
 
     const existingUser = await usersRepo.getOneBy({ email });
