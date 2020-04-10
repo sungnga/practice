@@ -15,26 +15,38 @@ router.get('/signup', (req, res) => {
 }); 
 
 router.post('/signup', [
-    check('email').trim().normalizeEmail().isEmail(),
-    check('password').trim().isLength({min: 4, max: 20}),
-    check('passwordConfirmation').trim().isLength({min: 4, max: 20})
+    check('email')
+        .trim()
+        .normalizeEmail()
+        .isEmail()
+        .withMessage('Must be a valid email')
+        .custom(async (email) => {
+            
+            const existingUser = await usersRepo.getOneBy({ email });
+            // If a user is defined
+            if (existingUser) {
+                throw new Error('Email in use');
+            }
+        }),
+    check('password')
+        .trim()
+        .isLength({ min: 4, max: 20 })
+        .withMessage('Must be between 4 to 20 chacharacters'),
+    check('passwordConfirmation')
+        .trim()
+        .isLength({ min: 4, max: 20 })
+        .withMessage('Must be between 4 to 20 characters')
+        .custom((passwordConfirmation, { req }) => {
+            if (passwordConfirmation !== req.body.password) {
+                throw new Error('Passwords must match')
+            }
+        })
 ], async (req, res) => {
     // req.body contains the object with properties from form element above
     console.log(req.body);
     const errors = validationResult(req); 
     console.log(errors);
     const { email, password, passwordConfirmation } = req.body;
-
-    const existingUser = await usersRepo.getOneBy({ email });
-    
-    // If a user is defined
-    if (existingUser) {
-        return res.send('Email is use');
-    }
-
-    if (password !== passwordConfirmation) {
-        return res.send('Passwords must match');
-    }
 
     // Create a user in our user repo to represent this person
     const user = await usersRepo.create({ email, password });
