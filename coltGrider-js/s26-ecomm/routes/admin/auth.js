@@ -52,35 +52,54 @@ router.get('/signin', (req, res) => {
     res.send(signinTemplate());
 })
 
-router.post('/signin', async (req, res) => {
-    // All of the form data is contained inside the req.body property
-    // Destructure out the email and password cuz those are the names we use in input elements
-    const { email, password } = req.body;
+router.post(
+    '/signin',
+    [
+        check('email')
+            .trim()
+            .normalizeEmail()
+            .isEmail().withMessage('Must provide a valid email')
+            .custom(async (email) => {
+                const user = await usersRepo.getOneBy({ email });
+                if (!user) {
+                    throw new Error('Email not found!');
+                }
+            }),
+        check('password')
+            .trim()
+            .custom(async (password, { req }) => {
+                const user = await usersRepo.getOneBy({ email: req.body.email });
+                if (!user) {
+                    throw new Error('Invalid password');
+                }
+                // comparePasswords() returns true or false
+                const validPassword = await usersRepo.comparePasswords(
+                    user.password,
+                    password
+                ); 
 
-    // Use getOneBy() when we want to seach by a given criteria
-    // Search a user with email provided
-    const user = await usersRepo.getOneBy({ email });
+                if (!validPassword) {
+                    throw new Error('Invalid password');
+                }
+            })
+    ],
+    async (req, res) => {
+        const errors = validationResult(req);
+        console.log(errors);
+        // All of the form data is contained inside the req.body property
+        // Destructure out the email and password cuz those are the names we use in input elements
+        const { email } = req.body;
 
-    // If no user is found it will return undefined
-    if (!user) {
-        return res.send('Email not found');
+        // Use getOneBy() when we want to seach by a given criteria
+        // Search a user with email provided
+        const user = await usersRepo.getOneBy({ email });
+
+        // This here is what makes a user be authenticated with our app
+        // Set the session userId to the id of the user we just retrieved from our database
+        req.session.userId = user.id;
+
+        res.send('You are signed in!!!')
     }
-
-    // comparePasswords() returns true or false
-    const validPassword = await usersRepo.comparePasswords(
-        user.password,
-        password
-    );
-
-    if (!validPassword) {
-        return res.send('Invalid password');
-    }
-
-    // This here is what makes a user be authenticated with our app
-    // Set the session userId to the id of the user we just retrieved from our database
-    req.session.userId = user.id;
-
-    res.send('You are signed in!!!')
-});
+);
 
 module.exports = router;
