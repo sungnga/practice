@@ -3,7 +3,8 @@ const express = require('express');
 const { check, validationResult } = require('express-validator');
 const usersRepo = require('../../repositories/users');
 const signupTemplate = require('../../views/admin/auth/signup');
-const signinTemplate = require('../../views/admin/auth/signin')
+const signinTemplate = require('../../views/admin/auth/signin');
+const { requireEmail, requirePassword, requirePasswordConfirmation } = require('./validators');
 
 // It's like an app object that keeps track of all route handlers that we setup. The only difference is with this router, we can link it back up to our app inside index.js file
 const router = express.Router();
@@ -14,50 +15,32 @@ router.get('/signup', (req, res) => {
     res.send(signupTemplate({ req }));
 }); 
 
-router.post('/signup', [
-    check('email')
-        .trim()
-        .normalizeEmail()
-        .isEmail()
-        .withMessage('Must be a valid email')
-        .custom(async (email) => {
-            
-            const existingUser = await usersRepo.getOneBy({ email });
-            // If a user is defined
-            if (existingUser) {
-                throw new Error('Email in use');
-            }
-        }),
-    check('password')
-        .trim()
-        .isLength({ min: 4, max: 20 })
-        .withMessage('Must be between 4 to 20 chacharacters'),
-    check('passwordConfirmation')
-        .trim()
-        .isLength({ min: 4, max: 20 })
-        .withMessage('Must be between 4 to 20 characters')
-        .custom((passwordConfirmation, { req }) => {
-            if (passwordConfirmation !== req.body.password) {
-                throw new Error('Passwords must match')
-            }
-        })
-], async (req, res) => {
-    // req.body contains the object with properties from form element above
-    console.log(req.body);
-    const errors = validationResult(req); 
-    console.log(errors);
-    const { email, password, passwordConfirmation } = req.body;
+router.post(
+    '/signup',
+    [requireEmail, requirePassword, requirePasswordConfirmation], async (req, res) => {
+        // req.body contains the object with properties from form element above
+        console.log(req.body);
+        const errors = validationResult(req); 
+        
+        // The .isEmpty() is going to be true if nothing went wrong. We want to check the opposite
+        // Return early and send back the signupTemplate() and print the errors property
+        if (!errors.isEmpty()) {
+            return res.send(signupTemplate({ req, errors }));
+        }
 
-    // Create a user in our user repo to represent this person
-    const user = await usersRepo.create({ email, password });
+        const { email, password, passwordConfirmation } = req.body;
+
+        // Create a user in our user repo to represent this person
+        const user = await usersRepo.create({ email, password });
     
-    // Store the id of that user inside the users cookie
-    // The additional property that gets added in to the req object is the session property. Added by the cookie session library
-    // The session property is an object and any information inside there will be maintained by the cookie session
-    req.session.userId = user.id;
+        // Store the id of that user inside the users cookie
+        // The additional property that gets added in to the req object is the session property. Added by the cookie session library
+        // The session property is an object and any information inside there will be maintained by the cookie session
+        req.session.userId = user.id;
 
-    res.send('Account created!!!!');
-}); 
+        res.send('Account created!!!!');
+    }
+); 
 
 router.get('/signout', (req, res) => {
     // Clear out all the information stored in the cookie session
