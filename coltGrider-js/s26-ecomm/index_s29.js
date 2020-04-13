@@ -6,6 +6,7 @@ const authRouter = require('./routes/admin/auth')
 // app describes all the things our web server can do
 const app = express();
 
+app.use(express.static('public'));
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 // Middleware
