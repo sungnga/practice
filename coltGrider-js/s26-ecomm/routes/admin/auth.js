@@ -56,9 +56,12 @@ router.post(
     '/signin',
     [requireEmailExists, requireValidPasswordForUser],
     async (req, res) => {
+        // The validationResult() from express-validator takes in a request and give us back error object
         const errors = validationResult(req);
+
+        // If that errors is not empty, send back the same form with that error object
         if (!errors.isEmpty()) {
-            return res.send(signinTemplate({ errors }));
+            return res.send(signinTemplate({ req, errors }));
         }
         // All of the form data is contained inside the req.body property
         // Destructure out the email and password cuz those are the names we use in input elements
