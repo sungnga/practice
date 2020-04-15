@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index_s30.js"
+    "dev": "nodemon index_s29.js"
   },
   "keywords": [],
   "author": "",
