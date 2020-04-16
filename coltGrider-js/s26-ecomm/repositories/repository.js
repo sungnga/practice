@@ -25,7 +25,7 @@ module.exports = class Repository {
         // Get all the records and assign it to records variable
         const records = await this.getAll();
         // Add in the new record
-        records.push(attr);
+        records.push(attrs);
         // Write all the records
         await this.writeAll(records);
 

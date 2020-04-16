@@ -1,7 +1,7 @@
 const express = require('express');
-const { validationResult } = require('express-validator');
 const multer = require('multer');
 
+const { handleErrors } = require('./middlewares');
 const productsRepo = require('../../repositories/products');
 const productsNewTemplate = require('../../views/admin/products/new');
 const { requireTitle, requirePrice } = require('./validators');
@@ -23,14 +23,7 @@ router.get('/admin/products/new', (req, res) => {
 // 2nd arg is a middleware that is responsible for uploading an image
 // IMPORTANT NOTE: run the multer middleware first as 2nd arg before running the validator middleware as 3rd arg. This way, the validator has access to title and price and check for errors
 // 3nd arg is all the validators we want to run
-router.post('/admin/products/new', upload.single('image'), [requireTitle, requirePrice], async (req, res) => {
-    // The validationResult() from express-validator takes in a request and give us back error object
-    const errors = validationResult(req);
-    // console.log(errors);
-    if (!errors.isEmpty()) {
-        return res.send(productsNewTemplate({ errors }));
-    }
-
+router.post('/admin/products/new', upload.single('image'), [requireTitle, requirePrice], handleErrors(productsNewTemplate), async (req, res) => {
     // // Where we get information from our form
     // console.log(req.body);
 
