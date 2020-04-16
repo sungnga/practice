@@ -4,13 +4,15 @@ const usersRepo = require('../../repositories/users');
 module.exports = {
     requireTitle: check('title')
         .trim()
-        .isLength({ min: 5, max: 40 }),
+        .isLength({ min: 5, max: 40 })
+        .withMessage('Must be between 5 and 40 characters'),
     requirePrice: check('price')
         .trim()
         // Take the string and extract a number, including decimals
         .toFloat()
         // Check to make sure we actually get a number and the value is at least 1
-        .isFloat({min: 1}),
+        .isFloat({ min: 1 })
+        .withMessage('Must be a number greater than 1'),
     requireEmail: check('email')
         .trim()
         .normalizeEmail()
