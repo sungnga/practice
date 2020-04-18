@@ -106,4 +106,11 @@ router.post('/admin/products/:id/edit',
     }
 );
 
+// Route handler to delete a product with a given id
+router.post('/admin/products/:id/delete', requireAuth, async (req, res) => {
+    await productsRepo.delete(req.params.id);
+
+    res.redirect('/admin/products');
+});
+
 module.exports = router;

@@ -1,6 +1,8 @@
 const layout = require('../layout');
 
 module.exports = ({ products }) => {
+    // NOTE: an anchor tag is a GET request. A form tag is a POST request. In general, a POST request is when we want to modify the data in some way. Also, a form element only support a GET & POST requests as a means of submission
+    // Use action attribute to manually specify the url to make the POST request to
   const renderedProducts = products
     .map(product => {
       return `
@@ -15,7 +17,9 @@ module.exports = ({ products }) => {
           </a>
         </td>
         <td>
-          <button class="button is-danger">Delete</button>
+          <form method="POST" action="/admin/products/${product.id}/delete">
+            <button class="button is-danger">Delete</button>
+          </form>
         </td>
       </tr>
     `;
