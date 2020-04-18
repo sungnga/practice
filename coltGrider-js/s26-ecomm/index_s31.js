@@ -2,7 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
 const authRouter = require('./routes/admin/auth');
-const productsRouter = require('./routes/admin/products');
+const adminProductsRouter = require('./routes/admin/products');
+const productsRouter = require('./routes/products');
 
 // app describes all the things our web server can do
 const app = express();
@@ -15,6 +16,7 @@ app.use(cookieSession({
     keys: ['ldkjflksajdfierwjdsalfj']
 }));
 app.use(authRouter);
+app.use(adminProductsRouter);
 app.use(productsRouter);
 
 app.listen(3000, () => {
