@@ -1,21 +1,46 @@
 const layout = require('../layout');
 
-// Receive an object with all the product properties inside of it
 module.exports = ({ products }) => {
-    // Iterate through the list of products. For every product, we will return a snippet of html
-    // Take each of these individual html snippets and join it into one string using .join() method
-    const renderedProducts = products.map((product) => {
-        return `
-            <div>${product.title}</div>
-        `;
-    }).join('');
-
-    // Render the layout
-    // Pass in an object with content property
-    return layout({
-        content: `
-            <h1 class="title">Products</h1>
-            ${renderedProducts}
-        `
+  const renderedProducts = products
+    .map(product => {
+      return `
+      <tr>
+        <td>${product.title}</td>
+        <td>${product.price}</td>
+        <td>
+          <a href="/admin/products/${product.id}/edit">
+            <button class="button is-link">
+              Edit
+            </button>
+          </a>
+        </td>
+        <td>
+          <button class="button is-danger">Delete</button>
+        </td>
+      </tr>
+    `;
     })
-}
+    .join('');
+
+  return layout({
+    content: `
+      <div class="control">
+        <h1 class="subtitle">Products</h1>  
+        <a href="/admin/products/new" class="button is-primary">New Product</a>
+      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Edit</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${renderedProducts}
+        </tbody>
+      </table>
+    `
+  });
+};

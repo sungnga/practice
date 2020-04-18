@@ -5,7 +5,7 @@ const { handleErrors, requireAuth } = require('./middlewares');
 const productsRepo = require('../../repositories/products');
 const productsNewTemplate = require('../../views/admin/products/new');
 const productsIndexTemplate = require('../../views/admin/products/index');
-
+const productsEditTemplate = require('../../views/admin/products/edit');
 const { requireTitle, requirePrice } = require('./validators');
 
 const router = express.Router();
@@ -50,5 +50,60 @@ router.post('/admin/products/new', upload.single('image'), [requireTitle, requir
     // Redirect the url to products page once a new product is successfully created. The browser will initiate a new GET request and fetch that new endpoint
     res.redirect('/admin/products');
 });
+
+// User can access this edit form only if they are signed in
+router.get('/admin/products/:id/edit', requireAuth, async (req, res) => {
+    // This will capture whatever is inside the :id of url
+    // console.log(req.params.id);
+
+    // Retrieve a product from products repository with a given id
+    const product = await productsRepo.getOne(req.params.id);
+
+    // If we didn't not find the product, return early
+    if (!product) {
+        return res.send('Product not found');
+    }
+
+    // Render the template
+    res.send(productsEditTemplate({ product }));
+})
+
+// Route handler to receive the submission of the edit form
+router.post('/admin/products/:id/edit',
+    requireAuth,
+    upload.single('image'),
+    [requireTitle, requirePrice],
+    // If something goes wrong with validations, we're going to invoke the callback function
+    handleErrors(productsEditTemplate, async (req) => {
+        const product = await productsRepo.getOne(req.params.id);
+        return { product };
+    }),
+    async (req, res) => {
+        // The changes/updates we're getting from edit form
+        const changes = req.body;
+
+        // Check to see if the user provides an image file in this request
+        if (req.file) {
+            // .image is the new image
+            // req.file is the file that's uploaded
+            // buffer is an array-like with all the raw data
+            // toString() take the data and encoded to base-64 string
+            changes.image = req.file.buffer.toString('base64');
+        }
+
+        // Apply this update to the repository
+        // req.params.id is the product id
+        // changes is all the changes we want to update
+        // Use try/catch to handle the errors for update() function
+        try {
+            await productsRepo.update(req.params.id, changes);
+        } catch (err) {
+            return res.send('Could not find item');
+        }
+
+        // If product is successfully updated, redirect user to products page
+        res.redirect('/admin/products');
+    }
+);
 
 module.exports = router;
