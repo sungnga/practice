@@ -4,13 +4,19 @@ const multer = require('multer');
 const { handleErrors } = require('./middlewares');
 const productsRepo = require('../../repositories/products');
 const productsNewTemplate = require('../../views/admin/products/new');
+const productsIndexTemplate = require('../../views/admin/products/index');
+
 const { requireTitle, requirePrice } = require('./validators');
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
-router.get('/admin/products', (req, res) => {
-    
+// First look in the products repository, find all the products there, render them with the template, then send the results back down to the user
+router.get('/admin/products', async (req, res) => {
+    // Access to products in repo
+    const products = await productsRepo.getAll();
+    // Call the template function and send it back to user
+    res.send(productsIndexTemplate({ products }));
 });
 
 // Route handler to retrieve the form
