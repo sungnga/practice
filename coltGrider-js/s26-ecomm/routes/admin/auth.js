@@ -28,7 +28,8 @@ router.post(
         // The session property is an object and any information inside there will be maintained by the cookie session
         req.session.userId = user.id;
 
-        res.send('Account created!!!!');
+        // Redirect the url to products page once an account is successfully created. The browser will initiate a new GET request and fetch that new endpoint
+        res.redirect('/admin/products');
     }
 ); 
 
@@ -58,7 +59,8 @@ router.post(
         // Set the session userId to the id of the user we just retrieved from our database
         req.session.userId = user.id;
 
-        res.send('You are signed in!!!')
+        // Redirect the url to products page once a user successfully signed in. The browser will initiate a new GET request and fetch that new endpoint
+        res.redirect('/admin/products');
     }
 );
 

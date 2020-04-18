@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 
-const { handleErrors } = require('./middlewares');
+const { handleErrors, requireAuth } = require('./middlewares');
 const productsRepo = require('../../repositories/products');
 const productsNewTemplate = require('../../views/admin/products/new');
 const productsIndexTemplate = require('../../views/admin/products/index');
@@ -12,7 +12,10 @@ const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
 // First look in the products repository, find all the products there, render them with the template, then send the results back down to the user
-router.get('/admin/products', async (req, res) => {
+// NOTE: We don't want to invoke requireAuth right away. We want to provide the function to this route handler, and it can call the function at some future point in time with the req, res, next functs
+router.get('/admin/products', requireAuth, async (req, res) => {
+
+
     // Access to products in repo
     const products = await productsRepo.getAll();
     // Call the template function and send it back to user
@@ -21,14 +24,15 @@ router.get('/admin/products', async (req, res) => {
 
 // Route handler to retrieve the form
 // Whenever a user make a get request to /admin/products/new, we show the product template
-router.get('/admin/products/new', (req, res) => {
+router.get('/admin/products/new', requireAuth, (req, res) => {
     res.send(productsNewTemplate({}));
 });
 
 // Router handler that deals with form submission
-// 2nd arg is a middleware that is responsible for uploading an image
-// IMPORTANT NOTE: run the multer middleware first as 2nd arg before running the validator middleware as 3rd arg. This way, the validator has access to title and price and check for errors
-// 3nd arg is all the validators we want to run
+// 2nd arg requireAuth: check to make sure the user is signed in before the image uploading process
+// 3rd arg is a middleware that is responsible for uploading an image
+// IMPORTANT NOTE: run the multer middleware first as 3rd arg before running the validator middleware as 4th arg. This way, the validator has access to title and price and check for errors
+// 4th arg is all the validators we want to run
 router.post('/admin/products/new', upload.single('image'), [requireTitle, requirePrice], handleErrors(productsNewTemplate), async (req, res) => {
     // // Where we get information from our form
     // console.log(req.body);
@@ -43,7 +47,8 @@ router.post('/admin/products/new', upload.single('image'), [requireTitle, requir
     // To create a new product with the properties we want to save to products.json file. create() method takes in attributes
     await productsRepo.create({ title, price, image });
 
-    res.send('submitted');
+    // Redirect the url to products page once a new product is successfully created. The browser will initiate a new GET request and fetch that new endpoint
+    res.redirect('/admin/products');
 });
 
 module.exports = router;
