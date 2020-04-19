@@ -3,7 +3,6 @@ const cartsRepo = require('../repositories/carts');
 const productsRepo = require('../repositories/products');
 const cartShowTemplate = require('../views/carts/show');
 
-
 const router = express.Router();
 
 // Receive a POST request to add an item to a cart
@@ -41,7 +40,8 @@ router.post('/cart/products', async (req, res) => {
         items: cart.items
     })
 
-    res.send('Product added to cart');
+    // Redirect user back to '/cart' page after an item has been added
+    res.redirect('/cart');
 });
 
 // Receive a GET request to show all items in cart
@@ -66,5 +66,30 @@ router.get('/cart', async (req, res) => {
 });
 
 // Receive a POST request to delete an item from a cart
+router.post('/cart/products/delete', async (req, res) => {
+    // Print the item id to be deleted
+    //console.log(req.body.itemId);
+
+    // Get that item id assigned to a variable
+    const { itemId } = req.body;
+
+    // Retrieve cart out of cart repository
+    const cart = await cartsRepo.getOne(req.session.cartId);
+
+    // Iterate through list of items inside this cart
+    // As soon as we find an item id that matches the itemId, remove that item out of the array
+    // pass in an item to filter() function. It then returns true or false. If true, we want to add that item to the variable items array. If false, do not add item to items array
+    // item.id comes from the item we're iterating over
+    // itemId comes from the req.body
+    const items = cart.items.filter(item => item.id !== itemId);
+
+    // Update cart repo
+    // update() takes in an id and the attrs to be updated
+    await cartsRepo.update(req.session.cartId, { items });
+
+    // After this request, redirect user back to '/cart' page
+    res.redirect('/cart');
+
+});
 
 module.exports = router;
