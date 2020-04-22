@@ -1,5 +1,5 @@
 // const validator = require('validator');
-const getNotes = require('./notes.js');
+const notes = require('./notes.js');
 const yargs = require('yargs');
 const chalk = require('chalk');
 
@@ -23,8 +23,7 @@ yargs.command({
         }
     },
     handler: function (argv) {
-        console.log('Title: ' + argv.title)
-        console.log('Body: ' + argv.body)
+        notes.addNote(argv.title, argv.body)
     }
 })
 
@@ -83,4 +82,4 @@ yargs.parse()
 
 // TO RECREATE THE NODE MODULE FOLDER
 // Run 'npm install' in the application directory
-// It will create the node module folder base off of the content in the 'package-lock.json' and 'package.json' files
+// It will create the node module folder based off of the content in the 'package-lock.json' and 'package.json' files
