@@ -1,7 +1,7 @@
 // const validator = require('validator');
-const notes = require('./notes.js');
 const yargs = require('yargs');
 const chalk = require('chalk');
+const notes = require('./notes.js');
 
 // Customize yargs version
 yargs.version('1.1.0')
@@ -31,8 +31,15 @@ yargs.command({
 yargs.command({
     command: 'remove',
     describe: 'Remove a note',
-    handler: function () {
-        console.log('Removing the note')
+    builder: {
+        title: {
+            describe: 'Note title',
+            demandOption: true,
+            type: 'string'
+        }
+    },
+    handler: function (argv) {
+        notes.removeNote(argv.title)
     }
 })
 
@@ -62,11 +69,29 @@ yargs.parse()
 // console.log(yargs.argv)
 
 
+
 // CHALLENGE: ADD AN OPTION TO YARGS
 // 1. setup a body option for the add command
 // 2. Configure a description, make it required and for it to be a string
 // 3. Log the body value in the handler function
 // 4. Test your work!
+
+// CHALLENGE: SETUP COMMAND OPTION AND FUNCTION
+// 1. Setup the remove command to make a required '==title' option
+// 2. Create and export a removeNote function from notes.js
+// 3. Call removeNote in remove command handler
+// 4. Test your work using: node app.js remove --title="some title". Console log the title
+
+// CHALLENGE: WIRE UP REMOVENOTE
+// 1. Load existing notes
+// 2. Use array filter method to remove the matching note (if any)
+// 3. Save the newly created array
+// 4. Test your work with a title that exists and a title that doesn't exist
+
+// CHALLENGE: USE CHALK TO PROVIDE USEFUL LOGS FOR REMOVE
+// 1. If note is removed, print "Note removed!" with green background
+// 2. if no note is removed, print "No note found!" with red background
+
 
 // =============
 // NOTES
