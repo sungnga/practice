@@ -31,6 +31,36 @@ const addNote = (title, body) => {
     }
 }
 
+// To remove a note
+const removeNote = (title) => {
+    // Load and store the existing notes to notes variable
+    const notes = loadNotes()
+
+    // Iterate on list of notes
+    // The returned new array contains only list of notes that does not match the given title
+    const notesToKeep = notes.filter((note) => {
+        return note.title !== title
+    })
+    
+    if (notesToKeep.length !== notes.length) {
+        console.log(chalk.green.inverse('Note removed!'));
+        saveNotes(notesToKeep)
+    } else {
+        console.log(chalk.red.inverse('No note found!'));
+    }  
+}
+
+// To list notes
+const listNotes = () => {
+    // Load and store the existing notes to notes variable
+    const notes = loadNotes()
+    console.log(chalk.blue.inverse('Your notes'))
+    // Looping through the notes list and print each note title
+    notes.forEach((note) => {
+        console.log(note.title)
+    })
+}
+
 // Helper function to load notes
 // If first time around where there isn't a note.json file, return with an empty array
 // Second time around, it will read the file and parse the data
@@ -55,24 +85,5 @@ const saveNotes = (notes) => {
     fs.writeFileSync('notes.json', dataJSON)
 }
 
-// To remove a note
-const removeNote = (title) => {
-    // Load and store the existing notes to notes variable
-    const notes = loadNotes()
-
-    // Iterate on list of notes
-    // The returned new array contains only list of notes that does not match the given title
-    const notesToKeep = notes.filter((note) => {
-        return note.title !== title
-    })
-    
-    if (notesToKeep.length !== notes.length) {
-        console.log(chalk.green.inverse('Note removed!'));
-        saveNotes(notesToKeep)
-    } else {
-        console.log(chalk.red.inverse('No note found!'));
-    }  
-}
-
-module.exports = { getNotes, addNote, removeNote };
+module.exports = { getNotes, addNote, removeNote, listNotes };
 

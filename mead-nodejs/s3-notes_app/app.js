@@ -22,7 +22,7 @@ yargs.command({
             type: 'string'
         }
     },
-    handler: function (argv) {
+    handler(argv) {
         notes.addNote(argv.title, argv.body)
     }
 })
@@ -38,7 +38,7 @@ yargs.command({
             type: 'string'
         }
     },
-    handler: function (argv) {
+    handler(argv) {
         notes.removeNote(argv.title)
     }
 })
@@ -47,8 +47,8 @@ yargs.command({
 yargs.command({
     command: 'list',
     describe: 'List all notes',
-    handler: function () {
-        console.log('Listing out all notes')
+    handler() {
+        notes.listNotes()
     }
 })
 
@@ -56,7 +56,7 @@ yargs.command({
 yargs.command({
     command: 'read',
     describe: 'Read a note',
-    handler: function () {
+    handler() {
         console.log('Reading a note')
     }
 })
@@ -69,6 +69,11 @@ yargs.parse()
 // console.log(yargs.argv)
 
 
+// TO USE THE APPLICATION
+// In project directory run this in the command line:
+// node app.js add --title="List" --body="clean, sleep" <-- will get an error message 'Note title taken!' if run this code again
+// node app.js remove --title="List" <-- will get an error message 'No note found!' if run this code again
+// Can see the list of notes in notes.json file
 
 // CHALLENGE: ADD AN OPTION TO YARGS
 // 1. setup a body option for the add command
@@ -92,6 +97,12 @@ yargs.parse()
 // 1. If note is removed, print "Note removed!" with green background
 // 2. if no note is removed, print "No note found!" with red background
 
+// CHALLENGE: WIRE UP LIST COMMAND
+// 1. Create and export listNotes from notes.js
+//  - "Your notes" using chalk
+//  - Print note title for each note (use forEach loop
+// 2. Call listNotes from command handler
+// 3. Test your work!
 
 // =============
 // NOTES
