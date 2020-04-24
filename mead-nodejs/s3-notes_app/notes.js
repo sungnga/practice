@@ -17,8 +17,14 @@ const addNote = (title, body) => {
         return note.title === title
     })
 
-    // If length of duplicateNotes array is 0, add that note and save notes
-    if (duplicateNotes.length === 0) {
+    // Using find() method to search for the first duplicate note
+    // find() method will return undefined if no match is found
+    const duplicateNote = notes.find((note) => {
+        return note.title === title
+    })
+
+    // If no duplicateNote is found, add a note. Then save all notes using saveNotes() method
+    if (!duplicateNote) {
         // Add a note to existing notes data
         notes.push({
             title, body
@@ -61,6 +67,23 @@ const listNotes = () => {
     })
 }
 
+// Reading a note
+const readNote = (title) => {
+    const notes = loadNotes()
+
+    // find() method loops through list of notes, find first matched title, return the found note object
+    const findNote = notes.find((note) => {
+        return note.title === title
+    })
+
+    if (findNote) {
+        console.log(chalk.green(`${findNote.title}`))
+        console.log((`${findNote.body}`))
+    } else {
+        console.log(chalk.red('Sorry no note found!'))
+    }
+}
+
 // Helper function to load notes
 // If first time around where there isn't a note.json file, return with an empty array
 // Second time around, it will read the file and parse the data
@@ -85,5 +108,5 @@ const saveNotes = (notes) => {
     fs.writeFileSync('notes.json', dataJSON)
 }
 
-module.exports = { getNotes, addNote, removeNote, listNotes };
+module.exports = { getNotes, addNote, removeNote, listNotes, readNote };
 

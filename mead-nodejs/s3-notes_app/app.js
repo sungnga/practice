@@ -56,8 +56,15 @@ yargs.command({
 yargs.command({
     command: 'read',
     describe: 'Read a note',
-    handler() {
-        console.log('Reading a note')
+    builder: {
+        title: {
+            describe: 'Note title',
+            demandOption: true,
+            type: 'string'
+        }
+    },
+    handler(argv) {
+        notes.readNote(argv.title)
     }
 })
 
@@ -103,6 +110,16 @@ yargs.parse()
 //  - Print note title for each note (use forEach loop
 // 2. Call listNotes from command handler
 // 3. Test your work!
+
+// CHALLENGE: WIRE UP READ COMMAND
+// 1. Setup --title option for read command
+// 2. Create readNote in notes.js
+//  - Search for note by title
+//  - Find note and print title (styled) and body (plain)
+//  - No note found? Print error in red
+// 3. Have the command handler call the function
+// 4. Test your work by running a couple commands
+
 
 // =============
 // NOTES
