@@ -80,6 +80,7 @@ yargs.parse()
 // In project directory run this in the command line:
 // node app.js add --title="List" --body="clean, sleep" <-- will get an error message 'Note title taken!' if run this code again
 // node app.js remove --title="List" <-- will get an error message 'No note found!' if run this code again
+// Commands available: add, remove, list, and read
 // Can see the list of notes in notes.json file
 
 // CHALLENGE: ADD AN OPTION TO YARGS
@@ -136,3 +137,12 @@ yargs.parse()
 // TO RECREATE THE NODE MODULE FOLDER
 // Run 'npm install' in the application directory
 // It will create the node module folder based off of the content in the 'package-lock.json' and 'package.json' files
+
+// DEBUGGER TOOL
+// Add the key word debugger anywhere you want to inspect
+// run: node inspect app.js add --title="Students" --body="Lisa, Brad"
+// Go to browser and type: chrome://inspect
+// Click on the inspect link. It will take you to the dev tool
+// On the left panel, click add a project folder. Select the project folder
+// Click on the play button to run the code. It will pause on the line where you added the debugger keyword. You can inspect its states
+// run: ctrl c twice to exit the debugging mode

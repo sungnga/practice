@@ -1,23 +1,20 @@
 const fs = require('fs');
 const chalk = require('chalk');
 
-const getNotes = () => {
-    return 'Your notes...'
-}
-
 const addNote = (title, body) => {
     // Store the existing data to notes variable
     const notes = loadNotes()
 
     // Prevents duplicate notes being added
     // Check to see if that title is already in use
+    // NOTE: filter() method will loop through the ENTIRE LIST before it stops
     const duplicateNotes = notes.filter((note) => {
         // filter() returns a new array
         // if return is true, it will keep the note title in the new array
         return note.title === title
     })
 
-    // Using find() method to search for the first duplicate note
+    // NOTE: find() method to search for the FIRST duplicate note. It will stop running once it finds it
     // find() method will return undefined if no match is found
     const duplicateNote = notes.find((note) => {
         return note.title === title
@@ -108,5 +105,4 @@ const saveNotes = (notes) => {
     fs.writeFileSync('notes.json', dataJSON)
 }
 
-module.exports = { getNotes, addNote, removeNote, listNotes, readNote };
-
+module.exports = { addNote, removeNote, listNotes, readNote };
