@@ -2,32 +2,25 @@
 const path = require('path')
 const express = require('express')
 
-// console.log(__dirname)
-
 const app = express()
+
+// Define paths for Express config
 const publicDirectoryPath = path.join(__dirname, '../public')
+// The default folder to store all the templates is the 'views' folder
+// We can customize this path, but we need to tell express where to look
+// We need to create a new path
+const viewsPath = path.join(__dirname, '../templates')
 
-// hbs is a handlebars plugin for express, integrating handlebars into express. hbs is a VIEW ENGINE FOR EXPRESS
-// app.set() is telling express which TEMPLATING ENGINE to use
-// set() allows you to set a value for a given express settings
-// 1st arg: key, the setting name
-// 2nd arg: value, the value we want to set. The name of the modole we installed
-// When working with express, it expects all of the views, in this case the handlebars templates, to live in a specific folder called VIEWS. This views folder lives in the root of the app directory
-// To SERVE UP the hbs template, need to set up a get() method route handler
+// Setup handlebars engine and views location
 app.set('view engine', 'hbs')
+// We need to point express to this custom directory (viewsPath) by calling another app.set()
+app.set('views', viewsPath)
 
-// To customize the server to serve out a folder/directory
-// Serving up the public directory
+// Setup static directory to serve
 app.use(express.static(publicDirectoryPath))
 
-// Serving up a template page
-app.get('', (req, res) => {
-    // .render() method allows us to render one of our views
-    // We've configured express to use the view engine hbs. So with render(), we can a handlebars template
-    // When calling res.render(), express goes off and get that view. It then converts it to html and it makes sure that html gets to the requester
-    // 1st arg: the name(WITHOUT the extension) of the view to render
-    // 2nd arg: an object which contains all the values you want that view to be able to access
-    // To inject these values to the html template: use {{property_name}} inside a tag element
+// Setup to serve template pages
+app.get('', (req, res) => { 
     res.render('index', {
         title: 'Weather',
         name: 'Nga La'
