@@ -1,25 +1,28 @@
 const geocode = require('./utils/geocode');
 const forecast = require('./utils/forecast');
 
-geocode('San Francisco', (error, data) => {
-  console.log('Error', error);
-  console.log('Data', data);
+// CALLBACK CHAINING:
+// Chaining together multiple callbacks to do multiple things in a specific order
+// Start with geocode() async operation
+// When it's done, the event loop makes sure the callback gets called
+// Then another async operation - forecast(). Then waiting for that callback to finish
+// Now we have the final data inside the callback function
+geocode('chicago', (error, data) => {
+  if (error) {
+    return console.log(error)
+  }
+
+  // Start another async operation
+  forecast(data.latitude, data.longitude, (error, forecastData) => {
+    if (error) {
+      return console.log(error)
+    }
+
+    console.log(data.location);
+    console.log(forecastData);
+  });
 });
 
-//
-// Goal: Create a reusable function for getting the forecast
-//
-// 1. Setup the "forecast" function in utils/forecast.js
-// 2. Require the function in app.js and call it as shown below
-// 3. The forecast function should have three potential calls to callback:
-//    - Low level error, pass string for error
-//    - Coordinate error, pass string for error
-//    - Success, pass forecast string for data (same format as from before)
-
-forecast(44.1545, -75.7088, (error, data) => {
-  console.log('Error', error);
-  console.log('Data', data);
-});
 
 
 
