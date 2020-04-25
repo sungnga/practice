@@ -4,7 +4,7 @@ const express = require('express')
 // Call express to create a new express application
 const app = express()
 
-// Set up the server to send a response to a specific route:
+// ROUTE HANDLER: Set up the server to send a response to a specific route
 // Use a get() method on app. get() takes 2 arguments
 // 1st arg is the route, the url
 // 2nd arg is a callback function: describes what to do when someone visits this particular route
@@ -48,5 +48,5 @@ app.listen(3000, () => {
 
 // CLIENT SIDE:
 // In the browser visit: localhost:3000. This went off to the server
-//  The express server found the matching route and it processed the request using the handler. Then the handler used res.send() method to send back a response to the user
+//  The express server found the matching route and it processed the request using the route handler. Then the handler used res.send() method to send back a response to the user
 // To visit a different route: localhost:3000/help
