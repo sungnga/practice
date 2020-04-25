@@ -1,28 +1,33 @@
-const geocode = require('./utils/geocode');
-const forecast = require('./utils/forecast');
+const geocode = require('./utils/geocode')
+const forecast = require('./utils/forecast')
 
-// CALLBACK CHAINING:
-// Chaining together multiple callbacks to do multiple things in a specific order
-// Start with geocode() async operation
-// When it's done, the event loop makes sure the callback gets called
-// Then another async operation - forecast(). Then waiting for that callback to finish
-// Now we have the final data inside the callback function
-geocode('chicago', (error, data) => {
-  if (error) {
-    return console.log(error)
-  }
+// CHALLENGE: ACCEPT LOCATION VIA COMMAND LINE ARGUMENT
+// 1. Access the command line argument without yargs
+// 2. Use the string value as the input for geocode
+// 3. Only geocode if a location was provided
 
-  // Start another async operation
-  forecast(data.latitude, data.longitude, (error, forecastData) => {
-    if (error) {
-      return console.log(error)
-    }
+const address = process.argv[2]
 
-    console.log(data.location);
-    console.log(forecastData);
-  });
-});
+if (!address) {
+    console.log('Please provide an address')
+} else {
+    // Start out with an async operation
+    geocode(address, (error, data) => {
+        if (error) {
+            return console.log(error)
+        }
 
+        // Start another async operation
+        forecast(data.latitude, data.longitude, (error, forecastData) => {
+            if (error) {
+                return console.log(error)
+            }
+
+            console.log(data.location)
+            console.log(forecastData)
+        })
+    })
+}
 
 
 
@@ -51,3 +56,10 @@ geocode('chicago', (error, data) => {
 // A callback function is a function we provide as an argument to another function with the intention of having it called at some point in the future
 // Now in this case we are using the callback pattern in an asynchronous way because setTimeout() is a node provided API and it is asynchronous
 // NOTE: using a callback pattern DOES NOT mean it's actually asynchronous. If a function is not interacting with a native node API, it's a regular synchronous function
+
+// CALLBACK CHAINING:
+// Chaining together multiple callbacks to do multiple things in a specific order
+// Start with geocode() async operation
+// When it's done, the event loop makes sure the callback gets called
+// Then another async operation - forecast(). Then waiting for that callback to finish
+// Now we have the final data inside the callback function
