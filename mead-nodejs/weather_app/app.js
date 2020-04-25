@@ -12,24 +12,26 @@ if (!address) {
     console.log('Please provide an address')
 } else {
     // Start out with an async operation
-    geocode(address, (error, data) => {
+    geocode(address, (error, { latitude, longitude, location } = {}) => {
         if (error) {
             return console.log(error)
         }
 
         // Start another async operation
-        forecast(data.latitude, data.longitude, (error, forecastData) => {
+        forecast(latitude, longitude, (error, forecastData) => {
             if (error) {
                 return console.log(error)
             }
 
-            console.log(data.location)
+            console.log(location)
             console.log(forecastData)
         })
     })
 }
 
-
+// CHALLENGE: USE BOTH DESTRUCTURING AND PROPERTY SHORTHAND IN WEATHER APP
+// 1. Use destructuring in app.js, forecast.js, and geocode.js
+// 2. Use property shorthand in forecast.js and geocode.js
 
 // ==============
 // NOTES
