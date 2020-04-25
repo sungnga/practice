@@ -7,10 +7,47 @@ const express = require('express')
 const app = express()
 const publicDirectoryPath = path.join(__dirname, '../public')
 
+// hbs is a handlebars plugin for express, integrating handlebars into express. hbs is a VIEW ENGINE FOR EXPRESS
+// app.set() is telling express which TEMPLATING ENGINE to use
+// set() allows you to set a value for a given express settings
+// 1st arg: key, the setting name
+// 2nd arg: value, the value we want to set. The name of the modole we installed
+// When working with express, it expects all of the views, in this case the handlebars templates, to live in a specific folder called VIEWS. This views folder lives in the root of the app directory
+// To SERVE UP the hbs template, need to set up a get() method route handler
+app.set('view engine', 'hbs')
+
 // To customize the server to serve out a folder/directory
 // Serving up the public directory
 app.use(express.static(publicDirectoryPath))
+
+// Serving up a template page
+app.get('', (req, res) => {
+    // .render() method allows us to render one of our views
+    // We've configured express to use the view engine hbs. So with render(), we can a handlebars template
+    // When calling res.render(), express goes off and get that view. It then converts it to html and it makes sure that html gets to the requester
+    // 1st arg: the name(WITHOUT the extension) of the view to render
+    // 2nd arg: an object which contains all the values you want that view to be able to access
+    // To inject these values to the html template: use {{property_name}} inside a tag element
+    res.render('index', {
+        title: 'Weather',
+        name: 'Nga La'
+    })
+})
  
+app.get('/about', (req, res) => {
+    res.render('about', {
+        title: 'About Me',
+        name: 'Nga La'
+    })
+})
+
+app.get('/help', (req, res) => {
+    res.render('help', {
+        title: 'Help',
+        message: 'How can I help you?'
+    })
+})
+
 app.get('/weather', (req, res) => {
     res.send({
         forecast: 'Partly cloudy',
@@ -27,6 +64,9 @@ app.listen(3000, () => {
 // =====================
 // NOTES
 // =====================
+
+// const express = require('express')
+// express is actually a method
 
 // Call express to create a new express application
 // const app = express()
@@ -48,8 +88,35 @@ app.listen(3000, () => {
 // The process of starting up a server is an ASYNCHRONOUS PROCESS, though it happens almost instantly
 // Once the server starts, it continues staying up and running, listening and processing new incoming requests
 // We can shut down the web server with 'cntrl c'
+// app.listen(3000, () => {})
 
 // CLIENT SIDE
 // In the browser visit: localhost:3000. This went off to the server
 //  The express server found the matching route and it processed the request using the route handler. Then the handler used res.send() method to send back a response to the user
 // To visit a different route: localhost:3000/help
+
+// TEMPLATING ENGINE: HBS FOR EXPRESS
+// handlebars allows us to render dynamic content. We can then set up the templates (which are very to html documents) and we can inject specifiy values inside
+// hbs is a handlebars plugin for express, integrating handlebars into express. hbs is a VIEW ENGINE FOR EXPRESS
+// app.set() is telling express which TEMPLATING ENGINE to use
+// set() method allows you to set a value for a given express settings
+// 1st arg: key, the setting name
+// 2nd arg: value, the value we want to set. The name of the modole we installed
+// When working with express, it expects all of the views, in this case the handlebars templates, to live in a specific folder called VIEWS. This views folder lives in the root of the app directory
+// To SERVE UP the hbs template, need to set up a get() method route handler
+// app.set('view engine', 'hbs')
+
+// SERVING UP A TEMPLATE PAGE
+// Set up a route handler using get() method to get the route path
+// .render() method allows us to render one of our views
+// We've configured express to use the view engine hbs. So with render(), we can a handlebars template
+// When calling res.render(), express goes off and get that view. It then converts it to html and it makes sure that html gets to the requester
+// 1st arg: the name(WITHOUT the extension) of the view to render
+// 2nd arg: an object which contains all the values you want that view to be able to access
+// To inject these values to the html template: use {{property_name}} inside a tag element
+// app.get('', (req, res) => {
+//     res.render('index', {
+//         title: 'Weather',
+//         name: 'Nga La'
+//     })
+// })
