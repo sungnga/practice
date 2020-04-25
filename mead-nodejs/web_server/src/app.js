@@ -2,18 +2,15 @@
 const path = require('path')
 const express = require('express')
 
+// Creates an Express application
 const app = express()
 
 // Define paths for Express config
 const publicDirectoryPath = path.join(__dirname, '../public')
-// The default folder to store all the templates is the 'views' folder
-// We can customize this path, but we need to tell express where to look
-// We need to create a new path
 const viewsPath = path.join(__dirname, '../templates')
 
 // Setup handlebars engine and views location
 app.set('view engine', 'hbs')
-// We need to point express to this custom directory (viewsPath) by calling another app.set()
 app.set('views', viewsPath)
 
 // Setup static directory to serve
@@ -57,6 +54,8 @@ app.listen(3000, () => {
 // =====================
 // NOTES
 // =====================
+
+// Express documentation: http://expressjs.com/en/4x/api.html
 
 // const express = require('express')
 // express is actually a method
@@ -113,3 +112,12 @@ app.listen(3000, () => {
 //         name: 'Nga La'
 //     })
 // })
+
+// CUSTOMIZING VIEWS DIRECTORY
+// The default folder to store all the templates is the 'views' folder
+// Create a new folder name that will contain all the templates ('templates' folder)
+// We can customize this path, but we need to tell express where to look
+// We need to create a new path
+// const viewsPath = path.join(__dirname, '../templates')
+// We need to point express to this custom directory (viewsPath) by calling another app.set()
+// app.set('views', viewsPath)
