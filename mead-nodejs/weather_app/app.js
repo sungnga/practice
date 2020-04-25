@@ -1,56 +1,26 @@
-const request = require('request')
+const request = require('request');
+const geocode = require('./utils/geocode');
+const forecast = require('./utils/forecast');
 
-// Geocoding
-// Address -> Lat/Long -> Weather
-// CHALLENGE 2: PRINT THE LAT/LONG FOR LOS ANGELES
-// 1. Fire off a new request to the URL explored in browser
-// 2. Have the request module parse it as JSON
-// 3. Print both the latitude and longitude to the terminal
+geocode('San Francisco', (error, data) => {
+  console.log('Error', error);
+  console.log('Data', data);
+});
 
-// CHALLENGE 3: HANDLE ERRORS FOR GEOCODING REQUEST
-// 1. Setup an error handler for low-level errors
-// 2. Test by disabling network request and running the app
-// 3. Setup error handling for no matching results
+//
+// Goal: Create a reusable function for getting the forecast
+//
+// 1. Setup the "forecast" function in utils/forecast.js
+// 2. Require the function in app.js and call it as shown below
+// 3. The forecast function should have three potential calls to callback:
+//    - Low level error, pass string for error
+//    - Coordinate error, pass string for error
+//    - Success, pass forecast string for data (same format as from before)
 
-const geocodeURL = 'https://api.mapbox.com/geocoding/v5/mapbox.places/Los%20Angeles.json?access_token=pk.eyJ1Ijoic3VuZ25nYSIsImEiOiJjazB2cW1kNTEwdXdwM2NvMDBmM2kxaTloIn0.fO_TBwhds2S0-PmbeL2nqw&limit=1'
-
-request({ url: geocodeURL, json: true }, (err, res) => {
-    if (err) {
-        console.log('Unable to connect to location services!')
-    } else if (res.body.features.length === 0) {
-        console.log('Unable to find location. Try another search')
-    }
-    else {
-        const data = res.body.features
-        const latitude = data[0].center[1]
-        const longitude = data[0].center[0]
-        console.log(latitude, longitude)
-    }
-})
-
-
-// CHALLENGE 1: PRINT A SMALL FORECAST TO THE USER
-// 1. Print: "It is currently 9 degrees out. It feels like 5 degrees out."
-// 2. Test your work!
-
-const url = 'http://api.weatherstack.com/current?access_key=3f9d9ce1389e8aeb5ad2acd52dac539b&query=37.8267,-122.4233&units=f'
-
-// json property set to true will parse the data for us
-request({ url: url, json: true }, (error, response) => {
-  if (error) {
-    console.log('Unable to connect to weather service!')
-  } else if (response.body.error) {
-    console.log('Unable to find location')
-  }
-  else {
-     const data = response.body.current
-     console.log(`${data.weather_descriptions[0]}. It is currently ${data.temperature} degrees out. It feels like ${data.feelslike} degrees out.`)
-  }
-    
-})
-
-
-
+forecast(44.1545, -75.7088, (error, data) => {
+  console.log('Error', error);
+  console.log('Data', data);
+});
 
 // ==============
 // NOTES
