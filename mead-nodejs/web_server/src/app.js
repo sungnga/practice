@@ -14,19 +14,29 @@ const app = express()
 // This lets us configure what the server should do when someone tries to get the resource at a specific URL (i.e. send back html or json)
 app.get('', (req, res) => {
     // res.send() method allows us to send something back to the requester
-    res.send('Hello express!')
+    // Sending an html response back
+    res.send('<h1>Weather</h1>')
 })
 
 app.get('/help', (req, res) => {
-    res.send('Help page')
+    // We're going to get a json response back
+    // When express detects an object, it will automatically stringify the json. What we get back is the stringified version of the object we created
+    // Can send back an array of objects as well
+    res.send({
+        name: 'Andrew',
+        age: 27
+    })
 })
 
 app.get('/about', (req, res) => {
-    res.send('About page')
+    res.send('<h1>About</h1>')
 })
 
 app.get('/weather', (req, res) => {
-    res.send('Weather page')
+    res.send({
+        forecast: 'Partly cloudy',
+        location: 'Seattle'
+    })
 })
 
 // Last thing we need to do is start the server up
