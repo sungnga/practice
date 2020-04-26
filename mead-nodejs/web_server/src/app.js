@@ -44,12 +44,14 @@ app.get('/help', (req, res) => {
 })
 
 app.get('/weather', (req, res) => {
+    // If no address is provided return early with the error message
     if (!req.query.address) {
         return res.send({
             error: "You must provide an address"
         })
     }
 
+    // req.query.address is the address the user types in
     res.send({
         forecast: 'Partly cloudy',
         location: 'Seattle',
