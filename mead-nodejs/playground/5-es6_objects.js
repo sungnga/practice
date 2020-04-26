@@ -42,7 +42,7 @@ console.log(rating)
 
 // Destructuring with function arguments
 // If we know that an argument is an object we can destructure its properties right in line
-const transaction = (type, {label, stock}) => {
+const transaction = (type, {label, stock = 0} = {}) => {
     console.log(type, label, stock)
 }
 

@@ -57,16 +57,18 @@ app.get('/weather', (req, res) => {
 
     // geocode() is an async operation
     // It takes the address the user provides and returns an object with the lat & long coordinates
+    // Set a default function parameter: {latitude, longitude, location} = {}
+    // By setting up a default object for the object we try to destructure, we make sure that this code still works even if no data was provided
     geocode(address, (error, {latitude, longitude, location} = {}) => {
         if (error) {
-            return res.send(error)
+            return res.send({error})
         }
 
         // foreccast() is an async operation
         // It takes the lat and long coordinates and returns the forecast, location and address
         forecast(latitude, longitude, (error, forecastData) => {
             if (error) {
-                return res.send(error)
+                return res.send({error})
             }
 
             // Sends back a json object
@@ -231,3 +233,7 @@ app.listen(3000, () => {
 // Call the render() method to render the error value in the template page
 // Create a 404.hbs template page inside 'views' folder
 // Use <p>{{errorMessage}}</p> in the 404.hbs file to display the error message
+
+// DEFAULT FUNCTION PARAMETERS
+// Set a default function parameter: {latitude, longitude, location} = {}
+// By setting up a default object for the object we try to destructure, we make sure that this code still works even if no data was provided
