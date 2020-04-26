@@ -1,17 +1,22 @@
 // require in core modules before npm modules
 const path = require('path')
 const express = require('express')
+const hbs = require('hbs')
 
 // Creates an Express application
 const app = express()
 
 // Define paths for Express config
 const publicDirectoryPath = path.join(__dirname, '../public')
-const viewsPath = path.join(__dirname, '../templates')
+const viewsPath = path.join(__dirname, '../templates/views')
+const partialsPath = path.join(__dirname, '../templates/partials')
 
 // Setup handlebars engine and views location
 app.set('view engine', 'hbs')
 app.set('views', viewsPath)
+// registerPartials() method takes a path to the directory where partials live
+// The partialsPath variable contains the path the handlebars module needs
+hbs.registerPartials(partialsPath)
 
 // Setup static directory to serve
 app.use(express.static(publicDirectoryPath))
@@ -34,7 +39,9 @@ app.get('/about', (req, res) => {
 app.get('/help', (req, res) => {
     res.render('help', {
         title: 'Help',
-        message: 'How can I help you?'
+        helpText: 'This is some helpful text.',
+        title: 'Help',
+        name: 'Nga La'
     })
 })
 
@@ -93,7 +100,7 @@ app.listen(3000, () => {
 // app.set() is telling express which TEMPLATING ENGINE to use
 // set() method allows you to set a value for a given express settings
 // 1st arg: key, the setting name
-// 2nd arg: value, the value we want to set. The name of the modole we installed
+// 2nd arg: value, the value we want to set. The name of the module we installed
 // When working with express, it expects all of the views, in this case the handlebars templates, to live in a specific folder called VIEWS. This views folder lives in the root of the app directory
 // To SERVE UP the hbs template, need to set up a get() method route handler
 // app.set('view engine', 'hbs')
@@ -105,13 +112,19 @@ app.listen(3000, () => {
 // When calling res.render(), express goes off and get that view. It then converts it to html and it makes sure that html gets to the requester
 // 1st arg: the name(WITHOUT the extension) of the view to render
 // 2nd arg: an object which contains all the values you want that view to be able to access
-// To inject these values to the html template: use {{property_name}} inside a tag element
 // app.get('', (req, res) => {
 //     res.render('index', {
 //         title: 'Weather',
 //         name: 'Nga La'
 //     })
 // })
+
+// To inject these values to the html template:
+//  - use { { property_name } } inside a element tag
+// To render the values in a template:
+//  - in the template file (index.hbs), which lives inside the 'views' folder which is inside the 'templates' directory, use 2 sets of curly braces with the proprety name inside the braces
+//  - wrap these curly braces inside an element tag
+//  - <h1>{{title}}</h1>
 
 // CUSTOMIZING VIEWS DIRECTORY
 // The default folder to store all the templates is the 'views' folder
@@ -121,3 +134,31 @@ app.listen(3000, () => {
 // const viewsPath = path.join(__dirname, '../templates')
 // We need to point express to this custom directory (viewsPath) by calling another app.set()
 // app.set('views', viewsPath)
+
+// PARTIALS WITH HANDLEBARS
+// Partials allow you to create a little template which is part of a bigger web page.
+// Think about parts of the web page that you'er gonna end up REUSING across multiple pages in your site. This could be things like headers or footers where you want the exact same thing showing on every page
+// With partials, can create a header and reuse it without needing to copy markup between all the page in your site
+
+// To work with partials:
+//  - in app.js file, load hbs module in for the first time(require in) and configure it
+//  - create a folder called 'partials' inside the templates/views directory. This folder stores all the partial templates
+//  - in app.js file, create a partial path
+
+// To configure partials to tell express where to look:
+//  - hbs.registerPartials(partialsPath)
+//  - registerPartials() method takes a path to the directory where partials live
+//  - the partialsPath variable contains the path the handlebars module needs
+
+// To create a header partial:
+//  - in partials folder, create file called header.hbs
+//  - in here, we only create a partial tag elements that we can load into other handlebars files
+
+// To render a partials:
+//  - use 2 sets of curly braces like we did when adding a value into the template
+//  - include a > sign and the file name inside the braces: {{>filename}} --> {{>header}}. Don't need to provide a complete path or the file extension
+//  - can place these curly braces in any templates you want to render the partials
+
+// NOTE: the server doesn't restart & pick up the changes when new templates are created. We can address this customizing the nodemon command. We can have nodemon RESTART when our JS file and hbs file changed
+//  - tweak the nodemon command by adding the e flag (short for extensions) followed a comma-separated list of extensions that nodemon should watch for
+//  - nodemon src/app.js -e js,hbs
