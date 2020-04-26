@@ -2,6 +2,8 @@
 const path = require('path')
 const express = require('express')
 const hbs = require('hbs')
+const geocode = require('./utils/geocode')
+const forecast = require('./utils/forecast')
 
 // Creates an Express application
 const app = express()
@@ -44,18 +46,36 @@ app.get('/help', (req, res) => {
 })
 
 app.get('/weather', (req, res) => {
+    // req.query.address is the address the user types in
+    const address = req.query.address
     // If no address is provided return early with the error message
-    if (!req.query.address) {
+    if (!address) {
         return res.send({
             error: "You must provide an address"
         })
     }
 
-    // req.query.address is the address the user types in
-    res.send({
-        forecast: 'Partly cloudy',
-        location: 'Seattle',
-        address: req.query.address
+    // geocode() is an async operation
+    // It takes the address the user provides and returns an object with the lat & long coordinates
+    geocode(address, (error, {latitude, longitude, location} = {}) => {
+        if (error) {
+            return res.send(error)
+        }
+
+        // foreccast() is an async operation
+        // It takes the lat and long coordinates and returns the forecast, location and address
+        forecast(latitude, longitude, (error, forecastData) => {
+            if (error) {
+                return res.send(error)
+            }
+
+            // Sends back a json object
+            res.send({
+                forecast: forecastData,
+                location: location,
+                address: address
+            })
+        })
     })
 })
 
@@ -92,6 +112,11 @@ app.listen(3000, () => {
     console.log('Server is up on port 3000')
 }) 
 
+// GOAL: WIRE UP /weather
+// 1. Require geocode/forecast into app.js
+// 2. Use the address to geocode
+// 3. Use the coordinates to get forecast
+// 4. Send back the real forecast and location
 
 
 // =====================
