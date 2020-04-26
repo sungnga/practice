@@ -14,8 +14,6 @@ const partialsPath = path.join(__dirname, '../templates/partials')
 // Setup handlebars engine and views location
 app.set('view engine', 'hbs')
 app.set('views', viewsPath)
-// registerPartials() method takes a path to the directory where partials live
-// The partialsPath variable contains the path the handlebars module needs
 hbs.registerPartials(partialsPath)
 
 // Setup static directory to serve
@@ -46,13 +44,31 @@ app.get('/help', (req, res) => {
 })
 
 app.get('/weather', (req, res) => {
+    if (!req.query.address) {
+        return res.send({
+            error: "You must provide an address"
+        })
+    }
+
     res.send({
         forecast: 'Partly cloudy',
-        location: 'Seattle'
+        location: 'Seattle',
+        address: req.query.address
     })
 })
 
-// A 404 page route handler for help directory
+app.get('/products', (req, res) => {
+    if (!req.query.search) {
+        return res.send({
+            error: 'You must provide a search term'
+        })
+    }
+    console.log(req.query.search)
+    res.send({
+        products: []
+    })
+})
+
 app.get('/help/*', (req, res) => {
     res.render('404', {
         title: '404',
@@ -62,8 +78,6 @@ app.get('/help/*', (req, res) => {
 
 })
 
-// 404 page route handler
-// The wildcard symbol * means match anything that hasn't been matched so far
 app.get('*', (req, res) => {
     res.render('404', {
         title: '404',
