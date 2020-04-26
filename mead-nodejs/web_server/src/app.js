@@ -52,6 +52,26 @@ app.get('/weather', (req, res) => {
     })
 })
 
+// A 404 page route handler for help directory
+app.get('/help/*', (req, res) => {
+    res.render('404', {
+        title: '404',
+        name: 'Nga',
+        errorMessage: 'Help article not found'
+    })
+
+})
+
+// 404 page route handler
+// The wildcard symbol * means match anything that hasn't been matched so far
+app.get('*', (req, res) => {
+    res.render('404', {
+        title: '404',
+        name: 'Nga',
+        errorMessage: 'Page not found'
+    })
+})
+
 app.listen(3000, () => {
     console.log('Server is up on port 3000')
 }) 
@@ -162,3 +182,11 @@ app.listen(3000, () => {
 // NOTE: the server doesn't restart & pick up the changes when new templates are created. We can address this customizing the nodemon command. We can have nodemon RESTART when our JS file and hbs file changed
 //  - tweak the nodemon command by adding the e flag (short for extensions) followed a comma-separated list of extensions that nodemon should watch for
 //  - nodemon src/app.js -e js,hbs
+
+// SETUP A 404 PAGE
+// Setup another route handler using app.get()
+// This handler is just BEFORE starting up the server(app.listen())
+// Using the wild card character * as route path allows us to set up more complex match routing, matching a wider range of URL
+// Call the render() method to render the error value in the template page
+// Create a 404.hbs template page inside 'views' folder
+// Use <p>{{errorMessage}}</p> in the 404.hbs file to display the error message
