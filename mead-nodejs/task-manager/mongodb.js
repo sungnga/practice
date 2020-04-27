@@ -1,10 +1,20 @@
 // CRUD create read update delete
 
-const mongodb = require('mongodb')
-const MongoClient = mongodb.MongoClient
+// const mongodb = require('mongodb')
+// const MongoClient = mongodb.MongoClient
+// const ObjectID = mongodb.ObjectID
+
+// Destructuring properties off of the mongodb object
+const {MongoClient, ObjectID} = require('mongodb')
 
 const connectionURL = 'mongodb://127.0.0.1:27017'
 const databaseName = 'task-manager'
+
+// To generate a new id
+const id = new ObjectID()
+console.log(id)
+console.log(id.id.length)
+console.log(id.getTimestamp())
 
 MongoClient.connect(connectionURL, { useUnifiedTopology: true }, (error, client) => {
     if (error) {
@@ -40,23 +50,23 @@ MongoClient.connect(connectionURL, { useUnifiedTopology: true }, (error, client)
     //         console.log(result.ops)
     // })
 
-    db.collection('tasks').insertMany([
-        {
-            description: 'wash dishes',
-            completed: true
-        }, {
-            description: 'laundry',
-            completed: false
-        }, {
-            description: 'cook',
-            completed: true
-        }
-    ], (error, result) => {
-            if (error) {
-                return console.log('Unable to insert tasks')
-            }
-            console.log(result.ops)
-    })
+    // db.collection('tasks').insertMany([
+    //     {
+    //         description: 'wash dishes',
+    //         completed: true
+    //     }, {
+    //         description: 'laundry',
+    //         completed: false
+    //     }, {
+    //         description: 'cook',
+    //         completed: true
+    //     }
+    // ], (error, result) => {
+    //         if (error) {
+    //             return console.log('Unable to insert tasks')
+    //         }
+    //         console.log(result.ops)
+    // })
 })
 
 
@@ -104,7 +114,7 @@ MongoClient.connect(connectionURL, { useUnifiedTopology: true }, (error, client)
 //  - 2nd arg: is a callback function which is going to get called when the operation is complete. It gets called one of two potential arguments: 
 //    - an error, if things went poorly
 //    - result, if things went well. Result contains THE DATA & THE UNIQUE ID THAT IS ASSIGNED TO THE DOCUMENT(the individual items)
-// result.ops contains an array of documents
+//  - result.ops contains an array of documents
 // db.collection('users').insertOne({
 //     name: 'Andrew',
 //     age: 27
@@ -117,7 +127,7 @@ MongoClient.connect(connectionURL, { useUnifiedTopology: true }, (error, client)
 
 // Insert multiple documents with .insertMany() method:
 //  - 1st arg: is an array which contains a list of documents(items) you want to insert
-//  2nd arg: is a callback function that takes 2 arguments: an error and a result(has the data and unique id)
+//  - 2nd arg: is a callback function that takes 2 arguments: an error and a result(has the data and unique id)
 // db.collection('users').insertMany([
 //     {
 //         name: 'Jen',
@@ -133,3 +143,8 @@ MongoClient.connect(connectionURL, { useUnifiedTopology: true }, (error, client)
 //         console.log(result.ops)
 // })
 
+// The ObjectId
+// With mongodb, the ids are known as GUID which stands for Globally Unique Identifiers
+// It's unique using an algorithm without needing the server to determine what then next unique id value is. No chance of an id collision across the database servers
+// Can generate these unique ids for the documents before insert them into the database. So the server doesnt need to generate the ids
+// The ObjectId is a 12-byte value
