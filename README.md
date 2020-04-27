@@ -1,2 +1,1 @@
-# practice
->>>>>>> ea9476e1060fe4080f44204646a48e1b88218e19
+practice
