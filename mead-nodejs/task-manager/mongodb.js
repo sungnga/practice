@@ -10,12 +10,6 @@ const {MongoClient, ObjectID} = require('mongodb')
 const connectionURL = 'mongodb://127.0.0.1:27017'
 const databaseName = 'task-manager'
 
-// To generate a new id
-const id = new ObjectID()
-console.log(id)
-console.log(id.id.length)
-console.log(id.getTimestamp())
-
 MongoClient.connect(connectionURL, { useUnifiedTopology: true }, (error, client) => {
     if (error) {
         return console.log('Unable to connect to database')
@@ -23,50 +17,37 @@ MongoClient.connect(connectionURL, { useUnifiedTopology: true }, (error, client)
 
     const db = client.db(databaseName)
 
-    // db.collection('users').insertOne({
-    //     name: 'Andrew',
-    //     age: 27
-    // }, (error, result) => {
-    //         if (error) {
-    //             return console.log('Unable to insert user')
-    //         }
-            
-    //         console.log(result.ops)
-    // })
+    // .findOne() accepts two required args
+    // 1st arg: an object. Is used to specify the search criteria
+    // 2nd arg: a callback. It gets called when the operation is complete. It takes either an error or the document it gets back
+    // If no document is found based on the search criteria, it will return 'null', because it successfully searched through the collection
+    // With .findOne() method, if the search matches multiple documents it will return the first one it found
+    db.collection('users').findOne({ name: 'Jen' }, (error, user) => {
+        if (error) {
+            return console.log('Unable to fetch')
+        }
+        console.log(user)
+    })
 
-    // db.collection('users').insertMany([
-    //     {
-    //         name: 'Jen',
-    //         age: 28
-    //     }, {
-    //         name: 'Brad',
-    //         age: 26
-    //     }
-    // ], (error, result) => {
-    //         if (error) {
-    //             return console.log('Unable to insert documents!')
-    //         }
+    db.collection('tasks').findOne({ _id: new ObjectID("5ea733a5f6d84b2a01f6b56b") }, (error, task) => {
+        if (error) {
+            return console.log('Unable to fetch')
+        }
+        console.log(task)
+    })
+    
 
-    //         console.log(result.ops)
-    // })
+    // .find() takes in the query object
+    // It returns a Curser. It is a pointer to data
+    // We can call different methods on the curser to refine the data we want to get back
+    // The method takes a callback function, which returns either an error or the documents
+    db.collection('users').find({ age: 27 }).count((error, count) => {
+        console.log(count)
+    })
 
-    // db.collection('tasks').insertMany([
-    //     {
-    //         description: 'wash dishes',
-    //         completed: true
-    //     }, {
-    //         description: 'laundry',
-    //         completed: false
-    //     }, {
-    //         description: 'cook',
-    //         completed: true
-    //     }
-    // ], (error, result) => {
-    //         if (error) {
-    //             return console.log('Unable to insert tasks')
-    //         }
-    //         console.log(result.ops)
-    // })
+    db.collection('tasks').find({ completed: false }).toArray((error, tasks) => {
+        console.log(tasks)
+    })
 })
 
 
@@ -100,7 +81,7 @@ MongoClient.connect(connectionURL, { useUnifiedTopology: true }, (error, client)
 //  - what you get back when calling client.db() is a reference to a specific database you want to manipulate
 //  - the variable db is the ref to the database
 
-// Inserting documents into a collection:
+// INSERT(CREATE) DOCUMENTS IN A COLLECTION
 // db.collection('users').insertOne({
 //     name: 'Andrew',
 //     age: 27
@@ -143,8 +124,27 @@ MongoClient.connect(connectionURL, { useUnifiedTopology: true }, (error, client)
 //         console.log(result.ops)
 // })
 
-// The ObjectId
+// THE ObjectId
 // With mongodb, the ids are known as GUID which stands for Globally Unique Identifiers
 // It's unique using an algorithm without needing the server to determine what then next unique id value is. No chance of an id collision across the database servers
 // Can generate these unique ids for the documents before insert them into the database. So the server doesnt need to generate the ids
 // The ObjectId is a 12-byte value
+
+// QUERYING(READ) DOCUMENTS
+// 2 methods to fetch data out of the database: find() and findOne()
+// The .findOne() method:
+//  - .findOne() accepts two required args
+//  - 1st arg: an object. Is used to specify the search criteria
+//  - 2nd arg: a callback. It gets called when the operation is complete. It takes either an error or the document it gets back
+//  - If no document is found based on the search criteria, it will return 'null', because it successfully searched through the collection
+//  - With .findOne() method, if the search matches multiple documents it will return the first one it finds
+// To search by ObjectId:
+// .findOne({ _id : new ObjectID("5ea733a5f6d84b2a01f6b56c")}, (error, user) => {  }
+//  - call the 'new ObjectID()' method and pass in the id value
+// The .find() method:
+//  - .find() takes in the query object
+//  - It returns a Curser. It is a pointer to data
+//  - We can call different methods on the curser to refine the data we want to get back
+//  - The method takes a CALLBACK FUNCTION, which returns either an error or the documents
+// db.collection('users').find({age: 27}).toArray((error, users) => {  })
+
