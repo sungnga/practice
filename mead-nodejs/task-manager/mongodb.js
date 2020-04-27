@@ -53,6 +53,14 @@ MongoClient.connect(connectionURL, { useUnifiedTopology: true }, (error, client)
 //  - the MongoClient gives us access to the function necessary to connect to the database so we can perform our four basic CRUD operations
 
 // To setup the connection:
+// const connectionURL = 'mongodb://127.0.0.1:27017'
+//  - Define the connection URL and the database we're trying to connect to
+//  - url: the local host that is up and running
+//  - mongodb:// is mongodb's protocol
+//  - 127.0.0.1 is the local host ip
+//  - :27017 is the port #
+// const databaseName = 'task-manager'
+//  - Can name it whatever you want
 // MongoClient.connect(connectionURL, { useUnifiedTopology: true }, (error, client) => {  })
 //  - The .connect() method is used to connect to a specific server (connectionURL)
 //  - The callback function gets called once we're connected to the database
@@ -68,7 +76,6 @@ MongoClient.connect(connectionURL, { useUnifiedTopology: true }, (error, client)
 //     name: 'Andrew',
 //     age: 27
 // })
-// To insert a single document into a collection
-// .collection() is a function and it expects the NAME of the collection you're trying to manipulate
-// We can call a method on that collection reference to insert a document: .insertOne()
-// .insertOne() expects the 1st arg be an object, which contains all the data you try to insert. The data in the object is called field
+//  - .collection() is a function and it expects the NAME of the collection you're trying to manipulate
+//  - we can call a method on that collection reference to insert a document: .insertOne()
+//  - .insertOne() expects the 1st arg be an object, which contains all the data you try to insert. The data in the object is called field
