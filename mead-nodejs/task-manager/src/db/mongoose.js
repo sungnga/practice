@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const validator = require('validator')
 
 // Connecting mongoose to the mongodb database
 // The same localhost and port number as mongodb
@@ -10,34 +11,51 @@ mongoose.connect('mongodb://127.0.0.1:27017/task-manager-api', {
     useUnifiedTopology: true
 })
 
-// Creating a new model
+// Creating a new mongoose model
 const User = mongoose.model('User', {
     name: {
-        type: String
+        type: String,
+        required: true, 
+        trim: true
+    },
+    email: {
+        type: String,
+        required: true, 
+        trim: true,
+        lowercase: true,
+        validate(value) {
+            if (!validator.isEmail(value)) {
+                throw new Error('Email is invalid')
+            }
+        }
     },
     age: {
-        type: Number
-    }
-})
-
-const Task = mongoose.model('Task', {
-    description: {
-        type: String
+        type: Number,
+        default: 0,
+        validate(value) {
+            if (value < 0) {
+                throw new Error('Age must a postive number')
+            }
+        }
     },
-    completed: {
-        type: Boolean
+    password: {
+        type: String,
+        required: true,
+        minlength: 7,
+        trim: true,
+        validate(str) {
+            if (str.toLowerCase().includes('password')) {
+                throw new Error('Password cannot contain "password"')
+            }
+        }      
     }
 })
 
 // Create an instance from the model
 const me = new User({
-    name: 'Nga',
-    age: 99
-})
-
-const task = new Task({
-    description: "laundry",
-    completed: false
+    name: '    Nga   ',
+    email: 'MYEMAIL@EMAIL.COM    ',
+    password: 'test1234'
 })
 
 // The save() method doesn't take any args and returns a promise
@@ -49,9 +67,26 @@ me.save()
     console.log('Error!', error)
 })
 
+// Creating a Task model
+const Task = mongoose.model('Task', {
+    description: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    completed: {
+        type: Boolean,
+        default: false
+    }
+})
+
+const task = new Task({
+    description: '    Eat breakfast'
+})
+
 task.save()
 .then(() => {
-    console.log(laundry)
+    console.log(task)
 })
 .catch((error) => {
     console.log('Error!', error)
@@ -109,3 +144,12 @@ task.save()
 // .catch((error) => {
 //     console.log('Error!', error)
 // })
+
+// VALIDATION
+// Use the npm validator library to validate the data before saving to the database
+// Mongoose SchemaType:
+// https://mongoosejs.com/docs/schematypes.html#string-validators
+//  - think of a Mongoose schema as the configuration object for a Mongoose model
+//  - a SchemaType is then a configuration object for an individual property
+//  - The following are all the valid SchemaTypes in Mongoose: 
+//    - String, Number, Date, Buffer, Boolean, Mixed, ObjectId, Array, Decimal128, Map
