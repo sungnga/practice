@@ -17,36 +17,59 @@ MongoClient.connect(connectionURL, { useUnifiedTopology: true }, (error, client)
 
     const db = client.db(databaseName)
 
-    // .findOne() accepts two required args
-    // 1st arg: an object. Is used to specify the search criteria
-    // 2nd arg: a callback. It gets called when the operation is complete. It takes either an error or the document it gets back
-    // If no document is found based on the search criteria, it will return 'null', because it successfully searched through the collection
-    // With .findOne() method, if the search matches multiple documents it will return the first one it found
-    db.collection('users').findOne({ name: 'Jen' }, (error, user) => {
-        if (error) {
-            return console.log('Unable to fetch')
-        }
-        console.log(user)
+
+    db.collection('users').insertOne({
+        name: 'Andrew',
+        age: 27
+    }, (error, result) => {
+            if (error) {
+                return console.log('Unable to insert user')
+            }    
+            console.log(result.ops)
     })
 
+    db.collection('users').insertMany([
+        {
+            name: 'Jen',
+            age: 28
+        }, {
+            name: 'Brad',
+            age: 26
+        }
+    ], (error, result) => {
+            if (error) {
+                return console.log('Unable to insert documents!')
+            }
+            console.log(result.ops)
+    })  
+    
     db.collection('tasks').findOne({ _id: new ObjectID("5ea733a5f6d84b2a01f6b56b") }, (error, task) => {
         if (error) {
             return console.log('Unable to fetch')
         }
         console.log(task)
     })
-    
-
-    // .find() takes in the query object
-    // It returns a Curser. It is a pointer to data
-    // We can call different methods on the curser to refine the data we want to get back
-    // The method takes a callback function, which returns either an error or the documents
-    db.collection('users').find({ age: 27 }).count((error, count) => {
-        console.log(count)
-    })
 
     db.collection('tasks').find({ completed: false }).toArray((error, tasks) => {
         console.log(tasks)
+    })    
+
+    db.collection('tasks').updateOne({
+        description: "laundry"
+    }, {
+        $set: { completed: false }
+    }).then((result) => {
+        console.log(result)
+    }).catch((error) => {
+        console.log(error)
+    })
+
+    db.collection('tasks').deleteOne({
+        cook: false
+    }).then((result) => {
+        console.log(result)
+    }).catch((error) => {
+        console.log(error)
     })
 })
 
@@ -60,9 +83,9 @@ MongoClient.connect(connectionURL, { useUnifiedTopology: true }, (error, client)
 //   - What comes back from the mongodb npm library is an object
 //   - This is a native driver created by the mongodb company, allowing us to connect to a mongodb database from node.js
 // const MongoClient = mongodb.MongoClient
-//  - the MongoClient gives us access to the function necessary to connect to the database so we can perform our four basic CRUD operations
+//  - the MongoClient gives us access to the FUNCTION necessary to connect to the database so we can perform our four basic CRUD operations
 
-// To setup the connection:
+// SETTING UP THE CONNECTION:
 // const connectionURL = 'mongodb://127.0.0.1:27017'
 //  - Define the connection URL and the database we're trying to connect to
 //  - url: the local host that is up and running
@@ -81,7 +104,7 @@ MongoClient.connect(connectionURL, { useUnifiedTopology: true }, (error, client)
 //  - what you get back when calling client.db() is a reference to a specific database you want to manipulate
 //  - the variable db is the ref to the database
 
-// INSERT(CREATE) DOCUMENTS IN A COLLECTION
+// INSERT(CREATE) DOCUMENTS IN A COLLECTION WITH insertOne() & insertMany()
 // db.collection('users').insertOne({
 //     name: 'Andrew',
 //     age: 27
@@ -89,7 +112,8 @@ MongoClient.connect(connectionURL, { useUnifiedTopology: true }, (error, client)
 //  - .collection() is a function and it expects the NAME of the collection you're trying to manipulate
 //  - we can call a method on that collection reference to insert a document: .insertOne()
 
-// Insert a single document with .insertOne() method:
+// The .insertOne() method:
+// Inserting a single document
 //  - .insertOne() is an async operation, so we need to handle any errors or confirm that the operation works as expected
 //  - .insertOne() expects the 1st arg be an object, which contains all the data you try to insert. Each property in the object is a called field
 //  - 2nd arg: is a callback function which is going to get called when the operation is complete. It gets called one of two potential arguments: 
@@ -106,7 +130,8 @@ MongoClient.connect(connectionURL, { useUnifiedTopology: true }, (error, client)
 //         console.log(result.ops)
 // })
 
-// Insert multiple documents with .insertMany() method:
+// The .insertMany() method:
+// Inserting multiple documents at once
 //  - 1st arg: is an array which contains a list of documents(items) you want to insert
 //  - 2nd arg: is a callback function that takes 2 arguments: an error and a result(has the data and unique id)
 // db.collection('users').insertMany([
@@ -130,7 +155,7 @@ MongoClient.connect(connectionURL, { useUnifiedTopology: true }, (error, client)
 // Can generate these unique ids for the documents before insert them into the database. So the server doesnt need to generate the ids
 // The ObjectId is a 12-byte value
 
-// QUERYING(READ) DOCUMENTS
+// QUERYING(READ) DOCUMENTS WITH findOne() & find()
 // 2 methods to fetch data out of the database: find() and findOne()
 
 // The .findOne() method:
@@ -139,6 +164,12 @@ MongoClient.connect(connectionURL, { useUnifiedTopology: true }, (error, client)
 //  - 2nd arg: a callback. It gets called when the operation is complete. It takes either an error or the document it gets back
 //  - If no document is found based on the search criteria, it will return 'null', because it successfully searched through the collection
 //  - With .findOne() method, if the search matches multiple documents it will return the first one it finds
+// db.collection('tasks').findOne({ _id: new ObjectID("5ea733a5f6d84b2a01f6b56b") }, (error, task) => {
+//     if (error) {
+//         return console.log('Unable to fetch')
+//     }
+//     console.log(task)
+// })
 
 // To search by ObjectId:
 // .findOne({ _id : new ObjectID("5ea733a5f6d84b2a01f6b56c")}, (error, user) => {  }
@@ -149,7 +180,9 @@ MongoClient.connect(connectionURL, { useUnifiedTopology: true }, (error, client)
 //  - It returns a Curser. It is a pointer to data
 //  - We can call different methods on the curser to refine the data we want to get back
 //  - The method takes a CALLBACK FUNCTION, which returns either an error or the documents
-// db.collection('users').find({age: 27}).toArray((error, users) => {  })
+// db.collection('tasks').find({ completed: false }).toArray((error, tasks) => {
+//     console.log(tasks)
+// })
 
 // THE CALLBACK PATTERN
 // const doWorkCallback = (callback) => {
@@ -208,3 +241,51 @@ MongoClient.connect(connectionURL, { useUnifiedTopology: true }, (error, client)
 //                                    rejected  
 //                                    (reject)
 
+// UPDATING DOCUMENTS WITH updateOne() & updateMany()
+// The updateOne() method:
+// The updateOne() method searches for a single document and updates it with the new specified data
+// 1st arg: the filter object. The Filter used to select the document to update
+// 2nd arg: the upate object. The update operations to be applied to the document. $set, $inc, etc
+// 3rd arg: a callback. HOWEVER, A PROMISE IS RETURNED IF NO CALLBACK PASSED IN
+// When a PROMISE is returned:
+//  - you can chain on a .then() method and pass in a callback to be invoked when the promise is resolved. The callback has access to the resolved value
+//  - next, chain on a .catch() method and pass in a callback to run when the promise is rejected. The callback has access to the error value
+// db.collection('tasks').updateOne({
+//     description: "laundry"
+// }, {
+//     $set: { completed: false }
+// }).then((result) => {
+//     console.log(result)
+// }).catch((error) => {
+//     console.log(error)
+// })
+
+// The updateMany() method:
+// updateMany(filterObject, updateObject, options, callback)
+// The updateMany() method works very similar to the updateOne() method
+// However it can search and update multiple documents at once
+// db.collection('tasks').updateMany({
+        
+//     completed: false
+// }, {
+//         $set:
+//     { completed: true}
+// }).then((result) => {
+//     console.log(result)
+// }).catch((error) => {
+//     console.log(error)
+// })
+
+// DELETING DOCUMENTS WITH deleteOne() & deleteMany()
+// The deleteOne() method deletes one document with the matching criteria
+// The deleteMany() method deletes multiple documents that match the criteria
+// 1st arg: the filter object. The Filter used to select the document to update
+// 2nd arg: a callback. HOWEVER, A PROMISE IS RETURNED IF NO CALLBACK PASSED IN
+// Chain on the .then() and .catch() methods to resolve or reject the promise with a callback function
+// db.collection('users').deleteMany({
+//     age: 27
+// }).then((result) => {
+//     console.log(result)
+// }).catch((error) => {
+//     console.log(error)
+// })
