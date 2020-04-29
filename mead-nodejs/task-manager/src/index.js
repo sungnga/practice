@@ -14,6 +14,37 @@ app.listen(port, () => {
     console.log('Server is up on port' + port)
 })
 
+
+const bcrypt = require('bcryptjs')
+
+const myFunction = async () => {
+    const password = 'Red12345!'
+    // The .hash() method from bcrypt allows you to convert a plain text into a hashed text
+    // The .hash() takes in 2 args and returns a promise
+    // 1st arg: is the plain text password
+    // 2nd arg: the number of rounds we want to perform. This number determines how many times the hashing algorithm is executed. 8 is a good balance between security and speed
+    // The return value from the promise is hashed text
+    const hashedPassword = await bcrypt.hash(password, 8)
+
+    console.log(password)
+    console.log(hashedPassword)
+
+    // The .compare() method from bcrypt allows you to compare a plain text with the hashed text
+    // .compare() takes in 2 args and it returns a promise
+    // 1st arg: the plain text you want to compare
+    // 2nd arg: the hashed text
+    // The value from the promise is a boolean
+    const isMatch = await bcrypt.compare('Red12345!', hashedPassword)
+    console.log(isMatch)
+}
+
+myFunction()
+
+
+
+
+
+
 // This index.js file creates an Express app and gets it up and running
 // But what the Express app actually does is defined in the router files - router for user and router for task
 
@@ -176,7 +207,7 @@ app.listen(port, () => {
 // After the router is created, we need to REGISTER it to work with our existing Express application
 // app.use(router)
 
-// A TYPICAL WORKFLOW:
+// A Typical workflow:
 // 1. Create a router file inside a 'routers' directory. This is where you create a router and define the routes
 //  - require in express library
 //  - create a new router: const router = new express.Router()
@@ -185,3 +216,40 @@ app.listen(port, () => {
 // 2. In the main index.js file, this is where you register all the routers you have to the Express application
 //  - require in the router: const userRouter = require('..')
 //  - register the router: app.use(userRouter)
+
+// BCRYPT LIBRARY
+// Bcrypt is a hashing algorithm that can convert a plain text to a hashed text
+// We can use bcrypt to hash a password and store it securely in the database
+// Bcrypt has the .hash() method to hash a text and the .compare() method to compare a given plain text against the hashed text
+// There's a difference between hashing algorithm and encryption algorithm
+// With encryption, we can get the original value back
+// Hashing algorithms are one - way algorithms, which means we can't reverse the process
+
+// The .hash() method:
+// The .hash() method from bcrypt allows you to convert a plain text into a hashed text
+// The .hash() takes in 2 args and returns a promise
+// 1st arg: is the plain text password
+// 2nd arg: the number of rounds we want to perform. Thisnumber determines how many times the hashing algorithm isexecuted. 8 is a good balance between security and speed
+// The return value from the promise is hashed text
+// const password = 'Red12345!'
+// const hashedPassword = await bcrypt.hash(password, 8)
+
+// The .compare() method:
+// The .compare() method from bcrypt allows you to compare a plain text with the hashed text
+// .compare() takes in 2 args and it returns a promise
+// 1st arg: the plain text you want to compare
+// 2nd arg: the hashed text
+// The value from the promise is a boolean
+// const isMatch = await bcrypt.compare('Red12345!', hashedPassword
+
+// const bcrypt = require('bcryptjs')
+// const myFunction = async () => {
+//     const password = 'Red12345!'
+//     const hashedPassword = await bcrypt.hash(password, 8)
+//     console.log(password)
+//     console.log(hashedPassword)
+//     const isMatch = await bcrypt.compare('Red12345!', hashedPassword)
+//     console.log(isMatch)
+// }
+// myFunction()
+
