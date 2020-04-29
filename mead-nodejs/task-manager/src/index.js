@@ -1,178 +1,21 @@
 const express = require('express')
 require('./db/mongoose')
-const User = require('./models/user')
-const Task = require('./models/task')
+const userRouter = require('./routers/user')
+const taskRouter = require('./routers/task')
 
 const app = express()
 const port = process.env.PORT || 3000
 
-// Configure express to automatically parse the incoming json to JS object
 app.use(express.json())
-
-// Route handler to create a new user
-// To test the url in postman: localhost:3000/users
-app.post('/users', async (req, res) => {
-    const user = new User(req.body)
-
-    try {
-        await user.save()
-        res.status(201).send(user)
-    } catch (e) {
-        res.status(400).send(e)
-    }
-})
-
-// Fetching/reading all users
-app.get('/users', async (req, res) => {
-    try {
-        const users = await User.find({})
-        res.send(users)
-    } catch (e) {
-        res.status(500).send()
-    }
-})
-
-// Fetching a user by its id
-app.get('/users/:id', async (req, res) => {
-    const _id = req.params.id
-        
-    try {
-        const user = await User.findById(_id)
-
-        if (!user) {
-            return res.status(404).send()
-        }
-
-        res.send(user)
-    } catch (e) {
-        res.status(500).send()
-    }
-})
-
-// Updating a user by its id
-app.patch('/users/:id', async (req, res) => {
-    const updates = Object.keys(req.body)
-    const allowedUpdates = ['name', 'email', 'password', 'age']
-    const isValidOperation = updates.every((update) => {
-        return allowedUpdates.includes(update)
-    })
-
-    if (!isValidOperation) {
-        return res.status(400).send({error: 'Invalid updates!'})
-    }
-
-    try {
-        const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
-        
-        if (!user) {
-            return res.status(404).send()
-        }
-
-        res.send(user)
-    } catch (e) {
-        res.status(400).send()
-    }
-})
-
-// Delete a user by its id
-app.delete('/users/:id', async (req, res) => {
-    try {
-        const user = await User.findByIdAndDelete(req.params.id)
-
-        if (!user) {
-            return res.status(404).send()
-        }
-
-        res.send(user)
-    } catch (e) {
-        res.status(500).send()
-    }
-})
-
-// Setup a REST API route handler for creating a new task
-app.post('/tasks', async (req, res) => {
-    // console.log(req.body)
-    const task = new Task(req.body)
-
-    try {
-        await task.save()
-        res.status(201).send(task)
-    } catch (e) {
-        res.status(400).send(e)
-    }
-})
-
-// Fetching all tasks
-app.get('/tasks', async (req, res) => {
-    try {
-        const tasks = await Task.find({})
-        res.send(tasks)
-    } catch (e) {
-        res.status(500).send()
-    }
-})
-
-// Fetching a task by its id
-app.get('/tasks/:id', async (req, res) => {
-    const _id = req.params.id
-    
-    try {
-        const task = await Task.findById(_id)
-
-        if (!task) {
-            return res.status(404).send()
-        }
-
-        res.send(task)
-    } catch (e) {
-        res.status(500).send()
-    }
-})
-
-app.patch('/tasks/:id', async (req, res) => {
-    const updates = Object.keys(req.body)
-    const allowedUpdates = ['completed', 'description']
-    const isValidOperation = updates.every((update) => {
-        return allowedUpdates.includes(update)
-    })
-
-    if (!isValidOperation) {
-        return res.status(400).send({error: "Invalid updates"})
-    }
-
-    try {
-        const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
-        
-        if (!task) {
-            return res.status(404).send()
-        }
-
-        res.send(task)
-    } catch (e) {
-        res.status(400).send(e)
-    }
-})
-
-// Delete a task by its id
-app.delete('/tasks/:id', async (req, res) => {
-    try {
-        const task = await Task.findByIdAndDelete(req.params.id)
-
-        if (!task) {
-            return res.status(404).send()
-        }
-
-        res.send(task)
-    } catch (e) {
-        res.status(500).send()
-    }
-})
+app.use(userRouter)
+app.use(taskRouter)
 
 app.listen(port, () => {
     console.log('Server is up on port' + port)
 })
 
-
+// This index.js file creates an Express app and gets it up and running
+// But what the Express app actually does is defined in the router files - router for user and router for task
 
 // ==================
 // NOTES
@@ -302,4 +145,43 @@ app.listen(port, () => {
 //     }
 // })
 
-// SEPARATE ALL THE ROUTES TO A SEPARTAE FILE BY THEIR RESOURCE
+// SEPARATE ALL THE ROUTES TO SEPARATE FILES BY THEIR RESOURCE
+// We want one file which contains all of the routes for users and another file which contains all of the routes for tasks
+// We'll be setting up multiple express routers and then combining them together to create the complete application
+// Can have as many routers as you need, but it's best to categorize them by the resource
+// In our case, we'll have a new router for the user related routes. A separate new router for the task related routes
+// As we create more functionalities to the application, we can create more routes to stay organized
+
+// THE BASIC SYNTAX FOR CREATING A ROUTER
+//  - 1. Create a new router (in separate file)
+//  - 2. Setup/define those routes (in separate file)
+//  - 3. Register it with the express application (in index.js file)
+// Perform these steps for each separate router
+// const router = new express.Router()
+// router.get('/test', (req, res) => {
+//     res.send('This is from my other router')
+// })
+// app.use(router)
+
+// We CREATE a new router by using the 'new' operator followed by the express.Router() function
+// The new router is stored in the variable 'router'
+// const router = new express.Router()
+
+// We don't pass in anything to .Router(). Instead, we use methods on router to customize it
+// router has access to .post(), .get(), .patch, .delete() methods
+// router.get('/test', (req, res) => {
+//     console.log('This is from my other router')
+// })
+
+// After the router is created, we need to REGISTER it to work with our existing Express application
+// app.use(router)
+
+// A TYPICAL WORKFLOW:
+// 1. Create a router file inside a 'routers' directory. This is where you create a router and define the routes
+//  - require in express library
+//  - create a new router: const router = new express.Router()
+//  - define the routes: router.get('', (req, res) => { })
+//  - export the router module: module.exports = router
+// 2. In the main index.js file, this is where you register all the routers you have to the Express application
+//  - require in the router: const userRouter = require('..')
+//  - register the router: app.use(userRouter)
