@@ -1,96 +1,12 @@
 const mongoose = require('mongoose')
-const validator = require('validator')
 
-// Connecting mongoose to the mongodb database
-// The same localhost and port number as mongodb
-// task-manager-api is the name of the database
-// The collections will be saved to this database
+// mongoose connects to the database
 mongoose.connect('mongodb://127.0.0.1:27017/task-manager-api', {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true
 })
 
-// Creating a new mongoose model
-const User = mongoose.model('User', {
-    name: {
-        type: String,
-        required: true, 
-        trim: true
-    },
-    email: {
-        type: String,
-        required: true, 
-        trim: true,
-        lowercase: true,
-        validate(value) {
-            if (!validator.isEmail(value)) {
-                throw new Error('Email is invalid')
-            }
-        }
-    },
-    age: {
-        type: Number,
-        default: 0,
-        validate(value) {
-            if (value < 0) {
-                throw new Error('Age must a postive number')
-            }
-        }
-    },
-    password: {
-        type: String,
-        required: true,
-        minlength: 7,
-        trim: true,
-        validate(str) {
-            if (str.toLowerCase().includes('password')) {
-                throw new Error('Password cannot contain "password"')
-            }
-        }      
-    }
-})
-
-// Create an instance from the model
-const me = new User({
-    name: '    Nga   ',
-    email: 'MYEMAIL@EMAIL.COM    ',
-    password: 'test1234'
-})
-
-// The save() method doesn't take any args and returns a promise
-me.save()
-.then(() => {
-    console.log(me)
-})
-.catch((error) => {
-    console.log('Error!', error)
-})
-
-// Creating a Task model
-const Task = mongoose.model('Task', {
-    description: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    completed: {
-        type: Boolean,
-        default: false
-    }
-})
-
-const task = new Task({
-    description: '    Eat breakfast'
-})
-
-task.save()
-.then(() => {
-    console.log(task)
-})
-.catch((error) => {
-    console.log('Error!', error)
-})
 
 
 // ======================
