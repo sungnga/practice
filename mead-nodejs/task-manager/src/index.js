@@ -81,6 +81,7 @@ app.get('/users/:id', async (req, res) => {
     // })
 })
 
+// Updating a user by its id
 app.patch('/users/:id', async (req, res) => {
     // Get all the keys/properties from req.body
     const updates = Object.keys(req.body)
@@ -111,6 +112,21 @@ app.patch('/users/:id', async (req, res) => {
         res.send(user)
     } catch (e) {
         res.status(400).send()
+    }
+})
+
+// Delete a user by its id
+app.delete('/users/:id', async (req, res) => {
+    try {
+        const user = await User.findByIdAndDelete(req.params.id)
+
+        if (!user) {
+            return res.status(404).send()
+        }
+
+        res.send(user)
+    } catch (e) {
+        res.status(500).send()
     }
 })
 
@@ -206,6 +222,21 @@ app.patch('/tasks/:id', async (req, res) => {
 
 app.listen(port, () => {
     console.log('Server is up on port' + port)
+})
+
+// Delete a task by its id
+app.delete('/tasks/:id', async (req, res) => {
+    try {
+        const task = await Task.findByIdAndDelete(req.params.id)
+
+        if (!task) {
+            return res.status(404).send()
+        }
+
+        res.send(task)
+    } catch (e) {
+        res.status(500).send()
+    }
 })
 
 
@@ -322,3 +353,17 @@ app.listen(port, () => {
 //     }
 // })
 
+// Delete a user by its id:
+// app.delete('/users/:id', async (req, res) => {
+//     try {
+//         const user = await User.findByIdAndDelete(req.params.id)
+//
+//         if (!user) {
+//             return res.status(404).send()
+//         }
+//
+//         res.send(user)
+//     } catch (e) {
+//         res.status(500).send()
+//     }
+// })
