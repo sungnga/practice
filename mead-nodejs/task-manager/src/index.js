@@ -81,6 +81,39 @@ app.get('/users/:id', async (req, res) => {
     // })
 })
 
+app.patch('/users/:id', async (req, res) => {
+    // Get all the keys/properties from req.body
+    const updates = Object.keys(req.body)
+    // A list of properties that are allowed for update
+    const allowedUpdates = ['name', 'email', 'password', 'age']
+    // Check on each update item of the updates list that the user is trying to update against the properties in the allowedUpdates list
+    // every() method will return true if ALL OF THE ITEMS in the updates match with allowedUpdates
+    const isValidOperation = updates.every((update) => {
+        return allowedUpdates.includes(update)
+    })
+
+    // If the property name you're trying to update is not on the allowedUpdates list, return an error with a message 'Invalid updates'
+    if (!isValidOperation) {
+        return res.status(400).send({error: 'Invalid updates!'})
+    }
+
+    try {
+        // 1st arg: the id we're trying to update
+        // 2nd arg: the updates we're trying to apply
+        // 3rd arg: options we want to apply. 'new' is set to true means you get a new user. And run the validators
+        // The variable user stores a new user with the update data
+        const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+        
+        if (!user) {
+            return res.status(404).send()
+        }
+
+        res.send(user)
+    } catch (e) {
+        res.status(400).send()
+    }
+})
+
 // Setup a REST API route handler for creating a new task
 // Setup the resource creation endpoint: /tasks
 app.post('/tasks', async (req, res) => {
@@ -147,9 +180,34 @@ app.get('/tasks/:id', async (req, res) => {
     // })
 })
 
+app.patch('/tasks/:id', async (req, res) => {
+    const updates = Object.keys(req.body)
+    const allowedUpdates = ['completed', 'description']
+    const isValidOperation = updates.every((update) => {
+        return allowedUpdates.includes(update)
+    })
+
+    if (!isValidOperation) {
+        return res.status(400).send({error: "Invalid updates"})
+    }
+
+    try {
+        const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+        
+        if (!task) {
+            return res.status(404).send()
+        }
+
+        res.send(task)
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
+
 app.listen(port, () => {
     console.log('Server is up on port' + port)
 })
+
 
 // ==================
 // NOTES
@@ -229,3 +287,38 @@ app.listen(port, () => {
 //         res.status(500).send()
 //     }
 // }
+
+// Updating a user by its id:
+// app.patch('/users/:id', async (req, res) => {
+//     // Get all the keys/properties from req.body
+//     const updates = Object.keys(req.body)
+//     // A list of properties that are allowed for update
+//     const allowedUpdates = ['name', 'email', 'password', 'age']
+//     // Check on each update item of the updates list that the user is trying to update against the properties in the allowedUpdates list
+//     // every() method will return true if ALL OF THE ITEMS in the updates match with allowedUpdates
+//     const isValidOperation = updates.every((update) => {
+//         return allowedUpdates.includes(update)
+//     })
+//
+//     // If the property name you're trying to update is not on the allowedUpdates list, return an error with a message 'Invalid updates'
+//     if (!isValidOperation) {
+//         return res.status(400).send({error: 'Invalid updates!'})
+//     }
+//
+//     try {
+//         // 1st arg: the id we're trying to update
+//         // 2nd arg: the updates we're trying to apply
+//         // 3rd arg: options we want to apply. 'new' is set to true means you get a new user. And run the validators
+//         // The variable user stores a new user with the update data    
+//         const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+//      
+//         if (!user) {
+//             return res.status(404).send()
+//         }
+//
+//         res.send(user)
+//     } catch (e) {
+//         res.status(400).send()
+//     }
+// })
+
