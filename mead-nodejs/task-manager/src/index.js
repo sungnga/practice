@@ -9,30 +9,20 @@ const port = process.env.PORT || 3000
 // Configure express to automatically parse the incoming json to JS object
 app.use(express.json())
 
-// Setup a REST API route, the route for creating a new user
-// Setup the resource creation endpoint: /users
+// Route handler to create a new user
 // To test the url in postman: localhost:3000/users
 app.post('/users', async (req, res) => {
     const user = new User(req.body)
 
-    // Use a try/catch block to handle errors if the promise is rejected
     try {
         await user.save()
         res.status(201).send(user)
     } catch (e) {
         res.status(400).send(e)
     }
-
-    // promise chaining is replaced with async/await
-    // user.save().then(() => {
-    //     res.status(201).send(user)
-    // }).catch((e) => {
-    //     res.status(400).send(e)
-    // })
-    
 })
 
-// Setting up route handler for fetching all users
+// Fetching/reading all users
 app.get('/users', async (req, res) => {
     try {
         const users = await User.find({})
@@ -40,21 +30,10 @@ app.get('/users', async (req, res) => {
     } catch (e) {
         res.status(500).send()
     }
-
-    // promise chaining is replaced with async/await
-    // User.find({}).then((users) => {
-    //     res.send(users)
-    // }).catch((e) => {
-    //     // status code of 500 is internal server error
-    //     res.status(500).send()
-    // })
 })
 
 // Fetching a user by its id
 app.get('/users/:id', async (req, res) => {
-    // console.log(req.params)
-
-    // The id that the user provides
     const _id = req.params.id
         
     try {
@@ -68,41 +47,21 @@ app.get('/users/:id', async (req, res) => {
     } catch (e) {
         res.status(500).send()
     }
-
-    // promise chaining is replaced with async/await
-    // User.findById(_id).then((user) => {
-    //     if (!user) {
-    //         return res.status(404).send()
-    //     }
-
-    //     res.send(user)
-    // }).catch((e) => {
-    //     res.status(500).send()
-    // })
 })
 
 // Updating a user by its id
 app.patch('/users/:id', async (req, res) => {
-    // Get all the keys/properties from req.body
     const updates = Object.keys(req.body)
-    // A list of properties that are allowed for update
     const allowedUpdates = ['name', 'email', 'password', 'age']
-    // Check on each update item of the updates list that the user is trying to update against the properties in the allowedUpdates list
-    // every() method will return true if ALL OF THE ITEMS in the updates match with allowedUpdates
     const isValidOperation = updates.every((update) => {
         return allowedUpdates.includes(update)
     })
 
-    // If the property name you're trying to update is not on the allowedUpdates list, return an error with a message 'Invalid updates'
     if (!isValidOperation) {
         return res.status(400).send({error: 'Invalid updates!'})
     }
 
     try {
-        // 1st arg: the id we're trying to update
-        // 2nd arg: the updates we're trying to apply
-        // 3rd arg: options we want to apply. 'new' is set to true means you get a new user. And run the validators
-        // The variable user stores a new user with the update data
         const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
         
         if (!user) {
@@ -131,7 +90,6 @@ app.delete('/users/:id', async (req, res) => {
 })
 
 // Setup a REST API route handler for creating a new task
-// Setup the resource creation endpoint: /tasks
 app.post('/tasks', async (req, res) => {
     // console.log(req.body)
     const task = new Task(req.body)
@@ -142,13 +100,6 @@ app.post('/tasks', async (req, res) => {
     } catch (e) {
         res.status(400).send(e)
     }
-
-    // promise chaining is replaced with async/await
-    // task.save().then(() => {
-    //     res.status(201).send(task)
-    // }).catch((e) => {
-    //     res.status(400).send(e)
-    // })
 })
 
 // Fetching all tasks
@@ -159,13 +110,6 @@ app.get('/tasks', async (req, res) => {
     } catch (e) {
         res.status(500).send()
     }
-
-    // promise chaining is replaced with async/await
-    // Task.find({}).then((tasks) => {
-    //     res.send(tasks)
-    // }).catch((e) => {
-    //     res.status(500).send()
-    // })
 })
 
 // Fetching a task by its id
@@ -183,17 +127,6 @@ app.get('/tasks/:id', async (req, res) => {
     } catch (e) {
         res.status(500).send()
     }
-
-    // promise chaining is replaced with async/await
-    // Task.findById(_id).then((task) => {
-    //     if (!task) {
-    //         return res.status(404).send()
-    //     }
-
-    //     res.send(task)
-    // }).catch((e) => {
-    //     res.status(500).send()
-    // })
 })
 
 app.patch('/tasks/:id', async (req, res) => {
@@ -220,10 +153,6 @@ app.patch('/tasks/:id', async (req, res) => {
     }
 })
 
-app.listen(port, () => {
-    console.log('Server is up on port' + port)
-})
-
 // Delete a task by its id
 app.delete('/tasks/:id', async (req, res) => {
     try {
@@ -238,6 +167,11 @@ app.delete('/tasks/:id', async (req, res) => {
         res.status(500).send()
     }
 })
+
+app.listen(port, () => {
+    console.log('Server is up on port' + port)
+})
+
 
 
 // ==================
@@ -367,3 +301,5 @@ app.delete('/tasks/:id', async (req, res) => {
 //         res.status(500).send()
 //     }
 // })
+
+// SEPARATE ALL THE ROUTES TO A SEPARTAE FILE BY THEIR RESOURCE
