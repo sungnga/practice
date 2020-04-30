@@ -6,6 +6,23 @@ const taskRouter = require('./routers/task')
 const app = express()
 const port = process.env.PORT || 3000
 
+// Register a new middleware function with Express
+app.use((req, res, next) => {
+    // console.log(req.method, req.path)
+    // next()
+
+    if (req.method === 'GET') {
+        res.send('GET requests are disabled')
+    } else {
+        next()
+    }
+})
+
+// To stop all route handers from running, just never call next()
+app.use((req, res, next) => {
+    res.status(503).send('Site is under maintenance. Check back soon')
+})
+
 app.use(express.json())
 app.use(userRouter)
 app.use(taskRouter)
@@ -13,27 +30,6 @@ app.use(taskRouter)
 app.listen(port, () => {
     console.log('Server is up on port ' + port)
 })
-
-
-const jwt = require('jsonwebtoken')
-// The .sign() method will return a token
-// 1st arg: the object contains the data that's going to be embedded in your token
-// 2nd arg: the secret. This is used to sign the token making sure that it hasn't been tampered with or altered any way
-// What we get back from .sign() is the token we end up giving back to the user who's trying to log in
-const myFunction = async () => {
-    const token = jwt.sign({ _id: 'abc123' }, 'thisismynewnodejscourse', {expiresIn: '7 days'})
-    console.log(token)
-
-    // .verify() method verifies the token
-    // 1st arg: the token you're trying to verify
-    // 2nd arg: the secret to use
-    // It returns the payload for the token if the token is valid or it will throw an error
-    // To verify, the secret must be the same for both
-    const data = jwt.verify(token, 'thisismynewnodejscourse')
-    console.log(data)
-}
-myFunction()
-
 
     
 
@@ -312,5 +308,31 @@ myFunction()
 //         res.status(201).send({ user, token})
 //     } catch (e) {
 //         res.status(400).send(e)
+//     }
+// })
+
+// EXPRESS MIDDLEWARE
+//
+// Without middleware:  new request -> run route handler
+//
+// With middleware:     new request -> do something -> run route handler
+//
+// With middleware, we can customize the server to fit our needs
+// We don't have to run the middleware for every incoming requests
+
+// Registering a middleware with Express:
+//  - Register a new middleware function to run using app.use()
+//  - Pass in a custom function to run
+//  - The 'req' and 'res' contain the same information as the route handlers
+//  - The 3rd arg 'next' is specific to registering middleware
+//  - Calling next() lets Express know that we're done with this middleware function. Don't need to pass in any args
+// app.use((req, res, next) => {
+//     // console.log(req.method, req.path)
+//     // next()
+
+//     if (req.method === 'GET') {
+//         res.send('GET requests are disabled')
+//     } else {
+//         next()
 //     }
 // })
