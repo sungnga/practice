@@ -49,8 +49,22 @@ const userSchema = new mongoose.Schema({
     }]
 })
 
+userSchema.methods.toJSON = function () {
+    const user = this
+
+    // Get back an object with just user data
+    // .toObject() is a method provided by mongoose
+    const userObject = user.toObject()
+    
+    // We can manipulate userObject to change what we want to expose
+    delete userObject.password
+    delete userObject.tokens
+
+    return userObject
+}
+
 // To generate a token
-// The methods methods are accessible on the instance methods
+// The methods methods are accessible on the instance(user) methods
 userSchema.methods.generateAuthToken = async function () {
     // We're calling this function on a specific user and we have access to that specific user via 'this'
     const user = this
@@ -64,7 +78,7 @@ userSchema.methods.generateAuthToken = async function () {
     return token
 }
 
-// The statics methods are accessible on the model methods
+// The statics methods are accessible on the model(User) methods
 userSchema.statics.findByCredentials = async (email, password) => {
     const user = await User.findOne({ email })
 
