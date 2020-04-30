@@ -1,5 +1,6 @@
 const express = require('express')
 const User = require('../models/user')
+const auth = require('../middleware/auth')
 const router = new express.Router()
 
 // Route handler to create a new user
@@ -11,10 +12,11 @@ router.post('/users', async (req, res) => {
         // Save the newly created user
         await user.save()
         // Then generate a token for this new user
-        // When calling .generateAuthToken() method, 3 things happen:
+        // When calling .generateAuthToken() method, 4 things happen:
         // 1. it generates a new token and returns it to the user
         // 2. it adds this token to the user's tokens property array
         // 3. saves the token to the user's database
+        // 4. the token is returned from the function
         const token = await user.generateAuthToken()
         // Send back the user data and the token
         res.status(201).send({ user, token})
@@ -35,13 +37,8 @@ router.post('/users/login', async (req, res) => {
 })
 
 // Fetching/reading all users
-router.get('/users', async (req, res) => {
-    try {
-        const users = await User.find({})
-        res.send(users)
-    } catch (e) {
-        res.status(500).send()
-    }
+router.get('/users/me', auth, async (req, res) => {
+    res.send(req.user)
 })
 
 // Fetching a user by its id

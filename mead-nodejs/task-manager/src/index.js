@@ -7,21 +7,21 @@ const app = express()
 const port = process.env.PORT || 3000
 
 // Register a new middleware function with Express
-app.use((req, res, next) => {
-    // console.log(req.method, req.path)
-    // next()
+// app.use((req, res, next) => {
+//     // console.log(req.method, req.path)
+//     // next()
 
-    if (req.method === 'GET') {
-        res.send('GET requests are disabled')
-    } else {
-        next()
-    }
-})
+//     if (req.method === 'GET') {
+//         res.send('GET requests are disabled')
+//     } else {
+//         next()
+//     }
+// })
 
 // To stop all route handers from running, just never call next()
-app.use((req, res, next) => {
-    res.status(503).send('Site is under maintenance. Check back soon')
-})
+// app.use((req, res, next) => {
+//     res.status(503).send('Site is under maintenance. Check back soon')
+// })
 
 app.use(express.json())
 app.use(userRouter)
@@ -299,10 +299,11 @@ app.listen(port, () => {
 //         // Save the newly created user
 //         await user.save()
 //         // Then generate a token for this new user
-//         // When calling .generateAuthToken() method, 3 things happen:
+//         // When calling .generateAuthToken() method, 4 things happen:
 //         // 1. it generates a new token and returns it to the user
 //         // 2. it adds this token to the user's tokens property array
 //         // 3. saves the token to the user's database
+//         // 4. the token is returned from the function
 //         const token = await user.generateAuthToken()
 //         // Send back the user data and the token
 //         res.status(201).send({ user, token})
@@ -336,3 +337,8 @@ app.listen(port, () => {
 //         next()
 //     }
 // })
+
+// AUTHENTICATIONS AS MIDDLEWARE
+// We can add an authentication middleware to a route handler to authenticate a user who's trying to make a request to this endpoint
+// This auth middleware(a function) gets passed as a 2nd argument in the route handler to check for authentication before the request is processed
+// The middleware is usally created as a stand-alone function and is require in to the routes file that needs it
