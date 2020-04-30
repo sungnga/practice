@@ -3,7 +3,7 @@ const User = require('../models/user')
 const auth = require('../middleware/auth')
 const router = new express.Router()
 
-// Route handler to create a new user
+// Creat a new user
 // To test the url in postman: localhost:3000/users
 router.post('/users', async (req, res) => {
     const user = new User(req.body)
@@ -32,7 +32,31 @@ router.post('/users/login', async (req, res) => {
         res.send({user, token})
     } catch (e) {
         res.status(400).send(e)
-        console.log(e)
+    }
+})
+
+// Log out from a session
+router.post('/users/logout', auth, async (req, res) => {
+    try {
+        req.user.tokens = req.user.tokens.filter((token) => {
+            return token.token !== req.token
+        })
+        await req.user.save()
+
+        res.send()
+    } catch (e) {
+        res.status(500).send()
+    }
+})
+
+// Log out from all sessions
+router.post('/users/logoutAll', auth, async (req, res) => {
+    try {
+        req.user.tokens = []
+        await req.user.save()
+        res.send()
+    } catch (e) {
+        res.status(500).send()
     }
 })
 

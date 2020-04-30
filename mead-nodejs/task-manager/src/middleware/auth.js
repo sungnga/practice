@@ -7,7 +7,7 @@ const auth = async (req, res, next) => {
     try {
         // Get the value for that header the client is supposed to provide by using req.header()
         // Pass in the name of the header we're trying to access to
-        const token = req.header('Authorization').replace('Bear ', '')
+        const token = req.header('Authorization').replace('Bearer ', '')
         // Validate that header by using .verify() method
         // 1st arg: the token you want to verify
         // 2nd arg: the secret that was used to create it
@@ -19,8 +19,10 @@ const auth = async (req, res, next) => {
             throw new Error()
         }
 
+        // Add a property called 'token' onto req so route handler has access to this user's token
+        req.token = token
         // Give route handler the user this function fetched from the database. It already fetched them so there's no need for the route handler to fetch the user again
-        // Add a property called 'user' on to req to store this user and route handler will have access to this
+        // Add a property called 'user' onto req so route handler has access to this user
         req.user = user
         // Let the route handler function run by calling next()
         next()
@@ -44,7 +46,7 @@ module.exports = auth
 //     try {
 //         // Get the value for that header the client is supposed to provide by using req.header()
 //         // Pass in the name of the header we're trying to access to
-//         const token = req.header('Authorization').replace('Bear ', '')
+//         const token = req.header('Authorization').replace('Bearer ', '')
 //         // Validate that header by using .verify() method
 //         // 1st arg: the token you want to verify
 //         // 2nd arg: the secret that was used to create it
@@ -56,8 +58,10 @@ module.exports = auth
 //             throw new Error()
 //         }
 //
+//         // Add a property called 'token' onto req so route handler has access to this user's token
+//         req.token = token
 //         // Give route handler the user this function fetched from the database. It already fetched them so there's no need for the route handler to fetch the user again
-//         // Add a property called 'user' on to req to store this user and route handler will have access to this
+//         // Add a property called 'user' onto req so route handler has access to this user
 //         req.user = user
 //         // Let the route handler function run by calling next()
 //         next()
