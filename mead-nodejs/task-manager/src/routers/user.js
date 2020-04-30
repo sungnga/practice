@@ -8,8 +8,16 @@ router.post('/users', async (req, res) => {
     const user = new User(req.body)
 
     try {
+        // Save the newly created user
         await user.save()
-        res.status(201).send(user)
+        // Then generate a token for this new user
+        // When calling .generateAuthToken() method, 3 things happen:
+        // 1. it generates a new token and returns it to the user
+        // 2. it adds this token to the user's tokens property array
+        // 3. saves the token to the user's database
+        const token = await user.generateAuthToken()
+        // Send back the user data and the token
+        res.status(201).send({ user, token})
     } catch (e) {
         res.status(400).send(e)
     }
@@ -18,10 +26,11 @@ router.post('/users', async (req, res) => {
 router.post('/users/login', async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password)
-        
-        res.send(user)
+        const token = await user.generateAuthToken()
+        res.send({user, token})
     } catch (e) {
         res.status(400).send(e)
+        console.log(e)
     }
 })
 

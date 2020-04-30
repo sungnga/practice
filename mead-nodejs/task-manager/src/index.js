@@ -278,3 +278,39 @@ myFunction()
 //     console.log(data)
 // }
 // myFunction()
+
+// GENERATING AUTHENTICATION TOKENS
+// To generate a token:
+// The '.methods' methods are accessible on the instance methods
+// userSchema.methods.generateAuthToken = async function () {
+//     // We're calling this function on a specific user and we have access to that specific user via 'this'
+//     const user = this
+//     // Generate a token using jwt.sign()
+//     const token = jwt.sign({ _id: user._id.toString() }, 'Thisismynodejscourse')
+//
+//     // Add this newly generated token to the user's tokens property
+//     user.tokens = user.tokens.concat({ token })
+//     // Call .save() to make sure the token get saved to the database
+//     await user.save()
+//     return token
+// }
+
+// Create a new user and generate an authentication token for this user:
+// router.post('/users', async (req, res) => {
+//     const user = new User(req.body)
+//
+//     try {
+//         // Save the newly created user
+//         await user.save()
+//         // Then generate a token for this new user
+//         // When calling .generateAuthToken() method, 3 things happen:
+//         // 1. it generates a new token and returns it to the user
+//         // 2. it adds this token to the user's tokens property array
+//         // 3. saves the token to the user's database
+//         const token = await user.generateAuthToken()
+//         // Send back the user data and the token
+//         res.status(201).send({ user, token})
+//     } catch (e) {
+//         res.status(400).send(e)
+//     }
+// })
