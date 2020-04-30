@@ -11,34 +11,34 @@ app.use(userRouter)
 app.use(taskRouter)
 
 app.listen(port, () => {
-    console.log('Server is up on port' + port)
+    console.log('Server is up on port ' + port)
 })
 
 
-const bcrypt = require('bcryptjs')
+// const bcrypt = require('bcryptjs')
 
-const myFunction = async () => {
-    const password = 'Red12345!'
-    // The .hash() method from bcrypt allows you to convert a plain text into a hashed text
-    // The .hash() takes in 2 args and returns a promise
-    // 1st arg: is the plain text password
-    // 2nd arg: the number of rounds we want to perform. This number determines how many times the hashing algorithm is executed. 8 is a good balance between security and speed
-    // The return value from the promise is hashed text
-    const hashedPassword = await bcrypt.hash(password, 8)
+// const myFunction = async () => {
+//     const password = 'Red12345!'
+//     // The .hash() method from bcrypt allows you to convert a plain text into a hashed text
+//     // The .hash() takes in 2 args and returns a promise
+//     // 1st arg: is the plain text password
+//     // 2nd arg: the number of rounds we want to perform. This number determines how many times the hashing algorithm is executed. 8 is a good balance between security and speed
+//     // The return value from the promise is hashed text
+//     const hashedPassword = await bcrypt.hash(password, 8)
 
-    console.log(password)
-    console.log(hashedPassword)
+//     console.log(password)
+//     console.log(hashedPassword)
 
-    // The .compare() method from bcrypt allows you to compare a plain text with the hashed text
-    // .compare() takes in 2 args and it returns a promise
-    // 1st arg: the plain text you want to compare
-    // 2nd arg: the hashed text
-    // The value from the promise is a boolean
-    const isMatch = await bcrypt.compare('Red12345!', hashedPassword)
-    console.log(isMatch)
-}
+//     // The .compare() method from bcrypt allows you to compare a plain text with the hashed text
+//     // .compare() takes in 2 args and it returns a promise
+//     // 1st arg: the plain text you want to compare
+//     // 2nd arg: the hashed text
+//     // The value from the promise is a boolean
+//     const isMatch = await bcrypt.compare('Red12345!', hashedPassword)
+//     console.log(isMatch)
+// }
 
-myFunction()
+// myFunction()
 
 
 
