@@ -25,6 +25,7 @@ router.post('/users', async (req, res) => {
     }
 })
 
+// Log in a user
 router.post('/users/login', async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password)
@@ -42,7 +43,6 @@ router.post('/users/logout', auth, async (req, res) => {
             return token.token !== req.token
         })
         await req.user.save()
-
         res.send()
     } catch (e) {
         res.status(500).send()
@@ -60,30 +60,13 @@ router.post('/users/logoutAll', auth, async (req, res) => {
     }
 })
 
-// Fetching/reading all users
+// Fetching/reading a user
 router.get('/users/me', auth, async (req, res) => {
     res.send(req.user)
 })
 
-// Fetching a user by its id
-router.get('/users/:id', async (req, res) => {
-    const _id = req.params.id
-        
-    try {
-        const user = await User.findById(_id)
-
-        if (!user) {
-            return res.status(404).send()
-        }
-
-        res.send(user)
-    } catch (e) {
-        res.status(500).send()
-    }
-})
-
-// Updating a user by its id
-router.patch('/users/:id', async (req, res) => {
+// Updating a user
+router.patch('/users/me', auth, async (req, res) => {
     const updates = Object.keys(req.body)
     const allowedUpdates = ['name', 'email', 'password', 'age']
     const isValidOperation = updates.every((update) => {
@@ -95,35 +78,29 @@ router.patch('/users/:id', async (req, res) => {
     }
 
     try {
-        const user = await User.findById(req.params.id)
-
         updates.forEach((update) => {
-            user[update] = req.body[update]
+            req.user[update] = req.body[update]
         })
-        await user.save()
-
-        // const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
-        
-        if (!user) {
-            return res.status(404).send()
-        }
-
-        res.send(user)
+        await req.user.save()
+        res.send(req.user)
     } catch (e) {
         res.status(400).send()
     }
 })
 
-// Delete a user by its id
-router.delete('/users/:id', async (req, res) => {
+// Delete a user
+router.delete('/users/me', auth, async (req, res) => {
     try {
-        const user = await User.findByIdAndDelete(req.params.id)
+        // Since we're using auth middleware, we have access to the user object, hence we have access to user property: req.user._id
+        // const user = await User.findByIdAndDelete(req.user._id)
 
-        if (!user) {
-            return res.status(404).send()
-        }
+        // if (!user) {
+        //     return res.status(404).send()
+        // }
 
-        res.send(user)
+        // We can achieve the same result as above by calling the .remove() method provided by mongoose
+        await req.user.remove()
+        res.send(req.user)
     } catch (e) {
         res.status(500).send()
     }
