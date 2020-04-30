@@ -15,35 +15,30 @@ app.listen(port, () => {
 })
 
 
-// const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+// The .sign() method will return a token
+// 1st arg: the object contains the data that's going to be embedded in your token
+// 2nd arg: the secret. This is used to sign the token making sure that it hasn't been tampered with or altered any way
+// What we get back from .sign() is the token we end up giving back to the user who's trying to log in
+const myFunction = async () => {
+    const token = jwt.sign({ _id: 'abc123' }, 'thisismynewnodejscourse', {expiresIn: '7 days'})
+    console.log(token)
 
-// const myFunction = async () => {
-//     const password = 'Red12345!'
-//     // The .hash() method from bcrypt allows you to convert a plain text into a hashed text
-//     // The .hash() takes in 2 args and returns a promise
-//     // 1st arg: is the plain text password
-//     // 2nd arg: the number of rounds we want to perform. This number determines how many times the hashing algorithm is executed. 8 is a good balance between security and speed
-//     // The return value from the promise is hashed text
-//     const hashedPassword = await bcrypt.hash(password, 8)
-
-//     console.log(password)
-//     console.log(hashedPassword)
-
-//     // The .compare() method from bcrypt allows you to compare a plain text with the hashed text
-//     // .compare() takes in 2 args and it returns a promise
-//     // 1st arg: the plain text you want to compare
-//     // 2nd arg: the hashed text
-//     // The value from the promise is a boolean
-//     const isMatch = await bcrypt.compare('Red12345!', hashedPassword)
-//     console.log(isMatch)
-// }
-
-// myFunction()
+    // .verify() method verifies the token
+    // 1st arg: the token you're trying to verify
+    // 2nd arg: the secret to use
+    // It returns the payload for the token if the token is valid or it will throw an error
+    // To verify, the secret must be the same for both
+    const data = jwt.verify(token, 'thisismynewnodejscourse')
+    console.log(data)
+}
+myFunction()
 
 
+    
 
-
-
+    
+    
 
 // This index.js file creates an Express app and gets it up and running
 // But what the Express app actually does is defined in the router files - router for user and router for task
@@ -228,18 +223,18 @@ app.listen(port, () => {
 // The .hash() method:
 // The .hash() method from bcrypt allows you to convert a plain text into a hashed text
 // The .hash() takes in 2 args and returns a promise
-// 1st arg: is the plain text password
-// 2nd arg: the number of rounds we want to perform. Thisnumber determines how many times the hashing algorithm isexecuted. 8 is a good balance between security and speed
-// The return value from the promise is hashed text
+//  - 1st arg: is the plain text password
+//  - 2nd arg: the number of rounds we want to perform. Thisnumber determines how many times the hashing algorithm isexecuted. 8 is a good balance between security and speed
+//  - The return value from the promise is hashed text
 // const password = 'Red12345!'
 // const hashedPassword = await bcrypt.hash(password, 8)
 
 // The .compare() method:
 // The .compare() method from bcrypt allows you to compare a plain text with the hashed text
 // .compare() takes in 2 args and it returns a promise
-// 1st arg: the plain text you want to compare
-// 2nd arg: the hashed text
-// The value from the promise is a boolean
+//  - 1st arg: the plain text you want to compare
+//  - 2nd arg: the hashed text
+//  - The value from the promise is a boolean
 // const isMatch = await bcrypt.compare('Red12345!', hashedPassword
 
 // const bcrypt = require('bcryptjs')
@@ -253,3 +248,33 @@ app.listen(port, () => {
 // }
 // myFunction()
 
+// JSON WEB TOKEN
+// We need to set up the login request to send back an authentication token
+// This is something that the requester will be able to use later on with other requests where they need to be authenticated
+// So you could log in with your account, you'd get your token back. You would go off and edit your profile or create a new task, etc
+// We'll be using a JSON Web Token library or JWT for creating these authentication tokens and validating them
+
+// The .sign() method:
+//  - The .sign() method will return a token
+//  - 1st arg: the object contains the data that's going to be embedded in your token
+//  - 2nd arg: the secret. This is used to sign the token making sure that it hasn't been tampered with or altered any way
+//  - What we get back from .sign() is the token we end up giving back to the user who's trying to log in   
+// const token = jwt.sign({ _id: 'abc123' }, 'thisismynewnodejscourse', {expiresIn: '7 days'}) 
+
+// The .verify() method:
+//  - .verify() method verifies the token
+//  - 1st arg: the token you're trying to verify
+//  - 2nd arg: the secret to use
+//  - It returns the payload for the token if the token is valid or it will throw an error
+//  - To verify, the secret must be the same for both
+// const data = jwt.verify(token, 'thisismynewnodejscourse')
+
+// const jwt = require('jsonwebtoken')
+// const myFunction = async () => {
+//     const token = jwt.sign({ _id: 'abc123' }, 'thisismynewnodejscourse', {expiresIn: '7 days'})
+//     console.log(token)
+
+//     const data = jwt.verify(token, 'thisismynewnodejscourse')
+//     console.log(data)
+// }
+// myFunction()
