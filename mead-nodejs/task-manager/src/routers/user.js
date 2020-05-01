@@ -54,7 +54,6 @@ router.post('/users/logoutAll', auth, async (req, res) => {
 
 // Register multer middleware
 const upload = multer({
-    dest: 'avatars',
     limits: {
         fileSize: 1000000
     },
@@ -68,10 +67,24 @@ const upload = multer({
 })
 
 // Upload a profile picture
-router.post('/users/me/avatar', upload.single('avatar'), (req, res) => {
+// Multer middleware processes the upload file. It then passes that data to route handler
+router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) => {
+    // The upload image data is stored in req.file.buffer. We have access to this info because we didn't set up the file upload destination in multer middleware 
+    // Store this buffer data onto the user 'avatar' field
+    req.user.avatar = req.file.buffer
+    // Then save the user profile since we just made a change to it
+    await req.user.save()
     res.send()
 }, (error, req, res, next) => {
     res.status(400).send({error: error.message})
+})
+
+// Delete a profile image
+router.delete('/users/me/avatar', auth, async (req, res) => {
+    // This will clear the avatar field
+    req.user.avatar = undefined
+    await req.user.save()
+    res.send()
 })
 
 // Fetching/reading a user
