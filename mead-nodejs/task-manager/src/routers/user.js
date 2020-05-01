@@ -69,11 +69,9 @@ const upload = multer({
 
 // Upload a profile picture
 router.post('/users/me/avatar', upload.single('avatar'), (req, res) => {
-    try {
-        res.send()
-    } catch (e) {
-        res.status(400).send()
-    }
+    res.send()
+}, (error, req, res, next) => {
+    res.status(400).send({error: error.message})
 })
 
 // Fetching/reading a user

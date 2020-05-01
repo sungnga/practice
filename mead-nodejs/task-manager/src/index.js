@@ -36,8 +36,11 @@ const upload = multer({
 // Use post method to upload images
 // upload.single() - upload is the instance of multer and can call .single() method on it
 // What you pass in to .single() method is the name of the key
+// To handle Express error message, we need pass in a 4th argument to route handler. It's a callback funtion that contains the error message
 app.post('/upload', upload.single('upload'), (req, res) => {
     res.send()
+}, (error, req, res, next) => {
+        res.status(400).send({error: error.message})
 })
 
 
