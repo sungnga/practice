@@ -20,6 +20,11 @@ router.post('/tasks', auth, async (req, res) => {
 })
 
 // GET /tasks?completed=true
+// GET /tasks?limit=3&skip=0
+// Use limit and skip to paginate your search result
+// limit: to limit the number of results we get back for any given request
+// skip: allows you to iterate over pages
+// mongoose enable these features under options property
 router.get('/tasks', auth, async (req, res) => {
     // Start out with an empty match object
     const match = {}
@@ -30,10 +35,15 @@ router.get('/tasks', auth, async (req, res) => {
     }
 
     // The final match object gets passed into the .populate() method as a filter property
+    // parseInt() method will parse the string into a number
     try {
         await req.user.populate({
             path: 'userTasks',
-            match
+            match,
+            options: {
+                limit: parseInt(req.query.limit),
+                skip: parseInt(req.query.skip)
+            }
         }).execPopulate()
         res.send(req.user.userTasks)
     } catch (e) {
