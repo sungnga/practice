@@ -49,6 +49,24 @@ const userSchema = new mongoose.Schema({
     }]
 })
 
+// VIRTUAL PROPERTY
+// Set up a virtual property to create a relationship btween the task and the user
+// A virtual property is not actual data stored in the datebase
+// It's a relationship between two entities. In this case, between the user and the task
+// .virtual() allows us to set up virtual attributes
+// 1st arg: the name of the virtual field
+// 2nd arg: an object. Here, we can configure the individual fields
+// foreignField: owner is the name of the field on the Task model
+// ref field is the reference to the Task model
+userSchema.virtual('userTasks', {
+    ref: 'Task',
+    localField: '_id',
+    foreignField: 'owner'
+})
+
+// Hidding private data
+// When a mongoose document is passed to res.send(), mongoose converts the object into JSON string
+// We can customize this by adding .toJSON as a method on the object
 userSchema.methods.toJSON = function () {
     const user = this
 

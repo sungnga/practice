@@ -32,17 +32,35 @@ app.listen(port, () => {
 })
 
 // .toJSON
-const pet = {
-    name: 'Hal'
-}
+// const pet = {
+//     name: 'Hal'
+// }
 
-pet.toJSON = function () {
-    console.log(this)
-    return this
-}
-console.log(JSON.stringify(pet))
+// pet.toJSON = function () {
+//     console.log(this)
+//     return this
+// }
+// console.log(JSON.stringify(pet))
+
+
+// Creating relationships between the task and the user
+const Task = require('./models/task')
+const User = require('./models/user')
+
+const main = async () => {
+    // const task = await Task.findById('5eab61fd538d5758893cf98e')
+    // await task.populate('owner').execPopulate()
+    // console.log(task.owner)
+
+    // the 'userTasks' is is set up and defined in the user schema
+    const user = await User.findById('5eab6114805ab5573259c869')
+    await user.populate('userTasks').execPopulate()
+    console.log(user.userTasks)
     
-    
+}    
+main()
+
+
 
 // This index.js file creates an Express app and gets it up and running
 // But what the Express app actually does is defined in the router files - router for user and router for task
