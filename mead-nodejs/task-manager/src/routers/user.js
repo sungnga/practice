@@ -4,21 +4,12 @@ const auth = require('../middleware/auth')
 const router = new express.Router()
 
 // Creat a new user
-// To test the url in postman: localhost:3000/users
 router.post('/users', async (req, res) => {
     const user = new User(req.body)
 
     try {
-        // Save the newly created user
         await user.save()
-        // Then generate a token for this new user
-        // When calling .generateAuthToken() method, 4 things happen:
-        // 1. it generates a new token and returns it to the user
-        // 2. it adds this token to the user's tokens property array
-        // 3. saves the token to the user's database
-        // 4. the token is returned from the function
         const token = await user.generateAuthToken()
-        // Send back the user data and the token
         res.status(201).send({ user, token})
     } catch (e) {
         res.status(400).send(e)
@@ -91,14 +82,6 @@ router.patch('/users/me', auth, async (req, res) => {
 // Delete a user
 router.delete('/users/me', auth, async (req, res) => {
     try {
-        // Since we're using auth middleware, we have access to the user object, hence we have access to user property: req.user._id
-        // const user = await User.findByIdAndDelete(req.user._id)
-
-        // if (!user) {
-        //     return res.status(404).send()
-        // }
-
-        // We can achieve the same result as above by calling the .remove() method provided by mongoose
         await req.user.remove()
         res.send(req.user)
     } catch (e) {

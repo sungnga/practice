@@ -50,49 +50,33 @@ const userSchema = new mongoose.Schema({
     }]
 })
 
-// VIRTUAL PROPERTY
-// Set up a virtual property to create a relationship btween the task and the user
-// A virtual property is not actual data stored in the datebase
-// It's a relationship between two entities. In this case, between the user and the task
-// .virtual() allows us to set up virtual attributes
-// 1st arg: the name of the virtual field
-// 2nd arg: an object. Here, we can configure the individual fields
-// foreignField: owner is the name of the field on the Task model
-// ref field is the reference to the Task model
+// Set up a virtual property to create a relationship between the task and the user
 userSchema.virtual('userTasks', {
     ref: 'Task',
     localField: '_id',
     foreignField: 'owner'
 })
 
-// Hidding private data
-// When a mongoose document is passed to res.send(), mongoose converts the object into JSON string
-// We can customize this by adding .toJSON as a method on the object
+// Hidding private data with toJSON method
 userSchema.methods.toJSON = function () {
     const user = this
 
-    // Get back an object with just user data
-    // .toObject() is a method provided by mongoose
     const userObject = user.toObject()
     
-    // We can manipulate userObject to change what we want to expose
     delete userObject.password
     delete userObject.tokens
 
     return userObject
 }
 
-// To generate a token
+// Generate a token
 // The methods methods are accessible on the instance(user) methods
 userSchema.methods.generateAuthToken = async function () {
-    // We're calling this function on a specific user and we have access to that specific user via 'this'
     const user = this
-    // Generate a token using jwt.sign()
     const token = jwt.sign({ _id: user._id.toString() }, 'Thisismynodejscourse')
 
-    // Add this newly generated token to the user's tokens property
     user.tokens = user.tokens.concat({ token })
-    // Call save to make sure the token get saved to the database
+
     await user.save()
     return token
 }
@@ -115,14 +99,9 @@ userSchema.statics.findByCredentials = async (email, password) => {
 }
 
 // Hash the plain text password before saving
-// 1st arg: the name of the event
-// 2nd arg: a callback function
-// This callback checks to see if the user updates the password property using the .isModified() method from mongoose
-// If the password has changed or first time created, update the user password with the hashed value
 userSchema.pre('save', async function (next) {
     const user = this
 
-    // .isModified('password') is true when a new user is created because they have to provide a password and also true if a user updates their password
     if (user.isModified('password')) {
         user.password = await bcrypt.hash(user.password, 8)
     }
@@ -143,8 +122,11 @@ const User = mongoose.model('User', userSchema)
 module.exports = User
 
 
+// ===============
+// NOTES
+// ===============
 
-// USE MONGOOSE MIDDLEWARE TO HASH A PASSWORD
+// USE MONGOOSE MIDDLEWARE TO HASH A PASSWORD BEFORE SAVING
 // mongoose middleware allows us to customize our mongoose model
 // With middleware, we can register some functions to run before or after given events occur 
 // Here, our job is to run some code before a user is saved. 
@@ -166,18 +148,18 @@ module.exports = User
 //     next()
 // })
 
-// GENERATING AUTHENTICATION TOKENS
+// GENERATE AUTHENTICATION TOKENS
 // To generate a token:
-// The '.methods' methods are accessible on the instance methods
+// The methods methods are accessible on the instance(user) methods
 // userSchema.methods.generateAuthToken = async function () {
 //     // We're calling this function on a specific user and we have access to that specific user via 'this'
 //     const user = this
 //     // Generate a token using jwt.sign()
 //     const token = jwt.sign({ _id: user._id.toString() }, 'Thisismynodejscourse')
-
+//
 //     // Add this newly generated token to the user's tokens property
 //     user.tokens = user.tokens.concat({ token })
-//     // Call .save() to make sure the token get saved to the database
+//     // Call save to make sure the token get saved to the database
 //     await user.save()
 //     return token
 // }
@@ -185,7 +167,7 @@ module.exports = User
 // Create a new user and generate an authentication token for this user:
 // router.post('/users', async (req, res) => {
 //     const user = new User(req.body)
-
+//
 //     try {
 //         // Save the newly created user
 //         await user.save()
@@ -200,4 +182,36 @@ module.exports = User
 //     } catch (e) {
 //         res.status(400).send(e)
 //     }
+// })
+
+// HIDDING PRIVATE DATA
+// When a mongoose document is passed to res.send(), mongoose converts the object into JSON string
+// We can customize this by adding .toJSON as a method on the object
+// userSchema.methods.toJSON = function () {
+//     const user = this
+//
+//     // Get back an object with just user data
+//     // .toObject() is a method provided by mongoose
+//     const userObject = user.toObject()
+    
+//     // We can manipulate userObject to change what we want to expose
+//     delete userObject.password
+//     delete userObject.tokens
+//
+//     return userObject
+// }
+
+// VIRTUAL PROPERTY
+// Set up a virtual property to create a relationship btween the task and the user
+// A virtual property is not actual data stored in the datebase
+// It's a relationship between two entities. In this case, between the user and the task
+// .virtual() allows us to set up virtual attributes
+// 1st arg: the name of the virtual field
+// 2nd arg: an object. Here, we can configure the individual fields
+// foreignField: owner is the name of the field on the Task model
+// ref field is the reference to the Task model
+// userSchema.virtual('userTasks', {
+//     ref: 'Task',
+//     localField: '_id',
+//     foreignField: 'owner'
 // })

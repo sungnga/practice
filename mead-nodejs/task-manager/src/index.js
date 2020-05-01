@@ -6,23 +6,6 @@ const taskRouter = require('./routers/task')
 const app = express()
 const port = process.env.PORT || 3000
 
-// Register a new middleware function with Express
-// app.use((req, res, next) => {
-//     // console.log(req.method, req.path)
-//     // next()
-
-//     if (req.method === 'GET') {
-//         res.send('GET requests are disabled')
-//     } else {
-//         next()
-//     }
-// })
-
-// To stop all route handers from running, just never call next()
-// app.use((req, res, next) => {
-//     res.status(503).send('Site is under maintenance. Check back soon')
-// })
-
 app.use(express.json())
 app.use(userRouter)
 app.use(taskRouter)
@@ -30,36 +13,6 @@ app.use(taskRouter)
 app.listen(port, () => {
     console.log('Server is up on port ' + port)
 })
-
-// .toJSON
-// const pet = {
-//     name: 'Hal'
-// }
-
-// pet.toJSON = function () {
-//     console.log(this)
-//     return this
-// }
-// console.log(JSON.stringify(pet))
-
-
-// Creating relationships between the task and the user
-const Task = require('./models/task')
-const User = require('./models/user')
-
-const main = async () => {
-    // const task = await Task.findById('5eab61fd538d5758893cf98e')
-    // await task.populate('owner').execPopulate()
-    // console.log(task.owner)
-
-    // the 'userTasks' is is set up and defined in the user schema
-    const user = await User.findById('5eab6114805ab5573259c869')
-    await user.populate('userTasks').execPopulate()
-    console.log(user.userTasks)
-    
-}    
-main()
-
 
 
 // This index.js file creates an Express app and gets it up and running
@@ -368,3 +321,33 @@ main()
 // We can add an authentication middleware to a route handler to authenticate a user who's trying to make a request to this endpoint
 // This auth middleware(a function) gets passed as a 2nd argument in the route handler to check for authentication before the request is processed
 // The middleware is usally created as a stand-alone function and is require in to the routes file that needs it
+
+// USE toJSON METHOD TO HIDE PRIVATE DATA
+// .toJSON
+// const pet = {
+//     name: 'Hal'
+// }
+//
+// pet.toJSON = function () {
+//     console.log(this)
+//     return this
+// }
+// console.log(JSON.stringify(pet))
+
+// THE USER/TASK RELATIONSHIP
+// Creating relationships between the task and the user
+// const Task = require('./models/task')
+// const User = require('./models/user')
+//
+// const main = async () => {
+//     // const task = await Task.findById('5eab61fd538d5758893cf98e')
+//     // await task.populate('owner').execPopulate()
+//     // console.log(task.owner)
+//
+//     // the 'userTasks' is is set up and defined in the user schema
+//     const user = await User.findById('5eab6114805ab5573259c869')
+//     await user.populate('userTasks').execPopulate()
+//     console.log(user.userTasks)
+//
+// }    
+// main()
