@@ -66,27 +66,6 @@ const upload = multer({
     }
 })
 
-// Upload a profile picture
-// Multer middleware processes the upload file. It then passes that data to route handler
-router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) => {
-    // The upload image data is stored in req.file.buffer. We have access to this info because we didn't set up the file upload destination in multer middleware 
-    // Store this buffer data onto the user 'avatar' field
-    req.user.avatar = req.file.buffer
-    // Then save the user profile since we just made a change to it
-    await req.user.save()
-    res.send()
-}, (error, req, res, next) => {
-    res.status(400).send({error: error.message})
-})
-
-// Delete a profile image
-router.delete('/users/me/avatar', auth, async (req, res) => {
-    // This will clear the avatar field
-    req.user.avatar = undefined
-    await req.user.save()
-    res.send()
-})
-
 // Fetching/reading a user
 router.get('/users/me', auth, async (req, res) => {
     res.send(req.user)
@@ -122,6 +101,49 @@ router.delete('/users/me', auth, async (req, res) => {
         res.send(req.user)
     } catch (e) {
         res.status(500).send()
+    }
+})
+
+// Upload a profile picture
+// Multer middleware processes the upload file. It then passes that data to route handler
+router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) => {
+    // The upload image data is stored in req.file.buffer. We have access to this info because we didn't set up the file upload destination in multer middleware 
+    // Store this buffer data onto the user 'avatar' field
+    req.user.avatar = req.file.buffer
+    // Then save the user profile since we just made a change to it
+    await req.user.save()
+    res.send()
+}, (error, req, res, next) => {
+    res.status(400).send({error: error.message})
+})
+
+// Delete a profile image
+router.delete('/users/me/avatar', auth, async (req, res) => {
+    // This will clear the avatar field
+    req.user.avatar = undefined
+    await req.user.save()
+    res.send()
+})
+
+// Fetch user profile image by their id
+// localhost:3000/users/user_id/avatar to view the image
+router.get('/users/:id/avatar', async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id)
+
+        if (!user || !user.avatar) {
+            throw new Error()
+        }
+
+        // Tell the requester what type of data they're getting back by setting the response header
+        // Use the .set() method on the response(res) object and it takes 2 args, a key/value pair
+        // 1st arg: the key name of the response header
+        // 2nd arg: the value of the response header
+        res.set('Content-Type', 'image/jpg')
+        // This allows the user to access the image by their id
+        res.send(user.avatar)
+    } catch (e) {
+        res.status(400).send()
     }
 })
 
