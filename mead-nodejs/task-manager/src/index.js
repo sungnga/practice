@@ -6,6 +6,10 @@ const taskRouter = require('./routers/task')
 const app = express()
 const port = process.env.PORT || 3000
 
+
+
+
+
 app.use(express.json())
 app.use(userRouter)
 app.use(taskRouter)
@@ -13,6 +17,9 @@ app.use(taskRouter)
 app.listen(port, () => {
     console.log('Server is up on port ' + port)
 })
+
+
+
 
 
 // This index.js file creates an Express app and gets it up and running
@@ -351,3 +358,25 @@ app.listen(port, () => {
 //
 // }    
 // main()
+
+// FILE UPLOADS
+// Multer is a node.js middleware for handling multipart/form-data, which is primarily used for uploading files
+// Multer will not process any form which is not multipart(multipart/form-data)
+
+// USING MULTER
+// const multer = require('multer')
+
+// Register multer:
+// Call multer() to create a new instance of it. 'upload' is conventional name
+// dest is short for destination and the name of folder to upload to
+// const upload = multer({
+//     dest: 'images'
+// })
+
+// Route handler to upload a file:
+// Use post method to upload images
+// upload.single() - upload is the instance of multer and can call .single() method on it
+// What you pass in to .single() method is the name of the key
+// app.post('/upload', upload.single('upload'), (req, res) => {
+//     res.send()
+// })
