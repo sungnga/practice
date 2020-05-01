@@ -19,11 +19,23 @@ router.post('/tasks', auth, async (req, res) => {
     }
 })
 
-// Fetch all tasks
+// GET /tasks?completed=true
 router.get('/tasks', auth, async (req, res) => {
+    // Start out with an empty match object
+    const match = {}
+
+    // Check to see if the user provides additional query at endpoint
+    if (req.query.completed) {
+        match.completed = req.query.completed === 'true'
+    }
+
+    // The final match object gets passed into the .populate() method as a filter property
     try {
-        const tasks = await Task.find({owner: req.user._id})
-        res.send(tasks)
+        await req.user.populate({
+            path: 'userTasks',
+            match
+        }).execPopulate()
+        res.send(req.user.userTasks)
     } catch (e) {
         res.status(500).send()
     }
