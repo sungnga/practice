@@ -8,6 +8,38 @@ const port = process.env.PORT || 3000
 
 
 
+const multer = require('multer')
+
+// Register multer:
+// Call multer() to create a new instance of it. 'upload' is the conventional name used
+// dest is short for destination and the name of folder to upload to
+// Use limits property to limit the size of the upload file
+// Use fileFilter FUNCTION to filter file type
+const upload = multer({
+    dest: 'images',
+    limits: {
+        fileSize: 1000000
+    },
+    fileFilter(req, file, cb) {
+        if (!file.originalname.match(/\.(doc|docx)$/)) {
+            return cb(new Error('Please upload a word document'))
+        }
+
+        cb(undefined, true)
+        // cb(new Error('File must be a PDF'))
+        // cb(undefined, true)
+        // cb(undefined, false)
+    }
+})
+
+// Route handler to upload a file:
+// Use post method to upload images
+// upload.single() - upload is the instance of multer and can call .single() method on it
+// What you pass in to .single() method is the name of the key
+app.post('/upload', upload.single('upload'), (req, res) => {
+    res.send()
+})
+
 
 
 app.use(express.json())
