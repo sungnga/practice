@@ -1,20 +1,34 @@
 const path = require('path')
+const http = require('http')
 const express = require('express')
+// Returns a function
+const socketio = require('socket.io')
 
 const app = express()
-const port = process.env.PORT || 3000
 
+// Create a server that is outside of the Express library
+// Then we configure it to use the Express app
+const server = http.createServer(app)
+// Create a new instance of socket.io
+// Now our server supports webSocket
+const io = socketio(server)
+
+const port = process.env.PORT || 3000
 // Define paths for Express config
 const publicDirectoryPath = path.join(__dirname, '../public')
 
 // Setup static directory to serve
 app.use(express.static(publicDirectoryPath))
 
-// app.get('', (req, res) => {
-//     res.send('index')
-// })
+// Print a message when a new client connects
+// 1st arg: is the conncection event
+// 2nd arg: a callback function
+io.on('connection', () => {
+    console.log('New  WebSocket connection')
+})
 
-app.listen(port, () => {
+// Starting the server up
+server.listen(port, () => {
     console.log(`Server is running on port ${port}`)
 })
 
@@ -34,3 +48,123 @@ app.listen(port, () => {
 // 2. install nodemon and a development dependency
 // 3. create a "dev" script to start the app using nodemon
 // 4. run both scripts to test your work
+
+
+
+
+
+
+
+// ===================
+// NOTES
+// ===================
+
+// WEBSOCKETS
+// https://socket.io
+// Use websockets to build real-time web applications
+// Like with the HTTP protocol, the webSocket protocol allows us to set up communication
+//  - A server - a node.js application server - that starts up a server
+//  - Clients - one or multiple clients can connect to this server
+
+// The WebSocket Protocol:
+// WebSockets allow for full-duplex communnication
+//  - meaning, it's a bi - directional communication
+// WebSocket is a separate protocol from HTTP
+//  - The client can initiate comm with the server and the server can initiate comm with the client. 
+//  - We don't have this with HTTP requests. The client initiates a request and the server responds
+// Persistent connection between client and server
+//  - When the client connects to the server, it stays connected as long as it needs to
+//  - The comm between the client and the server is in real-time
+
+// *******************************************
+// SETUP EXPRESS WEB SERVER WITHOUT WEBSOCKET
+// *******************************************
+// const path = require('path')
+// const express = require('express')
+
+// const app = express()
+// const port = process.env.PORT || 3000
+
+// // Define paths for Express config
+// const publicDirectoryPath = path.join(__dirname, '../public')
+
+// // Setup static directory to serve
+// app.use(express.static(publicDirectoryPath))
+
+// // Start up and run the server
+// app.listen(port, () => {
+//     console.log(`Server is running on port ${port}`)
+// })
+// *************************************************
+
+// Configure Express server with socket.io library:
+// Install the socket.io library: npm i socket.io
+// We'll use this socket.io lib to make some changes to the server to support websockets
+// Load in the HTTP core module: const http = require('http')
+// Right after the Express app has been created
+// Create a new server. With the http core module, we can call the .createServer() method to create a new server. Pass in the Express application (app) to the method
+//  - const server = http.createServer(app)
+// Now change the way the server starts up. Instead of calling app.listen(), call with server.listen()
+// Require in the socket.io library: const socketio = require('socket.io'). We get back a function
+// Create a new instance of socket.io to configure webSockets to work with our server
+//  - const io = socketio(server)
+//  - const io is a common name used
+//  - we call the socketio() function to configure socket.io to work with a given server
+//  - we pass in that server to the function
+// Now our server(io) supports webSocket
+
+// To print a message to the terminal when a given client connects:
+// This means that the server is setting webSockets report correctly
+// It also means the client is able to connect to the server
+// And with this connection, we can facilitate real-time communication
+//
+// 1. The server-side of the socket.io library:
+// io.on('connection', () => {
+//     console.log('New  WebSocket connection')
+// })
+//  - io is the server
+//  - .on() method to listen for a given event to occur
+//  - 1st arg: the name of the event. In this case, the name of the event is called 'connection'
+//  - connection is going to fire whenever the socket.io server gets a new connection
+//  - 2nd arg: a callback function to run when that event occurs
+//
+// 2. The client-side of the socket.io library:
+// When we set up a socket.io to work with a given server, it also provides a file for the client-side(the browser) version of the socket.io library
+// To get this library, load the socket.io script inside the index.html file
+//  - <script src="/socket.io/socket.io.js"></script>
+//  - THIS IS THE CLIENT-SIDE VERSION OF THE SOCKET.IO LIBRARY
+//  - when we load this in, our client-side javascript code will have access to all of the stuff from the library it needs in order to set up that comm
+// Next, we need to create our own client-side javascript file to connect to the server using webSockets
+//  - create a js folder in the public directly. In it, create a file called chat.js
+//  - load this chat.js file into index.html file:
+//  - <script src="/js/chat.js"></script>
+//  - now that both of the js script and the socket.js script are loaded in index.html, the js file has access to the functionalities of the socket.io library
+//  - inside the chat.js file, call the function io() to connect to the server
+
+
+
+// ***************************************
+// SETUP EXPRESS WEB SERVER WITH WEBSOCKET
+// ***************************************
+// const path = require('path')
+// const http = require('http')
+// const express = require('express')
+// const socketio = require('socket.io')
+//
+// const app = express()
+// const server = http.createServer(app)
+// const io = socketio(server)
+//
+// const port = process.env.PORT || 3000
+// const publicDirectoryPath = path.join(__dirname, '../public')
+//
+// app.use(express.static(publicDirectoryPath))
+//
+// io.on('connection', () => {
+//     console.log('New  WebSocket connection')
+// })
+//
+// server.listen(port, () => {
+//     console.log(`Server is running on port ${port}`)
+// })
+// ***************************************
