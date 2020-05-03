@@ -20,22 +20,33 @@ const publicDirectoryPath = path.join(__dirname, '../public')
 // Setup static directory to serve
 app.use(express.static(publicDirectoryPath))
 
-// Listening for a 'connection' event
+// Run some code when a new user is connected
 // 1st arg: is the conncection event
-// 2nd arg: a callback function
+// 'connection' event is a built-in event from socket.io
+// 2nd arg: a callback function to run when a new user is connected
 // socket is an object and it contains information about that new connection
 // We can use methods on that socket to communicate with that client
-// When we're working with socket.io and we're transferring data, we're sending and receiving what are called events
-// All of your events are custom, fitting the needs of your application
 // Use .on() method to listen for an event
 // Use .emit() method to emit an event or data
 io.on('connection', (socket) => {
     console.log('New  WebSocket connection')
 
+    // socket.emit() is to emit to this particular socket
     socket.emit('message', 'Welcome!')
 
+    // socket.broadcast.emit() is to emit to everybody BUT this particular socket
+    socket.broadcast.emit('message', 'A new user has joined')
+
     socket.on('sendMessage', (message) => {
+        // io.emit() is to emit to everyone
         io.emit('message', message)
+    })
+
+    // Run some code whenever a client gets disconnected
+    // 'disconnect' event is a built-in event from socket.io
+    socket.on('disconnect', () => {
+        // io.emit() emits an event to everybody
+        io.emit('message', 'A user has left!')
     })
 })
 
@@ -239,3 +250,11 @@ server.listen(port, () => {
 //     socket.emit('increment')
 // })
 // -----------------------------
+
+// 3 ways to emit an event:
+// 1. socket.emit() is to emit to this particular socket
+//  - socket.emit('message', 'Welcome!')
+// 2. socket.broadcast.emit() is to emit to everybody BUT this particular socket
+//  - socket.broadcast.emit('message', 'A new user has joined')
+// 3. io.emit() is to emit to everyone
+//  - io.emit('message', message)
