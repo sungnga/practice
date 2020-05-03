@@ -20,7 +20,7 @@ const publicDirectoryPath = path.join(__dirname, '../public')
 // Setup static directory to serve
 app.use(express.static(publicDirectoryPath))
 
-// Print a message when a new client connects
+// Listening for a 'connection' event
 // 1st arg: is the conncection event
 // 2nd arg: a callback function
 // socket is an object and it contains information about that new connection
@@ -32,13 +32,9 @@ app.use(express.static(publicDirectoryPath))
 io.on('connection', (socket) => {
     console.log('New  WebSocket connection')
 
-    // Emit a welcome event to client
     socket.emit('message', 'Welcome!')
 
-    // Listen for 'sendMessage' event
-    // Have access to the message that gets passed to the callback
     socket.on('sendMessage', (message) => {
-        // Send message to all connected clients
         io.emit('message', message)
     })
 })
@@ -197,7 +193,10 @@ server.listen(port, () => {
 // })
 // ***************************************
 
+// -----------------------------
 // Sending data to the client and receiving data from the client:
+// 
+// On server side:
 // socket is an object and it contains information about that new connection
 // We can use methods on that socket to communicate with that client
 // When we're working with socket.io and we're transferring data, we're sending and receiving what are called events
@@ -225,7 +224,7 @@ server.listen(port, () => {
 //     })
 // })
 
-// To receive an event that the server sends:
+// To receive an event/data from the server:
 // In chat.js file
 // Make sure the name of the event matches with the name you created the event
 // We have access to the data sent by the server in the callback function
@@ -239,3 +238,4 @@ server.listen(port, () => {
 //     // Create the name of the event
 //     socket.emit('increment')
 // })
+// -----------------------------
