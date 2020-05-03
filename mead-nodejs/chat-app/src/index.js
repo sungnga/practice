@@ -65,6 +65,18 @@ server.listen(port, () => {
 // 3. create a "dev" script to start the app using nodemon
 // 4. run both scripts to test your work
 
+// GOAL: Send a welcome message to new users
+// 1. have server emit 'message' when new client connects
+//  - send "Welcome!" as the event data
+// 2. have client listen for 'message' event and print the message to console
+
+// GOAL: Allow clients to send messages
+// 1. create a form with an input and button
+//  - similar to the weather app
+// 2. setup event listener for form submission
+//  - emit 'sendMessage' with input string as message data
+// 3. haeve server listen for 'sendMessage'
+//  - send message to all connected clients
 
 
 
