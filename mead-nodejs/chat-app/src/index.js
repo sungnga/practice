@@ -20,11 +20,32 @@ const publicDirectoryPath = path.join(__dirname, '../public')
 // Setup static directory to serve
 app.use(express.static(publicDirectoryPath))
 
+let count = 0
+
 // Print a message when a new client connects
 // 1st arg: is the conncection event
 // 2nd arg: a callback function
-io.on('connection', () => {
+// socket is an object and it contains information about that new connection
+// We can use methods on that socket to communicate with that client
+// When we're working with socket.io and we're transferring data, we're sending and receiving what are called events
+// All of your events are custom, fitting the needs of your application
+io.on('connection', (socket) => {
     console.log('New  WebSocket connection')
+
+    // Create a 'countUpdated' event
+    // Emitting an event from the server to the client
+    // Anything we provide after the event name argument is going to be available from the callback function on the client
+    // Here we're providing count for that callback
+    socket.emit('countUpdated', count)
+    // Use socket.on() method to listen for an incoming event
+    // 1st arg: the name of the event
+    // 2nd arg: a callback to run when the event name is triggered
+    // Use io.emit() instead of socket.emit() to send data back to the client ON ALL CONNECTIONS. DO THIS INSIDE THE CALLBACK FUNCTION
+    socket.on('increment', () => {
+        count++
+        // io.emit() will emit events to every single connections
+        io.emit('countUpdated', count)
+    })
 })
 
 // Starting the server up
@@ -168,3 +189,44 @@ server.listen(port, () => {
 //     console.log(`Server is running on port ${port}`)
 // })
 // ***************************************
+
+// Sending data to the client and receiving data from the client:
+// socket is an object and it contains information about that new connection
+// We can use methods on that socket to communicate with that client
+// When we're working with socket.io and we're transferring data, we're sending and receiving what are called events
+// All of your events are custom, fitting the needs of your application
+// io.on('connection', (socket) => {
+//     console.log('New  WebSocket connection')
+
+//     // Create a 'countUpdated' event
+//     // .emit() method emits an event from the server to the client
+//     // Can call the event name anything you want. Put it in quotes
+//     // Anything we provide after the event name argument is going to be available from the callback function on the client
+//     // Here we're providing count for that callback
+//     socket.emit('countUpdated', count)
+
+//     // Use socket.on() method to listen for an incoming event
+//     // 1st arg: the name of the event
+//     // 2nd arg: a callback to run when the event name is triggered
+//     // Use io.emit() instead of socket.emit() to send data back to the client ON ALL CONNECTIONS. DO THIS INSIDE THE CALLBACK FUNCTION
+//     socket.on('increment', () => {
+//         count++
+//         // io.emit() will emit events to every single connections
+//         io.emit('countUpdated', count)
+//     })
+// })
+
+// To receive an event that the server sends:
+// In chat.js file
+// Make sure the name of the event matches with the name you created the event
+// We have access to the data sent by the server in the callback function
+// socket.on('countUpdated', (count) => {
+//     console.log('The count has been updated', count)
+// })
+//
+// document.querySelector('#increment').addEventListener('click', () => {
+//     console.log('clicked')
+//     // Sending data back to the server
+//     // Create the name of the event
+//     socket.emit('increment')
+// })
