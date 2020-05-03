@@ -42,10 +42,12 @@ io.on('connection', (socket) => {
         io.emit('message', message)
     })
 
-    // Run some code whenever a client gets disconnected
+    // socket.on('disconnect', ...) means listening for a disconnect event
     // 'disconnect' event is a built-in event from socket.io
+    // 2nd arg: this callback function runs when the 'disconnect' event is triggered
     socket.on('disconnect', () => {
         // io.emit() emits an event to everybody
+        // In this case, notifying everybody that a user has left
         io.emit('message', 'A user has left!')
     })
 })
@@ -258,3 +260,13 @@ server.listen(port, () => {
 //  - socket.broadcast.emit('message', 'A new user has joined')
 // 3. io.emit() is to emit to everyone
 //  - io.emit('message', message)
+
+// To disconnect a client:
+// socket.on('disconnect', ...) means listening for a disconnect event
+// 'disconnect' event is a built-in event from socket.io
+// 2nd arg: this callback function runs when the 'disconnect' event is triggered
+// socket.on('disconnect', () => {
+//     // io.emit() emits an event to everybody
+//     // In this case, notifying everybody that a user has left
+//     io.emit('message', 'A user has left!')
+// })
