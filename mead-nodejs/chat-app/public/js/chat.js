@@ -14,13 +14,16 @@ const messageTemplate = document.querySelector('#message-template').innerHTML
 const locationTemplate = document.querySelector('#location-template').innerHTML
 
 // Listen for 'message' event
+// 'message' inside the callback we get back from the server is an object
+// Use message.text to extract the text property off of message object
 socket.on('message', (message) => {
     console.log(message)
     // Render the message
     // To render the data dynamically, provide the data as a 2nd arg to .render() method
     // Here, we pass in the data into the template. Mustache will render it
     const html = Mustache.render(messageTemplate, {
-        message
+        message: message.text,
+        createdAt: moment(message.createdAt).format('h:mm a')
     })
     // Add the html to the messages list
     $messages.insertAdjacentHTML('beforeend', html)

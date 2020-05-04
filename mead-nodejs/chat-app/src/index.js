@@ -4,9 +4,12 @@ const express = require('express')
 // Returns a function
 const socketio = require('socket.io')
 const Filter = require('bad-words')
+// Require will return that object that we exported
+// Use destructuring to grab the property we want to use
+// generateMessage is a function. So we can call this function anywhere inside our code
+const {generateMessage} = require('./utils/messages')
 
 const app = express()
-
 // Create a server that is outside of the Express library
 // Then we configure it to use the Express app
 const server = http.createServer(app)
@@ -33,11 +36,8 @@ app.use(express.static(publicDirectoryPath))
 io.on('connection', (socket) => {
     console.log('New  WebSocket connection')
 
-    // socket.emit() is to emit to this particular socket
-    socket.emit('message', 'Welcome!')
-
-    // socket.broadcast.emit() is to emit to everybody BUT this particular socket
-    socket.broadcast.emit('message', 'A new user has joined')
+    socket.emit('message', generateMessage('Welcome!'))
+    socket.broadcast.emit('message', generateMessage('A new user has joined'))
 
     socket.on('sendMessage', (message, callback) => {
         const filter = new Filter()
@@ -46,15 +46,13 @@ io.on('connection', (socket) => {
             return callback('Profanity is not allowed!')
         }
 
-        // io.emit() is to emit to everyone
-        io.emit('message', message)
+        io.emit('message', generateMessage(message))
         callback()
     })
 
     // Listening for 'disconnect' event
     socket.on('disconnect', () => {
-        // io.emit() emits an event to everybody
-        io.emit('message', 'A user has left!')
+        io.emit('message', generateMessage('A user has left!'))
     })
 
     // Share your location
@@ -363,3 +361,13 @@ server.listen(port, () => {
 // 7. To render the data dynamically, provide the data as a 2nd arg to .render() method
     // Here, we pass in the data into the template. Mustache will render it
     // const html = Mustache.render(messageTemplate, { message })
+
+// TIMESTAMPS
+// https://momentjs.com
+// To generate a timestamp:  const newTime  = new Date().getTime()
+// Load the moment library script in index.html
+// Use the moment library in the Javascript chat.js file
+    // const html = Mustache.render(messageTemplate, {
+    //     message: message.text,
+    //     createdAt: moment(message.createdAt).format('h:mm a')
+    // })
