@@ -6,6 +6,7 @@ socket.on('message', (message) => {
     console.log(message)
 })
 
+// Send a message
 document.querySelector('#message-form').addEventListener('submit', (e) => {
     e.preventDefault()
     // The value of the form input
@@ -16,7 +17,18 @@ document.querySelector('#message-form').addEventListener('submit', (e) => {
     socket.emit('sendMessage', clientMessage)
 })
 
+// Share your location
+document.querySelector('#send-location').addEventListener('click', () => {
+    if (!navigator.geolocation) {
+        return alert('Geolation is not supported')
+    }
 
+    navigator.geolocation.getCurrentPosition((position) => {
+        const latitude = position.coords.latitude
+        const longitude = position.coords.longitude
+        socket.emit('sendLocation', latitude, longitude)
+    })
+})
 
 // =====================
 // NOTES

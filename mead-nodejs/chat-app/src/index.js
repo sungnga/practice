@@ -21,6 +21,7 @@ const publicDirectoryPath = path.join(__dirname, '../public')
 app.use(express.static(publicDirectoryPath))
 
 // Run some code when a new user is connected
+// io.on('connection', ...) means the server is listening for the 'connection' event
 // 1st arg: is the conncection event
 // 'connection' event is a built-in event from socket.io
 // 2nd arg: a callback function to run when a new user is connected
@@ -42,13 +43,17 @@ io.on('connection', (socket) => {
         io.emit('message', message)
     })
 
-    // socket.on('disconnect', ...) means listening for a disconnect event
+    // socket.on('disconnect', ...) means listening for a 'disconnect' event from this particular socket
     // 'disconnect' event is a built-in event from socket.io
     // 2nd arg: this callback function runs when the 'disconnect' event is triggered
     socket.on('disconnect', () => {
         // io.emit() emits an event to everybody
         // In this case, notifying everybody that a user has left
         io.emit('message', 'A user has left!')
+    })
+
+    socket.on('sendLocation', (latitude, longitude) => {
+        io.emit('message', `https://google.com/maps?q=${latitude},${longitude}`)
     })
 })
 
@@ -87,7 +92,11 @@ server.listen(port, () => {
 // 3. haeve server listen for 'sendMessage'
 //  - send message to all connected clients
 
-
+// GOAL: Share coordinates with other users
+// 1. have client emit 'sendLocation' with an object as the data
+//  - object should contain latitude and longitude properties
+// 2. server should listen for 'sendLocation'
+//  - when fired, send a 'message' to all connected clients "Location: long, lat"
 
 
 
@@ -269,4 +278,10 @@ server.listen(port, () => {
 //     // io.emit() emits an event to everybody
 //     // In this case, notifying everybody that a user has left
 //     io.emit('message', 'A user has left!')
+// })
+
+// To share a location on google maps:
+// https://google.com/maps?q=<lat>,<long>
+// socket.on('sendLocation', (latitude, longitude) => {
+//     io.emit('message', `https://google.com/maps?q=${latitude},${longitude}`)
 // })
