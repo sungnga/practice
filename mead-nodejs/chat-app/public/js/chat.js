@@ -14,7 +14,13 @@ document.querySelector('#message-form').addEventListener('submit', (e) => {
 
     // Emit 'sendMessage' event to the server
     // clientMessage gets passed to the callback function on the server side
-    socket.emit('sendMessage', clientMessage)
+    socket.emit('sendMessage', clientMessage, (error) => {
+        if (error) {
+            return console.log(error)
+        }
+
+        console.log('Message delivered!')
+    })
 })
 
 // Share your location
@@ -26,7 +32,9 @@ document.querySelector('#send-location').addEventListener('click', () => {
     navigator.geolocation.getCurrentPosition((position) => {
         const latitude = position.coords.latitude
         const longitude = position.coords.longitude
-        socket.emit('sendLocation', latitude, longitude)
+        socket.emit('sendLocation', latitude, longitude, () => {
+            console.log('Location shared!')
+        })
     })
 })
 

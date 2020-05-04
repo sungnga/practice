@@ -3,6 +3,7 @@ const http = require('http')
 const express = require('express')
 // Returns a function
 const socketio = require('socket.io')
+const Filter = require('bad-words')
 
 const app = express()
 
@@ -38,22 +39,28 @@ io.on('connection', (socket) => {
     // socket.broadcast.emit() is to emit to everybody BUT this particular socket
     socket.broadcast.emit('message', 'A new user has joined')
 
-    socket.on('sendMessage', (message) => {
+    socket.on('sendMessage', (message, callback) => {
+        const filter = new Filter()
+
+        if (filter.isProfane(message)) {
+            return callback('Profanity is not allowed!')
+        }
+
         // io.emit() is to emit to everyone
         io.emit('message', message)
+        callback()
     })
 
-    // socket.on('disconnect', ...) means listening for a 'disconnect' event from this particular socket
-    // 'disconnect' event is a built-in event from socket.io
-    // 2nd arg: this callback function runs when the 'disconnect' event is triggered
+    // Listening for 'disconnect' event
     socket.on('disconnect', () => {
         // io.emit() emits an event to everybody
-        // In this case, notifying everybody that a user has left
         io.emit('message', 'A user has left!')
     })
 
-    socket.on('sendLocation', (latitude, longitude) => {
+    // Share your location
+    socket.on('sendLocation', (latitude, longitude, callback) => {
         io.emit('message', `https://google.com/maps?q=${latitude},${longitude}`)
+        callback()
     })
 })
 
@@ -98,6 +105,10 @@ server.listen(port, () => {
 // 2. server should listen for 'sendLocation'
 //  - when fired, send a 'message' to all connected clients "Location: long, lat"
 
+// GOAL: Setup acknowledgement
+// 1. set up the client acknowlegement function
+// 2. set up the  server to send back the acknowledgement
+// 3. have the client print "Location shared!" when acknowledged
 
 
 
@@ -282,6 +293,26 @@ server.listen(port, () => {
 
 // To share a location on google maps:
 // https://google.com/maps?q=<lat>,<long>
+// server side::
 // socket.on('sendLocation', (latitude, longitude) => {
 //     io.emit('message', `https://google.com/maps?q=${latitude},${longitude}`)
 // })
+//
+// client side::
+// document.querySelector('#send-location').addEventListener('click', () => {
+//     if (!navigator.geolocation) {
+//         return alert('Geolation is not supported')
+//     }
+
+//     navigator.geolocation.getCurrentPosition((position) => {
+//         const latitude = position.coords.latitude
+//         const longitude = position.coords.longitude
+//         socket.emit('sendLocation', latitude, longitude)
+//     })
+// }) 
+
+// EVENT ACKNOWLEDGEMENT
+// server (emit) -> client (receive)    --client sends acknowledgement--> server
+// client (emit) -> server (receive)    --server sends acknowledgement--> client
+// Whoever emits the event SETS UP A CALLBACK function as a 3rd arg
+// Whoever receives the event RECEIVES THE CALLBACK which is passed in as 2nd arg in the original callback function. Then call that function inside the orginal callback
