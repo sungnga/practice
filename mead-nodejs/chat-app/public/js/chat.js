@@ -5,10 +5,24 @@ const $messageForm = document.querySelector('#message-form')
 const $messageFormInput = $messageForm.querySelector('input')
 const $messageFormButton = $messageForm.querySelector('button')
 const $sendLocationButton = document.querySelector('#send-location')
+// Where we want to render the message
+const $messages = document.querySelector('#messages')
+
+// Templates
+// Calling .innerHTML will get the elements inside the script tag
+const messageTemplate = document.querySelector('#message-template').innerHTML
 
 // Listen for 'message' event
 socket.on('message', (message) => {
     console.log(message)
+    // Render to the browser when new message comes in
+    // To render the data dynamically, provide the data as a 2nd arg to .render() method
+    // Here, we pass in the data into the template. Mustache will render it
+    const html = Mustache.render(messageTemplate, {
+        message
+    })
+    // This is where we insert the incoming message, inside the div tag
+    $messages.insertAdjacentHTML('beforeend', html)
 })
 
 // Send a message

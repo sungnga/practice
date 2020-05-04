@@ -320,3 +320,33 @@ server.listen(port, () => {
 // client (emit) -> server (receive)    --server sends acknowledgement--> client
 // Whoever emits the event SETS UP A CALLBACK function as a 3rd arg
 // Whoever receives the event RECEIVES THE CALLBACK which is passed in as 2nd arg in the original callback function. Then call that function inside the orginal callback
+
+// Rendering message template:
+// 1. Import the Mustache library script into index.html file
+//  - this library is used to render our message templates
+// 2. Define the message template index.html file
+    // <script id="message-template" type="text/html">
+    //     <div>
+    //         <p>{{message}}</p>
+    //     </div>
+    // </script> 
+// 3. Create a new html tag that the Mustache lib will render the message dynamically
+    // <div id="messages"></div>
+// 4. In JS chat.js file, set up variables so that we can select the message div tag and the message template
+    // const $messages = document.querySelector('#messages')
+    // const messageTemplate = document.querySelector('#message-template').innerHTML
+// 5. Set up HTML to render the message inside the socket.io('event', ...) where the message is received
+    // socket.on('message', (message) => {
+    //     console.log(message)
+    //     // Render the message template with the data given in the 2nd arg
+    //     const html = Mustache.render(messageTemplate, {
+    //         message
+    //     })
+    //     // This is where we insert the incoming message, inside the div tag
+    //     $messages.insertAdjacentHTML('beforeend', html)
+    // })
+// 6. Setup the message template to render the message dynamically. Mustache will be able to replace what's inside the p tag with the incoming message
+    // <p>{{message}}</p>
+// 7. To render the data dynamically, provide the data as a 2nd arg to .render() method
+    // Here, we pass in the data into the template. Mustache will render it
+    // const html = Mustache.render(messageTemplate, { message })
