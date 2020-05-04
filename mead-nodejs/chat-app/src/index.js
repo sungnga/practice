@@ -7,7 +7,7 @@ const Filter = require('bad-words')
 // Require will return that object that we exported
 // Use destructuring to grab the property we want to use
 // generateMessage is a function. So we can call this function anywhere inside our code
-const {generateMessage} = require('./utils/messages')
+const {generateMessage, generateLocationMessage} = require('./utils/messages')
 
 const app = express()
 // Create a server that is outside of the Express library
@@ -57,7 +57,8 @@ io.on('connection', (socket) => {
 
     // Share your location
     socket.on('sendLocation', (latitude, longitude, callback) => {
-        io.emit('locationMessage', `https://google.com/maps?q=${latitude},${longitude}`)
+        const url = `https://google.com/maps?q=${latitude},${longitude}`
+        io.emit('locationMessage', generateLocationMessage(url))
         callback()
     })
 
@@ -125,6 +126,15 @@ server.listen(port, () => {
 //  - URL to link shoul dbe the maps URL (dynamic)
 // 3. select the template from javascript
 // 4. render the template with the URL and append to messages list
+
+// GOAL: Add timestamps for location messages
+// 1. create generateLocationMessage and export
+//  - { url: '', createAt: 0 }
+// 2. use generateLocationMessage when server emits locationMessage
+// 3. Update template to render time before the url
+// 4. Compile the template with the URL and the formatted time
+
+
 
 
 // ===================
@@ -253,14 +263,14 @@ server.listen(port, () => {
 // Use .emit() method to emit an event or data
 // io.on('connection', (socket) => {
 //     console.log('New  WebSocket connection')
-
+//
 //     // Create a 'countUpdated' event
 //     // .emit() method emits an event from the server to the client
 //     // Can call the event name anything you want. Put it in quotes
 //     // Anything we provide after the event name argument is going to be available from the callback function on the client
 //     // Here we're providing count for that callback
 //     socket.emit('countUpdated', count)
-
+//
 //     // Use socket.on() method to listen for an incoming event
 //     // 1st arg: the name of the event
 //     // 2nd arg: a callback to run when the event name is triggered
@@ -318,7 +328,7 @@ server.listen(port, () => {
 //     if (!navigator.geolocation) {
 //         return alert('Geolation is not supported')
 //     }
-
+//
 //     navigator.geolocation.getCurrentPosition((position) => {
 //         const latitude = position.coords.latitude
 //         const longitude = position.coords.longitude

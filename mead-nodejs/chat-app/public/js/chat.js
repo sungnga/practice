@@ -76,10 +76,13 @@ $sendLocationButton.addEventListener('click', () => {
     })
 })
 
-socket.on('locationMessage', (url) => {
-    console.log(url)
+socket.on('locationMessage', (message) => {
+    console.log(message)
     // Render the location url
-    const html = Mustache.render(locationTemplate, { url })
+    const html = Mustache.render(locationTemplate, {
+        url: message.url,
+        createdAt: moment(message.createdAt).format('h:mm a')
+    })
     // Add the html to the messages list
     $messages.insertAdjacentHTML('beforeend', html)
 })
