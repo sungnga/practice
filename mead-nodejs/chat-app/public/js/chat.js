@@ -13,6 +13,12 @@ const $messages = document.querySelector('#messages')
 const messageTemplate = document.querySelector('#message-template').innerHTML
 const locationTemplate = document.querySelector('#location-template').innerHTML
 
+// Options
+// Qs library(cloudflare) will parse the query string provided by the user
+// location.search is the query string
+// What's returned from Qs.parse() is an object with key/value pair
+const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true})
+
 // Listen for 'message' event
 // 'message' inside the callback we get back from the server is an object
 // Use message.text to extract the text property off of message object
@@ -87,7 +93,7 @@ socket.on('locationMessage', (message) => {
     $messages.insertAdjacentHTML('beforeend', html)
 })
 
-
+socket.emit('join', {username, room})
 
 
 // =====================

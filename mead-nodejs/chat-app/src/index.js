@@ -32,12 +32,23 @@ app.use(express.static(publicDirectoryPath))
 // socket is an object and it contains information about that new connection
 // We can use methods on that socket to communicate with that client
 // Use .on() method to listen for an event
-// Use .emit() method to emit an event or data
+// Use .emit() method to emit an event and the data along with it
+// socket.emit(), io.emit(), socket.broadcast.emit()
+// io.to().emit() emits an event to everybody in a specific room
+// socket.broadcast.to().emit() emits an event to everybody except this particular socket in a specific room
 io.on('connection', (socket) => {
     console.log('New  WebSocket connection')
 
-    socket.emit('message', generateMessage('Welcome!'))
-    socket.broadcast.emit('message', generateMessage('A new user has joined'))
+    // Listen for 'join' event
+    // The object we get back is destructured with username and room
+    socket.on('join', ({ username, room }) => {
+        // The user/client joins the room
+        socket.join(room)
+        // Emits a welcome message to this new user who just joined the room
+        socket.emit('message', generateMessage('Welcome!'))
+        // Emits the message to this room
+        socket.broadcast.to(room).emit('message', generateMessage(`${username} has joined!`))   
+    })
 
     socket.on('sendMessage', (message, callback) => {
         const filter = new Filter()
@@ -46,7 +57,7 @@ io.on('connection', (socket) => {
             return callback('Profanity is not allowed!')
         }
 
-        io.emit('message', generateMessage(message))
+        io.to('seattle').emit('message', generateMessage(message))
         callback()
     })
 
