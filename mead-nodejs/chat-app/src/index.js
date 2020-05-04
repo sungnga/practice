@@ -59,9 +59,10 @@ io.on('connection', (socket) => {
 
     // Share your location
     socket.on('sendLocation', (latitude, longitude, callback) => {
-        io.emit('message', `https://google.com/maps?q=${latitude},${longitude}`)
+        io.emit('locationMessage', `https://google.com/maps?q=${latitude},${longitude}`)
         callback()
     })
+
 })
 
 // Starting the server up
@@ -114,6 +115,18 @@ server.listen(port, () => {
 // 1. set up a selector at the top of the file
 // 2. disable the button just before getting the current position
 // 3. Enable the button in the acknowledge callback
+
+// GOAL: Create a separate event for location sharing messages
+// 1. have server emit 'locationMessage' with the URL
+// 2. have the client listen for 'locationMessage' and print the URL to the console
+
+// GOAL: Duplicate the message template
+// 1. duplicate the message template
+//  - change the id to something else
+// 2. add a link inside the paragraph with the link text "My current location"
+//  - URL to link shoul dbe the maps URL (dynamic)
+// 3. select the template from javascript
+// 4. render the template with the URL and append to messages list
 
 
 // ===================
@@ -332,7 +345,7 @@ server.listen(port, () => {
     // </script> 
 // 3. Create a new html tag that the Mustache lib will render the message dynamically
     // <div id="messages"></div>
-// 4. In JS chat.js file, set up variables so that we can select the message div tag and the message template
+// 4. Select the message div tag and the message template from Javascript. In JS chat.js file
     // const $messages = document.querySelector('#messages')
     // const messageTemplate = document.querySelector('#message-template').innerHTML
 // 5. Set up HTML to render the message inside the socket.io('event', ...) where the message is received

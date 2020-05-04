@@ -11,17 +11,18 @@ const $messages = document.querySelector('#messages')
 // Templates
 // Calling .innerHTML will get the elements inside the script tag
 const messageTemplate = document.querySelector('#message-template').innerHTML
+const locationTemplate = document.querySelector('#location-template').innerHTML
 
 // Listen for 'message' event
 socket.on('message', (message) => {
     console.log(message)
-    // Render to the browser when new message comes in
+    // Render the message
     // To render the data dynamically, provide the data as a 2nd arg to .render() method
     // Here, we pass in the data into the template. Mustache will render it
     const html = Mustache.render(messageTemplate, {
         message
     })
-    // This is where we insert the incoming message, inside the div tag
+    // Add the html to the messages list
     $messages.insertAdjacentHTML('beforeend', html)
 })
 
@@ -71,6 +72,17 @@ $sendLocationButton.addEventListener('click', () => {
         })
     })
 })
+
+socket.on('locationMessage', (url) => {
+    console.log(url)
+    // Render the location url
+    const html = Mustache.render(locationTemplate, { url })
+    // Add the html to the messages list
+    $messages.insertAdjacentHTML('beforeend', html)
+})
+
+
+
 
 // =====================
 // NOTES
