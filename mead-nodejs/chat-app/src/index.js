@@ -110,6 +110,10 @@ server.listen(port, () => {
 // 2. set up the  server to send back the acknowledgement
 // 3. have the client print "Location shared!" when acknowledged
 
+// GOAL: Disable the send location button while location being sent
+// 1. set up a selector at the top of the file
+// 2. disable the button just before getting the current position
+// 3. Enable the button in the acknowledge callback
 
 
 // ===================
