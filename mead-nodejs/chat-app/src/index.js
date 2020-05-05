@@ -60,7 +60,14 @@ io.on('connection', (socket) => {
         socket.emit('message', generateMessage('Admin', 'Welcome!'))
         // Emits the message to this room
         socket.broadcast.to(user.room).emit('message', generateMessage('Admin', `${user.username} has joined!`))  
-        
+        // Emit a 'roomData' event to everybody including the new user
+        // The data is an object that has the room and list of users
+        // Call getUsersInRoom function to get a list of users in a specific room
+        io.to(user.room).emit('roomData', {
+            room: user.room,
+            users: getUsersInRoom(user.room)
+        })
+
         // Send an acknowledgement to the user when they successfully joined
         callback()
     })
@@ -92,7 +99,14 @@ io.on('connection', (socket) => {
 
         // Emit a message to the chat room that this user has left
         if (user) {
+            // Emit a 'message' event to everybody in the room
             io.to(user.room).emit('message', generateMessage('Admin', `${user.username} has left!`))
+            // Emit a 'roomData' event to everybody
+            // The data is an object that has the room and list of users
+            io.to(user.room).emit('roomData', {
+                room: user.room,
+                users: getUsersInRoom(user.room)
+            })
         }        
     })
 })

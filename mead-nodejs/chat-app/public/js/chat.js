@@ -12,6 +12,7 @@ const $messages = document.querySelector('#messages')
 // Calling .innerHTML will get the elements inside the script tag
 const messageTemplate = document.querySelector('#message-template').innerHTML
 const locationTemplate = document.querySelector('#location-template').innerHTML
+const sidebarTemplate = document.querySelector('#sidebar-template').innerHTML
 
 // Options
 // Qs library(cloudflare) will parse the query string provided by the user
@@ -104,6 +105,17 @@ socket.emit('join', { username, room }, (error) => {
         alert(error)
         location.href = '/'
     }
+})
+
+// Listen for 'roomData' event
+socket.on('roomData', ({ room, users }) => {
+    // Render the sidebar template with the data
+    const html = Mustache.render(sidebarTemplate, {
+        room,
+        users
+    })
+    // A place to display the rendered data
+    document.querySelector('#sidebar').innerHTML = html
 })
 
 
