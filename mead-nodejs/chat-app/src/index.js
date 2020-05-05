@@ -7,7 +7,8 @@ const Filter = require('bad-words')
 // Require will return that object that we exported
 // Use destructuring to grab the property we want to use
 // generateMessage is a function. So we can call this function anywhere inside our code
-const {generateMessage, generateLocationMessage} = require('./utils/messages')
+const { generateMessage, generateLocationMessage } = require('./utils/messages')
+const { addUser, removeUser, getUser, getUsersInRoom } = require('./utils/users')
 
 const app = express()
 // Create a server that is outside of the Express library
@@ -41,13 +42,27 @@ io.on('connection', (socket) => {
 
     // Listen for 'join' event
     // The object we get back is destructured with username and room
-    socket.on('join', ({ username, room }) => {
+    // Pass in an acknowledgement callback to let the user know if they have successfully joined the room
+    socket.on('join', ({ username, room }, callback) => {
+        // If a user is successfully able to join the room, the user is stored in the variable user. If unable to join, an error is returned
+        // Destructuring the error and user properties because addUser function returns AN OBJECT
+        // NOTE: the error value is handled in the addUser function
+        const { error, user } = addUser({ id: socket.id, username, room })
+
+        // If error, return early and send acknowledgement to user with the error
+        if (error) {
+            return callback(error)
+        }
+
         // The user/client joins the room
-        socket.join(room)
+        socket.join(user.room)
         // Emits a welcome message to this new user who just joined the room
         socket.emit('message', generateMessage('Welcome!'))
         // Emits the message to this room
-        socket.broadcast.to(room).emit('message', generateMessage(`${username} has joined!`))   
+        socket.broadcast.to(user.room).emit('message', generateMessage(`${user.username} has joined!`))  
+        
+        // Send an acknowledgement to the user when they successfully joined
+        callback()
     })
 
     socket.on('sendMessage', (message, callback) => {
@@ -61,11 +76,6 @@ io.on('connection', (socket) => {
         callback()
     })
 
-    // Listening for 'disconnect' event
-    socket.on('disconnect', () => {
-        io.emit('message', generateMessage('A user has left!'))
-    })
-
     // Share your location
     socket.on('sendLocation', (latitude, longitude, callback) => {
         const url = `https://google.com/maps?q=${latitude},${longitude}`
@@ -73,6 +83,16 @@ io.on('connection', (socket) => {
         callback()
     })
 
+    // Listening for 'disconnect' event
+    socket.on('disconnect', () => {
+        // Remove user from the chat room when they disconnect
+        const user = removeUser(socket.id)
+
+        // Emit a message to the chat room that this user has left
+        if (user) {
+            io.to(user.room).emit('message', generateMessage(`${user.username} has left!`))
+        }        
+    })
 })
 
 // Starting the server up

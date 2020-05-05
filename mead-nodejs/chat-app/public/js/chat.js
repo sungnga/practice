@@ -93,7 +93,16 @@ socket.on('locationMessage', (message) => {
     $messages.insertAdjacentHTML('beforeend', html)
 })
 
-socket.emit('join', {username, room})
+// 3rd arg: a callback function where the server can send back acknowledgement to the user
+// If error, meaning that the user weren't able to join the chat room
+//  - send an alert with the error message
+//  - redirect user to the home screen
+socket.emit('join', { username, room }, (error) => {
+    if (error) {
+        alert(error)
+        location.href = '/'
+    }
+})
 
 
 // =====================
