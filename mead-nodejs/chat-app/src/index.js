@@ -10,6 +10,7 @@ const Filter = require('bad-words')
 const { generateMessage, generateLocationMessage } = require('./utils/messages')
 const { addUser, removeUser, getUser, getUsersInRoom } = require('./utils/users')
 
+// Create an Express application
 const app = express()
 // Create a server that is outside of the Express library
 // Then we configure it to use the Express app
@@ -38,7 +39,7 @@ app.use(express.static(publicDirectoryPath))
 // io.to().emit() emits an event to everybody in a specific room
 // socket.broadcast.to().emit() emits an event to everybody except this particular socket in a specific room
 io.on('connection', (socket) => {
-    console.log('New  WebSocket connection')
+    console.log('New WebSocket connection')
 
     // Listen for 'join' event
     // The object we get back is destructured with username and room
@@ -72,6 +73,7 @@ io.on('connection', (socket) => {
         callback()
     })
 
+    // Listen for 'sendMessage' event
     socket.on('sendMessage', (message, callback) => {
         const user = getUser(socket.id)
         const filter = new Filter()
@@ -221,16 +223,16 @@ server.listen(port, () => {
 // *******************************************
 // const path = require('path')
 // const express = require('express')
-
+//
 // const app = express()
 // const port = process.env.PORT || 3000
-
+//
 // // Define paths for Express config
 // const publicDirectoryPath = path.join(__dirname, '../public')
-
+//
 // // Setup static directory to serve
 // app.use(express.static(publicDirectoryPath))
-
+//
 // // Start up and run the server
 // app.listen(port, () => {
 //     console.log(`Server is running on port ${port}`)
