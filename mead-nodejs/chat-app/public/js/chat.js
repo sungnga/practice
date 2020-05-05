@@ -18,7 +18,35 @@ const sidebarTemplate = document.querySelector('#sidebar-template').innerHTML
 // Qs library(cloudflare) will parse the query string provided by the user
 // location.search is the query string
 // What's returned from Qs.parse() is an object with key/value pair
-const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true})
+const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true })
+
+// Autoscroll function
+const autoscroll = () => {
+    // Alternatively, if you're viewing message history and a new message comes in and the autoscroll always takes you to the bottom where the latest/new message is, then just run this one-line code
+    // $messages.scrollTop = $messages.scrollHeight
+
+    // New message element
+    const $newMessage = $messages.lastElementChild
+
+    // Height of the new message
+    const newMessageStyles = getComputedStyle($newMessage)
+    const newMessageMargin = parseInt(newMessageStyles.marginBottom)
+    const newMessageHeight = $newMessage.offsetHeight + newMessageMargin
+
+    // Visable height
+    const visableHeight = $messages.offsetHeight
+
+    // Height of messages container
+    const containerHeight = $messages.scrollHeight
+    
+    // How far have I scrolled?
+    const scrollOffset = $messages.scrollTop + visableHeight
+
+    // If the user scrolls up to view message history and a new message comes in, it won't autoscroll to the latest incoming message
+    if (containerHeight - newMessageHeight <= scrollOffset) {
+        $messages.scrollTop = $messages.scrollHeight
+    }
+}
 
 // Listen for 'message' event
 // 'message' inside the callback we get back from the server is an object
@@ -35,9 +63,36 @@ socket.on('message', (message) => {
     })
     // Add the html to the messages list
     $messages.insertAdjacentHTML('beforeend', html)
+    autoscroll()
+})
+
+// Listen for 'locationMessage' event
+socket.on('locationMessage', (message) => {
+    console.log(message)
+    // Render the location template with the data provided
+    const html = Mustache.render(locationTemplate, {
+        username: message.username,
+        url: message.url,
+        createdAt: moment(message.createdAt).format('h:mm a')
+    })
+    // Where to display the rendered html
+    $messages.insertAdjacentHTML('beforeend', html)
+    autoscroll()
+})
+
+// Listen for 'roomData' event
+socket.on('roomData', ({ room, users }) => {
+    // Render the sidebar template with the data
+    const html = Mustache.render(sidebarTemplate, {
+        room,
+        users
+    })
+    // A place to display the rendered data
+    document.querySelector('#sidebar').innerHTML = html
 })
 
 // Send a message
+// Emit a 'sendMessage' event
 $messageForm.addEventListener('submit', (e) => {
     e.preventDefault()
 
@@ -65,6 +120,8 @@ $messageForm.addEventListener('submit', (e) => {
 })
 
 // Share your location
+// Emit a 'sendLocation' event
+// The data provided is the latitude and longitude of the location
 $sendLocationButton.addEventListener('click', () => {
     if (!navigator.geolocation) {
         return alert('Geolation is not supported')
@@ -84,18 +141,8 @@ $sendLocationButton.addEventListener('click', () => {
     })
 })
 
-socket.on('locationMessage', (message) => {
-    console.log(message)
-    // Render the location url
-    const html = Mustache.render(locationTemplate, {
-        username: message.username,
-        url: message.url,
-        createdAt: moment(message.createdAt).format('h:mm a')
-    })
-    // Add the html to the messages list
-    $messages.insertAdjacentHTML('beforeend', html)
-})
-
+// Emit a 'join' event
+// The data provided is an object with the username and room name
 // 3rd arg: a callback function where the server can send back acknowledgement to the user
 // If error, meaning that the user weren't able to join the chat room
 //  - send an alert with the error message
@@ -107,16 +154,6 @@ socket.emit('join', { username, room }, (error) => {
     }
 })
 
-// Listen for 'roomData' event
-socket.on('roomData', ({ room, users }) => {
-    // Render the sidebar template with the data
-    const html = Mustache.render(sidebarTemplate, {
-        room,
-        users
-    })
-    // A place to display the rendered data
-    document.querySelector('#sidebar').innerHTML = html
-})
 
 
 // =====================
@@ -129,7 +166,7 @@ socket.on('roomData', ({ room, users }) => {
 // socket.on('countUpdated', (count) => {
 //     console.log('The count has been updated', count)
 // })
-
+//
 // document.querySelector('#increment').addEventListener('click', () => {
 //     console.log('clicked')
 //     // Sending data back to the server
