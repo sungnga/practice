@@ -112,7 +112,8 @@ $messageForm.addEventListener('submit', (e) => {
 
         // If the server sends back an error from the callback
         if (error) {
-            return console.log(error)
+            // return console.log(error)
+            return alert(error)
         }
 
         console.log('Message delivered!')
