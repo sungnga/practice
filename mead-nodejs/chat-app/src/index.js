@@ -57,29 +57,31 @@ io.on('connection', (socket) => {
         // The user/client joins the room
         socket.join(user.room)
         // Emits a welcome message to this new user who just joined the room
-        socket.emit('message', generateMessage('Welcome!'))
+        socket.emit('message', generateMessage('Admin', 'Welcome!'))
         // Emits the message to this room
-        socket.broadcast.to(user.room).emit('message', generateMessage(`${user.username} has joined!`))  
+        socket.broadcast.to(user.room).emit('message', generateMessage('Admin', `${user.username} has joined!`))  
         
         // Send an acknowledgement to the user when they successfully joined
         callback()
     })
 
     socket.on('sendMessage', (message, callback) => {
+        const user = getUser(socket.id)
         const filter = new Filter()
 
         if (filter.isProfane(message)) {
             return callback('Profanity is not allowed!')
         }
 
-        io.to('seattle').emit('message', generateMessage(message))
+        io.to(user.room).emit('message', generateMessage(user.username, message))
         callback()
     })
 
     // Share your location
     socket.on('sendLocation', (latitude, longitude, callback) => {
+        const user = getUser(socket.id)
         const url = `https://google.com/maps?q=${latitude},${longitude}`
-        io.emit('locationMessage', generateLocationMessage(url))
+        io.to(user.room).emit('locationMessage', generateLocationMessage(user.username, url))
         callback()
     })
 
@@ -90,7 +92,7 @@ io.on('connection', (socket) => {
 
         // Emit a message to the chat room that this user has left
         if (user) {
-            io.to(user.room).emit('message', generateMessage(`${user.username} has left!`))
+            io.to(user.room).emit('message', generateMessage('Admin', `${user.username} has left!`))
         }        
     })
 })
@@ -165,6 +167,17 @@ server.listen(port, () => {
 // 3. Update template to render time before the url
 // 4. Compile the template with the URL and the formatted time
 
+// GOAL: Send messages to correct room
+// 1. use getUser inside 'sendMessage' event handler to get user data
+// 2. emit the message to their current room
+// 3. test your work!
+// 4. repeat for 'sendLocation' event
+
+// GOAL: Render username for text messages
+// 1. setup the server to send username to client
+// 2. edit every call to 'generateMessage' to include username
+//  - use "Admin" for sts messages like connect/welcome/disconnect
+// 3. update client to render username in template
 
 
 

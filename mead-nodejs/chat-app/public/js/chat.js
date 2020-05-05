@@ -28,6 +28,7 @@ socket.on('message', (message) => {
     // To render the data dynamically, provide the data as a 2nd arg to .render() method
     // Here, we pass in the data into the template. Mustache will render it
     const html = Mustache.render(messageTemplate, {
+        username: message.username,
         message: message.text,
         createdAt: moment(message.createdAt).format('h:mm a')
     })
@@ -86,6 +87,7 @@ socket.on('locationMessage', (message) => {
     console.log(message)
     // Render the location url
     const html = Mustache.render(locationTemplate, {
+        username: message.username,
         url: message.url,
         createdAt: moment(message.createdAt).format('h:mm a')
     })
