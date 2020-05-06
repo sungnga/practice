@@ -2,21 +2,24 @@
 
 console.log('Apooooop.js is running');
 
-// Define JSX, which the browser doesn't understand
-// When working with JSX, can only have a single root element
-// For readability purposes, wrap the elements inside parenthises ()
-var template = React.createElement(
+var app = {
+    title: 'Indecision App',
+    subtitle: 'Are you ready?'
+    // Define JSX, which the browser doesn't understand
+    // When working with JSX, can only have a single root element. Wrap multiple elements inside the root element
+    // For readability purposes, wrap the elements inside parenthises ()
+};var template = React.createElement(
     'div',
     null,
     React.createElement(
         'h1',
         null,
-        'Indecision App'
+        app.title
     ),
     React.createElement(
         'p',
         null,
-        'This is some info'
+        app.subtitle
     ),
     React.createElement(
         'ol',
@@ -34,30 +37,40 @@ var template = React.createElement(
     )
 );
 
-var templateTwo = React.createElement(
+var user = {
+    name: 'Nga',
+    age: 99,
+    location: 'San Francisco'
+    // The data inside JSX should not be defined here. Instead, they should come from variables that we reference
+    // This way we can reuse this template
+    // {user.name} A variable name inside curly braces is a Javascript expression
+    // By adding javascript expressions into JSX we can have JSX that is dynamic
+};var templateTwo = React.createElement(
     'div',
     null,
     React.createElement(
         'h1',
         null,
-        'Nga La'
+        user.name
     ),
     React.createElement(
         'p',
         null,
-        'Age: 99'
+        'Age: ',
+        user.age
     ),
     React.createElement(
         'p',
         null,
-        'Location: San Francisco'
+        'Location: ',
+        user.location
     )
 );
 
-// Select the element to where we want to display the var template in the browser
+// Select the element to where we want to display the var template in the browser. Assign it to appRoot variable
 var appRoot = document.querySelector('#app');
-// Render the template in the appRoot element in the browser
-ReactDOM.render(templateTwo, appRoot);
+// Render the JSX(template) in the appRoot element in the browser
+ReactDOM.render(template, appRoot);
 
 // =========================
 // CHALLENGES
@@ -69,6 +82,11 @@ ReactDOM.render(templateTwo, appRoot);
 //   p -> Age: 26
 //   p -> Location: Seattle
 // Render templateTwo instead of template
+
+// GOAL: Create app object title/subtitle
+// use title/subtitle in the template
+// render template
+
 
 // =========================
 // NOTES

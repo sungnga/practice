@@ -1,12 +1,16 @@
 console.log('Apooooop.js is running')
 
+var app = {
+    title: 'Indecision App',
+    subtitle: 'Are you ready?'
+}
 // Define JSX, which the browser doesn't understand
-// When working with JSX, can only have a single root element
+// When working with JSX, can only have a single root element. Wrap multiple elements inside the root element
 // For readability purposes, wrap the elements inside parenthises ()
 var template = (
     <div>
-        <h1>Indecision App</h1>
-        <p>This is some info</p>
+        <h1>{app.title}</h1>
+        <p>{app.subtitle}</p>
         <ol>
             <li>Item one</li>
             <li>Item two</li>
@@ -15,18 +19,27 @@ var template = (
     </div>
 )
 
+var user = {
+    name: 'Nga',
+    age: 99,
+    location: 'San Francisco'
+}
+// The data inside JSX should not be defined here. Instead, they should come from variables that we reference
+// This way we can reuse this template
+// {user.name} A variable name inside curly braces is a Javascript expression
+// By adding javascript expressions into JSX we can have JSX that is dynamic
 var templateTwo = (
     <div>
-        <h1>Nga La</h1>
-        <p>Age: 99</p>
-        <p>Location: San Francisco</p>
+        <h1>{user.name}</h1>
+        <p>Age: {user.age}</p>
+        <p>Location: {user.location}</p>
     </div>
 )
 
-// Select the element to where we want to display the var template in the browser
+// Select the element to where we want to display the var template in the browser. Assign it to appRoot variable
 var appRoot = document.querySelector('#app')
-// Render the template in the appRoot element in the browser
-ReactDOM.render(templateTwo, appRoot)
+// Render the JSX(template) in the appRoot element in the browser
+ReactDOM.render(template, appRoot)
 
 
 
@@ -40,6 +53,12 @@ ReactDOM.render(templateTwo, appRoot)
 //   p -> Age: 26
 //   p -> Location: Seattle
 // Render templateTwo instead of template
+
+// GOAL: Create app object title/subtitle
+// use title/subtitle in the template
+// render template
+
+
 
 // =========================
 // NOTES
