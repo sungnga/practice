@@ -1,6 +1,6 @@
 console.log('Apooooop.js is running')
 
-var app = {
+const app = {
     title: 'Indecision App',
     subtitle: 'Are you ready?',
     options: ['One', 'Two']
@@ -10,7 +10,7 @@ var app = {
 // For readability purposes, wrap the elements inside parenthises ()
 // If subtitle exists, render the subtitle
 // Check the length of array for options property
-var template = (
+const template = (
     <div>
         <h1>{app.title}</h1>
         {app.subtitle && <p>{app.subtitle}</p>}
@@ -23,7 +23,7 @@ var template = (
     </div>
 )
 
-var user = {
+const user = {
     name: 'Nga',
     age: 99,
     location: 'San Francisco'
@@ -51,7 +51,7 @@ function getLocation(location) {
 //  - true && 'some age' //returns "some age"
 //  - fales && 'some age' //returns false (which JSX will ignore)
 //  - If what's on the left of && is true, what's on the right will be used. If false, age property will get ignored by JSX
-var templateTwo = (
+const templateTwo = (
     <div>
         <h1>{user.name ? user.name : 'Anonymous'}</h1>
         {(user.age && user.age >= 18) && <p>Age: {user.age}</p>}
@@ -60,7 +60,7 @@ var templateTwo = (
 )
 
 // Select the element to where we want to display the var template in the browser. Assign it to appRoot variable
-var appRoot = document.querySelector('#app')
+const appRoot = document.querySelector('#app')
 // Render the JSX(template) in the appRoot element in the browser
 ReactDOM.render(template, appRoot)
 
