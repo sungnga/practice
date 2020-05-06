@@ -1,16 +1,45 @@
 console.log('Apooooop.js is running')
 
 // Define JSX, which the browser doesn't understand
-var template = <h1>Indecision App</h1>
+// When working with JSX, can only have a single root element
+// For readability purposes, wrap the elements inside parenthises ()
+var template = (
+    <div>
+        <h1>Indecision App</h1>
+        <p>This is some info</p>
+        <ol>
+            <li>Item one</li>
+            <li>Item two</li>
+
+        </ol>
+    </div>
+)
+
+var templateTwo = (
+    <div>
+        <h1>Nga La</h1>
+        <p>Age: 99</p>
+        <p>Location: San Francisco</p>
+    </div>
+)
 
 // Select the element to where we want to display the var template in the browser
 var appRoot = document.querySelector('#app')
 // Render the template in the appRoot element in the browser
-ReactDOM.render(template, appRoot)
+ReactDOM.render(templateTwo, appRoot)
 
 
 
+// =========================
+// CHALLENGES
+// =========================
 
+// GOAL: Create a templateTwo var JSX expression
+// div
+//   h1 -> Andrew Mead
+//   p -> Age: 26
+//   p -> Location: Seattle
+// Render templateTwo instead of template
 
 // =========================
 // NOTES

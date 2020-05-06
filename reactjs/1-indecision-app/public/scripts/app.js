@@ -3,16 +3,72 @@
 console.log('Apooooop.js is running');
 
 // Define JSX, which the browser doesn't understand
+// When working with JSX, can only have a single root element
+// For readability purposes, wrap the elements inside parenthises ()
 var template = React.createElement(
-  'h1',
-  null,
-  'Indecision App'
+    'div',
+    null,
+    React.createElement(
+        'h1',
+        null,
+        'Indecision App'
+    ),
+    React.createElement(
+        'p',
+        null,
+        'This is some info'
+    ),
+    React.createElement(
+        'ol',
+        null,
+        React.createElement(
+            'li',
+            null,
+            'Item one'
+        ),
+        React.createElement(
+            'li',
+            null,
+            'Item two'
+        )
+    )
+);
+
+var templateTwo = React.createElement(
+    'div',
+    null,
+    React.createElement(
+        'h1',
+        null,
+        'Nga La'
+    ),
+    React.createElement(
+        'p',
+        null,
+        'Age: 99'
+    ),
+    React.createElement(
+        'p',
+        null,
+        'Location: San Francisco'
+    )
 );
 
 // Select the element to where we want to display the var template in the browser
 var appRoot = document.querySelector('#app');
 // Render the template in the appRoot element in the browser
-ReactDOM.render(template, appRoot);
+ReactDOM.render(templateTwo, appRoot);
+
+// =========================
+// CHALLENGES
+// =========================
+
+// GOAL: Create a templateTwo var JSX expression
+// div
+//   h1 -> Andrew Mead
+//   p -> Age: 26
+//   p -> Location: Seattle
+// Render templateTwo instead of template
 
 // =========================
 // NOTES
