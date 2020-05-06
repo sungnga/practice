@@ -4,10 +4,13 @@ console.log('Apooooop.js is running');
 
 var app = {
     title: 'Indecision App',
-    subtitle: 'Are you ready?'
+    subtitle: 'Are you ready?',
+    options: ['One', 'Two']
     // Define JSX, which the browser doesn't understand
     // When working with JSX, can only have a single root element. Wrap multiple elements inside the root element
     // For readability purposes, wrap the elements inside parenthises ()
+    // If subtitle exists, render the subtitle
+    // Check the length of array for options property
 };var template = React.createElement(
     'div',
     null,
@@ -16,10 +19,15 @@ var app = {
         null,
         app.title
     ),
-    React.createElement(
+    app.subtitle && React.createElement(
         'p',
         null,
         app.subtitle
+    ),
+    React.createElement(
+        'p',
+        null,
+        app.options.length > 0 ? 'Here are your options' : 'No options'
     ),
     React.createElement(
         'ol',
@@ -41,30 +49,50 @@ var user = {
     name: 'Nga',
     age: 99,
     location: 'San Francisco'
-    // The data inside JSX should not be defined here. Instead, they should come from variables that we reference
-    // This way we can reuse this template
-    // {user.name} A variable name inside curly braces is a Javascript expression
-    // By adding javascript expressions into JSX we can have JSX that is dynamic
-};var templateTwo = React.createElement(
+};
+function getLocation(location) {
+    // If location isn't found, the return value is implicitly set to undefined
+    if (location) {
+        return React.createElement(
+            'p',
+            null,
+            'Location: ',
+            location
+        );
+    }
+}
+// The data inside JSX should not be defined here. Instead, they should come from variables that we reference
+// This way we can reuse this template
+// {user.name} A variable name inside curly braces is a Javascript expression
+// By adding javascript expressions into JSX we can have JSX that is dynamic
+// Conditional rendering in JSX:
+//  - Conditionals: if statements, ternary operators, logical && operator
+//  - Undefined, null, and booleans(true/false) ARE IGNORED BY JSX
+//  - Calling a function is AN EXPRESSION: getLocation()
+//  - We can inject a function expression into JSX. The return value from the function is what's going to show up
+//  - IF A JSX EXPRESSION IS RESOLVED TO UNDEFINED, NOTHING IS GOING TO SHOW UP
+//  - If {getLocation(user.location)} is undefined. Meaning there's no location found, the location property won't even render
+//  - A ternary operator is AN EXPRESSION and not a statement
+//  - We can add conditional expressions like tenery operator into JSX
+// Logical && operator:
+//  - true && 'some age' //returns "some age"
+//  - fales && 'some age' //returns false (which JSX will ignore)
+//  - If what's on the left of && is true, what's on the right will be used. If false, age property will get ignored by JSX
+var templateTwo = React.createElement(
     'div',
     null,
     React.createElement(
         'h1',
         null,
-        user.name
+        user.name ? user.name : 'Anonymous'
     ),
-    React.createElement(
+    user.age && user.age >= 18 && React.createElement(
         'p',
         null,
         'Age: ',
         user.age
     ),
-    React.createElement(
-        'p',
-        null,
-        'Location: ',
-        user.location
-    )
+    getLocation(user.location)
 );
 
 // Select the element to where we want to display the var template in the browser. Assign it to appRoot variable
@@ -76,16 +104,20 @@ ReactDOM.render(template, appRoot);
 // CHALLENGES
 // =========================
 
-// GOAL: Create a templateTwo var JSX expression
+// GOAL1: Create a templateTwo var JSX expression
 // div
 //   h1 -> Andrew Mead
 //   p -> Age: 26
 //   p -> Location: Seattle
 // Render templateTwo instead of template
 
-// GOAL: Create app object title/subtitle
+// GOAL2: Create app object title/subtitle
 // use title/subtitle in the template
 // render template
+
+// GOAL3: Rendering with conditionals
+// only render the subtitle (and p tag) if subtitle exists - logical && operator
+// render new p tag - if options.length > 0 "Here are your options" "No options"
 
 
 // =========================

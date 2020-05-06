@@ -2,15 +2,19 @@ console.log('Apooooop.js is running')
 
 var app = {
     title: 'Indecision App',
-    subtitle: 'Are you ready?'
+    subtitle: 'Are you ready?',
+    options: ['One', 'Two']
 }
 // Define JSX, which the browser doesn't understand
 // When working with JSX, can only have a single root element. Wrap multiple elements inside the root element
 // For readability purposes, wrap the elements inside parenthises ()
+// If subtitle exists, render the subtitle
+// Check the length of array for options property
 var template = (
     <div>
         <h1>{app.title}</h1>
-        <p>{app.subtitle}</p>
+        {app.subtitle && <p>{app.subtitle}</p>}
+        <p>{app.options.length > 0 ? 'Here are your options' : 'No options'}</p>
         <ol>
             <li>Item one</li>
             <li>Item two</li>
@@ -24,15 +28,34 @@ var user = {
     age: 99,
     location: 'San Francisco'
 }
+function getLocation(location) {
+    // If location isn't found, the return value is implicitly set to undefined
+    if (location) {
+        return <p>Location: {location}</p>
+    }
+}
 // The data inside JSX should not be defined here. Instead, they should come from variables that we reference
 // This way we can reuse this template
 // {user.name} A variable name inside curly braces is a Javascript expression
 // By adding javascript expressions into JSX we can have JSX that is dynamic
+// Conditional rendering in JSX:
+//  - Conditionals: if statements, ternary operators, logical && operator
+//  - Undefined, null, and booleans(true/false) ARE IGNORED BY JSX
+//  - Calling a function is AN EXPRESSION: getLocation()
+//  - We can inject a function expression into JSX. The return value from the function is what's going to show up
+//  - IF A JSX EXPRESSION IS RESOLVED TO UNDEFINED, NOTHING IS GOING TO SHOW UP
+//  - If {getLocation(user.location)} is undefined. Meaning there's no location found, the location property won't even render
+//  - A ternary operator is AN EXPRESSION and not a statement
+//  - We can add conditional expressions like tenery operator into JSX
+// Logical && operator:
+//  - true && 'some age' //returns "some age"
+//  - fales && 'some age' //returns false (which JSX will ignore)
+//  - If what's on the left of && is true, what's on the right will be used. If false, age property will get ignored by JSX
 var templateTwo = (
     <div>
-        <h1>{user.name}</h1>
-        <p>Age: {user.age}</p>
-        <p>Location: {user.location}</p>
+        <h1>{user.name ? user.name : 'Anonymous'}</h1>
+        {(user.age && user.age >= 18) && <p>Age: {user.age}</p>}
+        {getLocation(user.location)}
     </div>
 )
 
@@ -47,16 +70,20 @@ ReactDOM.render(template, appRoot)
 // CHALLENGES
 // =========================
 
-// GOAL: Create a templateTwo var JSX expression
+// GOAL1: Create a templateTwo var JSX expression
 // div
 //   h1 -> Andrew Mead
 //   p -> Age: 26
 //   p -> Location: Seattle
 // Render templateTwo instead of template
 
-// GOAL: Create app object title/subtitle
+// GOAL2: Create app object title/subtitle
 // use title/subtitle in the template
 // render template
+
+// GOAL3: Rendering with conditionals
+// only render the subtitle (and p tag) if subtitle exists - logical && operator
+// render new p tag - if options.length > 0 "Here are your options" "No options"
 
 
 
