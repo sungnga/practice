@@ -1,5 +1,4 @@
 console.log('Apooooop.js is running')
-// In index.html file: load React and ReactDOM scripts and the Javascript app.js script
 
 // Define JSX, which the browser doesn't understand
 var template = <h1>Indecision App</h1>
@@ -16,6 +15,12 @@ ReactDOM.render(template, appRoot)
 // =========================
 // NOTES
 // =========================
+
+// In index.html file:
+// Load React and ReactDOM scripts and the Javascript app.js script in the body tag
+// <script src="https://unpkg.com/react@16.0.0/umd/react.development.js"></script>
+// <script src="https://unpkg.com/react-dom@16.0.0/umd/react-dom.development.js"></script>
+// <script src="./scripts/app.js"></script>
 
 // JSX - Javascript XML
 // Is a javascript syntax extension

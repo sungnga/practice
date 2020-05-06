@@ -1,7 +1,6 @@
 'use strict';
 
 console.log('Apooooop.js is running');
-// In index.html file: load React and ReactDOM scripts and the Javascript app.js script
 
 // Define JSX, which the browser doesn't understand
 var template = React.createElement(
@@ -18,6 +17,12 @@ ReactDOM.render(template, appRoot);
 // =========================
 // NOTES
 // =========================
+
+// In index.html file:
+// Load React and ReactDOM scripts and the Javascript app.js script in the body tag
+// <script src="https://unpkg.com/react@16.0.0/umd/react.development.js"></script>
+// <script src="https://unpkg.com/react-dom@16.0.0/umd/react-dom.development.js"></script>
+// <script src="./scripts/app.js"></script>
 
 // JSX - Javascript XML
 // Is a javascript syntax extension
@@ -37,7 +42,7 @@ ReactDOM.render(template, appRoot);
 // Run to install babel cli globally: sudo npm install -g babel-cli
 // babel --help
 // Run to create package.json file: npm init -y
-// Now install the 2 Babel dependencies: 
+// Now install the 2 babel dependencies: 
 // npm install babel-preset-env
 // npm install babel-preset-react
 
