@@ -1,19 +1,17 @@
-'use strict';
-
-console.log('Apooooop.js is running');
+console.log('Apooooop.js is running')
 // In index.html file: load React and ReactDOM scripts and the Javascript app.js script
 
 // Define JSX, which the browser doesn't understand
-var template = React.createElement(
-  'h1',
-  null,
-  'Indecision App'
-);
+var template = <h1>Indecision App</h1>
 
 // Select the element to where we want to display the var template in the browser
-var appRoot = document.querySelector('#app');
+var appRoot = document.querySelector('#app')
 // Render the template in the appRoot element in the browser
-ReactDOM.render(template, appRoot);
+ReactDOM.render(template, appRoot)
+
+
+
+
 
 // =========================
 // NOTES
@@ -37,7 +35,7 @@ ReactDOM.render(template, appRoot);
 // Run to install babel cli globally: sudo npm install -g babel-cli
 // babel --help
 // Run to create package.json file: npm init -y
-// Now install the 2 Babel dependencies: 
+// Now install the 2 babel dependencies: 
 // npm install babel-preset-env
 // npm install babel-preset-react
 
