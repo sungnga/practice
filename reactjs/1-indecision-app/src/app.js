@@ -3,116 +3,53 @@ console.log('Apooooop.js is running')
 const app = {
     title: 'Indecision App',
     subtitle: 'Are you ready?',
-    options: ['One', 'Two']
+    options: []
 }
-// Define JSX, which the browser doesn't understand
-// When working with JSX, can only have a single root element. Wrap multiple elements inside the root element
-// For readability purposes, wrap the elements inside parenthises ()
-// If subtitle exists, render the subtitle. Using && logical operation
-// Check the length of array for options property. Using ternary operator
-const template = (
-    <div>
-        <h1>{app.title}</h1>
-        {app.subtitle && <p>{app.subtitle}</p>}
-        <p>{app.options.length > 0 ? 'Here are your options' : 'No options'}</p>
-        <ol>
-            <li>Item one</li>
-            <li>Item two</li>
 
-        </ol>
-    </div>
-)
+// When the event is called, we get the info about that event object back (e)
+const onFormSubmit = (e) => {
+    // To prevent the default full-page refresh on form submit
+    e.preventDefault()
 
+    const option = e.target.elements.option.value
 
-
-const user = {
-    name: 'Nga',
-    age: 99,
-    location: 'San Francisco'
-}
-function getLocation(location) {
-    // If location isn't found, the return value is implicitly set to undefined
-    if (location) {
-        return <p>Location: {location}</p>
+    if (option) {
+        app.options.push(option)
+        e.target.elements.option.value = ''
+        renderOptions()
     }
 }
-// The data inside JSX should not be defined here. Instead, they should come from variables that we reference
-// This way we can reuse this template
-// {user.name} A variable name inside curly braces is a Javascript expression
-// By adding javascript expressions into JSX we can have JSX that is dynamic
-// CONDITIONAL RENDERING IN JSX:
-//  - Conditionals: if statements, ternary operators, logical && operator
-//  - Undefined, null, and booleans(true/false) ARE IGNORED BY JSX
-//  - Calling a function is AN EXPRESSION: getLocation()
-//  - We can inject a function expression into JSX. The return value from the function is what's going to show up
-//  - IF A JSX EXPRESSION IS RESOLVED TO UNDEFINED, NOTHING IS GOING TO SHOW UP
-//  - If {getLocation(user.location)} is undefined. Meaning there's no location found, the location property won't even render
-//  - A ternary operator is AN EXPRESSION and not a statement
-//  - We can add conditional expressions like tenery operator into JSX
-// Logical && operator:
-//  - true && 'some age' //returns "some age"
-//  - fales && 'some age' //returns false (which JSX will ignore)
-//  - If what's on the left of && is true, what's on the right will be used. If false, age property will get ignored by JSX
-const templateTwo = (
-    <div>
-        <h1>{user.name ? user.name : 'Anonymous'}</h1>
-        {(user.age && user.age >= 18) && <p>Age: {user.age}</p>}
-        {getLocation(user.location)}
-    </div>
-)
 
-// EVENTS AND ATTRIBUTES
-// NOTE: the class attribute has been renamed to 'className' because 'class' is a reserved word in JS
-// templateThree is an object. It contains a bunch of information about JSX
-// onClick is an event listener
-// When an event is triggered, we can pass in a function, a callback function, to run
-let count = 0
-// This function runs when onClick button is triggered
-const addOne = () => {
-    // Increment count
-    count++
-    // Re-render JSX and this updated count to the screen
-    renderCounterApp()
-}
-const minusOne = () => {
-    count--
-    renderCounterApp()
-}
-const reset = () => {
-    count = 0
-    renderCounterApp()
+const onRemoveAll = () => {
+    app.options = []
+    renderOptions()
 }
 
-// Select the element to where we want to display the var template in the browser. Assign it to appRoot variable
 const appRoot = document.querySelector('#app')
 
-// JSX DOES NOT HAVE BUILT-IN DATA BINDING
-// The JSX express runs before anything is rendered to the screen
-// Remember, we don't render anything to the screen until we call ReactDOM.render()
-// When we create JSX, all the data that gets used inside of it, that happens at the time the code run
-// In this case, count is always going to be 0 because count was zero when JSX first ran
-// How to fix this?
-// We just rerun the JSX expression and the ReactDOM.render() that has the JSX in it when the data changes. Later on we'll use React component to do that
-// So we're going to write a simple function that re-renders JSX when the data changes
-//  - It has the JSX
-//  - ReactDOM.render() to render the initial JSX
-//  - Don't forget to call the function
-// Another note, when we're using ReactDOM.render(), we're using React-DOM capability. We're using the virtual DOM algorithm to efficiently render and re-render only the parts that are needed, not wasting a ton of resources
-// This runs in Javascript. The virtual DOM algorithm calculates if any changes need to be made and if they do, it calculates the minimal number of changes
-// templateThree is an object that represents the entire JSx tree. React uses algorithm to compare two objects tree to figure out what has been changed
-const renderCounterApp = () => {
-    const templateThree = (
+const renderOptions = () => {
+    const template = (
         <div>
-            <h1>Count: {count}</h1>
-            <button onClick={addOne} className="button">+1</button>
-            <button onClick={minusOne}>-1</button>
-            <button onClick={reset}>Reset</button>
+            <h1>{app.title}</h1>
+            {app.subtitle && <p>{app.subtitle}</p>}
+            <p>{app.options.length > 0 ? 'Here are your options' : 'No options'}</p>
+            <p>{app.options.length}</p>
+            <button onClick={onRemoveAll}>Remove All</button>
+            <ol>
+                <li>Item one</li>
+                <li>Item two</li>
+            </ol>
+            <form onSubmit={onFormSubmit}>
+                <input type="text" name="option"></input>
+                <button>Add Option</button>
+            </form>
         </div>
     )
-    // Render the JSX(templateThree) in the appRoot element in the browser
-    ReactDOM.render(templateThree, appRoot)
+    ReactDOM.render(template, appRoot)
 }
-renderCounterApp()
+renderOptions()
+
+
 
 
 
@@ -134,6 +71,10 @@ renderCounterApp()
 // GOAL3: Rendering with conditionals
 // only render the subtitle (and p tag) if subtitle exists - logical && operator
 // render new p tag - if options.length > 0 "Here are your options" "No options"
+
+// GOAL4: Create renderOption function that renders the new jsx
+// Call it right away
+// Call it after options array added to
 
 
 
