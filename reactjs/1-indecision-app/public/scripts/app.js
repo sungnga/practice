@@ -9,8 +9,8 @@ var app = {
     // Define JSX, which the browser doesn't understand
     // When working with JSX, can only have a single root element. Wrap multiple elements inside the root element
     // For readability purposes, wrap the elements inside parenthises ()
-    // If subtitle exists, render the subtitle
-    // Check the length of array for options property
+    // If subtitle exists, render the subtitle. Using && logical operation
+    // Check the length of array for options property. Using ternary operator
 };var template = React.createElement(
     'div',
     null,
@@ -101,46 +101,69 @@ var templateTwo = React.createElement(
 // onClick is an event listener
 // When an event is triggered, we can pass in a function, a callback function, to run
 var count = 0;
+// This function runs when onClick button is triggered
 var addOne = function addOne() {
-    console.log('addOne');
+    // Increment count
+    count++;
+    // Re-render JSX and this updated count to the screen
+    renderCounterApp();
 };
 var minusOne = function minusOne() {
-    console.log('minusOne');
+    count--;
+    renderCounterApp();
 };
 var reset = function reset() {
-    console.log('reset');
+    count = 0;
+    renderCounterApp();
 };
-var templateThree = React.createElement(
-    'div',
-    null,
-    React.createElement(
-        'h1',
-        null,
-        'Count: ',
-        count
-    ),
-    React.createElement(
-        'button',
-        { onClick: addOne, className: 'button' },
-        '+1'
-    ),
-    React.createElement(
-        'button',
-        { onClick: minusOne },
-        '-1'
-    ),
-    React.createElement(
-        'button',
-        { onClick: reset },
-        'Reset'
-    )
-);
-console.log(templateThree);
 
 // Select the element to where we want to display the var template in the browser. Assign it to appRoot variable
 var appRoot = document.querySelector('#app');
-// Render the JSX(template) in the appRoot element in the browser
-ReactDOM.render(templateThree, appRoot);
+
+// JSX DOES NOT HAVE BUILT-IN DATA BINDING
+// The JSX express runs before anything is rendered to the screen
+// Remember, we don't render anything to the screen until we call ReactDOM.render()
+// When we create JSX, all the data that gets used inside of it, that happens at the time the code run
+// In this case, count is always going to be 0 because count was zero when JSX first ran
+// How to fix this?
+// We just rerun the JSX expression and the ReactDOM.render() that has the JSX in it when the data changes. Later on we'll use React component to do that
+// So we're going to write a simple function that re-renders JSX when the data changes
+//  - It has the JSX
+//  - ReactDOM.render() to render the initial JSX
+//  - Don't forget to call the function
+// Another note, when we're using ReactDOM.render(), we're using React-DOM capability. We're using the virtual DOM algorithm to efficiently render and re-render only the parts that are needed, not wasting a ton of resources
+// This runs in Javascript. The virtual DOM algorithm calculates if any changes need to be made and if they do, it calculates the minimal number of changes
+// templateThree is an object that represents the entire JSx tree. React uses algorithm to compare two objects tree to figure out what has been changed
+var renderCounterApp = function renderCounterApp() {
+    var templateThree = React.createElement(
+        'div',
+        null,
+        React.createElement(
+            'h1',
+            null,
+            'Count: ',
+            count
+        ),
+        React.createElement(
+            'button',
+            { onClick: addOne, className: 'button' },
+            '+1'
+        ),
+        React.createElement(
+            'button',
+            { onClick: minusOne },
+            '-1'
+        ),
+        React.createElement(
+            'button',
+            { onClick: reset },
+            'Reset'
+        )
+    );
+    // Render the JSX(templateThree) in the appRoot element in the browser
+    ReactDOM.render(templateThree, appRoot);
+};
+renderCounterApp();
 
 // =========================
 // CHALLENGES
