@@ -16,18 +16,22 @@ const onFormSubmit = (e) => {
     if (option) {
         app.options.push(option)
         e.target.elements.option.value = ''
-        renderOptions()
+        render()
     }
 }
 
 const onRemoveAll = () => {
     app.options = []
-    renderOptions()
+    render()
 }
 
 const appRoot = document.querySelector('#app')
 
-const renderOptions = () => {
+// We can inject an array into JSX: {[...]}
+// We can inject JSX items into the array as well
+//{[<li></li>,<li></li>,<li></li>]}
+// .map() method will return a new array
+const render = () => {
     const template = (
         <div>
             <h1>{app.title}</h1>
@@ -36,18 +40,21 @@ const renderOptions = () => {
             <p>{app.options.length}</p>
             <button onClick={onRemoveAll}>Remove All</button>
             <ol>
-                <li>Item one</li>
-                <li>Item two</li>
+                {
+                    app.options.map((option) => {
+                    return <li key={option}>{option}</li>
+                    })
+                }
             </ol>
             <form onSubmit={onFormSubmit}>
-                <input type="text" name="option"></input>
+                <input type="text" name="option" placeholder="Enter a task"></input>
                 <button>Add Option</button>
             </form>
         </div>
     )
     ReactDOM.render(template, appRoot)
 }
-renderOptions()
+render()
 
 
 
