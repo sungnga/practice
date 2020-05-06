@@ -65,7 +65,7 @@ function getLocation(location) {
 // This way we can reuse this template
 // {user.name} A variable name inside curly braces is a Javascript expression
 // By adding javascript expressions into JSX we can have JSX that is dynamic
-// Conditional rendering in JSX:
+// CONDITIONAL RENDERING IN JSX:
 //  - Conditionals: if statements, ternary operators, logical && operator
 //  - Undefined, null, and booleans(true/false) ARE IGNORED BY JSX
 //  - Calling a function is AN EXPRESSION: getLocation()
@@ -95,10 +95,52 @@ var templateTwo = React.createElement(
     getLocation(user.location)
 );
 
+// EVENTS AND ATTRIBUTES
+// NOTE: the class attribute has been renamed to 'className' because 'class' is a reserved word in JS
+// templateThree is an object. It contains a bunch of information about JSX
+// onClick is an event listener
+// When an event is triggered, we can pass in a function, a callback function, to run
+var count = 0;
+var addOne = function addOne() {
+    console.log('addOne');
+};
+var minusOne = function minusOne() {
+    console.log('minusOne');
+};
+var reset = function reset() {
+    console.log('reset');
+};
+var templateThree = React.createElement(
+    'div',
+    null,
+    React.createElement(
+        'h1',
+        null,
+        'Count: ',
+        count
+    ),
+    React.createElement(
+        'button',
+        { onClick: addOne, className: 'button' },
+        '+1'
+    ),
+    React.createElement(
+        'button',
+        { onClick: minusOne },
+        '-1'
+    ),
+    React.createElement(
+        'button',
+        { onClick: reset },
+        'Reset'
+    )
+);
+console.log(templateThree);
+
 // Select the element to where we want to display the var template in the browser. Assign it to appRoot variable
 var appRoot = document.querySelector('#app');
 // Render the JSX(template) in the appRoot element in the browser
-ReactDOM.render(template, appRoot);
+ReactDOM.render(templateThree, appRoot);
 
 // =========================
 // CHALLENGES
