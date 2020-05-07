@@ -67,7 +67,26 @@ class Action extends React.Component {
 // In this case, options is an array of items
 // .map() over this options array to get the individual items
 // Then pass each item to the instance of Option component as a props data when it's initialize here. <Option key={option} optionText={option} />)
+// THE BIND METHOD:
+//  - the .render() method is able to bind to the 'this' value properly. this.props for example
+//  - however, the methods and event handler functions inside a component class does not bind to the 'this' value, because of the context it's being called
+//  - to fix this in the most efficient way:
+//  - 1. setup a constructor function for the class component. Pass in the props object
+//       - The props in the constructor funct is the same props as the this.props in the render() method
+//  - 2. call the super(props) method. If we don't call super(this), we won't have access to this.props
+//  - 3. define the method/event handler inside the constructor funct 
+//  - 4. call the.bind() method on the method and pass in 'this' keyword
+//       - This is making sure that wherever this method gets called, the context is correct
+//       - this way the method/event handler binds to the same 'this' value as the render() method does 
 class Options extends React.Component {
+    constructor(props) {
+        // If we don't call super(this), we won't have access to this.props
+        super(props)
+        // To add on additional behaviors in this class, define it here
+        // The goal here is to bind handleRemoveAll() method
+        // Set the method to itself, with a slight modification: set bind to 'this'
+        this.handleRemoveAll = this.handleRemoveAll.bind(this)
+    }
     handleRemoveAll() {
         alert('All gone')
     }
