@@ -1,3 +1,19 @@
+// Create a parent component where all other components will be nested in
+// Since a component renders JSX, it can render other components
+// This allows us to nest components inside another by referencing it
+class IndecisionApp extends React.Component {
+    render() {
+        return (
+            <div>
+                <Header />
+                <Action />
+                <Options />
+                <AddOption />
+            </div>
+        )
+    }
+}
+
 // Component is a class itself
 // The Header class extends the Component class
 // Now Header is a React component. It has all the features of React
@@ -30,7 +46,20 @@ class Options extends React.Component {
     render() {
         return (
             <div>
-                <p>Options component here</p>
+                Options component here
+                <Option />
+                <Option />
+            </div>
+        )
+    }
+}
+
+// This component is nest inside the Options component
+class Option extends React.Component {
+    render() {
+        return (
+            <div>
+                Option component here
             </div>
         )
     }
@@ -49,12 +78,12 @@ class AddOption extends React.Component {
 // To use the components, we provide the component names inside a JSX
 // This JSX will then get rendered with ReactDOM.render()
 // Don't forget to capitalize the first letter of the component name
-const jsx = (
-    <div>
-        <Header />
-        <Action />
-        <Options />
-        <AddOption />
-    </div>
-)
-ReactDOM.render(jsx, document.querySelector('#app'))
+// const jsx = (
+//     <div>
+//         <Header />
+//         <Action />
+//         <Options />
+//         <AddOption />
+//     </div>
+// )
+ReactDOM.render(<IndecisionApp />, document.querySelector('#app'))
