@@ -1,4 +1,9 @@
-// Setup Counter component with a title and 3 buttons
+// ********************************************
+// COUNTER APP USING REACT COMPONENT AND STATE
+// ********************************************
+
+// Setup Counter component
+// Render JSX with a title and 3 buttons
 // Create 3 methods: handleAddOne, handleMinusOne, handleReset
 // Wireup onClick & bind in the the constructor
 
@@ -40,7 +45,7 @@ class Counter extends React.Component {
         })
     }
     handleReset() {
-        this.setState((prevState) => {
+        this.setState(() => {
             return {
                 count: 0
             }
@@ -60,6 +65,10 @@ class Counter extends React.Component {
 
 ReactDOM.render(<Counter />, document.querySelector('#app'))
 
+
+// *********************
+// COUNTER APP USING JSX
+// *********************
 
 // let count = 0
 // const addOne = () => {
