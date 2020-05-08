@@ -197,3 +197,16 @@ class AddOption extends React.Component {
 // To render the parent component, initialize the parent component here
 // <IndecisionApp />
 ReactDOM.render(<IndecisionApp />, document.querySelector('#app'))
+
+
+// WORKING WITH STATES
+// 1. Initialize the state in constructor function
+//  - The value of the state is an object
+//  - In this object, define properties and its initial values. Can have as many properties as you like
+// 2. Display the state by calling this.state.statePropertyName in JSX
+//  - <h1>Counter: {this.state.count}</h1>
+// 3. To change the state, call the .setState() method: this.setState(callback)
+//  - Inside the callback function, you have access to the previous state in 'prevState' keyword. (prevState) => {}
+//  - To access its properties: prevState.propertyName
+//  - You can set a new value of a property in this callback
+// 4. .setState() method will return the state object containing the updated properties and values
