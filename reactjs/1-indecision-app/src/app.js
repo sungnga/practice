@@ -9,17 +9,59 @@
 //  - Setting key/value pair: <Header title="Test value" />
 //  - To display the props, go to the Component and use this.props.keyName inside the JSX: <h1>{this.props.title}</h1>
 class IndecisionApp extends React.Component {
+    constructor(props) {
+        super(props)
+        this.handleDeleteOptions = this.handleDeleteOptions.bind(this)
+        this.handlePick = this.handlePick.bind(this)
+        this.handleAddOption = this.handleAddOption.bind(this)
+        this.state = {
+            options: []
+        }
+    }
+    handleDeleteOptions() {
+        this.setState(() => {
+            return {
+                options: []
+            }
+        })
+    }
+    handlePick() {
+        const randomNum = Math.floor(Math.random() * this.state.options.length)
+        const option = this.state.options[randomNum]
+        alert(option)
+    }
+    handleAddOption(option) {
+        // If user didn't type anything in
+        if (!option) {
+            return 'Enter valid value to add item'
+        } else if (this.state.options.indexOf(option) > -1) {
+            return 'This option already exists'
+        }
+
+        this.setState((prevState) => {
+            return {
+                options: prevState.options.concat(option)
+            }
+        })
+    }
     render() {
         const title = 'Indecision'
         const subtitle = 'Put your life in the hands of a computer'
-        const options = ['thing one', 'thing two', 'thing three']
 
         return (
             <div>
                 <Header title={title} subtitle={subtitle} />
-                <Action />
-                <Options options={options} />
-                <AddOption />
+                <Action
+                    hasOptions={this.state.options.length > 0}
+                    handlePick={this.handlePick}
+                />
+                <Options
+                    options={this.state.options}
+                    handleDeleteOptions={this.handleDeleteOptions}
+                />
+                <AddOption
+                    handleAddOption={this.handleAddOption}
+                />
             </div>
         )
     }
@@ -48,16 +90,17 @@ class Header extends React.Component {
 }
 
 class Action extends React.Component {
-    // Create a new method specific to this class
-    handlePick() {
-        alert('handlePick')
-    }
     render() {
         // Add the paren () to return longer JSX
         // Can have as many elements as you want INSIDE A ROOT ELEMENT
         return (
             <div>
-                <button onClick={this.handlePick}>What should I do?</button>
+                <button
+                    onClick={this.props.handlePick}
+                    disabled={!this.props.hasOptions}
+                >
+                    What should I do?
+                </button>
             </div>
         )
     }
@@ -79,21 +122,10 @@ class Action extends React.Component {
 //       - This is making sure that wherever this method gets called, the context is correct
 //       - this way the method/event handler binds to the same 'this' value as the render() method does 
 class Options extends React.Component {
-    constructor(props) {
-        // If we don't call super(this), we won't have access to this.props
-        super(props)
-        // To add on additional behaviors in this class, define it here
-        // The goal here is to bind handleRemoveAll() method
-        // Set the method to itself, with a slight modification: set bind to 'this'
-        this.handleRemoveAll = this.handleRemoveAll.bind(this)
-    }
-    handleRemoveAll() {
-        alert('All gone')
-    }
     render() {
         return (
             <div>
-                <button onClick={this.handleRemoveAll}>Remove All</button>
+                <button onClick={this.props.handleDeleteOptions}>Remove All</button>
                 {
                     this.props.options.map((option) => <Option key={option} optionText={option} />)
                 }
@@ -115,19 +147,32 @@ class Option extends React.Component {
 }
 
 class AddOption extends React.Component {
+    constructor(props) {
+        super(props)
+        this.handleAddOption = this.handleAddOption.bind(this)
+        this.state = {
+            error: undefined
+        }
+    }
     handleAddOption(e) {
         e.preventDefault()
 
         const option = e.target.elements.option.value.trim()
-
-        if (option) {
-            alert(option)
-            e.target.elements.option.value = ''
-        }
+        // NOTE: this.props.handleAddOption() method is defined in the PARENT COMPONENT and gets called inside this function
+        // Thus we need to setup the constructor function and call the parent Component to have access to the this.props
+        // When this.props.handleAddOption() method is called and resulted in an error, store the error in the variable error
+        const error = this.props.handleAddOption(option)
+        
+        // Update state to error with the error value
+        // Then don't foreget to render this error state in JSX
+        this.setState(() => {
+            return { error }
+        })
     }
     render() {
         return (
             <div>
+                {this.state.error && <p>{this.state.error}</p>}
                 <form onSubmit={this.handleAddOption}>
                     <input type="text" name="option" placeholder="Enter a task"></input>
                     <button>Add Option</button>
