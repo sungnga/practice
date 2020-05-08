@@ -16,14 +16,39 @@ class IndecisionApp extends React.Component {
     //
     // This method fires when the component first gets mounted to the DOM 
     componentDidMount() {
-        console.log('fetching data')
+        try {
+            const json = localStorage.getItem('options')
+            const options = JSON.parse(json)
+
+            if (options) {
+                this.setState(() => ({options}))
+            }
+        } catch (e) {
+            // Do nothing at all
+        }
     }
     // This method is going to fire after the component updates
     // So after the state values changed or the props values changed
     // Have access to this.props and this.states new values
     // Have access to arguments of prevProps and prevState objects
+    // JSON.stringify() converts JS object into json string
+    // JSON.parse() takes json string and converts it to JS object
+    // With localStorage object:
+    //  - setItem(key, value) to save the data
+    //  - getItem(key) to fetch the data
+    //  - removeItem(key) to delete
     componentDidUpdate(prevProps, prevState) {
-        console.log('saving data')
+        // Check to see if there actually is a change in the array
+        if (prevState.options.length !== this.state.options.length) {
+            // Take JS object and convert it to JSON string
+            // Pass in the options array
+            const json = JSON.stringify(this.state.options)
+            // Set an item in localStore
+            // 1st arg: THE KEY
+            // 2nd arg: THE VALUE
+            localStorage.setItem('options', json)
+            console.log('saving data')
+        }
     }
     // This method gets fire just when a component gets unmounted from the screen
     componentWillUnmount() {
@@ -114,6 +139,7 @@ const Options = (props) => {
     return (
         <div>
             <button onClick={props.handleDeleteOptions}>Remove All</button>
+            {props.options.length === 0 && <p>Please add an option to get started!</p>}
             {
                 props.options.map((option) => (
                     <Option
@@ -153,10 +179,13 @@ class AddOption extends React.Component {
         e.preventDefault()
 
         const option = e.target.elements.option.value.trim()
-        e.target.elements.option.value = ''
         const error = this.props.handleAddOption(option)
         
         this.setState(() => ({ error }))
+
+        if (!error) {
+            e.target.elements.option.value = ''
+        }
     }
     render() {
         return (
