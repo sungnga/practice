@@ -5,9 +5,11 @@
 //  - Component props allows components to comnunicate with one another
 //  - To do that, we pass data in when we initialize/define the instance of a component. for example: <Header />
 //  - That data is known as props
+//  - Props gets passed down from parent component to child component. One-way street
+//  - The props is defined in the parent component
 //  - Setting up component props is similar to setting up html attributes
 //  - Setting key/value pair: <Header title="Test value" />
-//  - To display the props, go to the Component and use this.props.keyName inside the JSX: <h1>{this.props.title}</h1>
+//  - The child component can then have access to this props by using this.props.keyName: <h1>{this.props.title}</h1>
 class IndecisionApp extends React.Component {
     constructor(props) {
         super(props)
@@ -199,10 +201,15 @@ class AddOption extends React.Component {
 ReactDOM.render(<IndecisionApp />, document.querySelector('#app'))
 
 
-// WORKING WITH STATES
+// =============================
+// NOTES
+// =============================
+
+// WORKING WITH COMPONENT STATE
 // 1. Initialize the state in constructor function
 //  - The value of the state is an object
 //  - In this object, define properties and its initial values. Can have as many properties as you like
+//  - this.state = {count: 0}
 // 2. Display the state by calling this.state.statePropertyName in JSX
 //  - <h1>Counter: {this.state.count}</h1>
 // 3. To change the state, call the .setState() method: this.setState(callback)
@@ -210,3 +217,17 @@ ReactDOM.render(<IndecisionApp />, document.querySelector('#app'))
 //  - To access its properties: prevState.propertyName
 //  - You can set a new value of a property in this callback
 // 4. .setState() method will return the state object containing the updated properties and values
+
+// PROPS VS. STATE
+// Props:
+// - an object
+// - can be used when rendering
+// - changes (from above) cause re-renders
+// - comes from above
+// - can't be changed by component itself
+// State:
+// - an object
+// - can be used when rendering
+// - changes cause re-renders
+// - defined in component itself
+// - can be changed by component itself
