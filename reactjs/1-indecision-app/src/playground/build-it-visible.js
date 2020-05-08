@@ -56,3 +56,7 @@ ReactDOM.render(<VisibilityToggle />, document.querySelector('#app'))
 //     ReactDOM.render(visible, document.querySelector('#app'))
 // }
 // render()
+
+
+// command line to run:
+// babel src/playground/build-it-visible.js --out-file=public/scripts/app.js --presets=env,react --watch

@@ -140,6 +140,8 @@ renderCounterApp()
 // =========================
 // NOTES
 // =========================
+// command line to run:
+// babel src/playground/jsx_and_counter_example.js --out-file=public/scripts/app.js --presets=env,react --watch
 
 // In index.html file:
 // Load React and ReactDOM scripts and the Javascript app.js script in the body tag

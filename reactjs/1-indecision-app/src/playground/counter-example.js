@@ -93,6 +93,8 @@ ReactDOM.render(<Counter />, document.querySelector('#app'))
 // *********************
 // COUNTER APP USING JSX
 // *********************
+// command line to run:
+// babel src/playground/counter-example.js --out-file=public/scripts/app.js --presets=env,react --watch
 
 // let count = 0
 // const addOne = () => {

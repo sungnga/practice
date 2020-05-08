@@ -212,6 +212,8 @@ ReactDOM.render(<IndecisionApp />, document.querySelector('#app'))
 // =============================
 // NOTES
 // =============================
+// command line to run:
+// babel src/app.js --out-file=public/scripts/app.js --presets=env,react --watch
 
 // WORKING WITH COMPONENT STATE
 // 1. Initialize the state in constructor function
