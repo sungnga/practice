@@ -9,6 +9,26 @@ class IndecisionApp extends React.Component {
             options: props.options
         }
     }
+    // LIFECYCLE METHODS
+    //  - componentDidMount(), componentDidUpdate(), componentWillUnmount()
+    //  - These methods fire at various times in a component lifecycle
+    //  - Only have access to these methods in a class-base components
+    //
+    // This method fires when the component first gets mounted to the DOM 
+    componentDidMount() {
+        console.log('fetching data')
+    }
+    // This method is going to fire after the component updates
+    // So after the state values changed or the props values changed
+    // Have access to this.props and this.states new values
+    // Have access to arguments of prevProps and prevState objects
+    componentDidUpdate(prevProps, prevState) {
+        console.log('saving data')
+    }
+    // This method gets fire just when a component gets unmounted from the screen
+    componentWillUnmount() {
+        console.log('component will unmount')
+    }
     handleDeleteOptions() {
         this.setState(() => ({ options: [] }))
     }
