@@ -32,12 +32,14 @@ INSTALLING MODULES/DEPENDENCIES LOCALLY (specific to a project)
 - npm init
 - npm install babel-cli
 - define a script to run these dependencies
-- "scripts": {
+``` 
+"scripts": {
     "nameOfKey": "value"
     "serve": "live-server public/",
     "build": "webpack --watch",
     "build-babel": "babel src/app.js --out-file=public/scripts/app.js --presets=env,react --watch"
 }
+```
 - npm run <nameOfKey>
 - npm run build
 
@@ -47,7 +49,7 @@ INSTALLING AND CONFIGURING WEBPACK
 - "scripts": {"build": "webpack --watch"}
 - create a webpack.config.js file in root directory
 - inside the webpack.config.js file: 
-
+```
 const path = require('path')
 
 // where the entry point is -> output
@@ -64,14 +66,14 @@ module.exports = {
     },
     mode: 'development'
 }
-
+```
 - run: npm run build
 - this will generate the bundle.js file inside the public directory
 - now, delete the scripts folder that is inside the public directory
 - inside the index.html file
   - delete the react and the react-DOM scripts
   - the only script tag you have in index.html file is the bundle.js file
-  - <script src="./bundle.js"></script>
+  - ```<script src="./bundle.js"></script>```
 - there should only be 2 files in the public directory: index.html and bundle.js
 - run this to open the project in the browser: npm run server
 - run this to serve up webpack in the browser: npm run build
