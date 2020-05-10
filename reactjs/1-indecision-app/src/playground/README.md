@@ -25,12 +25,12 @@
 - as we add more code we can add it into separate small files and it's going to prevent us from getting into a situation where we have a ton of code sitting in a single file, making things really hard to debug and test
 
 **UNINSTALLING GLOBAL MODULES**
-- ```sudo npm uninstall -g babel-cli```
+- `sudo npm uninstall -g babel-cli`
 
 **INSTALLING MODULES/DEPENDENCIES LOCALLY** (specific to a project)
 - make sure you're in the project directory
-- ```npm init```
-- ```npm install babel-cli```
+- `npm init`
+- `npm install babel-cli`
 - define a script to run these dependencies
 ``` 
 "scripts": {
@@ -40,13 +40,13 @@
     "build-babel": "babel src/app.js --out-file=public/scripts/app.js --presets=env,react --watch"
 }
 ```
-- ```npm run <nameOfKey>```
-- ```npm run build```
+- `npm run <nameOfKey>`
+- `npm run build`
 
 **INSTALLING AND CONFIGURING WEBPACK**
-- ```npm install webpack```
+- `npm install webpack`
 - defined a script to run webpack
-- ```"scripts": {"build": "webpack --watch"}```
+- `"scripts": {"build": "webpack --watch"}`
 - create a webpack.config.js file in root directory
 - inside the webpack.config.js file: 
 ```
@@ -67,35 +67,35 @@ module.exports = {
     mode: 'development'
 }
 ```
-- run: ```npm run build```
+- run: `npm run build`
 - this will generate the bundle.js file inside the public directory
 - now, delete the scripts folder that is inside the public directory
 - inside the index.html file
   - delete the react and the react-DOM scripts
   - the only script tag you have in index.html file is the bundle.js file
-  - ```<script src="./bundle.js"></script>```
+  - `<script src="./bundle.js"></script>`
 - there should only be 2 files in the public directory: index.html and bundle.js
-- run this to open the project in the browser: ```npm run server```
-- run this to serve up webpack in the browser: ```npm run build```
+- run this to open the project in the browser: `npm run server`
+- run this to serve up webpack in the browser: `npm run build`
 
 **ES6 IMPORT/EXPORT**
 - 2 types of exports:
- 1. default export: every file can have a single default export
- 2. named exports: can have as many named exports as you like
+1. default export: every file can have a single default export
+2. named exports: can have as many named exports as you like
 
 To export named exports:
 - export at the bottom of the file
-- the export statement: ```export {}``` 
+- the export statement: `export {}`
 - define the named export inside the curly braces
 - they are references to things we want to export
 - note that the curly braces is not an object definition
-- ```export { add, square };```
+- `export { add, square };`
 - An alternative way to export a named export is to place the 'export' keyword in front of the variable declaration
-- ```export const square = (x) => x * x;```
+- `export const square = (x) => x * x;`
 
 To import the named exports:
 - Inside the file that wants to use the named exports, import the named exports inside the curly braces and provide the path to the file
-- ```import { square, add } from './utils.js'```
+- `import { square, add } from './utils.js'`
 - Only import the named exports you want to use. No need to import them all
 - Make sure the name in the import/export match each other
 - The order inside the curly braces does not matter
@@ -103,28 +103,28 @@ To import the named exports:
 Default export:
 - can only have a single default export
 - attach 'as default' after the reference name
-- ```export { refName as default }```
-- to access the default export, in the import file: ```import nameOfDefaultExport from 'path to file'```
+- `export { refName as default }`
+- to access the default export, in the import file: `import nameOfDefaultExport from 'path to file'`
 - don't include the curly braces when accessing the default export
 - for default export, when importing, the name can be whatever you want
-- importing default export and named exports: ```import anythingIWant, { add, square } from 'path to file'```
+- importing default export and named exports: `import anythingIWant, { add, square } from 'path to file'`
 - an alternative way of exporting default is to put it in a single expression. Can not use it with a statement
-- ```const subtract = () => {...}```  (a statement)
-- ```export default subtract```  (an expression. reference the subtract variable)
+- `const subtract = () => {...}`  (a statement)
+- `export default subtract`  (an expression. reference the subtract variable)
 
 **IMPORTING NPM MODULES**
-- 3 steps process to working with npm modules: install -> import -> use
+- 3 steps process to working with npm modules: install -> import -> use\
 Install a module:
  - `npm install react`  (using the react library)
  - `npm install react-dom` (this library renders the react components to the browser)
  - this will install locally to the project
  - it's saved as a dependency in package.json file with its version
- - its code now lives in the node_modules folder
+ - its code now lives in the node_modules folder\
 Import a module:
  - refer to the documentation of the package for how to import
  - `import React from 'react'`
  - `import ReactDOM from 'react-dom'`
- - NOTE: we're grabbing the default export of React here. And we're not providing a relative path, so webpack will look for React in the node_modules folder
+ - NOTE: we're grabbing the default export of React here. And we're not providing a relative path, so webpack will look for React in the node_modules folder\
 Use a module:
  - refer to the library doc to learn how to use it
  - `const template = React.createElement('p', {}, 'testing 123')`
