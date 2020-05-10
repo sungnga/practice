@@ -1,4 +1,4 @@
-WEBPACK OVERVIEW
+**WEBPACK OVERVIEW**
 - webpack resource: webpack.js.org
 - a module bundler for modern javascript apps
 - first advantage of webpack is it allows use to organize our javascript 
@@ -24,10 +24,10 @@ WEBPACK OVERVIEW
 - webpack can even run Babel for us, so we don't have to run a separate Babel command
 - as we add more code we can add it into separate small files and it's going to prevent us from getting into a situation where we have a ton of code sitting in a single file, making things really hard to debug and test
 
-UNINSTALLING GLOBAL MODULES
+**UNINSTALLING GLOBAL MODULES**
 - ```sudo npm uninstall -g babel-cli```
 
-INSTALLING MODULES/DEPENDENCIES LOCALLY (specific to a project)
+**INSTALLING MODULES/DEPENDENCIES LOCALLY** (specific to a project)
 - make sure you're in the project directory
 - ```npm init```
 - ```npm install babel-cli```
@@ -43,8 +43,8 @@ INSTALLING MODULES/DEPENDENCIES LOCALLY (specific to a project)
 - ```npm run <nameOfKey>```
 - ```npm run build```
 
-INSTALLING AND CONFIGURING WEBPACK
-- npm intall webpack
+**INSTALLING AND CONFIGURING WEBPACK**
+- ```npm install webpack```
 - defined a script to run webpack
 - ```"scripts": {"build": "webpack --watch"}```
 - create a webpack.config.js file in root directory
@@ -67,7 +67,7 @@ module.exports = {
     mode: 'development'
 }
 ```
-- run: npm run build
+- run: ```npm run build```
 - this will generate the bundle.js file inside the public directory
 - now, delete the scripts folder that is inside the public directory
 - inside the index.html file
@@ -78,10 +78,10 @@ module.exports = {
 - run this to open the project in the browser: ```npm run server```
 - run this to serve up webpack in the browser: ```npm run build```
 
-ES6 IMPORT/EXPORT
+**ES6 IMPORT/EXPORT**
 - 2 types of exports:
-  - 1. default export: every file can have a single default export
-  - 2. named exports: can have as many named exports as you like
+ 1. default export: every file can have a single default export
+ 2. named exports: can have as many named exports as you like
 
 To export named exports:
 - export at the bottom of the file
@@ -94,7 +94,7 @@ To export named exports:
 - ```export const square = (x) => x * x;```
 
 To import the named exports:
--Inside the file that wants to use the named exports, import the named exports inside the curly braces and provide the path to the file
+- Inside the file that wants to use the named exports, import the named exports inside the curly braces and provide the path to the file
 - ```import { square, add } from './utils.js'```
 - Only import the named exports you want to use. No need to import them all
 - Make sure the name in the import/export match each other
