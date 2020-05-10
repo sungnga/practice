@@ -167,3 +167,112 @@ module.exports = {
 ```
 - Now we can use JSX
 - run again to see JSX renders in the browser: npm run build
+
+**SOURCE MAPS WITH WEBPACK**
+ - Source maps is a great setup/config to debug errors in our code
+ - When an error occurs, it will point directly to the file that the error was generated
+ - If this was not set up, the error will point to the bundle.js file instead
+ - Setup the devtool property in webpack.config.js file:
+ - `devtool: 'cheap-module-eval-source-map'`
+
+**WEBPACK DEV SERVER**
+ - Webpack devServer is a replacment for Web Live Server but with webpack features such as the "webpack --watch"
+ - Install webpack devServer: `npm install webpack-dev-server`
+ - Setup the devServer property in webpack.config.js file:
+```
+devServer: {
+    contentBase: path.join(__dirname, 'public')
+}
+```
+ - Setup the script in package.json file:
+```
+"scripts": {
+    "serve": "live-server public/",
+    "build": "webpack",
+    "dev-server": "webpack-dev-server"
+}
+```
+ - Now with "dev-server" as a script, it'll run the Live devServer and webpack will "--watch" for any changes made to the files
+ - run: `npm run dev-server`
+ - It will specify the port it's running on: `localhost:8080`
+ - NOTE: When we run `npm run build`, it'll generate the bundle.js file. The file size is big. We do this when the app is ready for production. Otherwise, run: `npm run dev-server` during development mode
+
+**ES6 CLASS PROPERTIES**
+ - Install: `npm install babel-plugin-transform-class-properties`
+ - Configure in .babelrc file:
+ ```
+{
+    "presets": [
+        "@babel/preset-env",
+        "@babel/preset-react"
+    ],
+    "plugins": [
+        "transform-class-properties"
+    ]
+}
+```
+To use the new class syntax:
+ - This Babel plugin allows us to define a class component without having to setup a constructor function
+ - Instead, we can just setup a key/value pair to define properties for the class
+ - We're now able to set the state outside of the constructor function. `state = { key: value }`
+ - We're also able to set class properties to arrow functions
+ - This is a great candidate for things like event handlers. Event handlers usually have a problem maintaining the 'this' binding. But with arrow functions we no longer have to worry about this
+ - We can define methods as properties of the class using arrow functions instead of regular functions
+ - Arrow functions don't bind their own 'this' value. They're just going to use whatever 'this' is in scope
+ - And for arrow functions on class properties, that is the class instance itself
+```
+// Old syntax
+class OldSyntax {
+    constructor() {
+        this.name = 'Mike'
+        this.getGreeting = this.getGreeting.bind(this)
+    }
+    getGreeting() {
+        return `My name is ${this.name}.`
+    }
+}
+const oldSyntax = new OldSyntax()
+const getGreeting = oldSyntax.getGreeting
+console.log(getGreeting())
+// New syntax
+class NewSyntax {
+    name = 'Jack'
+    getGreeting = () => {
+        return `My name is ${this.name}.`
+    }
+}
+const newSyntax = new NewSyntax()
+const newGetGreeting = newSyntax.getGreeting
+console.log(newGetGreeting())
+```
+
+**FINAL WEBPACK.CONFIG.JS FILE SETUP:**
+```
+const path = require('path')
+
+// where the entry point is -> output
+// to find out the absolute path, run: node webpack.config.js
+// console.log(__dirname) -> /Users/nga/Desktop/practice/reactjs/1-indecision-app
+// use node.js built-in module, path, to join the absolute path to the public folder
+console.log(path.join(__dirname, 'public')) 
+
+module.exports = {
+    entry: './src/app.js',
+    output: {
+        path: path.join(__dirname, 'public'),
+        filename: 'bundle.js'
+    },
+    module: {
+        rules: [{
+            loader: 'babel-loader',
+            test: /\.js$/,
+            exclude: /node_modules/
+        }]
+    },
+    devtool: 'cheap-module-eval-source-map',
+    devServer: {
+        contentBase: path.join(__dirname, 'public')
+    },
+    mode: 'development'
+}
+```
