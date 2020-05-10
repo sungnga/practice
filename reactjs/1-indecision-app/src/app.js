@@ -2,7 +2,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-const template = React.createElement('p', {}, 'testing 123')
+const template = <p>THIS IS JSX FROM WEBPACK!!</p>
 ReactDOM.render(template, document.querySelector('#app'))
 
 
@@ -61,3 +61,34 @@ ReactDOM.render(template, document.querySelector('#app'))
 //  - refer to the library doc to learn how to use it
 //  - const template = React.createElement('p', {}, 'testing 123')
 //  - ReactDOM.render(template, document.querySelector('#app'))
+
+// SETTING UP BABEL WITH WEBPACK
+// - We need to first configure Babel to work with webpack before we can use JSX in webpack
+// - We do this by running babel-loader
+// - Babel-loader allows us to run Babel in webpack under certain conditions
+// - run: npm install @babel/core babel-loader @babel/preset-env @babel/preset-react
+// -  Configure the babel-loader in webpack.config.js file. Babel will run all files that end in .js
+// module.exports = {
+//     entry: './src/app.js',
+//     output: {
+//         path: path.join(__dirname, 'public'),
+//         filename: 'bundle.js'
+//     },
+//     module: {
+//         rules: [{
+//             loader: 'babel-loader',
+//             test: /\.js$/,
+//             exclude: /node_modules/
+//         }]
+//     },
+//     mode: 'development'
+// }
+//  - Create .babelrc file and include all the presets there
+// {
+//     "presets": [
+//         "@babel/preset-env",
+//         "@babel/preset-react"
+//     ]
+// }
+//  - Now we can use JSX
+//  - run again to see JSX renders in the browser: npm run build
