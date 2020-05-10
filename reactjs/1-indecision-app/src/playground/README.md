@@ -113,18 +113,18 @@ Default export:
 - `export default subtract`  (an expression. reference the subtract variable)
 
 **IMPORTING NPM MODULES**
-- 3 steps process to working with npm modules: install -> import -> use\
+- 3 steps process to working with npm modules: install -> import -> use <br>
 Install a module:
  - `npm install react`  (using the react library)
  - `npm install react-dom` (this library renders the react components to the browser)
  - this will install locally to the project
  - it's saved as a dependency in package.json file with its version
- - its code now lives in the node_modules folder\
+ - its code now lives in the node_modules folder <br>
 Import a module:
  - refer to the documentation of the package for how to import
  - `import React from 'react'`
  - `import ReactDOM from 'react-dom'`
- - NOTE: we're grabbing the default export of React here. And we're not providing a relative path, so webpack will look for React in the node_modules folder\
+ - NOTE: we're grabbing the default export of React here. And we're not providing a relative path, so webpack will look for React in the node_modules folder <br>
 Use a module:
  - refer to the library doc to learn how to use it
  - `const template = React.createElement('p', {}, 'testing 123')`
