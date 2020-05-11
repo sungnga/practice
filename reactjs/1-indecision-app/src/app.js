@@ -324,8 +324,18 @@ ReactDOM.render(<IndecisionApp />, document.querySelector('#app'))
 // Targeting the title element inside the header class(block): .header__title {...}
 
 // CSS Reset:
-//  - A css reset is just make sure that all browsers are starting at the same place 
+//  - A css reset is just make sure that all browsers are starting at the same base
 //  - Normalize css is a library that can reset the default browsers
 //  - Install: npm install normalize.css
 //  - Import this file into app.js file: import 'normalize.css/normalize.css'
 //  - Need to configure webpack.config.js file to support both css and scss files by adding a ? after the s: {test: /\.s?css$/}
+
+// Theming with Variables:
+//  - Create a file called _settings.scss inside the base folder
+//  - This file is a place to define the theme for the application
+//  - It uses variables to set the style values that can then be used and reused by referencing the variable name
+//  - Import this _settings.scss file in the main styles.scss file AT THE VERY TOP: @import './base/settings';
+//  - When we're creating a scss variable we need to start off with a '$' symbol followed by the variable name
+//  - $off-black: #20222b;  (define the style by the variable name)
+//  - background: @off-black;  (referencing the style using the variable name)
+//  - When we want to tweak the value of this style, we can do it in the _settings.scss file and it will update all the style files with this new value
