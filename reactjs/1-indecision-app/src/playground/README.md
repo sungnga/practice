@@ -276,3 +276,50 @@ module.exports = {
     mode: 'development'
 }
 ```
+
+**SETTING UP WEBPACK WITH SCSS**
+ - Install style loader and css loader: `npm install style-loader css-loader`
+ - Configure webpack.config.js file:
+ ```
+{
+    test: /\.css$/,
+    use: [
+        'style-loader',
+        'css-loader'
+    ]
+}
+```
+ - We will be styling our application using sass instead of regular css
+ - Behind the scenes, sass loader is going to use node-sass to convert/compile the sass file down to css for us
+ - Install: `npm install sass-loader node-sass`
+ - Configure webpack.config.js file:
+ ```
+{
+    test: /\.scss$/,
+    use: [
+        'style-loader',
+        'css-loader',
+        'sass-loader'
+    ]
+}
+```
+ - Import into app.js file: `import './styles/styles.scss'`
+
+**WORKING WITH SCSS**
+ - There should be a main entry point styles file that gets imported into the app.js file, example styles.scss file that lives in the styles folder
+ - This main styles.scss file functions very similar to the app.js file. It does not contain any styles and selectors here. Instead, it contains imports of selectors and styles defined elsewhere 
+ - This allows us to break up our application styles into multiple files as oppose to having everything defined in a single file of styles.scss 
+ - When a scss file starts with an underscore (_), it's known as a partial
+ - Partials contain part of the application styles and they get loaded into the entry point styles file
+ - To import a partial in the main styles.scss file: `@import './base/base'`
+ - `@import` is the SCSS import syntax. And then the file path, leaving off the underscore and the extension
+
+Font-size:
+ - By default, 1rem equals 16pixels
+ - To make the conversion a little easier to work with, set this as global font-size family:
+ ```    
+html {
+    font-size: 62.5 %;
+}
+```
+ - So now if we want a 22pixels font-size, we can type: `font-size: 2.2rem;`
