@@ -321,7 +321,11 @@ ReactDOM.render(<IndecisionApp />, document.querySelector('#app'))
 
 // BEM (block element modifier) Naming Convention:
 //  - Source: getbem.com
-// Targeting the title element inside the header class(block): .header__title {...}
+//  - Targeting the title element inside the header class(block): .header__title {...}
+//  - The modifier is to take a styled block and make some changes to it
+//  - The naming convention for a modifier is to use double hyphens (--) followed by a name you want to give it
+//  - For example, to modify the existing button block: .button--link {...}
+//  - When applying the styles to an element make sure to call both the existing block and the modifier. For example, <button className="button button--link">
 
 // CSS Reset:
 //  - A css reset is just make sure that all browsers are starting at the same base
