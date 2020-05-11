@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import IndecisionApp from './components/IndecisionApp'
+import 'normalize.css/normalize.css'
 import './styles/styles.scss'
 
 ReactDOM.render(<IndecisionApp />, document.querySelector('#app'))
@@ -307,6 +308,9 @@ ReactDOM.render(<IndecisionApp />, document.querySelector('#app'))
 //  - To import a partial in the main styles.scss file: @import './base/base'
 //  - @import is the SCSS import syntax. And then the file path, leaving off the underscore and the extension
 
+// STYLING STRUCTURE
+//  - It's a good idea to create a base partial (_base.scss) where we can define global stuff like font family, font size
+
 // Font-size:
 //  - By default, 1rem equals 16pixels
 //  - To make the conversion a little easier to work with, set this as global font-size family:
@@ -314,3 +318,14 @@ ReactDOM.render(<IndecisionApp />, document.querySelector('#app'))
 //         font-size: 62.5 %;
 //     }
 //  - So now if we want a 22pixels font-size, we can type: font-size: 2.2rem;
+
+// BEM (block element modifier) Naming Convention:
+//  - Source: getbem.com
+// Targeting the title element inside the header class(block): .header__title {...}
+
+// CSS Reset:
+//  - A css reset is just make sure that all browsers are starting at the same place 
+//  - Normalize css is a library that can reset the default browsers
+//  - Install: npm install normalize.css
+//  - Import this file into app.js file: import 'normalize.css/normalize.css'
+//  - Need to configure webpack.config.js file to support both css and scss files by adding a ? after the s: {test: /\.s?css$/}
