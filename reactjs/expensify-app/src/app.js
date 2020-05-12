@@ -110,5 +110,67 @@ ReactDOM.render(<AppRouter />, document.querySelector('#app'))
 // We can set the default state (as object) in the argument as well: {count: 0}
 // When invoking createStore(), this function passed in gets called once right away and the default state is used
 // We can fetch the current state object back using the .getState() method on the store
+//
 // The .getState() method returns the current state object
 // store.getState()
+
+// ACTIONS
+// - Actions are our way of communicating with the store
+// - We can change the Redux store values using actions
+// - An action is nothing more than an object that gets sents to the store
+// - And this object describes the type of action we'd like to take
+// - Example of actions could be: increment, decrement, reset, etc
+// - This is going to allow us to change the store over time by dispatching various actions
+// - The method use to send/dispatch an action object to the store is: store.dispatch()
+
+// To define an action object:
+// - Define an object: with curly braces
+// - Define the action type property and set the value as the name of action
+// - Write the action type name all in caps and separatewords with underscore. This is by convention
+    // {
+    //     type: 'INCREMENT'
+    // }
+
+// To dispatch an action object to the store:
+// The .dispatch() method sends an action object to the store
+    // store.dispatch({
+    //     type: 'INCREMENT'
+    // })
+
+// To use the action inside the store:
+//  - The createStore function expects a function to be the 1st arg
+//  - This function gets called everytime a .dispatch() is made to the store
+//  - Based on the action type, we can make meaningful changes to the state
+//  - 1st arg: the current state. With default state value
+//  - 2nd arg: the action type that gets passed in
+    // const store = createStore((state = { count: 0 }, action) => {
+    //     // To handle the dispatch action, we're using a switch statement
+    //     // We're switching what we do based off of a particular value. In this case, it's the action data type value
+    //     // Inside the curly braces we can define the various cases we want to handle. In our case, we want to handle the action type
+    //     switch (action.type) {
+    //         // Case when action.type is equal to 'INCREMENT'
+    //         // After the colon, we provide what we want to do
+    //         // Return the updated state object
+    //         case 'INCREMENT':
+    //             return {
+    //                 count: state.count + 1
+    //             }
+    //         // Case when action.type is equal to 'DECREMENT'
+    //         case 'DECREMENT':
+    //             return {
+    //                 count: state.count - 1
+    //             }
+    //         case 'RESET':
+    //             return {
+    //                 count: 0
+    //             };
+    //         // Setup the default case, when the other cases don't run
+    //         // Return the current state
+    //         default: 
+    //             return state
+    //     }
+    // })
+    // store.dispatch({
+    //     type: 'DECREMENT'
+    // })
+    // console.log(store.getState())
