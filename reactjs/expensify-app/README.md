@@ -2,12 +2,13 @@ REACT-ROUTER
 -------------
 
 ### React-Router 101
-- [React-router source:] (https://reacttraining.com/react-router/)
+- React-router source: https://reacttraining.com/react-router/
 
 **Setup React-router:**
 - Install the react-router for web: npm install react-router-dom
 - Import into app.js file and destructure items we want to use: 
 - `import { BrowserRouter, Route } from 'react-router-dom'`
+
 **To create the router configuration:**
  - Only use a single instance of BrowserRouter
  - Inside the BrowserRouter, set up as many instances of Route as pages we have
