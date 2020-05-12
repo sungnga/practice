@@ -24,16 +24,16 @@ ReactDOM.render(<AppRouter />, document.querySelector('#app'))
 //  - Path: the URL to use for this route
 //  - Component: when that URL matches, what to show to the screen. We can reference a component we want to show
 //  - The first/root route needs a 3rd prop to match the exact path: exact={true}
-    // const routes = (
-    //     <BrowserRouter>
-    //         <div>
-    //             <Route path="/" component={ExpenseDashboardPage} exact={true} />
-    //             <Route path="/create" component={AddExpensePage} />
-    //             <Route path="/edit" component={EditExpensePage} />
-    //             <Route path="/help" component={HelpPage} />
-    //         </div>
-    //     </BrowserRouter>
-    // )
+//     const routes = (
+//         <BrowserRouter>
+//             <div>
+//                 <Route path="/" component={ExpenseDashboardPage} exact={true} />
+//                 <Route path="/create" component={AddExpensePage} />
+//                 <Route path="/edit" component={EditExpensePage} />
+//                 <Route path="/help" component={HelpPage} />
+//             </div>
+//         </BrowserRouter>
+//     )
 // The server is not well equipped to handle client-side routing, because it's not sending back the html page when a request like '/help' is made. It will send back a 404 not found page
 // To fix this, need to configure the dev server in the webpack.config.js file, telling the dev server to always serve up the index.html file for all 404 routes: historyApiFallback: true
 
@@ -43,21 +43,33 @@ ReactDOM.render(<AppRouter />, document.querySelector('#app'))
 //  - Switch will go through each Route one by one to see if the path matches with the requested path
 //  - If Switch finds a matched path, it will stop looking
 //  - The last Route inside Switch is a 404 not found component. This component gets rendered if the path does not match
-    // <BrowserRouter>
-    //     <Switch>
-    //         <Route path="/" component={ExpenseDashboardPage} exact={true} />
-    //         <Route path="/create" component={AddExpensePage} />
-    //         <Route path="/edit" component={EditExpensePage} />
-    //         <Route path="/help" component={HelpPage} />
-    //         <Route component={NotFoundPage} />
-    //     </Switch>
-    // </BrowserRouter>
+//     <BrowserRouter>
+//         <Switch>
+//             <Route path="/" component={ExpenseDashboardPage} exact={true} />
+//             <Route path="/create" component={AddExpensePage} />
+//             <Route path="/edit" component={EditExpensePage} />
+//             <Route path="/help" component={HelpPage} />
+//             <Route component={NotFoundPage} />
+//         </Switch>
+//     </BrowserRouter>
 
 // Linking between routes: Link and NavLink
 //  - Import Link and NavLink from react-router-dom: 
 //  - import { Link, NavLink } from 'react-router-dom'
 //  - Use Link when we want to change or switch between pages/routes
+//  - Link and NavLink have a "to" attribute to specify the path of the link route
+//  - <Link to="/">Go home</Link>
 //  - The nice thing about Link is that we're using client-side routing as oppose to server-side routing
 //  - This means that it's not going through the full page refresh. Intead, Javascript just swaps things out on the fly. It makes a new call to ReactDOM.render() to render the new page
 //  - Use Link whenever we want to take advantage of client-side routing instead of using an anhcor tag
-//  - Use NavLink for navigation. And we can call out that specific link that we're on
+//  - Use NavLink for navigation. This way, we can call out that specific link that we're on
+//  - <NavLink to="/" activeClassName="is-active" exact={true}>Dashboard</NavLink>
+
+// Query Strings and URL Parameters:
+// When React-router finds a path that matches, it renders an instance of that component
+// Not only is it rendering the instance of the component, it's also passing a few props down
+// So anytime we're a component inside a Route, we have access to some special information which are useful to build our application
+// These props are: history, location, and match. And these props are objects
+// If a user passes additional URL parameters or query string, we can access them via component props
+// We can capture the dynamic URL id that comes after the '/' and grab its value with the ':id' syntax: path="/edit/:id"
+// To view the value of that id: props.match.params.id
