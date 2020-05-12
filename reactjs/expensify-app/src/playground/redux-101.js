@@ -15,18 +15,24 @@ const store = createStore((state = { count: 0 }, action) => {
         // After the colon, we provide what we want to do
         // Return the updated state object
         case 'INCREMENT':
+            const incrementBy = typeof action.incrementBy === 'number' ? action.incrementBy : 1;
             return {
-                count: state.count + 1
+                count: state.count + incrementBy
             }
         // Case when action.type is equal to 'DECREMENT'
         case 'DECREMENT':
+            const decrementBy = typeof action.decrementBy === 'number' ? action.decrementBy : 1
             return {
-                count: state.count - 1
+                count: state.count - decrementBy
             }
         case 'RESET':
             return {
                 count: 0
             };
+        case 'SET':
+            return {
+                count: action.count
+            }
         // Setup the default case, when the other cases don't run
         // Return the current state
         default: 
@@ -34,24 +40,42 @@ const store = createStore((state = { count: 0 }, action) => {
     }
 })
 
-// .getState() method returns the current state object
-console.log(store.getState())
 
+// Use store.subscribe() method to do something when the store changes
+// The return value of subscribe is a function that we can call later
+const unsubscribe = store.subscribe(() => {
+    console.log(store.getState())
+})
 // The .dispatch() method sends an action object to the store
 store.dispatch(
     // Define an action type object
     {
-        type: 'INCREMENT'
+        type: 'INCREMENT',
+        incrementBy: 5
     }
 )
+
+// Unsubscribe to the state changes at this point
+// unsubscribe()
+
+store.dispatch({
+    type: 'INCREMENT'
+})
 
 store.dispatch({
     type: 'RESET'
 })
 
 store.dispatch({
+    type: 'DECREMENT',
+    decrementBy: 10
+})
+
+store.dispatch({
     type: 'DECREMENT'
 })
 
-
-console.log(store.getState())
+store.dispatch({
+    type: 'SET',
+    count: 101
+})
