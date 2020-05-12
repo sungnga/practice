@@ -73,3 +73,42 @@ ReactDOM.render(<AppRouter />, document.querySelector('#app'))
 // If a user passes additional URL parameters or query string, we can access them via component props
 // We can capture the dynamic URL id that comes after the '/' and grab its value with the ':id' syntax: path="/edit/:id"
 // To view the value of that id: props.match.params.id
+
+// REDUX
+
+// WHY WE USE REDUX
+// - Resource: redux.js.org
+// - Components state and Redux are 2 tools both aim to solve the same problem, which is to manage the state for an application
+// - State is data that changes, which means that we need a way to actually change the data for component. It was this.setState() and we need a way to get the data out of that state container
+// - We need a way to render it to the screen and for components, we just use this.state.keyName to get the value
+// - So component state is tracking changing data
+// - Now in complex applications, there's no clear parent component where we can store that state. When we have separate component trees, there's no way to communicate between components
+// - The other problem is that when we use components state, our components end up communicating a lot
+// - This isn't inheritly bad, but when we do do it a lot, we create components that are not very reusable. Because they need so many things from the parents which means they can't just be dropped anywhere because the parent might not have the things they need
+// The solution to this problem is with Redux
+// - Each component can define two things: what data it needs and what data it needs to be able to change
+// - Redux is a state container, which is exactly what our class-based components are
+// - We create a redux store and it's just an object like this.state was an object inside our components
+// - With Redux Store, we're able to read data off of the store and change the data in the store
+// - The nice thing is that the individiual components they're going to be able to determine how they want to do those things
+// - Now the other components inside the app they're also going to need to be able to work with the store in one way or another, either reading or writing data
+// - This way the components aren't communicating between each other so much as the individual components are communicating with the store
+// - This creates components that are very reusable
+
+// Setting up Redux:
+// - Run: npm install redux
+// - Import a single named export, it's a function called createStore. We're gonna destructure it off of the Redux library
+// - import { createStore } from 'redux'
+// - createStore() is something that is called once to create the store. Once we have the store in place we don't need to call it again
+
+// To create a Store:
+// const store = createStore((state = { count: 0 }) => {
+//     return state
+// })
+// The createStore function expects a function as the first argument
+// The 1st argument to the function that we passed to createStore is the current state: state = current state
+// We can set the default state (as object) in the argument as well: {count: 0}
+// When invoking createStore(), this function passed in gets called once right away and the default state is used
+// We can fetch the current state object back using the .getState() method on the store
+// The .getState() method returns the current state object
+// store.getState()
