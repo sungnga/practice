@@ -1,4 +1,5 @@
 **WEBPACK OVERVIEW**
+--------------------
 - webpack resource: webpack.js.org
 - a module bundler for modern javascript apps
 - first advantage of webpack is it allows use to organize our javascript 
@@ -32,7 +33,7 @@
 - `npm init`
 - `npm install babel-cli`
 - define a script to run these dependencies
-``` 
+```javascript
 "scripts": {
     "nameOfKey": "value"
     "serve": "live-server public/",
@@ -49,7 +50,7 @@
 - `"scripts": {"build": "webpack --watch"}`
 - create a webpack.config.js file in root directory
 - inside the webpack.config.js file: 
-```
+```javascript
 const path = require('path')
 
 // where the entry point is -> output
@@ -139,7 +140,7 @@ Use a module:
 - Babel-loader allows us to run Babel in webpack under certain conditions
 - run: `npm install @babel/core babel-loader @babel/preset-env @babel/preset-react`
 -  Configure the babel-loader in webpack.config.js file. Babel will run all files that end in .js
-```
+```javascript
 module.exports = {
     entry: './src/app.js',
     output: {
@@ -157,7 +158,7 @@ module.exports = {
 }
 ```
 - Create .babelrc file and include all the presets there
-```
+```javascript
 {
     "presets": [
         "@babel/preset-env",
@@ -179,13 +180,13 @@ module.exports = {
  - Webpack devServer is a replacment for Web Live Server but with webpack features such as the "webpack --watch"
  - Install webpack devServer: `npm install webpack-dev-server`
  - Setup the devServer property in webpack.config.js file:
-```
+```javascript
 devServer: {
     contentBase: path.join(__dirname, 'public')
 }
 ```
  - Setup the script in package.json file:
-```
+```javascript
 "scripts": {
     "serve": "live-server public/",
     "build": "webpack",
@@ -200,7 +201,7 @@ devServer: {
 **ES6 CLASS PROPERTIES**
  - Install: `npm install babel-plugin-transform-class-properties`
  - Configure in .babelrc file:
- ```
+ ```javascript
 {
     "presets": [
         "@babel/preset-env",
@@ -220,7 +221,7 @@ To use the new class syntax:
  - We can define methods as properties of the class using arrow functions instead of regular functions
  - Arrow functions don't bind their own 'this' value. They're just going to use whatever 'this' is in scope
  - And for arrow functions on class properties, that is the class instance itself
-```
+```javascript
 // Old syntax
 class OldSyntax {
     constructor() {
@@ -247,7 +248,7 @@ console.log(newGetGreeting())
 ```
 
 **FINAL WEBPACK.CONFIG.JS FILE SETUP:**
-```
+```javascript
 const path = require('path')
 
 // where the entry point is -> output
@@ -278,9 +279,10 @@ module.exports = {
 ```
 
 **SETTING UP WEBPACK WITH SCSS**
+--------------------------------
  - Install style loader and css loader: `npm install style-loader css-loader`
  - Configure webpack.config.js file:
- ```
+ ```javascript
 {
     test: /\.css$/,
     use: [
@@ -293,7 +295,7 @@ module.exports = {
  - Behind the scenes, sass loader is going to use node-sass to convert/compile the sass file down to css for us
  - Install: `npm install sass-loader node-sass`
  - Configure webpack.config.js file:
- ```
+ ```javascript
 {
     test: /\.scss$/,
     use: [
@@ -317,7 +319,7 @@ module.exports = {
 Font-size:
  - By default, 1rem equals 16pixels
  - To make the conversion a little easier to work with, set this as global font-size family:
- ```    
+ ```scss  
 html {
     font-size: 62.5 %;
 }
