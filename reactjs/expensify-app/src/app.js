@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import {BrowserRouter, Route} from 'react-router-dom'
+import {BrowserRouter, Route, Switch } from 'react-router-dom'
 import 'normalize.css/normalize.css'
 import './styles/styles.scss'
 
@@ -28,14 +28,21 @@ const HelpPage = () => (
     </div>
 )
 
+const NotFoundPage = () => (
+    <div>
+        404!
+    </div>
+)
+
 const routes = (
     <BrowserRouter>
-        <div>
+        <Switch>
             <Route path="/" component={ExpenseDashboardPage} exact={true} />
             <Route path="/create" component={AddExpensePage} />
             <Route path="/edit" component={EditExpensePage} />
             <Route path="/help" component={HelpPage} />
-        </div>
+            <Route component={NotFoundPage} />
+        </Switch>
     </BrowserRouter>
 )
 
@@ -70,3 +77,18 @@ ReactDOM.render(routes, document.querySelector('#app'))
     // )
 // The server is not well equipped to handle client-side routing, because it's not sending back the html page when a request like '/help' is made. It will send back a 404 not found page
 // To fix this, need to configure the dev server in the webpack.config.js file, telling the dev server to always serve up the index.html file for all 404 routes: historyApiFallback: true
+
+// Setting up a 404 page:
+//  - Import the Switch instance from react-router-dom: import {BrowserRouter, Route, Switch } from 'react-router-dom'
+//  - Switch will go through each Route one by one to see if the path matches with the requested path
+//  - If Switch finds a matched path, it will stop looking
+//  - The last Route inside Switch is a 404 not found component. This component gets rendered if the path does not match
+    // <BrowserRouter>
+    //     <Switch>
+    //         <Route path="/" component={ExpenseDashboardPage} exact={true} />
+    //         <Route path="/create" component={AddExpensePage} />
+    //         <Route path="/edit" component={EditExpensePage} />
+    //         <Route path="/help" component={HelpPage} />
+    //         <Route component={NotFoundPage} />
+    //     </Switch>
+    // </BrowserRouter>
