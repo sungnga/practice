@@ -79,12 +79,12 @@ module.exports = {
 - run this to open the project in the browser: `npm run server`
 - run this to serve up webpack in the browser: `npm run build`
 
-**ES6 IMPORT/EXPORT**
+### ES6 IMPORT/EXPORT
 - 2 types of exports:
 1. default export: every file can have a single default export
 2. named exports: can have as many named exports as you like
 
-To export named exports:
+**To export named exports:**
 - export at the bottom of the file
 - the export statement: `export {}`
 - define the named export inside the curly braces
@@ -94,7 +94,7 @@ To export named exports:
 - An alternative way to export a named export is to place the 'export' keyword in front of the variable declaration
 - `export const square = (x) => x * x;`
 
-To import the named exports:
+**To import the named exports:**
 - Inside the file that wants to use the named exports, import the named exports inside the curly braces and provide the path to the file
 - `import { square, add } from './utils.js'`
 - Only import the named exports you want to use. No need to import them all
