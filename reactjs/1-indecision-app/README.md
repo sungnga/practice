@@ -1,5 +1,7 @@
-**WEBPACK OVERVIEW**
+WEBPACK
 --------------------
+
+### WEBPACK OVERVIEW
 - webpack resource: webpack.js.org
 - a module bundler for modern javascript apps
 - first advantage of webpack is it allows use to organize our javascript 
@@ -279,8 +281,10 @@ module.exports = {
 }
 ```
 
-**SETTING UP WEBPACK WITH SCSS**
---------------------------------
+STYLING REACT
+-------------
+
+### SETTING UP WEBPACK WITH SCSS
  - Install style loader and css loader: `npm install style-loader css-loader`
  - Configure webpack.config.js file:
  ```javascript
