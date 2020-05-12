@@ -321,7 +321,8 @@ ReactDOM.render(<IndecisionApp />, document.querySelector('#app'))
 
 // BEM (block element modifier) Naming Convention:
 //  - Source: getbem.com
-//  - Targeting the title element inside the header class(block): .header__title {...}
+//  - To target an element that is inside another element(block), use double underscore (__) followed by a name you want to give to that child element
+//  - For example, targeting the title element inside the header class(block): .header__title {...}
 //  - The modifier is to take a styled block and make some changes to it
 //  - The naming convention for a modifier is to use double hyphens (--) followed by a name you want to give it
 //  - For example, to modify the existing button block: .button--link {...}
@@ -343,3 +344,5 @@ ReactDOM.render(<IndecisionApp />, document.querySelector('#app'))
 //  - $off-black: #20222b;  (define the style by the variable name)
 //  - background: @off-black;  (referencing the style using the variable name)
 //  - When we want to tweak the value of this style, we can do it in the _settings.scss file and it will update all the style files with this new value
+
+

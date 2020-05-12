@@ -324,6 +324,15 @@ html {
 ```
  - So now if we want a 22pixels font-size, we can type: `font-size: 2.2rem;`
 
+BEM (block element modifier) Naming Convention:
+ - Source: getbem.com
+ - To target an element that is inside another element(block), use double underscore (__) followed by a name you want to give to that child element
+ - For example, targeting the title element inside the header class(block): `.header__title {...}`
+ - The modifier is to take a styled block and make some changes to it
+ - The naming convention for a modifier is to use double hyphens (--) followed by a name you want to give it
+ - For example, to modify the existing button block: `.button--link {...}`
+ - When applying the styles to an element make sure to call both the existing block and the modifier. For example, `<button className="button button--link">`
+
  CSS Reset:
  - A css reset is just make sure that all browsers are starting at the same base
  - Normalize css is a library that can reset the default browsers
