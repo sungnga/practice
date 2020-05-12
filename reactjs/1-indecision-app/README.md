@@ -25,10 +25,10 @@
 - webpack can even run Babel for us, so we don't have to run a separate Babel command
 - as we add more code we can add it into separate small files and it's going to prevent us from getting into a situation where we have a ton of code sitting in a single file, making things really hard to debug and test
 
-**UNINSTALLING GLOBAL MODULES**
+### UNINSTALLING GLOBAL MODULES
 - `sudo npm uninstall -g babel-cli`
 
-**INSTALLING MODULES/DEPENDENCIES LOCALLY** (specific to a project)
+### INSTALLING MODULES/DEPENDENCIES LOCALLY (specific to a project)
 - make sure you're in the project directory
 - `npm init`
 - `npm install babel-cli`
@@ -44,7 +44,7 @@
 - `npm run <nameOfKey>`
 - `npm run build`
 
-**INSTALLING AND CONFIGURING WEBPACK**
+### INSTALLING AND CONFIGURING WEBPACK
 - `npm install webpack`
 - defined a script to run webpack
 - `"scripts": {"build": "webpack --watch"}`
@@ -101,7 +101,7 @@ module.exports = {
 - Make sure the name in the import/export match each other
 - The order inside the curly braces does not matter
 
-Default export:
+**Default export:**
 - can only have a single default export
 - attach 'as default' after the reference name
 - `export { refName as default }`
@@ -113,28 +113,28 @@ Default export:
 - `const subtract = () => {...}`  (a statement)
 - `export default subtract`  (an expression. reference the subtract variable)
 
-**IMPORTING NPM MODULES**
-- 3 steps process to working with npm modules: install, import, use
+### IMPORTING NPM MODULES
+- 3-step process to working with npm modules: install, import, use
 
-Install a module:
+**Install a module:**
 - `npm install react`  (using the react library)
 - `npm install react-dom` (this library renders the react components to the browser)
 - this will install locally to the project
 - it's saved as a dependency in package.json file with its version
 - its code now lives in the node_modules folder
 
-Import a module:
+**Import a module:**
 - refer to the documentation of the package for how to import
 - `import React from 'react'`
 - `import ReactDOM from 'react-dom'`
 - NOTE: we're grabbing the default export of React here. And we're not providing a relative path, so webpack will look for React in the node_modules folder
 
-Use a module:
+**Use a module:**
 - refer to the library doc to learn how to use it
 - `const template = React.createElement('p', {}, 'testing 123')`
 - `ReactDOM.render(template, document.querySelector('#app'))`
 
-**SETTING UP BABEL WITH WEBPACK**
+### SETTING UP BABEL WITH WEBPACK
 - We need to first configure Babel to work with webpack before we can use JSX in webpack
 - We do this by running babel-loader
 - Babel-loader allows us to run Babel in webpack under certain conditions
@@ -169,14 +169,14 @@ module.exports = {
 - Now we can use JSX
 - run again to see JSX renders in the browser: npm run build
 
-**SOURCE MAPS WITH WEBPACK**
+### SOURCE MAPS WITH WEBPACK
  - Source maps is a great setup/config to debug errors in our code
  - When an error occurs, it will point directly to the file that the error was generated
  - If this was not set up, the error will point to the bundle.js file instead
  - Setup the devtool property in webpack.config.js file:
  - `devtool: 'cheap-module-eval-source-map'`
 
-**WEBPACK DEV SERVER**
+### WEBPACK DEV SERVER
  - Webpack devServer is a replacment for Web Live Server but with webpack features such as the "webpack --watch"
  - Install webpack devServer: `npm install webpack-dev-server`
  - Setup the devServer property in webpack.config.js file:
@@ -198,7 +198,7 @@ devServer: {
  - It will specify the port it's running on: `localhost:8080`
  - NOTE: When we run `npm run build`, it'll generate the bundle.js file. The file size is big. We do this when the app is ready for production. Otherwise, run: `npm run dev-server` during development mode
 
-**ES6 CLASS PROPERTIES**
+### ES6 CLASS PROPERTIES
  - Install: `npm install babel-plugin-transform-class-properties`
  - Configure in .babelrc file:
  ```javascript
@@ -212,7 +212,8 @@ devServer: {
     ]
 }
 ```
-To use the new class syntax:
+
+**To use the new class syntax:**
  - This Babel plugin allows us to define a class component without having to setup a constructor function
  - Instead, we can just setup a key/value pair to define properties for the class
  - We're now able to set the state outside of the constructor function. `state = { key: value }`
@@ -307,7 +308,7 @@ module.exports = {
 ```
  - Import into app.js file: `import './styles/styles.scss'`
 
-**WORKING WITH SCSS**
+### WORKING WITH SCSS
  - There should be a main entry point styles file that gets imported into the app.js file, example styles.scss file that lives in the styles folder
  - This main styles.scss file functions very similar to the app.js file. It does not contain any styles and selectors here. Instead, it contains imports of selectors and styles defined elsewhere 
  - This allows us to break up our application styles into multiple files as oppose to having everything defined in a single file of styles.scss 
@@ -316,7 +317,7 @@ module.exports = {
  - To import a partial in the main styles.scss file: `@import './base/base'`
  - `@import` is the SCSS import syntax. And then the file path, leaving off the underscore and the extension
 
-Font-size:
+**Font-size:**
  - By default, 1rem equals 16pixels
  - To make the conversion a little easier to work with, set this as global font-size family:
  ```scss  
@@ -326,7 +327,7 @@ html {
 ```
  - So now if we want a 22pixels font-size, we can type: `font-size: 2.2rem;`
 
-BEM (block element modifier) Naming Convention:
+**BEM (block element modifier) Naming Convention:**
  - Source: getbem.com
  - To target an element that is inside another element(block), use double underscore (__) followed by a name you want to give to that child element
  - For example, targeting the title element inside the header class(block): `.header__title {...}`
@@ -335,14 +336,14 @@ BEM (block element modifier) Naming Convention:
  - For example, to modify the existing button block: `.button--link {...}`
  - When applying the styles to an element make sure to call both the existing block and the modifier. For example, `<button className="button button--link">`
 
- CSS Reset:
+ **CSS Reset:**
  - A css reset is just make sure that all browsers are starting at the same base
  - Normalize css is a library that can reset the default browsers
  - Install: `npm install normalize.css`
  - Import this file into app.js file: `import 'normalize.css/normalize.css'`
  - Need to configure webpack.config.js file to support both css and scss files by adding a ? after the s: `{test: /\.s?css$/}`
 
-Theming with Variables:
+**Theming with Variables:**
  - Create a file called _settings.scss inside the base folder
  - This file is a place to define the theme for the application
  - It uses variables to set the style values that can then be used and reused by referencing the variable name
