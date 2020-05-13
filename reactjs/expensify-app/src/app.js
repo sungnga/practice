@@ -211,7 +211,7 @@ ReactDOM.render(<AppRouter />, document.querySelector('#app'))
 //  - we just want to use the input the state and the action to return the new state value
 // 2. Never change state or action
 //  - mutating the state directly is going to have undesired effects
-    // // A reducer
+    // // A reducer function
     // const countReducer = (state = { count: 0 }, action) => {
     //     switch (action.type) {
     //         case 'INCREMENT':
@@ -234,6 +234,6 @@ ReactDOM.render(<AppRouter />, document.querySelector('#app'))
     //             return state
     //     }
     // }
-        
-    // // Make a store
+    //
+    // // Passing in the reducer to create store
     // const store = createStore(countReducer)

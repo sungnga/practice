@@ -20,16 +20,7 @@ const setCount = ({count}) => ({
     count
 })
 
-// Reducers
-// 1. Reducers are pure functions
-//  - the output is only determined by the input. What it returns, it is only determined by the things that get passed in
-//  - it doesn't use anything else from outside of the function scope and it doesn't change anything outside of the function scope either
-//  - we don't want to change variables outside of the reducer's scope
-//  - and we don't want to rely on values from variables outise of the reducer's scope
-//  - we just want to use the input the state and the action to return the new state value
-// 2. Never change state or action
-//  - mutating the state directly is going to have undesired effects
-
+// A reducer function
 const countReducer = (state = { count: 0 }, action) => {
     switch (action.type) {
         case 'INCREMENT':
@@ -54,7 +45,7 @@ const countReducer = (state = { count: 0 }, action) => {
 }
     
 
-// Make a store
+// Passing in the reducer to create store
 const store = createStore(countReducer)
 
 store.dispatch(incrementCount())
