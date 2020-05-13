@@ -174,3 +174,30 @@ ReactDOM.render(<AppRouter />, document.querySelector('#app'))
     //     type: 'DECREMENT'
     // })
     // console.log(store.getState())
+
+// Action generators:
+// Action generators are functions that return action objects
+// We can destructor the properties and set default values in the function argument
+// The function takes in the action property value passed by the user when this function was invoked in store.dispatch()
+// Destructure the incrementBy property and set the default value to 1
+// If the user provides a value for incrementBy property, we'll use that value. Else we'll increment by 1 by default
+// It returns the updated action object with action type and incrementBy properties
+    // // Action generator
+    // const incrementCount = ({incrementBy = 1} = {}) => ({
+    //     type: 'INCREMENT',
+    //     incrementBy
+    // })
+    // // Create a store
+    // const store = createStore((state = { count: 0 }, action) => {
+    //     switch (action.type) {
+    //         case 'INCREMENT':
+    //             return {
+    //                 count: state.count + action.incrementBy
+    //             }
+    //     }
+    // })
+    // // Calling the action generator in in the dispatch method
+    // // No action property is passed in, so action generator will use the default value
+    // store.dispatch(incrementCount())
+    // // Action property is provided
+    // store.dispatch(incrementCount({incrementBy: 5}))
