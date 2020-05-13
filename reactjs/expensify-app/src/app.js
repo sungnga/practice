@@ -102,9 +102,9 @@ ReactDOM.render(<AppRouter />, document.querySelector('#app'))
 // - createStore() is something that is called once to create the store. Once we have the store in place we don't need to call it again
 
 // To create a Store:
-// const store = createStore((state = { count: 0 }) => {
-//     return state
-// })
+//    const store = createStore((state = { count: 0 }) => {
+//        return state
+//    })
 // The createStore function expects a function as the first argument
 // The 1st argument to the function that we passed to createStore is the current state: state = current state
 // We can set the default state (as object) in the argument as well: {count: 0}
@@ -127,15 +127,15 @@ ReactDOM.render(<AppRouter />, document.querySelector('#app'))
 // - Define an object: with curly braces
 // - Define the action type property and set the value as the name of action
 // - Write the action type name all in caps and separatewords with underscore. This is by convention
-    // {
-    //     type: 'INCREMENT'
-    // }
+//    {
+//        type: 'INCREMENT'
+//    }
 
 // To dispatch an action object to the store:
 // The .dispatch() method sends an action object to the store
-    // store.dispatch({
-    //     type: 'INCREMENT'
-    // })
+//    store.dispatch({
+//        type: 'INCREMENT'
+//    })
 
 // To use the action inside the store:
 //  - The createStore function expects a function to be the 1st arg
@@ -182,25 +182,25 @@ ReactDOM.render(<AppRouter />, document.querySelector('#app'))
 // Destructure the incrementBy property and set the default value to 1
 // If the user provides a value for incrementBy property, we'll use that value. Else we'll increment by 1 by default
 // It returns the updated action object with action type and incrementBy properties
-    // // Action generator
-    // const incrementCount = ({incrementBy = 1} = {}) => ({
-    //     type: 'INCREMENT',
-    //     incrementBy
-    // })
-    // // Create a store
-    // const store = createStore((state = { count: 0 }, action) => {
-    //     switch (action.type) {
-    //         case 'INCREMENT':
-    //             return {
-    //                 count: state.count + action.incrementBy
-    //             }
-    //     }
-    // })
-    // // Calling the action generator in in the dispatch method
-    // // No action property is passed in, so action generator will use the default value
-    // store.dispatch(incrementCount())
-    // // Action property is provided
-    // store.dispatch(incrementCount({incrementBy: 5}))
+//    // Action generator
+//    const incrementCount = ({incrementBy = 1} = {}) => ({
+//        type: 'INCREMENT',
+//        incrementBy
+//    })
+//    // Create a store
+//    const store = createStore((state = { count: 0 }, action) => {
+//        switch (action.type) {
+//            case 'INCREMENT':
+//                return {
+//                    count: state.count + action.incrementBy
+//                }
+//        }
+//    })
+//    // Calling the action generator in in the dispatch method
+//    // No action property is passed in, so action generator will use the ////default value
+//    store.dispatch(incrementCount())
+//    // Action property is provided
+//    store.dispatch(incrementCount({incrementBy: 5}))
 
 // REDUCERS
 // 1. Reducers are pure functions
@@ -211,29 +211,45 @@ ReactDOM.render(<AppRouter />, document.querySelector('#app'))
 //  - we just want to use the input the state and the action to return the new state value
 // 2. Never change state or action
 //  - mutating the state directly is going to have undesired effects
-    // // A reducer function
-    // const countReducer = (state = { count: 0 }, action) => {
-    //     switch (action.type) {
-    //         case 'INCREMENT':
-    //             return {
-    //                 count: state.count + action.incrementBy
-    //             }
-    //         case 'DECREMENT':
-    //             return {
-    //                 count: state.count - action.decrementBy
-    //             }
-    //         case 'RESET':
-    //             return {
-    //                 count: 0
-    //             };
-    //         case 'SET':
-    //             return {
-    //                 count: action.count
-    //             }
-    //         default: 
-    //             return state
-    //     }
-    // }
-    //
-    // // Passing in the reducer to create store
-    // const store = createStore(countReducer)
+
+//    // A reducer function
+//    const countReducer = (state = { count: 0 }, action) => {
+//        switch (action.type) {
+//            case 'INCREMENT':
+//                return {
+//                    count: state.count + action.incrementBy
+//                }
+//            case 'DECREMENT':
+//                return {
+//                    count: state.count - action.decrementBy
+//                }
+//            case 'RESET':
+//                return {
+//                    count: 0
+//                };
+//            case 'SET':
+//                return {
+//                    count: action.count
+//                }
+//            default: 
+//                return state
+//        }
+//    }
+//    
+//    // Passing in the reducer to create store
+//    const store = createStore(countReducer)
+
+// CombineReducers:
+// Instead of passing in just one reducer to createStore(), we can pass in multiple reducers using the combineReducers() method
+// The combineReducers function will return an object
+// The object returned by the combineReducers is how we want our Redux store to look like, which is an object with expenses and filters properties
+// The expensesReducer array will be the value on the expenses property
+// The filtersReducer object will be the value on the filters property
+// The expenses property is managed by the expensesReducer
+// The filters property is managed by the filtersReducer
+//    const store = createStore(
+//        combineReducers({
+//            expenses: expensesReducer,
+//            filters: filtersReducer
+//        })
+//    );
