@@ -1,5 +1,26 @@
 import {createStore} from 'redux'
 
+// Action generators are functions that return action objects
+// We can destructor the properties and set default values in the function argument
+const incrementCount = ({incrementBy = 1} = {}) => ({
+    type: 'INCREMENT',
+    incrementBy
+})
+
+const decrementCount = ({decrementBy = 1} = {}) => ({
+    type: 'DECREMENT',
+    decrementBy
+})
+
+const resetCount = () => ({
+    type: 'RESET'
+})
+
+const setCount = ({count}) => ({
+    type: 'SET',
+    count
+})
+
 // Make a store
 // The createStore function expects a function to be the 1st arg
 // This function gets called everytime a .dispatch() is made to the store
@@ -15,15 +36,15 @@ const store = createStore((state = { count: 0 }, action) => {
         // After the colon, we provide what we want to do
         // Return the updated state object
         case 'INCREMENT':
-            const incrementBy = typeof action.incrementBy === 'number' ? action.incrementBy : 1;
+            // const incrementBy = typeof action.incrementBy === 'number' ? action.incrementBy : 1;
             return {
-                count: state.count + incrementBy
+                count: state.count + action.incrementBy
             }
         // Case when action.type is equal to 'DECREMENT'
         case 'DECREMENT':
-            const decrementBy = typeof action.decrementBy === 'number' ? action.decrementBy : 1
+            // const decrementBy = typeof action.decrementBy === 'number' ? action.decrementBy : 1
             return {
-                count: state.count - decrementBy
+                count: state.count - action.decrementBy
             }
         case 'RESET':
             return {
@@ -44,38 +65,21 @@ const store = createStore((state = { count: 0 }, action) => {
 // Use store.subscribe() method to do something when the store changes
 // The return value of subscribe is a function that we can call later
 const unsubscribe = store.subscribe(() => {
-    console.log(store.getState())
+    console.log('starting:', store.getState())
 })
+
 // The .dispatch() method sends an action object to the store
-store.dispatch(
-    // Define an action type object
-    {
-        type: 'INCREMENT',
-        incrementBy: 5
-    }
-)
+store.dispatch(incrementCount())
 
 // Unsubscribe to the state changes at this point
 // unsubscribe()
 
-store.dispatch({
-    type: 'INCREMENT'
-})
+store.dispatch(incrementCount({incrementBy: 5}))
 
-store.dispatch({
-    type: 'RESET'
-})
+store.dispatch(resetCount())
 
-store.dispatch({
-    type: 'DECREMENT',
-    decrementBy: 10
-})
+store.dispatch(decrementCount({decrementBy: 10}))
 
-store.dispatch({
-    type: 'DECREMENT'
-})
+store.dispatch(decrementCount())
 
-store.dispatch({
-    type: 'SET',
-    count: 101
-})
+store.dispatch(setCount({count: 400}))
