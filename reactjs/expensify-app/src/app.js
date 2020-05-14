@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
 import AppRouter from './routers/AppRouter'
 import configureStore from './store/configureStore'
 import { addExpense } from './actions/expenses'
@@ -22,8 +23,15 @@ store.dispatch(addExpense({ description: 'Gas bill', amount: 888 }))
 
 store.dispatch(setTextFilter('gas'))
 
+const jsx = (
+    <Provider store={store}>
+        <AppRouter />
+    </Provider>
+);
 
-ReactDOM.render(<AppRouter />, document.querySelector('#app'))
+ReactDOM.render(jsx, document.querySelector('#app'))
+
+
 
 
 // ===========================
@@ -273,3 +281,80 @@ ReactDOM.render(<AppRouter />, document.querySelector('#app'))
 //            filters: filtersReducer
 //        })
 //    );
+
+// REACT-REDUX LIBRARY
+// - How do we get access to the store information from the React components?
+// - We don't want to pass a ton of props to components. They would not be reusable
+// - Install the react-redux library: npm i react-redux
+// - We get a Provider component and a connect function from this library
+// - We use the Provider component once at the root of the application
+// - We use the connect function for every single component that needs to connect to the Redux store
+
+// THE PROVIDER COMPONENT
+// Provider is going to allow us to provide the store to all of the components that make up our application
+// This is a super useful feature. It means that we do not need to manually pass the store around
+// Instead, individual components that want to access the store can just access it
+
+// To use the Provider:
+//  - Import to the file: import { Provider } from 'react-redux'
+//  - Setup the Provider with the Provider tag: <Provider></Provider>
+//  - There's a single prop that we have to pass in to provider, which is the store
+//  - This is the store that we're trying to share with the rest of the application
+//  - The prop name is store and we have to set it to the Redux store: <Provider store={store}></Provider>
+//  - Inside the Provider tag, we want to render the instance of <AppRouter> component
+//  - Now we have an application where all of the components do have access to the store
+//    const jsx = (
+//        <Provider store={store}>
+//            <AppRouter />
+//        </Provider>
+//    );
+//    ReactDOM.render(jsx, document.querySelector('#app'))
+
+// THE CONNECT FUNCTION
+// Create a regular component: usually a stateless functional component
+// Now we need to create a higher order component
+// We need to pass in a regular component to the connect function
+// Inside the connect function, this is where we provide the information about what we want to connect
+// There's a ton of info in the store, we just need a subset of it
+// So the argument we provide to connect() is we define a function. This function lets us determine what info from the store we want our component to be able to access
+// The store state actually gets passed in as 1st arg to this function
+// From this function, we return an object with key/value pair as props we want to access
+// The end result from connect is a HOC, a connected version of the regular component with the props from the store
+
+// import {connect} from 'react-redux'
+// // A stateless functional component
+// const ExpenseList = (props) => (
+//     <div>
+//         <h1>Expense List</h1>
+//         {props.filters.text}
+//         {props.expenses.length}
+//     </div>
+// )
+// // A function that maps state to props
+// const mapStateToProps = (state) => {
+//     return {
+//         expenses: state.expenses,
+//         filters: state.filters
+//     }
+// }
+// // Export the HOC
+// export default connect(mapStateToProps)(ExpenseList);
+//
+// LONG VERSION:
+// const ConnectedExpenseList = connect((state) => {
+//     return {
+//         expenses: state.expenses
+//     }
+// })(ExpenseList);
+// export default ConnectedExpenseList;
+ 
+// Steps for using the Provider and the connect:
+// 1. Setup Provider inside the root of the application
+//  - The Provider tag is inside a JSX
+//  - This lets us define the store that we want to provide to all of our components 
+// 2. Create new higher order components using the connect function provided from React-Redux 
+//  - We define a function to define the things that we want to get off of the store. Pass this function to the connect() funct
+//  - Then we define the component that we want to create the connected version of
+// The end result is a brand new component which is just our component with the props from the store
+// This is going to allow us to create simple components and scale our app without worrying about putting all the glue into our code
+// The component is rendered as is, without anything get passed down. All of this is handled via the connect
