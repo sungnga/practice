@@ -430,6 +430,7 @@ const routes = (
 - We can capture the dynamic URL id that comes after the '/' and grab its value with the ':id' syntax: `path="/edit/:id"`
 - To view the value of that id: `props.match.params.id`
 
+
 REDUX
 -------------
 
@@ -494,7 +495,7 @@ The .getState() method returns the current state object
 ```
 
 **To dispatch an action object to the store:**
-The `.dispatch()` method sends an action object to the store
+- The `.dispatch()` method sends an action object to the store
 ```javascript
 store.dispatch({
     type: 'INCREMENT'
@@ -542,7 +543,7 @@ store.dispatch({
 console.log(store.getState())
 ```
 
-**Action generators:**
+### Action generators:
 - Action generators are functions that return action objects
 - We can destructure the properties and set default values in the function argument
 The function takes in the action property value passed by the user when this function was invoked in `store.dispatch()`
@@ -574,17 +575,18 @@ store.dispatch(incrementCount())
 store.dispatch(incrementCount({incrementBy: 5}))
 ```
 
+
 REDUCERS
 ------------
 
-1. Reducers are pure functions\
- - the output is only determined by the input. What it returns, it is only determined by the things that get passed in
- - it doesn't use anything else from outside of the function scope and it doesn't change anything outside of the function scope either
- - we don't want to change variables outside of the reducer's scope
- - and we don't want to rely on values from variables outise of the reducer's scope
- - we just want to use the input the state and the action to return the new state value\
+1. Reducers are pure functions
+  - the output is only determined by the input. What it returns, it is only determined by the things that get passed in
+  - it doesn't use anything else from outside of the function scope and it doesn't change anything outside of the function scope either
+  - we don't want to change variables outside of the reducer's scope
+  - and we don't want to rely on values from variables outise of the reducer's scope
+  - we just want to use the input the state and the action to return the new state value
 2. Never change state or action
- - mutating the state directly is going to have undesired effects
+  - mutating the state directly is going to have undesired effects
  
 ```javascript
 // A reducer
@@ -615,7 +617,7 @@ const countReducer = (state = { count: 0 }, action) => {
 const store = createStore(countReducer)
 ```
 
-**CombineReducers:**
+### CombineReducers:
 - Instead of passing in just one reducer to createStore(), we can pass in multiple reducers using the combineReducers() method
 - The combineReducers function will return an object
 - The object returned by the combineReducers is how we want our Redux store to look like, which is an object with expenses and filters properties
