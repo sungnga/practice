@@ -110,7 +110,7 @@ ReactDOM.render(<AppRouter />, document.querySelector('#app'))
 // We can set the default state (as object) in the argument as well: {count: 0}
 // When invoking createStore(), this function passed in gets called once right away and the default state is used
 // We can fetch the current state object back using the .getState() method on the store
-//
+
 // The .getState() method returns the current state object
 // store.getState()
 
@@ -143,45 +143,45 @@ ReactDOM.render(<AppRouter />, document.querySelector('#app'))
 //  - Based on the action type, we can make meaningful changes to the state
 //  - 1st arg: the current state. With default state value
 //  - 2nd arg: the action type that gets passed in
-    // const store = createStore((state = { count: 0 }, action) => {
-    //     // To handle the dispatch action, we're using a switch statement
-    //     // We're switching what we do based off of a particular value. In this case, it's the action data type value
-    //     // Inside the curly braces we can define the various cases we want to handle. In our case, we want to handle the action type
-    //     switch (action.type) {
-    //         // Case when action.type is equal to 'INCREMENT'
-    //         // After the colon, we provide what we want to do
-    //         // Return the updated state object
-    //         case 'INCREMENT':
-    //             return {
-    //                 count: state.count + 1
-    //             }
-    //         // Case when action.type is equal to 'DECREMENT'
-    //         case 'DECREMENT':
-    //             return {
-    //                 count: state.count - 1
-    //             }
-    //         case 'RESET':
-    //             return {
-    //                 count: 0
-    //             };
-    //         // Setup the default case, when the other cases don't run
-    //         // Return the current state
-    //         default: 
-    //             return state
-    //     }
-    // })
-    // store.dispatch({
-    //     type: 'DECREMENT'
-    // })
-    // console.log(store.getState())
+//     const store = createStore((state = { count: 0 }, action) => {
+//         // To handle the dispatch action, we're using a switch statement
+//         // We're switching what we do based off of a particular value. In this case, it's the action data type value
+//         // Inside the curly braces we can define the various cases we want to handle. In our case, we want to handle the action type
+//         switch (action.type) {
+//             // Case when action.type is equal to 'INCREMENT'
+//             // After the colon, we provide what we want to do
+//             // Return the updated state object
+//             case 'INCREMENT':
+//                 return {
+//                     count: state.count + 1
+//                 }
+//             // Case when action.type is equal to 'DECREMENT'
+//             case 'DECREMENT':
+//                 return {
+//                     count: state.count - 1
+//                 }
+//             case 'RESET':
+//                 return {
+//                     count: 0
+//                 };
+//             // Setup the default case, when the other cases don't run
+//             // Return the current state
+//             default: 
+//                 return state
+//         }
+//     })
+//     store.dispatch({
+//         type: 'DECREMENT'
+//     })
+//     console.log(store.getState())
 
 // Action generators:
-// Action generators are functions that return action objects
-// We can destructor the properties and set default values in the function argument
-// The function takes in the action property value passed by the user when this function was invoked in store.dispatch()
-// Destructure the incrementBy property and set the default value to 1
-// If the user provides a value for incrementBy property, we'll use that value. Else we'll increment by 1 by default
-// It returns the updated action object with action type and incrementBy properties
+//  - Action generators are functions that return action objects
+//  - We can destructure the properties and set default values in the function argument
+//  - The function takes in the action property value passed by the user when this function was invoked in store.dispatch()
+//  - Destructure the incrementBy property and set the default value to 1
+//  - If the user provides a value for incrementBy property, we'll use that value. Else we'll increment by 1 by default
+//  - It returns the updated action object with action type and incrementBy properties
 //    // Action generator
 //    const incrementCount = ({incrementBy = 1} = {}) => ({
 //        type: 'INCREMENT',
@@ -196,6 +196,7 @@ ReactDOM.render(<AppRouter />, document.querySelector('#app'))
 //                }
 //        }
 //    })
+//
 //    // Calling the action generator in in the dispatch method
 //    // No action property is passed in, so action generator will use the ////default value
 //    store.dispatch(incrementCount())
@@ -235,7 +236,7 @@ ReactDOM.render(<AppRouter />, document.querySelector('#app'))
 //                return state
 //        }
 //    }
-//    
+   
 //    // Passing in the reducer to create store
 //    const store = createStore(countReducer)
 
