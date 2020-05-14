@@ -1,12 +1,15 @@
 import React from 'react';
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
+import ExpenseListItem from './ExpenseListItem'
+import selectExpenses from '../selectors/expenses'
 
 // A stateless functional component
 const ExpenseList = (props) => (
     <div>
         <h1>Expense List</h1>
-        {props.filters.text}
-        {props.expenses.length}
+        {props.expenses.map((expense) => {
+            return <ExpenseListItem key={expense.id} {...expense} />  
+        })}
     </div>
 )
 
@@ -24,9 +27,8 @@ const ExpenseList = (props) => (
 // A function that maps state to props
 const mapStateToProps = (state) => {
     return {
-        expenses: state.expenses,
-        filters: state.filters
-    }
+        expenses: selectExpenses(state.expenses, state.filters)
+    };
 }
 
 export default connect(mapStateToProps)(ExpenseList);

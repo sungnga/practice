@@ -12,16 +12,20 @@ import './styles/styles.scss'
 const store = configureStore();
 //console.log(store.getState());
 
+
+store.dispatch(addExpense({description: 'Water bill', amount: 450}))
+store.dispatch(addExpense({ description: 'Gas bill', amount: 888 }))
+store.dispatch(setTextFilter('gas'))
+
+setTimeout(() => {
+    store.dispatch(setTextFilter('bill'))
+}, 2000);
+
 store.subscribe(() => {
     const state = store.getState()
     const visibleExpenses = getVisibleExpenses(state.expenses, state.filters)
     console.log(visibleExpenses)
 })
-
-store.dispatch(addExpense({description: 'Water bill', amount: 450}))
-store.dispatch(addExpense({ description: 'Gas bill', amount: 888 }))
-
-store.dispatch(setTextFilter('gas'))
 
 const jsx = (
     <Provider store={store}>
@@ -290,7 +294,7 @@ ReactDOM.render(jsx, document.querySelector('#app'))
 // - We use the Provider component once at the root of the application
 // - We use the connect function for every single component that needs to connect to the Redux store
 
-// THE PROVIDER COMPONENT
+// THE PROVIDER COMPONENT: CONNECT THE STORE
 // Provider is going to allow us to provide the store to all of the components that make up our application
 // This is a super useful feature. It means that we do not need to manually pass the store around
 // Instead, individual components that want to access the store can just access it
@@ -310,7 +314,7 @@ ReactDOM.render(jsx, document.querySelector('#app'))
 //    );
 //    ReactDOM.render(jsx, document.querySelector('#app'))
 
-// THE CONNECT FUNCTION
+// THE CONNECT FUNCTION: CONNECT THE COMPONENTS
 // Create a regular component: usually a stateless functional component
 // Now we need to create a higher order component
 // We need to pass in a regular component to the connect function
