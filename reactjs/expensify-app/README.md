@@ -506,9 +506,9 @@ store.dispatch({
  - The createStore function expects a function to be the 1st arg
  - This function gets called everytime a .dispatch() is made to the store
  - Based on the action type, we can make meaningful changes to the state
- - 1st arg: the current state. With default state value
- - 2nd arg: the action type that gets passed in
  ```javascript
+ // 1st arg: the current state. With default state value
+ // 2nd arg: the action type that gets passed in
 const store = createStore((state = { count: 0 }, action) => {
     // To handle the dispatch action, we're using a switch statement
     // We're switching what we do based off of a particular value. In this case, it's the actiondata type value
@@ -547,17 +547,19 @@ console.log(store.getState())
 - Action generators are functions that return action objects
 - We can destructure the properties and set default values in the function argument
 The function takes in the action property value passed by the user when this function was invoked in `store.dispatch()`
-- Destructure the incrementBy property and set the default value to 1
-- If the user provides a value for incrementBy property, we'll use that value. Else we'll increment by 1 by default
-- It returns the updated action object with action type and incrementBy properties
 ```javascript
 // Action generator
+// Destructure the incrementBy property and set a default value to 1
+//  If the user provides a value for incrementBy property, we'll use that value. Else we'll increment by 1 by default
+// It returns the updated action object with action type and incrementBy properties
+// This return action object then get passed to the createStore as 'action' parameter
 const incrementCount = ({incrementBy = 1} = {}) => ({
     type: 'INCREMENT',
     incrementBy
 })
 
 // Create a store
+// 2nd arg: the action object received from the action generator
 const store = createStore((state = { count: 0 }, action) => {
     switch (action.type) {
         case 'INCREMENT':
@@ -618,18 +620,19 @@ const store = createStore(countReducer)
 ```
 
 ### CombineReducers:
+- Import to file: `import { createStore, combineReducers } from 'redux';`
 - Instead of passing in just one reducer to createStore(), we can pass in multiple reducers using the combineReducers() method
 - The combineReducers function will return an object
 - The object returned by the combineReducers is how we want our Redux store to look like, which is an object with expenses and filters properties
-- The expensesReducer array will be the value on the expenses property
-- The filtersReducer object will be the value on the filters property
-- The expenses property is managed by the expensesReducer
-- The filters property is managed by the filtersReducer
 ```javascript
+// The expensesReducer array will be the value on the expenses property
+// The filtersReducer object will be the value on the filters property
+// The expenses property is managed by the expensesReducer
+// The filters property is managed by the filtersReducer
 const store = createStore(
     combineReducers({
         expenses: expensesReducer,
         filters: filtersReducer
     })
 );
-``
+```
