@@ -358,3 +358,26 @@ ReactDOM.render(jsx, document.querySelector('#app'))
 // The end result is a brand new component which is just our component with the props from the store
 // This is going to allow us to create simple components and scale our app without worrying about putting all the glue into our code
 // The component is rendered as is, without anything get passed down. All of this is handled via the connect
+
+
+// DATE PICKER
+// Source: momentjs.com
+// airbnb react-dates datepicker library: http://airbnb.io/react-dates
+// Install: npm i moment
+// Install: npm i react-dates
+// When it comes to working date, don't use the built-in Date object
+// Moment library is the way to go when working with dates and time
+// React-dates is a datepicker tool that works with moment()
+
+// Working with Moment:
+// Import to the file: import moment from 'moment'
+// To create a moment, just call the moment function: const now = moment()
+// To format the date moment: now.format('MMM Do, YYYY') 
+// Refer to the documentation for formatting dates
+
+// Working with airbnb react-dates:
+// Import 3 things to the file: 
+// import { SingleDatePicker } from 'react-dates';
+// import 'react-dates/lib/css/_datepicker.css';
+// import 'react-dates/initialize';
+// Refer to the doc for different types of datepickers
