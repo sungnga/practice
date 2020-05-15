@@ -4,14 +4,17 @@ import ExpenseListItem from './ExpenseListItem'
 import selectExpenses from '../selectors/expenses'
 
 // A stateless functional component
-const ExpenseList = (props) => (
-    <div>
+const ExpenseList = (props) => {
+    //console.log(props)
+    return (
+        <div>
         <h1>Expense List</h1>
         {props.expenses.map((expense) => {
             return <ExpenseListItem key={expense.id} {...expense} />  
         })}
     </div>
-)
+    )
+}
 
 // Create a HOC
 // We need to pass in a regular component to the connect function
