@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import ExpenseForm from './ExpenseForm'
-import {editExpense, removeExpense} from '../actions/expenses'
+import { editExpense, removeExpense } from '../actions/expenses';
 
 const EditExpensePage = (props) => {
     // console.log(props)
@@ -51,7 +51,7 @@ export default connect(mapStateToProps)(EditExpensePage);
 //  - NOTE: in the ExpenseForm, check condition in state if the expense already exists. Set the properties w/ those values if it does
 //  - pass down the onSubmit prop
 //  - now the expense form should populate the expense data
-// 4. To edit the expense
+// 4. Edit the expense info and handle onSubmit
 //  - Dispatch the action to edit the expense
 //  - then redirect to the dashboard page
-// 4. Submit the updated data to the store
+

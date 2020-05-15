@@ -12,6 +12,7 @@ import 'react-dates/initialize';
 export default class ExpenseForm extends React.Component {
     constructor(props) {
         super(props);
+        // NOTE: the expense prop gets passed down to the child component when the ExpenseForm instance was defined in the EditExpensePage parent component
         this.state = {
             description: props.expense ? props.expense.description : '',
             note: props.expense ? props.expense.note : '',
@@ -55,7 +56,7 @@ export default class ExpenseForm extends React.Component {
         } else {
             // Clear the error
             this.setState(() => ({ error: '' }))
-            // onSubmit prop gets passed down from the ExpenseForm instance, which was defined in AddExpensePage.js
+            // onSubmit prop gets passed down to the child component when ExpenseForm instance was defined in AddExpensePage and EditExpensePage parent components
             // Here we define what we want to submit. We submit an object
             this.props.onSubmit({
                 description: this.state.description,
