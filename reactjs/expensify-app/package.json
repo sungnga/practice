@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "serve": "live-server public/",
-    "build": "webpack",
+    "build:dev": "webpack",
+    "build:prod": "webpack -p --env production",
     "dev-server": "webpack-dev-server",
     "test": "jest"
   },
@@ -25,6 +26,7 @@
     "css-loader": "^3.5.3",
     "jest": "^26.0.1",
     "live-server": "^1.2.1",
+    "mini-css-extract-plugin": "^0.9.0",
     "moment": "^2.25.3",
     "node-sass": "^4.14.1",
     "normalize.css": "^8.0.1",
