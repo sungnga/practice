@@ -43,7 +43,7 @@ export class AddExpensePage extends React.Component {
 // Inside the object is where we defined various props
 // Here we define addExpense props. What do we want to do when addExpense gets called?
 // When addExpense is called, we want to dispatch the addExpense action with the expense passed in as an argument
-const mapDispatchToProps = () => ({
+const mapDispatchToProps = (dispatch) => ({
     addExpense: (expense) => dispatch(addExpense(expense))
 });
 
