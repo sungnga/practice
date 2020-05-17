@@ -1,21 +1,55 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import ExpenseForm from './ExpenseForm';
-import {addExpense} from '../actions/expenses'
+import { addExpense } from '../actions/expenses';
 
-const AddExpensePage = (props) => (
-    <div>
-        <h1>Add Expense</h1>
-        <ExpenseForm
-            onSubmit={(expense) => {
-                props.dispatch(addExpense(expense))
-                props.history.push('/')
-            }}
-        />
-    </div>
-);
+// Converting a functional component to class-base component
+// Named export a regular component, not a HOC
+export class AddExpensePage extends React.Component {
+    onSubmit = (expense) => {
+        // props.dispatch(addExpense(expense))
+        this.props.addExpense(expense)
+        this.props.history.push('/')
+    };
+    render() {
+        return (
+            <div>
+                <h1>Add Expense</h1>
+                <ExpenseForm
+                    onSubmit={this.onSubmit}
+                />
+            </div>
+        )
+    }
+}
 
-export default connect()(AddExpensePage);
+// STATELESS FUNCTIONAL COMPONENT
+// const AddExpensePage = (props) => (
+//     <div>
+//         <h1>Add Expense</h1>
+//         <ExpenseForm
+//             onSubmit={(expense) => {
+//                 // props.dispatch(addExpense(expense))
+//                 props.onSubmit(expense)
+//                 props.history.push('/')
+//             }}
+//         />
+//     </div>
+// );
+
+// This function works very similar to mapStateToProps. It works with dispatch instead of state
+// It has access to dispatch
+// It returns an object
+// Inside the object is where we defined various props
+// Here we define addExpense props. What do we want to do when addExpense gets called?
+// When addExpense is called, we want to dispatch the addExpense action with the expense passed in as an argument
+const mapDispatchToProps = () => ({
+    addExpense: (expense) => dispatch(addExpense(expense))
+});
+
+// The 1st param passed in to connect is mapStateToProps. Set it to undefined
+// 2nd param passed in to connect is mapDispatchToProps
+export default connect(undefined, mapDispatchToProps)(AddExpensePage);
 
 
 // =================
