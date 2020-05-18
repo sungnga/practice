@@ -15,12 +15,70 @@ firebase.initializeApp(config);
 
 const database = firebase.database();
 
-const onValueChange = database.ref().on('value', (snapshot) => {
-    const val = snapshot.val()
-    console.log(`${val.name} is a ${val.job.title} at ${val.job.company}`)
-}, (e) => {
-        console.log('Cannot fetch data', e)
+
+// child_added
+database.ref('expenses').on('child_changed', (snapshot) => {
+    console.log(snapshot.key, snapshot.val())
 })
+
+// child_changed
+database.ref('expenses').on('child_changed', (snapshot) => {
+    console.log(snapshot.key, snapshot.val())
+})
+
+// child_removed
+database.ref('expenses').on('child_removed', (snapshot) => {
+    console.log(snapshot.key, snapshot.val())
+})
+
+// Subscribe to changes to the database
+// database.ref('expenses')
+//     .on('value', (snapshot) => {
+//         const expenses = [];
+//         snapshot.forEach((childSnapshot) => {
+//             expenses.push({
+//                 id: childSnapshot,
+//                 ...childSnapshot
+//             })
+//         })
+//         console.log(expenses)
+//     })
+
+// Transform Firebase data to an array using forEach()
+// database.ref('expenses')
+//     .once('value')
+//     .then((snapshot) => {
+//         const expenses = [];
+
+//         snapshot.forEach((childSnapshot) => {
+//             expenses.push({
+//                 id: childSnapshot.key,
+//                 ...childSnapshot.val()
+//             })
+//         })
+//         console.log(expenses)
+//     })
+
+// database.ref('expenses').push({
+//     description: 'water bill',
+//     note: '',
+//     amount: 34.67,
+//     createdAt: 0
+// })
+
+// Firebase does not have array data structure. It has object data structure
+// .push() method generates a unique id identifier as a key. You can store an object as the value for this key
+// database.ref('notes').push({
+//     title: 'Course Topics',
+//     body: 'React Native, Angular, Python'
+// })
+
+// database.ref().on('value', (snapshot) => {
+//     const val = snapshot.val()
+//     console.log(`${val.name} is a ${val.job.title} at ${val.job.company}`)
+// }, (e) => {
+//         console.log('Cannot fetch data', e)
+// })
 
 // The .on() method allows us to listen for something over and over again
 // 1st arg: the value event we're making the request

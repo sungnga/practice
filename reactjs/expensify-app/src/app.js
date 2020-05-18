@@ -95,6 +95,9 @@ ReactDOM.render(jsx, document.querySelector('#app'));
     //     })
 
 // The .on() subscription method:
+//  - The .on() method listens for data changes at a particular location
+//  - There are 4 events we can listen to for data changes: 
+//  - value event, child_added event, child_removed event, child_changed event
 //  - The .on() method allows us to listen for something over and over again
 //  - 1st arg: the value event we're making the request
 //  - 2nd arg: this callback function runs when the value comes back
@@ -112,3 +115,29 @@ ReactDOM.render(jsx, document.querySelector('#app'));
     //         console.log('error with data fetching', e)
     //     })
     // })
+
+
+// Array Data in Firebase:
+//  - Firebase does not have array data structure. It has object data structure
+//  - .push() method generates a unique id identifier as a key. You can store an object as the value for this key
+//  - Here, a new object is generated with a unique id inside the notes tree
+    // database.ref('notes').push({
+    //     title: 'Course Topics',
+    //     body: 'React Native, Angular, Python'
+    // })
+    // database.ref('notes/-Klsdjfiewjrn3kre').remove()
+
+// Transform Firebase data to an array using forEach():
+    // database.ref('expenses')
+    //     .once('value')
+    //     .then((snapshot) => {
+    //         const expenses = [];
+    //
+    //         snapshot.forEach((childSnapshot) => {
+    //             expenses.push({
+    //                 id: childSnapshot.key,
+    //                 ...childSnapshot.val()
+    //             })
+    //         })
+    //         console.log(expenses)
+    //     })
