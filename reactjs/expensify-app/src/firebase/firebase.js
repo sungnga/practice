@@ -21,21 +21,29 @@ database.ref().set({
     isSingle: true,
     location: {
         city: 'San Francisco',
-        country: 'United States',
-    },
-});        
+        country: 'United States'
+    }
+}).then(() => {
+    console.log('Data is saved')
+}).catch((e) => {
+    console.log('This failed.', e)
+})   
 
-// database.ref().set('This will override the above database')
+// database.ref().set('This will overwrite the above database')
 
 // Update age value
-database.ref('age').set(22)
-// Update a property inside another object
-database.ref('location/city').set('Portland')
+// database.ref('age').set(22)
+// database.ref('location/city').set('Portland')
+
 // Update the database with a new property object
 database.ref('attribute').set({
-    height: 55,
-    weight: 100
+    height: 75,
+    weight: 200
+}).then(() => {
+    console.log('Data is updated')
+}).catch((e) => {
+    console.log('Failed: ', e)
 })
 
 
-console.log(database)
+console.log('I made a request to change data')

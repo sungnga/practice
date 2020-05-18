@@ -7,6 +7,7 @@ import 'normalize.css/normalize.css';
 import './styles/styles.scss';
 import 'react-dates/lib/css/_datepicker.css';
 import './firebase/firebase';
+// import './playground/promises'
 
 const store = configureStore();
 //console.log(store.getState());
@@ -19,7 +20,13 @@ const jsx = (
 
 ReactDOM.render(jsx, document.querySelector('#app'));
 
+// =============
+// NOTES
+// =============
+
 // FIREBASE
+// Documenation: firebase.google.com -> reference tab
+
 // Create a Firebase Project:
 // - On firebase website dashboard, click create a project
 // - Name your project
@@ -44,3 +51,8 @@ ReactDOM.render(jsx, document.querySelector('#app'));
 //  - Use .set() method to set new or existing properties
 //  - If you set objects/values without passing anything into ref, you will override the existing properties in the database: database.ref().set('Will override existing db')
 //  - To update a property value, reference the property name in the ref, then set the value: database.ref('location/city').set('Seattle')
+
+// Promises with Firebase:
+//  - There are many methods that can be called on reference (ref)
+//  - .set() is a method used to set values. It returns a promise
+//  - Since it returns a promise, we can chain on .then() and .catch() methods to resolve or catch the error
