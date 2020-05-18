@@ -18,6 +18,11 @@ const database = firebase.database();
 database.ref().set({
     name: 'Nga La',
     age: 99,
+    stressLevel: 6,
+    job: {
+        title: 'Software developer',
+        company: 'Google'
+    },
     isSingle: true,
     location: {
         city: 'San Francisco',
@@ -27,23 +32,24 @@ database.ref().set({
     console.log('Data is saved')
 }).catch((e) => {
     console.log('This failed.', e)
-})   
-
-// database.ref().set('This will overwrite the above database')
-
-// Update age value
-// database.ref('age').set(22)
-// database.ref('location/city').set('Portland')
-
-// Update the database with a new property object
-database.ref('attribute').set({
-    height: 75,
-    weight: 200
-}).then(() => {
-    console.log('Data is updated')
-}).catch((e) => {
-    console.log('Failed: ', e)
 })
 
+// Change the stressLevel to a 9
+// Change job.company to Amazon
+// Change location.city to Seattle
+database.ref().update({
+    stressLevel: 9,
+    'job/company': 'Amazon',
+    'location/city': 'Seattle'
+})
 
-console.log('I made a request to change data')
+// database
+//     .ref('isSingle')
+//     .remove()
+//     .then(() => {
+//         console.log('Successfully removed');
+//     })
+//     .catch((e) => {
+//         console.log('Did not remove: ', e);
+//     });
+

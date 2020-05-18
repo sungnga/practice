@@ -56,3 +56,20 @@ ReactDOM.render(jsx, document.querySelector('#app'));
 //  - There are many methods that can be called on reference (ref)
 //  - .set() is a method used to set values. It returns a promise
 //  - Since it returns a promise, we can chain on .then() and .catch() methods to resolve or catch the error
+
+// Removing Data from Firebase:
+//  - Use .remove() method on ref to remove specific property
+//  - Make sure to pass the property name you want to delete into .ref(). If you don't specify a name, it will wipe the entire database
+//  - database.ref('age').remove()
+//  - Another way to delete a property is to set the new value to 'null'. Data at this location and all child location will be deleted
+//  - database.ref('age').set(null)
+//  - But calling .remove() is more explicit
+
+// Updating Data:
+//  - Use .update() method on ref to update the database
+//  - Update() supports promises. So you can chain on .then() and .catch() methods
+//  - You can do multiple updates with a single .update() call
+//  - Unlike .set(), .update() expects an object to be passed in
+//  - With update, not only can you update properties that are already exist, you can also add on new properties
+//  - Inside the update object, you can set a property value to null to delete that property
+//  - To update a child location inside a property, wrap the path around a quote: 'location/city': 'New York'
