@@ -1,14 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import ExpenseForm from './ExpenseForm';
-import { addExpense } from '../actions/expenses';
+import { startAddExpense } from '../actions/expenses';
 
 // Converting a functional component to class-base component
 // Named export a regular component, not a HOC
 export class AddExpensePage extends React.Component {
     onSubmit = (expense) => {
         // props.dispatch(addExpense(expense))
-        this.props.addExpense(expense)
+        this.props.startAddExpense(expense)
         this.props.history.push('/')
     };
     render() {
@@ -44,7 +44,7 @@ export class AddExpensePage extends React.Component {
 // Here we define addExpense props. What do we want to do when addExpense gets called?
 // When addExpense is called, we want to dispatch the addExpense action with the expense passed in as an argument
 const mapDispatchToProps = (dispatch) => ({
-    addExpense: (expense) => dispatch(addExpense(expense))
+    startAddExpense: (expense) => dispatch(startAddExpense(expense))
 });
 
 // The 1st param passed in to connect is mapStateToProps. Set it to undefined
