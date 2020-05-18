@@ -73,3 +73,42 @@ ReactDOM.render(jsx, document.querySelector('#app'));
 //  - With update, not only can you update properties that are already exist, you can also add on new properties
 //  - Inside the update object, you can set a property value to null to delete that property
 //  - To update a child location inside a property, wrap the path around a quote: 'location/city': 'New York'
+
+// Reading data from Firebase:
+// - .once() and .on() are two methods used to fetch data
+
+// The .once() method:
+//  - Use .once() method on ref
+//  - With .once() request, we do get an argument back
+//  - Unlike setting, updating, and removing, we requested some data and the data is available to us. This data is known as a snapshot
+//  - On this snapshot, we have access to our data
+//  - We can extract the object by using snapshot.val(). It returns the data we requested
+//  - To read only specific data in the db, pass in the path to ref: .ref('location/city')
+    // database.ref('location/city')
+    //     .once('value')
+    //     .then((snapshot) => {
+    //         const val = snapshot.val()
+    //         console.log(val)
+    //     })
+    //     .catch((e) => { 
+    //         console.log('Error fetching data', e)
+    //     })
+
+// The .on() subscription method:
+//  - The .on() method allows us to listen for something over and over again
+//  - 1st arg: the value event we're making the request
+//  - 2nd arg: this callback function runs when the value comes back
+//  - 3rd arg: a function that subscribes to any errors coming back
+//  - With the .on() subscription, this callback runs every time the data changes. This callback gets re-executed
+//  - The .on() method returns the callback function. We can assign this return to a variable: const onValueChange = database.ref().on(event, callback)
+//  - We can then reference this callback anywhere else we like
+//  - Unlike with promises, which can only ever be resolved or rejected a single time with a single value
+//  - We have access to the data via snapshot. Call .val() on the snapshot to extract the data
+//  - The .on() method subscribes to the changes made to the db
+//  - To unsubscribe: database.ref().off()
+    // const onValueChange = database.ref()
+    //     .on('value', (snapshot) => {
+    //         console.log(snapshot.val(), (e) => {
+    //         console.log('error with data fetching', e)
+    //     })
+    // })

@@ -15,33 +15,72 @@ firebase.initializeApp(config);
 
 const database = firebase.database();
 
-database.ref().set({
-    name: 'Nga La',
-    age: 99,
-    stressLevel: 6,
-    job: {
-        title: 'Software developer',
-        company: 'Google'
-    },
-    isSingle: true,
-    location: {
-        city: 'San Francisco',
-        country: 'United States'
-    }
-}).then(() => {
-    console.log('Data is saved')
-}).catch((e) => {
-    console.log('This failed.', e)
+const onValueChange = database.ref().on('value', (snapshot) => {
+    const val = snapshot.val()
+    console.log(`${val.name} is a ${val.job.title} at ${val.job.company}`)
+}, (e) => {
+        console.log('Cannot fetch data', e)
 })
+
+// The .on() method allows us to listen for something over and over again
+// 1st arg: the value event we're making the request
+// 2nd arg: this callback function runs when the value comes back
+// 3rd arg: a function that subscribes to any errors coming back
+// With the .on() method, this callback runs every time the data changes. This callback gets re-executed
+// The .on() method returns the callback function. We can assign this return to a variable: const onValueChange = database.ref().on(event, callback)
+// We can then reference this callback anywhere else we like
+// Unlike with promises, which can only ever be resolved or rejected a single time with a single value
+// We have access to the data via snapshot. Call .val() on the snapshot to extract the data
+// The .on() method subscribes to the changes made to the db
+// To unsubscribe: database.ref().off()
+// const onValueChange = database.ref()
+//     .on('value', (snapshot) => {
+//         console.log(snapshot.val(), (e) => {
+//         console.log('error with data fetching', e)
+//     })
+// })
+
+// With .once() request, we do get an argument back
+// Unlike setting, updating, and removing, we requested some data and the data is available to us. This data is known as a snapshot
+// On this snapshot, we have access to our data
+// We can extract the object by using snapshot.val(). It returns the data we requested
+// database.ref()
+//     .once('value')
+//     .then((snapshot) => {
+//         const val = snapshot.val()
+//         console.log(val)
+//     })
+//     .catch((e) => { 
+//         console.log('Error fetching data', e)
+//     })
+
+// database.ref().set({
+//     name: 'Nga La',
+//     age: 99,
+//     stressLevel: 6,
+//     job: {
+//         title: 'Software developer',
+//         company: 'Google'
+//     },
+//     isSingle: true,
+//     location: {
+//         city: 'San Francisco',
+//         country: 'United States'
+//     }
+// }).then(() => {
+//     console.log('Data is saved')
+// }).catch((e) => {
+//     console.log('This failed.', e)
+// })
 
 // Change the stressLevel to a 9
 // Change job.company to Amazon
 // Change location.city to Seattle
-database.ref().update({
-    stressLevel: 9,
-    'job/company': 'Amazon',
-    'location/city': 'Seattle'
-})
+// database.ref().update({
+//     stressLevel: 9,
+//     'job/company': 'Amazon',
+//     'location/city': 'Seattle'
+// })
 
 // database
 //     .ref('isSingle')
