@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import AppRouter from './routers/AppRouter';
+import AppRouter, { history } from './routers/AppRouter';
 import configureStore from './store/configureStore';
 import { startSetExpenses } from './actions/expenses';
 import 'normalize.css/normalize.css';
@@ -19,16 +19,34 @@ const jsx = (
     </Provider>
 );
 
+let hasRendered = false;
+const renderApp = () => {
+    if (!hasRendered) {
+        ReactDOM.render(jsx, document.querySelector('#app'));
+        hasRendered = true;
+    }
+}
+
 ReactDOM.render(<p>Loading...</p>, document.querySelector('#app'));
 
-store.dispatch(startSetExpenses()).then(() => {
-    ReactDOM.render(jsx, document.querySelector('#app'));
-});
 
+// When user is logged in, redirect to the dashboard page and connect them to the expenses
+// When user is logged out, redirect to the login page
 firebase.auth().onAuthStateChanged((user) => {
     if (user) {
+        store.dispatch(startSetExpenses()).then(() => {
+            renderApp();
+            // If history location starts out at root directory, redirect to dashboard
+            if (history.location.pathname === '/') {
+                history.push('/dashboard')
+            }
+        });
+
         console.log('log in')
     } else {
+        renderApp();
+        history.push('/');
+
         console.log('log out')
     }
 })
@@ -100,6 +118,44 @@ firebase.auth().onAuthStateChanged((user) => {
 // Grab the prop (startLogout) and attach it to onClick event in button tag
 // To do this, destructure the prop name, startLogout and pass it in to Header component. Then pass this prop name to onClick event
 
+// REDIRECTING LOGIN AND LOGOUT:
+// We need to create browser history
+// Install the router history library: npm i history
+// history is a Javascript library that lets you easily manage session history anywhere Javascript runs. History abstracts away the differences in various environment and provides a minimal API that lets you manage history stack, navigation, confirm navigation, and persist state between session
+// In AppRouter.js file import: import {createBrowserHistory} from 'history';
+// To create a history: const history = createBrowserHistory();
+// The <BrowserRouter> already has a built-in history, but we want to use our own history
+// We can then export our history to use anywhere else: export const history = createHistory();
+// We need to switch from using <BrowserRouter> to regular <Router> and pass in the history to the Router: <Router history={history}>
+// In the app.js file import the named export history
+// To navigate users between pages, use: history.push(). .push() method takes a path name
+// When a user is logged out redirect them to login page: history.push('/')
+// Login/logout redirect code:
+    // // When user is logged in, redirect to the dashboard page and connect them to the expenses
+    // // When user is logged out, redirect to the login page
+    // let hasRendered = false;
+    // const renderApp = () => {
+    //     if (!hasRendered) {
+    //         ReactDOM.render(jsx, document.querySelector('#app'));
+    //         hasRendered = true;
+    //     }
+    // }
+    // firebase.auth().onAuthStateChanged((user) => {
+    //     if (user) {
+    //         store.dispatch(startSetExpenses()).then(() => {
+    //             renderApp();
+    //             // If history location starts out at root directory, redirect to dashboard
+    //             if (history.location.pathname === '/') {
+    //                 history.push('/dashboard')
+    //             }
+    //         });
+    //         console.log('log in')
+    //     } else {
+    //         renderApp();
+    //         history.push('/');
+    //         console.log('log out')
+    //     }
+    // })
 
 
 // =============
