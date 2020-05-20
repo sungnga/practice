@@ -148,3 +148,17 @@ store.dispatch(startSetExpenses()).then(() => {
     //         })
     //         console.log(expenses)
     //     })
+
+// Subscribe to a change made to the database
+// database.ref('expenses')
+//     .on('value', (snapshot) => {
+//         const expenses = [];
+//         snapshot.forEach((childSnapshot) => {
+//             expenses.push({
+//                 id: childSnapshot,
+//                 ...childSnapshot
+//             })
+//         })
+//         console.log(expenses)
+//     })
+
