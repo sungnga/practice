@@ -66,6 +66,12 @@ firebase.auth().onAuthStateChanged((user) => {
 // 3. Show Login component at root of app -> /
 // 4. Show ExpenseDashboardPage at -> /dashboard
 
+// GOAL: CREATE PUBLIC ONLY ROUTE
+// 1. Create PublicRoute (copy PrivateRoute)
+// 2. Redirect to /dashboard if logged in
+// 3. Render component if not logged in
+// 4. Use it for the LoginPage
+
 
 // FIREBASE AUTHENTICATION
 // On project dashboard page in Firebase website, click the Authentication tab
