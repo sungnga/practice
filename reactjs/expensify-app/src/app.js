@@ -91,6 +91,17 @@ firebase.auth().onAuthStateChanged((user) => {
 // That is what triggers the popup, shows your google accounts, and allows you to pick one
 // Over inside of app.js, we use onAuthStateChanged(). This allows us to run this function every single time the authentication state changed, including when we first load the application
 
+// STEPS FOR WIRING UP THE LOGOUT BUTTON TO REDUX STORE:
+// Create a button tag in a component
+// Import the action (startLogout). Need to create this action
+// Setup connect() to connect to Redux store
+// With connect() set up, we now have access to dispatch
+// Setup mapDispatchToProps to dispatch the action
+// Grab the prop (startLogout) and attach it to onClick event in button tag
+// To do this, destructure the prop name, startLogout and pass it in to Header component. Then pass this prop name to onClick event
+
+
+
 // =============
 // NOTES
 // =============
