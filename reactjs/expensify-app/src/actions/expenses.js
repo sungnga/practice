@@ -15,6 +15,7 @@ import database from '../firebase/firebase';
 //  - function runs (has the ability to dispatch other actions and do whatever it wants)
 
 // ADD_EXPENSE
+// Dispatch action
 export const addExpense = (expense) => ({
     type: 'ADD_EXPENSE',
     expense,
@@ -35,10 +36,9 @@ export const startAddExpense = (expenseData = {}) => {
             .ref('expenses')
             .push(expense)
             .then((ref) => {
-                dispatch(
-                    addExpense({
-                        id: ref.key,
-                        ...expense,
+                dispatch(addExpense({
+                    id: ref.key,
+                    ...expense,
                     })
                 );
             });
@@ -57,18 +57,37 @@ export const removeExpense = ({ id } = {}) => ({
 // 4. Adjust EditExpensePage tests
 export const startRemoveExpense = ({ id } = {}) => {
     return (dispatch) => {
-        return database.ref(`expenses/${id}`).remove().then(() => {
-            dispatch(removeExpense({ id }));
-        });
+        return database
+            .ref(`expenses/${id}`)
+            .remove()
+            .then(() => {
+                dispatch(removeExpense({ id }));
+            });
     };
 };
 
 // EDIT_EXPENSE
+// Dispatch action
 export const editExpense = (id, updates) => ({
     type: 'EDIT_EXPENSE',
     id,
     updates,
 });
+
+// 1. Create startEditExpense (same call signature as editExpense)
+// 2. Test startEditExpense with "should edit expenses from firebase"
+// 3. Use startEditExpense in EditExpensePage instead of editExpense
+// 4. Adjust EditExpensePage tests
+export const startEditExpense = (id, updates) => {
+    return (dispatch) => {
+        return database
+            .ref(`expenses/${id}`)
+            .update(updates)
+            .then(() => {
+                dispatch(editExpense(id, updates));
+            });
+    };
+};
 
 // SET_EXPENSES
 // dispatch action
@@ -85,21 +104,23 @@ export const startSetExpenses = () => {
     // returns a function
     return (dispatch) => {
         // returns a promise
-        return database
-            .ref('expenses')
-            .once('value')
-            // Once we get the data, parse the data into an expenses array, dispatch the setExpenses action with the expenses
-            .then((snapshot) => {
-                const expenses = [];
+        return (
+            database
+                .ref('expenses')
+                .once('value')
+                // Once we get the data, parse the data into an expenses array, dispatch the setExpenses action with the expenses
+                .then((snapshot) => {
+                    const expenses = [];
 
-                snapshot.forEach((childSnapshot) => {
-                    expenses.push({
-                        id: childSnapshot.key,
-                        ...childSnapshot.val(),
+                    snapshot.forEach((childSnapshot) => {
+                        expenses.push({
+                            id: childSnapshot.key,
+                            ...childSnapshot.val(),
+                        });
                     });
-                });
 
-                dispatch(setExpenses(expenses));
-            });
+                    dispatch(setExpenses(expenses));
+                })
+        );
     };
 };

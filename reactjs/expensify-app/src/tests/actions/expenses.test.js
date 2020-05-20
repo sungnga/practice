@@ -4,10 +4,11 @@ import {
     addExpense,
     startAddExpense,
     editExpense,
+    startEditExpense,
     removeExpense,
     startRemoveExpense,
     setExpenses,
-    startSetExpenses,
+    startSetExpenses
 } from '../../actions/expenses';
 import expenses from '../fixtures/expenses';
 import database from '../../firebase/firebase';
@@ -39,6 +40,26 @@ test('should setup remove expense action object', () => {
     });
 });
 
+// Async action
+test('should remove expenses from firebase', (done) => {
+    const store = createMockStore({});
+    const id = expenses[1].id;
+    store.dispatch(startRemoveExpense({ id })).then(() => {
+        // To get all the actions
+        const actions = store.getActions();
+        expect(actions[0]).toEqual({
+            type: 'REMOVE_EXPENSE',
+            id
+        });
+        // fetch the data and assert that it actually was deleted
+        // this returns a promise
+        return database.ref(`expenses/${id}`).once('value');
+    }).then((snapshot) => {
+        expect(snapshot.val()).toBeFalsy();
+        done();
+    });
+});
+
 // Test edit expense
 // Setup test case
 // Call editExpense {note: 'New note value'}
@@ -53,6 +74,30 @@ test('should setup edit expense action object', () => {
         },
     });
 });
+
+test('should edit expense from firebase', (done) => {
+    const store = createMockStore({});
+    const id = expenses[1].id;
+    const updates = {
+        description: 'Spaceship',
+        amount: 3444443,
+        note: 'Visiting Mars'
+    }
+    store.dispatch(startEditExpense(id, updates)).then(() => {
+        const actions = store.getActions();
+        // If this is valid, it means the action was dispatched correctly
+        expect(actions[0]).toEqual({
+            type: 'EDIT_EXPENSE',
+            id,
+            updates
+        })
+        // Check to make sure data is changed on firebase
+        return database.ref(`expenses/${id}`).once('value')
+    }).then((snapshot) => {
+        expect(snapshot.val().amount).toBe(updates.amount);
+        done();
+    })
+})
 
 // Add expense test cases
 // A test case that makes sure if we pass values in, those values get used
@@ -145,26 +190,6 @@ test('should fetch the expenses from firebase', (done) => {
             type: 'SET_EXPENSES',
             expenses,
         });
-        done();
-    });
-});
-
-// Async action
-test('should remove expenses from firebase', (done) => {
-    const store = createMockStore({});
-    const id = expenses[1].id;
-    store.dispatch(startRemoveExpense({ id })).then(() => {
-        // To get all the actions
-        const actions = store.getActions();
-        expect(actions[0]).toEqual({
-            type: 'REMOVE_EXPENSE',
-            id
-        });
-        // fetch the data and assert that it actually was deleted
-        // this returns a promise
-        return database.ref(`expenses/${id}`).once('value');
-    }).then((snapshot) => {
-        expect(snapshot.val()).toBeFalsy();
         done();
     });
 });
