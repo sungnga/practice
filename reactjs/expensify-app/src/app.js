@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import AppRouter, { history } from './routers/AppRouter';
 import configureStore from './store/configureStore';
 import { startSetExpenses } from './actions/expenses';
+import { login, logout } from './actions/auth';
 import 'normalize.css/normalize.css';
 import './styles/styles.scss';
 import 'react-dates/lib/css/_datepicker.css';
@@ -34,6 +35,8 @@ ReactDOM.render(<p>Loading...</p>, document.querySelector('#app'));
 // When user is logged out, redirect to the login page
 firebase.auth().onAuthStateChanged((user) => {
     if (user) {
+        //console.log('uid', user.uid)
+        store.dispatch(login(user.uid));
         store.dispatch(startSetExpenses()).then(() => {
             renderApp();
             // If history location starts out at root directory, redirect to dashboard
@@ -44,6 +47,7 @@ firebase.auth().onAuthStateChanged((user) => {
 
         console.log('log in')
     } else {
+        store.dispatch(logout());
         renderApp();
         history.push('/');
 
@@ -64,7 +68,7 @@ firebase.auth().onAuthStateChanged((user) => {
 
 
 // FIREBASE AUTHENTICATION
-// On project dashboard, click the Authentication tab
+// On project dashboard page in Firebase website, click the Authentication tab
 // Select the Sign-in method tab and enable Google authentication
 
 // SETUP AUTHENTICAION FUNCTIONALITY:
@@ -157,13 +161,29 @@ firebase.auth().onAuthStateChanged((user) => {
     //     }
     // })
 
+// THE AUTH REDUCER
+// We need to create a new reducer to keep track whether a user is logged in by storing a user's uid
+// Create auth.js file in reducers folder:
+//  - Create the reducer
+//  - This auth reducer handles the login and logout actions
+// In the auth.js actions file:
+//  - Create the LOGIN and LOGOUT actions
+//  - The LOGIN action takes in the uid of the user
+// Now that we have the reducer and the actions in place, we need to connect the reducer to the Redux store and dispatch LOGIN AND LOGOUT actions when appropriate
+// To connect to the store, in the configureStore.js file in store folder:
+//  - Import: import authReducer from '../reducers/auth';
+//  - Add on the auth reducer object to the combineReducers: {auth: authReducer}
+// Now we need to dispatch login and logout actions in app.js file
+//  - Import: import { login, logout } from './actions/auth';
+//  - Dispatch LOGIN action when the user is logged in: store.dispatch(login(user.uid));
+//  - Dispatch LOGOUT action when the user is logged out: store.dispatch(logout());
+
+
+
 
 // =============
 // NOTES
 // =============
-
-// FIREBASE AUTHENTICATION
-
 
 // FIREBASE 101
 // Documenation: firebase.google.com -> reference tab
