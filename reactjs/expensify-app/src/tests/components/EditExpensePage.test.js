@@ -3,18 +3,18 @@ import { shallow } from 'enzyme';
 import { EditExpensePage } from '../../components/EditExpensePage';
 import expenses from '../fixtures/expenses';
 
-let editExpenseSpy, removeExpenseSpy, historySpy, wrapper;
+let editExpenseSpy, startRemoveExpenseSpy, historySpy, wrapper;
 
 // beforeEach() is a lifecyle method that returns a function
 // It's a way to reuse these throughout the test cases
 beforeEach(() => {
     editExpenseSpy = jest.fn();
-    removeExpenseSpy = jest.fn();
+    startRemoveExpenseSpy = jest.fn();
     historySpy = { push: jest.fn() };
     wrapper = shallow(
         <EditExpensePage
             editExpense={editExpenseSpy}
-            removeExpense={removeExpenseSpy}
+            startRemoveExpense={startRemoveExpenseSpy}
             history={historySpy}
             expense={expenses[1]}
         />
@@ -31,10 +31,10 @@ test('should handle editExpense', () => {
     expect(editExpenseSpy).toHaveBeenLastCalledWith(expenses[1].id, expenses[1]);
 });
 
-test('should handle removeExpense', () => {
+test('should handle startRemoveExpense', () => {
     wrapper.find('button').simulate('click');
     expect(historySpy.push).toHaveBeenLastCalledWith('/');
-    expect(removeExpenseSpy).toHaveBeenLastCalledWith({
+    expect(startRemoveExpenseSpy).toHaveBeenLastCalledWith({
         id: expenses[1].id
     });
 });

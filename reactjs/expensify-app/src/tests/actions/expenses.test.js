@@ -2,11 +2,12 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
     addExpense,
+    startAddExpense,
     editExpense,
     removeExpense,
-    startAddExpense,
+    startRemoveExpense,
     setExpenses,
-    startSetExpenses
+    startSetExpenses,
 } from '../../actions/expenses';
 import expenses from '../fixtures/expenses';
 import database from '../../firebase/firebase';
@@ -17,14 +18,16 @@ const createMockStore = configureMockStore([thunk]);
 // Write/set some data to Firebase
 beforeEach((done) => {
     const expensesData = {};
-    expenses.forEach(({id, description, note, amount, createdAt}) => {
+    expenses.forEach(({ id, description, note, amount, createdAt }) => {
         // Set an object (with unique id) in the db with these properties
-        expensesData[id] = { description, note, amount, createdAt }
-    })
+        expensesData[id] = { description, note, amount, createdAt };
+    });
     // Set expensesData object to expenses database
     // done() doesn't allow the test case to run until Firebase has synced up the data
-    database.ref('expenses').set(expensesData).then(() => done())
-    
+    database
+        .ref('expenses')
+        .set(expensesData)
+        .then(() => done());
 });
 
 // Test remove expense
@@ -130,7 +133,7 @@ test('should setup set expense action object with data', () => {
     const action = setExpenses(expenses);
     expect(action).toEqual({
         type: 'SET_EXPENSES',
-        expenses
+        expenses,
     });
 });
 
@@ -140,9 +143,28 @@ test('should fetch the expenses from firebase', (done) => {
         const actions = store.getActions();
         expect(actions[0]).toEqual({
             type: 'SET_EXPENSES',
-            expenses
-        })
-        done()
-    })
+            expenses,
+        });
+        done();
+    });
+});
 
-})
+// Async action
+test('should remove expenses from firebase', (done) => {
+    const store = createMockStore({});
+    const id = expenses[1].id;
+    store.dispatch(startRemoveExpense({ id })).then(() => {
+        // To get all the actions
+        const actions = store.getActions();
+        expect(actions[0]).toEqual({
+            type: 'REMOVE_EXPENSE',
+            id
+        });
+        // fetch the data and assert that it actually was deleted
+        // this returns a promise
+        return database.ref(`expenses/${id}`).once('value');
+    }).then((snapshot) => {
+        expect(snapshot.val()).toBeFalsy();
+        done();
+    });
+});
