@@ -7,7 +7,7 @@ import { startSetExpenses } from './actions/expenses';
 import 'normalize.css/normalize.css';
 import './styles/styles.scss';
 import 'react-dates/lib/css/_datepicker.css';
-import './firebase/firebase';
+import { firebase } from './firebase/firebase';
 // import './playground/firebase-101'
 
 const store = configureStore();
@@ -25,11 +25,78 @@ store.dispatch(startSetExpenses()).then(() => {
     ReactDOM.render(jsx, document.querySelector('#app'));
 });
 
+firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+        console.log('log in')
+    } else {
+        console.log('log out')
+    }
+})
 
+
+// ------------------------------------
+// CHALLENGES: FIREBASE AUTHENTICATION
+// ------------------------------------
+
+// GOAL: CREATE A LOGIN PAGE
+// 1. Create LoginPage component with "Login" button
+// 2. Add snapshot test for LoginPage
+// 3. Show Login component at root of app -> /
+// 4. Show ExpenseDashboardPage at -> /dashboard
+
+
+// FIREBASE AUTHENTICATION
+// On project dashboard, click the Authentication tab
+// Select the Sign-in method tab and enable Google authentication
+
+// SETUP AUTHENTICAION FUNCTIONALITY:
+// Resource: firebase.google.com/docs/ -> reference tab -> firebase.auth
+// In firebase.js file: create an instance of a Provider
+// A Provider is a way to provide authentication. We will use a Google provider
+// const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+// Export this googleAuthProvider as a named export
+// Next we first need to check the authentication state of a user. In app.js file:
+    // firebase.auth().onAuthStateChanged((user) => {
+    //     if (user) {
+    //         console.log('log in')
+    //     } else {
+    //         console.log('log out')
+    //     }
+    // })
+// Create a startLogin action:
+// Pass in the googleAuthProvider to .signInWithPopup()
+    // export const startLogin = () => {
+    //     return () => {
+    //         return firebase.auth().signInWithPopup(googleAuthProvider)
+    //     }
+    // }
+// Dispatch the action in LoginPage.js file when a user clicks the Login button:
+    // import { connect } from 'react-redux';
+    // import { startLogin } from '../actions/auth';
+    // export const LoginPage = ({startLogin}) => (
+    //     <div>
+    //         <button onClick={startLogin}>Login</button>
+    //     </div>
+    // )
+    // const mapDispatchToProps = (dispatch) => ({
+    //     startLogin: () => dispatch(startLogin())
+    // })
+    // export default connect(undefined, mapDispatchToProps)(LoginPage)
+
+// A RECAP ON AUTHENTICATION SETUP:
+// Create a LoginPage component and wire that up in Route
+// Setup a provider (google) in firebase.js. This allows us to setup firebase to authenticate with google
+// If we're using google auth provider, we also need to enable that over in the firebase dashboard
+// Then we need to pass this provider into a function, into signInWithPopup()
+// That is what triggers the popup, shows your google accounts, and allows you to pick one
+// Over inside of app.js, we use onAuthStateChanged(). This allows us to run this function every single time the authentication state changed, including when we first load the application
 
 // =============
 // NOTES
 // =============
+
+// FIREBASE AUTHENTICATION
+
 
 // FIREBASE 101
 // Documenation: firebase.google.com -> reference tab
