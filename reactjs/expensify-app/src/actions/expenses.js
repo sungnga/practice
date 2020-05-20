@@ -57,3 +57,37 @@ export const editExpense = (id, updates) => ({
     id,
     updates,
 });
+
+// SET_EXPENSES
+// dispatch action
+export const setExpenses = (expenses) => ({
+    type: 'SET_EXPENSES',
+    expenses,
+});
+
+// Asynchronous action
+// 1. Fetch all expense data once
+// 2. Parse that data into an array
+// 3. Dispatch SET_EXPENSES
+export const startSetExpenses = () => {
+    // returns a function
+    return (dispatch) => {
+        // returns a promise
+        return database
+            .ref('expenses')
+            .once('value')
+            // Once we get the data, parse the data into an expenses array, dispatch the setExpenses action with the expenses
+            .then((snapshot) => {
+                const expenses = [];
+
+                snapshot.forEach((childSnapshot) => {
+                    expenses.push({
+                        id: childSnapshot.key,
+                        ...childSnapshot.val(),
+                    });
+                });
+
+                dispatch(setExpenses(expenses));
+            });
+    };
+};

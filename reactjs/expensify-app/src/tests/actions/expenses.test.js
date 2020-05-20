@@ -5,11 +5,27 @@ import {
     editExpense,
     removeExpense,
     startAddExpense,
+    setExpenses,
+    startSetExpenses
 } from '../../actions/expenses';
 import expenses from '../fixtures/expenses';
 import database from '../../firebase/firebase';
 
 const createMockStore = configureMockStore([thunk]);
+
+// beforeEach() is a lifecyle method
+// Write/set some data to Firebase
+beforeEach((done) => {
+    const expensesData = {};
+    expenses.forEach(({id, description, note, amount, createdAt}) => {
+        // Set an object (with unique id) in the db with these properties
+        expensesData[id] = { description, note, amount, createdAt }
+    })
+    // Set expensesData object to expenses database
+    // done() doesn't allow the test case to run until Firebase has synced up the data
+    database.ref('expenses').set(expensesData).then(() => done())
+    
+});
 
 // Test remove expense
 test('should setup remove expense action object', () => {
@@ -109,19 +125,24 @@ test('should add expense with defaults to database and store', (done) => {
         });
 });
 
-// A test case that makes sure the default values actually get set up correctly when nothing is passed in
-// Call addExpense with no date
-// Assert the value of the return object
-// test('should setup add expense action object with default values', () => {
-//     const action = addExpense();
-//     expect(action).toEqual({
-//         type: 'ADD_EXPENSE',
-//         expense: {
-//             id: expect.any(String),
-//             description: '',
-//             note: '',
-//             amount: 0,
-//             createdAt: 0
-//         }
-//     })
-// })
+// Not async
+test('should setup set expense action object with data', () => {
+    const action = setExpenses(expenses);
+    expect(action).toEqual({
+        type: 'SET_EXPENSES',
+        expenses
+    });
+});
+
+test('should fetch the expenses from firebase', (done) => {
+    const store = createMockStore({});
+    store.dispatch(startSetExpenses()).then(() => {
+        const actions = store.getActions();
+        expect(actions[0]).toEqual({
+            type: 'SET_EXPENSES',
+            expenses
+        })
+        done()
+    })
+
+})
