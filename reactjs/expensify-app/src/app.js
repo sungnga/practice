@@ -234,6 +234,34 @@ firebase.auth().onAuthStateChanged((user) => {
     // });
     // export default connect(mapStateToProps)(PrivateRoute);
 
+// PRIVATE FIREBASE DATA
+// We want to have the user expenses to live inside that particular uid
+// To get the uid... we need to access the current state using getState
+// When using thunk actions, async actions, we also have access to getState method
+// We can call getState() to get the current state
+    // // NOTE: a portion of the code from startAddExpense action in expenses.js 
+    // // 2nd arg: getState
+    // return (dispatch, getState) => {
+    //     const uid = getState().auth.uid
+    //     return database
+    //         .ref(`users/${uid}/expenses`)
+    //         ...  
+    // }
+
+// Setting up Firebase database rules:
+    // {
+    //     "rules": {
+    //     ".read": false,
+    //     ".write": false,
+    //     "users": {
+    //         "$user_id": {
+    //         ".read": "$user_id === auth.uid",
+    //         ".write": "$user_id === auth.uid"
+    //         }
+    //     }
+    //     }
+    // }
+
 
 // =============
 // NOTES
