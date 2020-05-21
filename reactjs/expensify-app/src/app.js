@@ -443,3 +443,11 @@ firebase.auth().onAuthStateChanged((user) => {
 // Then go to the Sign-In Method tab, scroll to the Authorized domain section
 // Click the 'Add Domain' button
 // Paste in the Heroku URL of our project: ngala-expensify-app.herokuapp.com
+
+// BABEL POLYFILL
+// Older browsers might not support modern features and methods of JS we use in our app
+// Babel-polyfill gives us access to a wider range of browsers in terms of what our application supports
+// www.browserstack.com allows you to simulate your website on any operating system
+// Install: npm i babel-polyfill
+// Configure in webpack.config.js file. Add babel-polyfill at the beginning of the entry point:
+    // entry: ['babel-polyfill', './src/app.js'],
