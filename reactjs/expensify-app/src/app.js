@@ -262,6 +262,49 @@ firebase.auth().onAuthStateChanged((user) => {
     //     }
     // }
 
+// DATA VALIDATION IN FIREBASE: SETTING RULES
+// {
+//     "rules": {
+//       ".read": false,
+//       ".write": false,
+//       "users": {
+//         "$user_id": {
+//           ".read": "$user_id === auth.uid",
+//           ".write": "$user_id === auth.uid",
+//           "expenses": {
+//             "$expense_id": {
+//               ".validate": "newData.hasChildren(['description', 'note', 'createdAt', 'amount'])",
+//               "description": {
+//                 ".validate": "newData.isString() && newData.val().length > 0"
+//               },
+//               "note": {
+//                 ".validate": "newData.isString()"
+//               },
+//               "createdAt": {
+//                 ".validate": "newData.isNumber()"
+//               },
+//               "amount": {
+//                 ".validate": "newData.isNumber()"
+//               },
+//               "$other": {
+//                     ".validate": false
+//                   }  
+//             }
+//           },
+//           "$other": {
+//             ".validate": false
+//           }
+//         }
+//       }
+//     }
+// }
+
+// AUTHORIZED DOMAINS
+// We need to enable authorized domain for the host that we deploy our app, which is Heroku
+// In the firebase project dashboard, go to Authentication tab
+// Then go to the Sign-In Method tab, scroll to the Authorized domain section
+// Click the 'Add Domain' button
+// Paste in the Heroku URL of our project: ngala-expensify-app.herokuapp.com
 
 // =============
 // NOTES
