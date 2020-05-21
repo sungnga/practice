@@ -5,6 +5,7 @@ import AppRouter, { history } from './routers/AppRouter';
 import configureStore from './store/configureStore';
 import { startSetExpenses } from './actions/expenses';
 import { login, logout } from './actions/auth';
+import LoadingPage from './components/LoadingPage';
 import 'normalize.css/normalize.css';
 import './styles/styles.scss';
 import 'react-dates/lib/css/_datepicker.css';
@@ -26,10 +27,9 @@ const renderApp = () => {
         ReactDOM.render(jsx, document.querySelector('#app'));
         hasRendered = true;
     }
-}
+};
 
-ReactDOM.render(<p>Loading...</p>, document.querySelector('#app'));
-
+ReactDOM.render(<LoadingPage />, document.querySelector('#app'));
 
 // When user is logged in, redirect to the dashboard page and connect them to the expenses
 // When user is logged out, redirect to the login page
@@ -41,7 +41,7 @@ firebase.auth().onAuthStateChanged((user) => {
             renderApp();
             // If history location starts out at root directory, redirect to dashboard
             if (history.location.pathname === '/') {
-                history.push('/dashboard')
+                history.push('/dashboard');
             }
         });
 
@@ -53,7 +53,7 @@ firebase.auth().onAuthStateChanged((user) => {
 
         // console.log('log out')
     }
-})
+});
 
 
 
@@ -72,8 +72,6 @@ firebase.auth().onAuthStateChanged((user) => {
 // 2. Redirect to /dashboard if logged in
 // 3. Render component if not logged in
 // 4. Use it for the LoginPage
-
-
 
 // ===========================
 // NOTES
@@ -141,19 +139,19 @@ firebase.auth().onAuthStateChanged((user) => {
 //  - On this snapshot, we have access to our data
 //  - We can extract the object by using snapshot.val(). It returns the data we requested
 //  - To read only specific data in the db, pass in the path to ref: .ref('location/city')
-    // database.ref('location/city')
-    //     .once('value')
-    //     .then((snapshot) => {
-    //         const val = snapshot.val()
-    //         console.log(val)
-    //     })
-    //     .catch((e) => { 
-    //         console.log('Error fetching data', e)
-    //     })
+// database.ref('location/city')
+//     .once('value')
+//     .then((snapshot) => {
+//         const val = snapshot.val()
+//         console.log(val)
+//     })
+//     .catch((e) => {
+//         console.log('Error fetching data', e)
+//     })
 
 // The .on() subscription method:
 //  - The .on() method listens for data changes at a particular location
-//  - There are 4 events we can listen to for data changes: 
+//  - There are 4 events we can listen to for data changes:
 //  - value event, child_added event, child_removed event, child_changed event
 //  - The .on() method allows us to listen for something over and over again
 //  - 1st arg: the value event we're making the request
@@ -166,38 +164,37 @@ firebase.auth().onAuthStateChanged((user) => {
 //  - We have access to the data via snapshot. Call .val() on the snapshot to extract the data
 //  - The .on() method subscribes to the changes made to the db
 //  - To unsubscribe: database.ref().off()
-    // const onValueChange = database.ref()
-    //     .on('value', (snapshot) => {
-    //         console.log(snapshot.val(), (e) => {
-    //         console.log('error with data fetching', e)
-    //     })
-    // })
-
+// const onValueChange = database.ref()
+//     .on('value', (snapshot) => {
+//         console.log(snapshot.val(), (e) => {
+//         console.log('error with data fetching', e)
+//     })
+// })
 
 // Array Data in Firebase:
 //  - Firebase does not have array data structure. It has object data structure
 //  - .push() method generates a unique id identifier as a key. You can store an object as the value for this key
 //  - Here, a new object is generated with a unique id inside the notes tree
-    // database.ref('notes').push({
-    //     title: 'Course Topics',
-    //     body: 'React Native, Angular, Python'
-    // })
-    // database.ref('notes/-Klsdjfiewjrn3kre').remove()
+// database.ref('notes').push({
+//     title: 'Course Topics',
+//     body: 'React Native, Angular, Python'
+// })
+// database.ref('notes/-Klsdjfiewjrn3kre').remove()
 
 // Transform Firebase data to an array using forEach():
-    // database.ref('expenses')
-    //     .once('value')
-    //     .then((snapshot) => {
-    //         const expenses = [];
-    //
-    //         snapshot.forEach((childSnapshot) => {
-    //             expenses.push({
-    //                 id: childSnapshot.key,
-    //                 ...childSnapshot.val()
-    //             })
-    //         })
-    //         console.log(expenses)
-    //     })
+// database.ref('expenses')
+//     .once('value')
+//     .then((snapshot) => {
+//         const expenses = [];
+//
+//         snapshot.forEach((childSnapshot) => {
+//             expenses.push({
+//                 id: childSnapshot.key,
+//                 ...childSnapshot.val()
+//             })
+//         })
+//         console.log(expenses)
+//     })
 
 // Subscribe to a change made to the database:
 // database.ref('expenses')
@@ -212,7 +209,6 @@ firebase.auth().onAuthStateChanged((user) => {
 //         console.log(expenses)
 //     })
 
-
 // ---------------------------
 // FIREBASE AUTHENTICATION
 // ---------------------------
@@ -226,32 +222,32 @@ firebase.auth().onAuthStateChanged((user) => {
 // const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
 // Export this googleAuthProvider as a named export
 // Next we first need to check the authentication state of a user. In app.js file:
-    // firebase.auth().onAuthStateChanged((user) => {
-    //     if (user) {
-    //         console.log('log in')
-    //     } else {
-    //         console.log('log out')
-    //     }
-    // })
+// firebase.auth().onAuthStateChanged((user) => {
+//     if (user) {
+//         console.log('log in')
+//     } else {
+//         console.log('log out')
+//     }
+// })
 // Create a startLogin action:
 // Pass in the googleAuthProvider to .signInWithPopup()
-    // export const startLogin = () => {
-    //     return () => {
-    //         return firebase.auth().signInWithPopup(googleAuthProvider)
-    //     }
-    // }
+// export const startLogin = () => {
+//     return () => {
+//         return firebase.auth().signInWithPopup(googleAuthProvider)
+//     }
+// }
 // Dispatch the action in LoginPage.js file when a user clicks the Login button:
-    // import { connect } from 'react-redux';
-    // import { startLogin } from '../actions/auth';
-    // export const LoginPage = ({startLogin}) => (
-    //     <div>
-    //         <button onClick={startLogin}>Login</button>
-    //     </div>
-    // )
-    // const mapDispatchToProps = (dispatch) => ({
-    //     startLogin: () => dispatch(startLogin())
-    // })
-    // export default connect(undefined, mapDispatchToProps)(LoginPage)
+// import { connect } from 'react-redux';
+// import { startLogin } from '../actions/auth';
+// export const LoginPage = ({startLogin}) => (
+//     <div>
+//         <button onClick={startLogin}>Login</button>
+//     </div>
+// )
+// const mapDispatchToProps = (dispatch) => ({
+//     startLogin: () => dispatch(startLogin())
+// })
+// export default connect(undefined, mapDispatchToProps)(LoginPage)
 
 // A RECAP ON AUTHENTICATION SETUP:
 // Create a LoginPage component and wire that up in Route
@@ -283,31 +279,31 @@ firebase.auth().onAuthStateChanged((user) => {
 // To navigate users between pages, use: history.push(). .push() method takes a path name
 // When a user is logged out redirect them to login page: history.push('/')
 // Login/logout redirect code:
-    // // When user is logged in, redirect to the dashboard page and connect them to the expenses
-    // // When user is logged out, redirect to the login page
-    // let hasRendered = false;
-    // const renderApp = () => {
-    //     if (!hasRendered) {
-    //         ReactDOM.render(jsx, document.querySelector('#app'));
-    //         hasRendered = true;
-    //     }
-    // }
-    // firebase.auth().onAuthStateChanged((user) => {
-    //     if (user) {
-    //         store.dispatch(startSetExpenses()).then(() => {
-    //             renderApp();
-    //             // If history location starts out at root directory, redirect to dashboard
-    //             if (history.location.pathname === '/') {
-    //                 history.push('/dashboard')
-    //             }
-    //         });
-    //         console.log('log in')
-    //     } else {
-    //         renderApp();
-    //         history.push('/');
-    //         console.log('log out')
-    //     }
-    // })
+// // When user is logged in, redirect to the dashboard page and connect them to the expenses
+// // When user is logged out, redirect to the login page
+// let hasRendered = false;
+// const renderApp = () => {
+//     if (!hasRendered) {
+//         ReactDOM.render(jsx, document.querySelector('#app'));
+//         hasRendered = true;
+//     }
+// }
+// firebase.auth().onAuthStateChanged((user) => {
+//     if (user) {
+//         store.dispatch(startSetExpenses()).then(() => {
+//             renderApp();
+//             // If history location starts out at root directory, redirect to dashboard
+//             if (history.location.pathname === '/') {
+//                 history.push('/dashboard')
+//             }
+//         });
+//         console.log('log in')
+//     } else {
+//         renderApp();
+//         history.push('/');
+//         console.log('log out')
+//     }
+// })
 
 // THE AUTH REDUCER
 // We need to create a new reducer to keep track whether a user is logged in by storing a user's uid
@@ -348,61 +344,61 @@ firebase.auth().onAuthStateChanged((user) => {
 //  - if the user is not authenticated, we want to redirect them
 //  - React-router-dom gives us a way to do that via a component called Redirect. Import this component in
 //  - Just use/create the <Redirect /> instance and give the path name to the 'to' prop
-    // import React from 'react';
-    // import { connect } from 'react-redux';
-    // import { Route, Redirect } from 'react-router-dom';
-    // import Header from '../components/Header';
-    // export const PrivateRoute = ({
-    //     isAuthenticated,
-    //     component: Component,
-    //     ...rest
-    // }) => (
-    //     <Route
-    //         {...rest}
-    //         component={(props) =>
-    //             isAuthenticated ? (
-    //                 <div>
-    //                     <Header />
-    //                     <Component {...props} />
-    //                 </div>
-    //             ) : (
-    //                 <Redirect to='/' />
-    //             )
-    //         }
-    //     />
-    // );
-    // const mapStateToProps = (state) => ({
-    //     isAuthenticated: !!state.auth.uid
-    // });
-    // export default connect(mapStateToProps)(PrivateRoute);
+// import React from 'react';
+// import { connect } from 'react-redux';
+// import { Route, Redirect } from 'react-router-dom';
+// import Header from '../components/Header';
+// export const PrivateRoute = ({
+//     isAuthenticated,
+//     component: Component,
+//     ...rest
+// }) => (
+//     <Route
+//         {...rest}
+//         component={(props) =>
+//             isAuthenticated ? (
+//                 <div>
+//                     <Header />
+//                     <Component {...props} />
+//                 </div>
+//             ) : (
+//                 <Redirect to='/' />
+//             )
+//         }
+//     />
+// );
+// const mapStateToProps = (state) => ({
+//     isAuthenticated: !!state.auth.uid
+// });
+// export default connect(mapStateToProps)(PrivateRoute);
 
 // PRIVATE FIREBASE DATA
 // We want to have the user expenses to live inside that particular uid
 // To get the uid... we need to access the current state using getState
 // When using thunk actions, async actions, we also have access to getState method
 // We can call getState() to get the current state
-    // // NOTE: a portion of the code from startAddExpense action in expenses.js 
-    // // 2nd arg: getState
-    // return (dispatch, getState) => {
-    //     const uid = getState().auth.uid
-    //     return database
-    //         .ref(`users/${uid}/expenses`)
-    //         ...  
-    // }
+// // NOTE: a portion of the code from startAddExpense action in expenses.js
+// // 2nd arg: getState
+// return (dispatch, getState) => {
+//     const uid = getState().auth.uid
+//     return database
+//         .ref(`users/${uid}/expenses`)
+//         ...
+// }
 
 // Setting up Firebase database rules:
-    // {
-    //     "rules": {
-    //     ".read": false,
-    //     ".write": false,
-    //     "users": {
-    //         "$user_id": {
-    //         ".read": "$user_id === auth.uid",
-    //         ".write": "$user_id === auth.uid"
-    //         }
-    //     }
-    //     }
-    // }
+// {
+//     "rules": {
+//     ".read": false,
+//     ".write": false,
+//     "users": {
+//         "$user_id": {
+//         ".read": "$user_id === auth.uid",
+//         ".write": "$user_id === auth.uid"
+//         }
+//     }
+//     }
+// }
 
 // DATA VALIDATION IN FIREBASE: SETTING RULES
 // {
@@ -430,7 +426,7 @@ firebase.auth().onAuthStateChanged((user) => {
 //               },
 //               "$other": {
 //                     ".validate": false
-//                   }  
+//                   }
 //             }
 //           },
 //           "$other": {
