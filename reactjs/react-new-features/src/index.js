@@ -1,100 +1,116 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 
 // A functional component
-const BlogApp = () => {
-  const [blogs, setBlogs] = useState([])
-  const [title, setTitle] = useState('')
-  const [body, setBody] = useState('')
+// const BlogApp = () => {
+//   const [blogs, setBlogs] = useState([])
+//   const [title, setTitle] = useState('')
+//   const [body, setBody] = useState('')
 
-  const addBlog = (e) => {
-    e.preventDefault();
-    setBlogs([
-      ...blogs,
-      {title, body}
+//   const addBlog = (e) => {
+//     e.preventDefault();
+//     setBlogs([
+//       ...blogs,
+//       {title, body}
+//     ])
+//     setTitle('')
+//     setBody('')
+//   }
+
+//   const removeBlog = (title) => {
+//     setBlogs(
+//       blogs.filter((blog) => blog.title !== title)
+//     )
+//   }
+
+//   console.log(blogs)
+//   return (
+//     <div>
+//       <h1>Blogs</h1>
+//       {blogs.map((blog) => (
+//         <div key={blog.title}>
+//           <h1>{blog.title}</h1>
+//           <p>{blog.body}</p>
+//           <button onClick={() => removeBlog(blog.title)}>remove</button>
+//         </div>
+//       ))}
+//       <p>Add a blog</p>
+//       <form onSubmit={addBlog}>
+//         <input value={title} onChange={(e) => setTitle(e.target.value)} />
+//         <textarea value={body} onChange={(e) => setBody(e.target.value)} />
+//         <button>Add blog</button>
+//       </form>
+//     </div>
+//   )
+// }
+
+
+
+
+
+const NoteApp = () => {
+  const [notes, setNotes] = useState([]);
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
+
+  const addNote = (e) => {
+    // To prevent a full page refresh
+    e.preventDefault()
+    // Spread the existing notes, add a new note object
+    setNotes([
+      ...notes,
+      { title, body }
     ])
+    // After note is submitted, clear the title input
     setTitle('')
     setBody('')
   }
 
-  const removeBlog = (title) => {
-    setBlogs(
-      blogs.filter((blog) => blog.title !== title)
-    )
+  const removeNote = (title) => {
+    setNotes(notes.filter((note) => note.title !== title))
   }
 
-  console.log(blogs)
+  // console.log(notes)
+  useEffect(() => {
+    const notesData = JSON.parse(localStorage.getItem('notes'))
+    // console.log(notesData)
+    
+    if (notesData) {
+      setNotes(notesData)
+    }
+  }, [])
+  
+  useEffect(() => {
+    console.log('useEffect run')
+    localStorage.setItem('notes', JSON.stringify(notes))
+  }, [notes])
+
+  // console.log(notes)
+
+  // Render notes data by iterating over notes array
   return (
     <div>
-      <h1>Blogs</h1>
-      {blogs.map((blog) => (
-        <div key={blog.title}>
-          <h1>{blog.title}</h1>
-          <p>{blog.body}</p>
-          <button onClick={() => removeBlog(blog.title)}>remove</button>
-        </div>
-      ))}
-      <p>Add a blog</p>
-      <form onSubmit={addBlog}>
-        <input value={title} onChange={(e) => setTitle(e.target.value)} />
-        <textarea value={body} onChange={(e) => setBody(e.target.value)} />
-        <button>Add blog</button>
+      <h1>Notes</h1>
+      {notes.map((note) => {
+        return (
+          <div key={note.title}>
+            <h3>{note.title}</h3>
+            <p>{note.body}</p>
+            <button onClick={() => removeNote(note.title)}>remove</button>
+          </div>
+        )
+      })}
+      <p>Add note</p>
+      <form onSubmit={addNote}>
+        <input value={title} onChange={(e) => setTitle(e.target.value)}></input>
+        <textarea value={body} onChange={(e) => setBody(e.target.value)}></textarea>
+        <button>add note</button>
       </form>
     </div>
-  )
+  );
+
 }
-
-
-
-
-
-// const NoteApp = () => {
-  
-//   // Notes started out as an empty array
-//   const [notes, setNotes] = useState([]);
-//   const [title, setTitle] = useState('');
-//   const [body, setBody] = useState('');
-
-//   const addNote = (e) => {
-//     // To prevent a full page refresh
-//     e.preventDefault()
-//     // Spread the existing notes, add a new note object
-//     setNotes([
-//       ...notes,
-//       { title, body }
-//     ])
-//     // After note is submitted, clear the title input
-//     setTitle('')
-//     setBody('')
-//   }
-//   const removeNote = (title) => {
-//     setNotes(notes.filter((note) => note.title !== title))
-//   }
-
-//   // Render notes data by iterating over notes array
-//   return (
-//     <div>
-//       <h1>Notes</h1>
-//       {notes.map((note) => {
-//         return (
-//           <div key={note.title}>
-//             <h3>{note.title}</h3>
-//             <p>{note.body}</p>
-//             <button onClick={() => removeNote(note.title)}>remove</button>
-//           </div>
-//         )
-//       })}
-//       <p>Add note</p>
-//       <form onSubmit={addNote}>
-//         <input value={title} onChange={(e) => setTitle(e.target.value)}></input>
-//         <textarea value={body} onChange={(e) => setBody(e.target.value)}></textarea>
-//         <button>add note</button>
-//       </form>
-//     </div>
-//   );
-
-// }
 
 
 
@@ -102,7 +118,16 @@ const BlogApp = () => {
 // const App = (props) => {
 //   // Returns an array of 2 items
 //   const [count, setCount] = useState(props.count)
-//   const [text, setText] = useState(props.text)
+//   const [text, setText] = useState('')
+
+//   useEffect(() => {
+//     console.log('This should only run once!')
+//   }, [])
+
+//   useEffect(() => {
+//     console.log('useEffect ran')
+//     document.title = count
+//   }, [count])
 
 //   return (
 //     <div>
@@ -121,7 +146,7 @@ const BlogApp = () => {
 
 ReactDOM.render(
   <React.StrictMode>
-    <BlogApp />
+    <NoteApp />
   </React.StrictMode>,
   document.getElementById('root')
 );
@@ -159,6 +184,7 @@ serviceWorker.unregister();
 
 // useState:
 // Built-in React hook: useState is a function that allows us to use component state in our stateless functional components, something we could not do in the past
+// useState manages component state
 // In a functional component, state does not have to be an object. It can be a string, number, boolean, object, etc
   // const array = useState(0)
   // <p> The current count is {array[0]}
@@ -180,3 +206,31 @@ serviceWorker.unregister();
 // 1. State doesn't need to be an object with useState
 // 2. You can call useState as many times as you need in a given component for all of the different things you want to track
 // 3. when you are using useState and you update the state, it completely replaces what was there before as opposed to how state worked in the past with objects where the data was merged. This makes things less error prone and it allows us to break up our big state objects into individual values
+
+// useEffect hook:
+// useEffect allows us to do something in functional components that we previously we not able to do: lifecycle methods in clase-based components
+// Import: {useEffect} from 'react';
+// useEffect is something we call and we pass to it a function. And this function is similar to a combination of componentDidMount and componentDidUpdate
+// It's going to run once right away and it's going to run after changes to your component state or props
+// It's a useful tool to have because now we can do what we were able to do with lifecycle methods that we can do right in our functional components
+
+// const [count, setCount] = useState(props.count)
+// useEffect(() => {
+//   console.log('useEffect ran')
+//   document.title = count
+// }, [count])
+// What we've done using useEffect is we've allowed us to synchronize our props and our state with whatever we want to
+// In this case, we are using it to sychronize the count state with the document title 
+
+// 3 ways to use useEffect:
+// 1. If we don't pass in a dependency array as 2nd arg to useEffect, the function (1st arg) runs if anything changes at all
+//  - useEffect(() => {})
+// 2. We can optionally pass in a dependency array as a 2nd arg. In here, we can explicitly list out our dependencies to update or take into effect when their state changes
+//  - This means that the function (1st arg) runs once when the component first mounts and runs on updates for that list of dependencies 
+//  - useEffect(() => {}, [dependencies_array])
+// 3. We can provide a dependency array but leave it empty
+//  - This means the function (1st arg) runs once when the component first mounts, but never runs on updates
+//  - useEffect(() => {}, [])
+
+// We can call useEffect multiple times for each specific feature, each with their own set of dependencies
+// In general, it's a good idea to provide the 2nd arg, because we should be explicity about what our effect depends on
