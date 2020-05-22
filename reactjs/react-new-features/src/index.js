@@ -2,19 +2,43 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 
+// Painful way of using useState to keep track of multiple things with state object
 const App = (props) => {
-  // Returns an array
-  const [count, setCount] = useState(props.count)
+  // Returns an array of 2 items
+  // const [count, setCount] = useState(props.count)
+  // const [text, setText] = useState(props.text)
+  const [state, setState] = useState({
+    count: props.count,
+    text: ''
+  })
 
   return (
     <div>
-      <p>The current count is {count}</p>
-      <button onClick={() => setCount(count + 1)}>+1</button>
-      <button onClick={() => setCount(count - 1)}>-1</button>
-      <button onClick={() => setCount(props.count)}>reset</button>
+      <p>The current {state.text || 'count'} is {state.count}</p>
+      <button onClick={() => setState({...state, count: state.count + 1})}>+1</button>
+      <button onClick={() => setState({...state, count: state.count - 1})}>-1</button>
+      <button onClick={() => setState({...state, count: props.count})}>reset</button>
+      <input value={state.text} onChange={(e) => setState({...state, text: e.target.value})}/>
     </div>
   )
 }
+
+// Call useState multiple times to keep track of different things
+// const App = (props) => {
+//   // Returns an array of 2 items
+//   const [count, setCount] = useState(props.count)
+//   const [text, setText] = useState(props.text)
+
+//   return (
+//     <div>
+//       <p>The current {text || 'count'} is {count}</p>
+//       <button onClick={() => setCount(count + 1)}>+1</button>
+//       <button onClick={() => setCount(count - 1)}>-1</button>
+//       <button onClick={() => setCount(props.count)}>reset</button>
+//       <input value={text} onChange={(e) => setText(e.target.value)}/>
+//     </div>
+//   )
+// }
 
 App.defaultProps = {
   count: 10
@@ -58,8 +82,9 @@ serviceWorker.unregister();
 // So no longer are they called stateless functional component, they're now just called FUNCTIONAL COMPONENTS because it is possible to use state inside of them
 // useState is a hook function that we can call to allow us to use state inside a component
 
-// useState
+// useState:
 // Built-in React hook: useState is a function that allows us to use component state in our stateless functional components, something we could not do in the past
+// In a functional component, state does not have to be an object. It can be a string, number, boolean, object, etc
   // const array = useState(0)
   // <p> The current count is {array[0]}
 // What comes back from useState is an array of two items:
@@ -73,3 +98,10 @@ serviceWorker.unregister();
 //  - get access to its current value: const [count, setCount]
 //  - render it: {count}
 //  - call the function to update the state: onClick={() => setCount(count + 1)}
+
+// useState vs setState:
+// If you want to keep track of multiple states, you don't need to use a state object. You can just call useState multiple times on different things you want to keep track of
+// Three things to note about state:
+// 1. State doesn't need to be an object with useState
+// 2. You can call useState as many times as you need in a given component for all of the different things you want to track
+// 3. when you are using useState and you update the state, it completely replaces what was there before as opposed to how state worked in the past with objects where the data was merged. This makes things less error prone and it allows us to break up our big state objects into individual values
