@@ -2,26 +2,101 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 
-// Painful way of using useState to keep track of multiple things with state object
-const App = (props) => {
-  // Returns an array of 2 items
-  // const [count, setCount] = useState(props.count)
-  // const [text, setText] = useState(props.text)
-  const [state, setState] = useState({
-    count: props.count,
-    text: ''
-  })
+// A functional component
+const BlogApp = () => {
+  const [blogs, setBlogs] = useState([])
+  const [title, setTitle] = useState('')
+  const [body, setBody] = useState('')
 
+  const addBlog = (e) => {
+    e.preventDefault();
+    setBlogs([
+      ...blogs,
+      {title, body}
+    ])
+    setTitle('')
+    setBody('')
+  }
+
+  const removeBlog = (title) => {
+    setBlogs(
+      blogs.filter((blog) => blog.title !== title)
+    )
+  }
+
+  console.log(blogs)
   return (
     <div>
-      <p>The current {state.text || 'count'} is {state.count}</p>
-      <button onClick={() => setState({...state, count: state.count + 1})}>+1</button>
-      <button onClick={() => setState({...state, count: state.count - 1})}>-1</button>
-      <button onClick={() => setState({...state, count: props.count})}>reset</button>
-      <input value={state.text} onChange={(e) => setState({...state, text: e.target.value})}/>
+      <h1>Blogs</h1>
+      {blogs.map((blog) => (
+        <div key={blog.title}>
+          <h1>{blog.title}</h1>
+          <p>{blog.body}</p>
+          <button onClick={() => removeBlog(blog.title)}>remove</button>
+        </div>
+      ))}
+      <p>Add a blog</p>
+      <form onSubmit={addBlog}>
+        <input value={title} onChange={(e) => setTitle(e.target.value)} />
+        <textarea value={body} onChange={(e) => setBody(e.target.value)} />
+        <button>Add blog</button>
+      </form>
     </div>
   )
 }
+
+
+
+
+
+// const NoteApp = () => {
+  
+//   // Notes started out as an empty array
+//   const [notes, setNotes] = useState([]);
+//   const [title, setTitle] = useState('');
+//   const [body, setBody] = useState('');
+
+//   const addNote = (e) => {
+//     // To prevent a full page refresh
+//     e.preventDefault()
+//     // Spread the existing notes, add a new note object
+//     setNotes([
+//       ...notes,
+//       { title, body }
+//     ])
+//     // After note is submitted, clear the title input
+//     setTitle('')
+//     setBody('')
+//   }
+//   const removeNote = (title) => {
+//     setNotes(notes.filter((note) => note.title !== title))
+//   }
+
+//   // Render notes data by iterating over notes array
+//   return (
+//     <div>
+//       <h1>Notes</h1>
+//       {notes.map((note) => {
+//         return (
+//           <div key={note.title}>
+//             <h3>{note.title}</h3>
+//             <p>{note.body}</p>
+//             <button onClick={() => removeNote(note.title)}>remove</button>
+//           </div>
+//         )
+//       })}
+//       <p>Add note</p>
+//       <form onSubmit={addNote}>
+//         <input value={title} onChange={(e) => setTitle(e.target.value)}></input>
+//         <textarea value={body} onChange={(e) => setBody(e.target.value)}></textarea>
+//         <button>add note</button>
+//       </form>
+//     </div>
+//   );
+
+// }
+
+
 
 // Call useState multiple times to keep track of different things
 // const App = (props) => {
@@ -40,13 +115,13 @@ const App = (props) => {
 //   )
 // }
 
-App.defaultProps = {
-  count: 10
-}
+// App.defaultProps = {
+//   count: 10
+// }
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <BlogApp />
   </React.StrictMode>,
   document.getElementById('root')
 );
