@@ -2,53 +2,6 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 
-// A functional component
-// const BlogApp = () => {
-//   const [blogs, setBlogs] = useState([])
-//   const [title, setTitle] = useState('')
-//   const [body, setBody] = useState('')
-
-//   const addBlog = (e) => {
-//     e.preventDefault();
-//     setBlogs([
-//       ...blogs,
-//       {title, body}
-//     ])
-//     setTitle('')
-//     setBody('')
-//   }
-
-//   const removeBlog = (title) => {
-//     setBlogs(
-//       blogs.filter((blog) => blog.title !== title)
-//     )
-//   }
-
-//   console.log(blogs)
-//   return (
-//     <div>
-//       <h1>Blogs</h1>
-//       {blogs.map((blog) => (
-//         <div key={blog.title}>
-//           <h1>{blog.title}</h1>
-//           <p>{blog.body}</p>
-//           <button onClick={() => removeBlog(blog.title)}>remove</button>
-//         </div>
-//       ))}
-//       <p>Add a blog</p>
-//       <form onSubmit={addBlog}>
-//         <input value={title} onChange={(e) => setTitle(e.target.value)} />
-//         <textarea value={body} onChange={(e) => setBody(e.target.value)} />
-//         <button>Add blog</button>
-//       </form>
-//     </div>
-//   )
-// }
-
-
-
-
-
 const NoteApp = () => {
   const [notes, setNotes] = useState([]);
   const [title, setTitle] = useState('');
@@ -71,10 +24,8 @@ const NoteApp = () => {
     setNotes(notes.filter((note) => note.title !== title))
   }
 
-  // console.log(notes)
   useEffect(() => {
     const notesData = JSON.parse(localStorage.getItem('notes'))
-    // console.log(notesData)
     
     if (notesData) {
       setNotes(notesData)
@@ -82,11 +33,9 @@ const NoteApp = () => {
   }, [])
   
   useEffect(() => {
-    console.log('useEffect run')
+    // console.log('useEffect run')
     localStorage.setItem('notes', JSON.stringify(notes))
   }, [notes])
-
-  // console.log(notes)
 
   // Render notes data by iterating over notes array
   return (
@@ -94,11 +43,7 @@ const NoteApp = () => {
       <h1>Notes</h1>
       {notes.map((note) => {
         return (
-          <div key={note.title}>
-            <h3>{note.title}</h3>
-            <p>{note.body}</p>
-            <button onClick={() => removeNote(note.title)}>remove</button>
-          </div>
+          <Note key={note.title} note={note} removeNote={removeNote}/>
         )
       })}
       <p>Add note</p>
@@ -109,40 +54,25 @@ const NoteApp = () => {
       </form>
     </div>
   );
+}
 
+const Note = ({ note, removeNote }) => {
+  useEffect(() => {
+    console.log('setting up effect')
+    return () => {
+      console.log('cleaning up')
+    }
+  }, [])
+  return (
+    <div>
+      <p>{note.body}</p>
+      <h3>{note.title}</h3>
+      <button onClick={() => removeNote(note.title)}>remove</button>
+    </div>
+  )
 }
 
 
-
-// Call useState multiple times to keep track of different things
-// const App = (props) => {
-//   // Returns an array of 2 items
-//   const [count, setCount] = useState(props.count)
-//   const [text, setText] = useState('')
-
-//   useEffect(() => {
-//     console.log('This should only run once!')
-//   }, [])
-
-//   useEffect(() => {
-//     console.log('useEffect ran')
-//     document.title = count
-//   }, [count])
-
-//   return (
-//     <div>
-//       <p>The current {text || 'count'} is {count}</p>
-//       <button onClick={() => setCount(count + 1)}>+1</button>
-//       <button onClick={() => setCount(count - 1)}>-1</button>
-//       <button onClick={() => setCount(props.count)}>reset</button>
-//       <input value={text} onChange={(e) => setText(e.target.value)}/>
-//     </div>
-//   )
-// }
-
-// App.defaultProps = {
-//   count: 10
-// }
 
 ReactDOM.render(
   <React.StrictMode>
@@ -234,3 +164,49 @@ serviceWorker.unregister();
 
 // We can call useEffect multiple times for each specific feature, each with their own set of dependencies
 // In general, it's a good idea to provide the 2nd arg, because we should be explicity about what our effect depends on
+
+
+// const App = (props) => {
+//   // Returns an array of 2 items
+//   const [count, setCount] = useState(props.count)
+//   const [text, setText] = useState('')
+
+//   useEffect(() => {
+//     console.log('This should only run once!')
+//   }, [])
+
+//   useEffect(() => {
+//     console.log('useEffect ran')
+//     document.title = count
+//   }, [count])
+
+//   return (
+//     <div>
+//       <p>The current {text || 'count'} is {count}</p>
+//       <button onClick={() => setCount(count + 1)}>+1</button>
+//       <button onClick={() => setCount(count - 1)}>-1</button>
+//       <button onClick={() => setCount(props.count)}>reset</button>
+//       <input value={text} onChange={(e) => setText(e.target.value)}/>
+//     </div>
+//   )
+// }
+//
+// App.defaultProps = {
+//   count: 10
+// }
+
+// Cleaning up Effects (similar to componentDidUnmount):
+// After an item is removed, we can unmount it by returning a function
+  // useEffect(() => {
+  //   console.log('setting up effect')
+  //   return () => {
+  //     console.log('cleaning up')
+  //   }
+  // }, [])
+
+// The 3 main features of useEffect:
+// 1. registering the effect itself: 1st arg function
+// 2. registering a cleanup function, which is optional
+// 3. registering dependencies array, which is optional
+// This allows us to get similar behavior to what we had before, but this is a more ideal way
+// Being able to call useEffect multiple time with different dependencies allows us to keep complex components simple and easy to work with
