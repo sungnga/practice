@@ -1,107 +1,7 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
-
-const notesReducer = (state, action) => {
-  switch (action.type) {
-    case 'POPULATE_NOTES':
-      return action.notes
-    case 'ADD_NOTE':
-      return [
-        ...state,
-        {title: action.title, body: action.body}
-      ]
-    case 'REMOVE_NOTE':
-      return state.filter((note) => note.title !== action.title)
-    default:
-      return state
-  }
-}
-
-const NoteApp = () => {
-  // const [notes, setNotes] = useState([]);
-  // useReducer takes in a reducer function and a state
-  // useReducer returns an array of state and dispatch
-  const [notes, dispatch] = useReducer(notesReducer, [])
-  const [title, setTitle] = useState('');
-  const [body, setBody] = useState('');
-
-  const addNote = (e) => {
-    // To prevent a full page refresh
-    e.preventDefault()
-    dispatch({
-      type: 'ADD_NOTE',
-      title,
-      body
-    })
-    // Spread the existing notes, add a new note object
-    // setNotes([
-    //   ...notes,
-    //   { title, body }
-    // ])
-    // After note is submitted, clear the title input
-    setTitle('')
-    setBody('')
-  }
-
-  const removeNote = (title) => {
-    // setNotes(notes.filter((note) => note.title !== title))
-    dispatch({
-      type: 'REMOVE_NOTE',
-      title
-    })
-  }
-
-  useEffect(() => {
-    const notes = JSON.parse(localStorage.getItem('notes'))
-    
-    if (notes) {
-      dispatch({type: 'POPULATE_NOTES', notes})
-      // setNotes(notesData)
-    }
-  }, [])
-  
-  useEffect(() => {
-    // console.log('useEffect run')
-    localStorage.setItem('notes', JSON.stringify(notes))
-  }, [notes])
-
-  // Render notes data by iterating over notes array
-  return (
-    <div>
-      <h1>Notes</h1>
-      {notes.map((note) => {
-        return (
-          <Note key={note.title} note={note} removeNote={removeNote}/>
-        )
-      })}
-      <p>Add note</p>
-      <form onSubmit={addNote}>
-        <input value={title} onChange={(e) => setTitle(e.target.value)}></input>
-        <textarea value={body} onChange={(e) => setBody(e.target.value)}></textarea>
-        <button>add note</button>
-      </form>
-    </div>
-  );
-}
-
-const Note = ({ note, removeNote }) => {
-  useEffect(() => {
-    console.log('setting up effect')
-    return () => {
-      console.log('cleaning up')
-    }
-  }, [])
-  return (
-    <div>
-      <p>{note.body}</p>
-      <h3>{note.title}</h3>
-      <button onClick={() => removeNote(note.title)}>remove</button>
-    </div>
-  )
-}
-
-
+import NoteApp from './components/NoteApp'
 
 ReactDOM.render(
   <React.StrictMode>
@@ -270,3 +170,51 @@ serviceWorker.unregister();
 //      title,
 //      body
 //    })
+
+// ***** Context API and useContext Hook: *****
+// Context provides a way to pass data through the component tree without having to pass props down manually at every level
+// In a typical React application, data is psssed top-down (parent to child) via props, but this can be cumbersome for certain types of props (e.g. locale preference, UI theme) that are required by many components within an application
+// Context provides a way to share values like these btwn components w/out having to explicitly pass a prop through every level of the tree
+
+// 1. To create a context (object):
+// Create a folder called context inside src directory. Create a notes-context.js in there
+    // import React from 'react'
+    // const NotesContext = React.createContext()
+    // export { NotesContext as default }
+
+// 2. To use the context:
+// The context object that's created above needs to be accessible in the component that's providing things and on the component that's consuming things
+// That's why we have it in its own separate file
+//
+// 2A. In the component that provides the context:
+//  - Import the context in NoteApp.js: import NotesContext from '../context/notes-context'
+//  - Render the context component as the main root tag in JSX and pass in the Provider property: <NotesContext.Provider></NotesContext.Provider>
+//  - With this in place, we are providing the context value to anyone in here and their children and children's children who wants to consume it
+//  - we do this by setting the value property as an object with a list of props that other components can have access to: <NotesContext.Provider value={{ notes, dispatch }}></..>
+//    return (
+//        <NotesContext.Provider value={{ notes, dispatch }}>
+//            <h1>Notes</h1>
+//            <NoteList />
+//            <AddNoteForm />
+//        </NotesContext.Provider>
+//    );
+
+// 2B. In the component that consumes the context: 
+//  - We use useContext hook to access the data
+//  - Import useContext Hook: import React, { useContext } from 'react'
+//  - Extract the props name you want to access the data, destructure it: const { notes } = useContext(NotesContext)
+//  - Then use the props as you like
+//  - Here's an example to access to the notes data using useContext hook:
+    // import React, { useContext } from 'react'
+    // import NotesContext from '../context/notes-context'
+    //
+    // const NoteList = () => {
+    //     const { notes } = useContext(NotesContext)
+    //     return (
+    //         notes.map((note) => {
+    //             return (
+    //                 <Note key={note.title} note={note} />
+    //             )
+    //         })
+    //     )
+    // }
