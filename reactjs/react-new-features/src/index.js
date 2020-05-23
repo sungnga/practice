@@ -1,34 +1,63 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 
+const notesReducer = (state, action) => {
+  switch (action.type) {
+    case 'POPULATE_NOTES':
+      return action.notes
+    case 'ADD_NOTE':
+      return [
+        ...state,
+        {title: action.title, body: action.body}
+      ]
+    case 'REMOVE_NOTE':
+      return state.filter((note) => note.title !== action.title)
+    default:
+      return state
+  }
+}
+
 const NoteApp = () => {
-  const [notes, setNotes] = useState([]);
+  // const [notes, setNotes] = useState([]);
+  // useReducer takes in a reducer function and a state
+  // useReducer returns an array of state and dispatch
+  const [notes, dispatch] = useReducer(notesReducer, [])
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
 
   const addNote = (e) => {
     // To prevent a full page refresh
     e.preventDefault()
+    dispatch({
+      type: 'ADD_NOTE',
+      title,
+      body
+    })
     // Spread the existing notes, add a new note object
-    setNotes([
-      ...notes,
-      { title, body }
-    ])
+    // setNotes([
+    //   ...notes,
+    //   { title, body }
+    // ])
     // After note is submitted, clear the title input
     setTitle('')
     setBody('')
   }
 
   const removeNote = (title) => {
-    setNotes(notes.filter((note) => note.title !== title))
+    // setNotes(notes.filter((note) => note.title !== title))
+    dispatch({
+      type: 'REMOVE_NOTE',
+      title
+    })
   }
 
   useEffect(() => {
-    const notesData = JSON.parse(localStorage.getItem('notes'))
+    const notes = JSON.parse(localStorage.getItem('notes'))
     
-    if (notesData) {
-      setNotes(notesData)
+    if (notes) {
+      dispatch({type: 'POPULATE_NOTES', notes})
+      // setNotes(notesData)
     }
   }, [])
   
@@ -112,7 +141,7 @@ serviceWorker.unregister();
 // So no longer are they called stateless functional component, they're now just called FUNCTIONAL COMPONENTS because it is possible to use state inside of them
 // useState is a hook function that we can call to allow us to use state inside a component
 
-// useState:
+// ***** useState: *****
 // Built-in React hook: useState is a function that allows us to use component state in our stateless functional components, something we could not do in the past
 // useState manages component state
 // In a functional component, state does not have to be an object. It can be a string, number, boolean, object, etc
@@ -137,7 +166,7 @@ serviceWorker.unregister();
 // 2. You can call useState as many times as you need in a given component for all of the different things you want to track
 // 3. when you are using useState and you update the state, it completely replaces what was there before as opposed to how state worked in the past with objects where the data was merged. This makes things less error prone and it allows us to break up our big state objects into individual values
 
-// useEffect hook:
+// ***** useEffect hook: *****
 // useEffect allows us to do something in functional components that we previously we not able to do: lifecycle methods in clase-based components
 // Import: {useEffect} from 'react';
 // useEffect is something we call and we pass to it a function. And this function is similar to a combination of componentDidMount and componentDidUpdate
@@ -210,3 +239,34 @@ serviceWorker.unregister();
 // 3. registering dependencies array, which is optional
 // This allows us to get similar behavior to what we had before, but this is a more ideal way
 // Being able to call useEffect multiple time with different dependencies allows us to keep complex components simple and easy to work with
+
+// ***** useReducer: *****
+// 1. First, we need to define a reducer function before we can call useReducer
+//  - This reducer function looks identical to the type of reducers we're already used to creating w/ Redux
+//    const notesReducer = (state, action) => {
+//      switch (action.type) {
+//        case 'POPULATE_NOTES':
+//          return action.notes
+//        case 'ADD_NOTE':
+//          return [
+//            ...state,
+//            {title: action.title, body: action.body}
+//          ]
+//        case 'REMOVE_NOTE':
+//          return state.filter((note) => note.title !== action.title)
+//        default:
+//          return state
+//      }
+//    }
+
+// 2. Then call the useReducer:
+//  - const [notes, dispatch] = useReducer(notesReducer, [])
+//  - useReducer takes in a reducer function and a state
+//  - useReducer returns an array of state and dispatch
+
+// 3. Lastly, dispatch the action type:
+//    dispatch({
+//      type: 'ADD_NOTE',
+//      title,
+//      body
+//    })
