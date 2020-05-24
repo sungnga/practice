@@ -45,14 +45,14 @@ serviceWorker.unregister();
 // Built-in React hook: useState is a function that allows us to use component state in our stateless functional components, something we could not do in the past
 // useState manages component state
 // In a functional component, state does not have to be an object. It can be a string, number, boolean, object, etc
-  // const array = useState(0)
-  // <p> The current count is {array[0]}
+//   const array = useState(0)
+//   <p> The current count is {array[0]}
 // What comes back from useState is an array of two items:
 //  - the first is the current state value that's going to change over time
 //  - the second is a function we can call in order to update the state 
 // It is common to destructure the array and give it a name for the item at that index: 
-  // const [count, setCount] = useState(0)
-  // <p> The current count is {count}
+//   const [count, setCount] = useState(0)
+//   <p> The current count is {count}
 // 4 pieces to useState:
 //  - define the state: useState(10)
 //  - get access to its current value: const [count, setCount]
@@ -119,19 +119,19 @@ serviceWorker.unregister();
 //     </div>
 //   )
 // }
-//
+
 // App.defaultProps = {
 //   count: 10
 // }
 
 // Cleaning up Effects (similar to componentDidUnmount):
 // After an item is removed, we can unmount it by returning a function
-  // useEffect(() => {
-  //   console.log('setting up effect')
-  //   return () => {
-  //     console.log('cleaning up')
-  //   }
-  // }, [])
+//   useEffect(() => {
+//     console.log('setting up effect')
+//     return () => {
+//       console.log('cleaning up')
+//     }
+//   }, [])
 
 // The 3 main features of useEffect:
 // 1. registering the effect itself: 1st arg function
@@ -178,14 +178,14 @@ serviceWorker.unregister();
 
 // 1. To create a context (object):
 // Create a folder called context inside src directory. Create a notes-context.js in there
-    // import React from 'react'
-    // const NotesContext = React.createContext()
-    // export { NotesContext as default }
+//     import React from 'react'
+//     const NotesContext = React.createContext()
+//     export { NotesContext as default }
 
 // 2. To use the context:
 // The context object that's created above needs to be accessible in the component that's providing things and on the component that's consuming things
 // That's why we have it in its own separate file
-//
+
 // 2A. In the component that provides the context:
 //  - Import the context in NoteApp.js: import NotesContext from '../context/notes-context'
 //  - Render the context component as the main root tag in JSX and pass in the Provider property: <NotesContext.Provider></NotesContext.Provider>
@@ -205,16 +205,16 @@ serviceWorker.unregister();
 //  - Extract the props name you want to access the data, destructure it: const { notes } = useContext(NotesContext)
 //  - Then use the props as you like
 //  - Here's an example to access to the notes data using useContext hook:
-    // import React, { useContext } from 'react'
-    // import NotesContext from '../context/notes-context'
-    //
-    // const NoteList = () => {
-    //     const { notes } = useContext(NotesContext)
-    //     return (
-    //         notes.map((note) => {
-    //             return (
-    //                 <Note key={note.title} note={note} />
-    //             )
-    //         })
-    //     )
-    // }
+//     import React, { useContext } from 'react'
+//     import NotesContext from '../context/notes-context'
+//    
+//     const NoteList = () => {
+//         const { notes } = useContext(NotesContext)
+//         return (
+//             notes.map((note) => {
+//                 return (
+//                     <Note key={note.title} note={note} />
+//                 )
+//             })
+//         )
+//     }
