@@ -1,5 +1,4 @@
-# NOTES: REACT HOOKS AND CONTEXT
--------------------------------------
+## NOTES: REACT HOOKS AND CONTEXT
 
 ### USING CREATE REACT APP
 - Create-react-app application is designed to get us up and running with a barebones react app quickly
@@ -45,9 +44,9 @@ const [count, setCount] = useState(0)
 **useState vs setState:**
 - If you want to keep track of multiple states, you don't need to use a state object. You can just call useState multiple times on different things you want to keep track of
 - Three things to note about state:
-  1. State doesn't need to be an object with useState
-  2. You can call useState as many times as you need in a given component for all of the different things you want to track
-  3. when you are using useState and you update the state, it completely replaces what was there before as opposed to how state worked in the past with objects where the data was merged. This makes things less error prone and it allows us to break up our big state objects into individual values
+  - State doesn't need to be an object with useState
+  - You can call useState as many times as you need in a given component for all of the different things you want to track
+  - when you are using useState and you update the state, it completely replaces what was there before as opposed to how state worked in the past with objects where the data was merged. This makes things less error prone and it allows us to break up our big state objects into individual values
 
 **useEffect hook:**
 - useEffect allows us to do something in functional components that we previously we not able to do: lifecycle methods in clase-based components
@@ -65,15 +64,15 @@ useEffect(() => {
 - What we've done using useEffect is we've allowed us to synchronize our props and our state with whatever we want to
 - In this case, we are using it to sychronize the count state with the document title 
 
-- **3 ways to use useEffect:**
-1. If we don't pass in a dependency array as 2nd arg to useEffect, the function (1st arg) runs if anything changes at all
-  - `useEffect(() => {...})`
-2. We can optionally pass in a dependency array as a 2nd arg. In here, we can explicitly list out our dependencies to update or take into effect when their state changes
-  - This means that the function (1st arg) runs once when the component first mounts and runs on updates for that list of dependencies 
-  - `useEffect(() => {...}, [dependencies_array])`
-3. We can provide a dependency array but leave it empty
-  - This means the function (1st arg) runs once when the component first mounts, but never runs on updates
-  - `useEffect(() => {...}, [])`
+**3 ways to use useEffect:**
+- 1. If we don't pass in a dependency array as 2nd arg to useEffect, the function (1st arg) runs if anything changes at all
+    - `useEffect(() => {...})`
+- 2. We can optionally pass in a dependency array as a 2nd arg. In here, we can explicitly list out our dependencies to update or take into effect when their state changes
+    - This means that the function (1st arg) runs once when the component first mounts and runs on updates for that list of dependencies 
+    - `useEffect(() => {...}, [dependencies_array])`
+- 3. We can provide a dependency array but leave it empty
+    - This means the function (1st arg) runs once when the component first mounts, but never runs on updates
+    - `useEffect(() => {...}, [])`
 
 - We can call useEffect multiple times for each specific feature, each with their own set of dependencies
 - In general, it's a good idea to provide the 2nd arg, because we should be explicity about what our effect depends on
@@ -213,7 +212,7 @@ const NoteList = () => {
 
 
 # INSTRUCTIONS
----------------------
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
