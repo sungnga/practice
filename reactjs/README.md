@@ -334,7 +334,8 @@ class Counter extends React.Component {
 - can be used when rendering
 - changes (from above) cause re-renders
 - comes from above
-- can't be changed by component itself\
+- can't be changed by component itself
+
 **State:**
 - an object
 - can be used when rendering
@@ -885,12 +886,12 @@ ReactDOM.render(<IndecisionApp />, document.querySelector('#app'))
 - as we add more code we can add it into separate small files and it's going to prevent us from getting into a situation where we have a ton of code sitting in a single file, making things really hard to debug and test
 
 ### UNINSTALLING GLOBAL MODULES
-- `sudo npm uninstall -g babel-cli`
+- Run: `sudo npm uninstall -g babel-cli`
 
 ### INSTALLING MODULES/DEPENDENCIES LOCALLY (specific to a project)
 - make sure you're in the project directory
-- `npm init`
-- `npm install babel-cli`
+- Run: `npm init`
+- Install: `npm install babel-cli`
 - define a script to run these dependencies
 ```javascript
 "scripts": {
@@ -904,9 +905,9 @@ ReactDOM.render(<IndecisionApp />, document.querySelector('#app'))
 - `npm run build`
 
 ### INSTALLING AND CONFIGURING WEBPACK
-- `npm install webpack`
+- Install: `npm install webpack`
 - defined a script to run webpack
-- `"scripts": {"build": "webpack --watch"}`
+  - `"scripts": {"build": "webpack --watch"}`
 - create a webpack.config.js file in root directory
 - inside the webpack.config.js file: 
 ```javascript
@@ -940,8 +941,8 @@ module.exports = {
 
 ### ES6 IMPORT/EXPORT
 - 2 types of exports:
-  1. default export: every file can have a single default export
-  2. named exports: can have as many named exports as you like
+  - default export: every file can have a single default export
+  - named exports: can have as many named exports as you like
 
 **To export named exports:**
 - export at the bottom of the file
@@ -1033,7 +1034,7 @@ module.exports = {
  - When an error occurs, it will point directly to the file that the error was generated
  - If this was not set up, the error will point to the bundle.js file instead
  - Setup the devtool property in webpack.config.js file:
- - `devtool: 'cheap-module-eval-source-map'`
+   - `devtool: 'cheap-module-eval-source-map'`
 
 ### WEBPACK DEV SERVER
  - Webpack devServer is a replacment for Web Live Server but with webpack features such as the "webpack --watch"
@@ -1329,9 +1330,8 @@ const store = createStore((state = { count: 0 }) => {
 - We can set the default state (as object) in the argument as well: `{count: 0}`
 - When invoking `createStore()`, this function passed in gets called once right away and the default state is used
 - We can fetch the current state object back using the `.getState()` method on the store
-
-The `.getState()` method returns the current state object
-`store.getState()`
+- The `.getState()` method returns the current state object
+  - `store.getState()`
 
 ### ACTIONS
 - Actions are our way of communicating with the store
@@ -1437,13 +1437,13 @@ store.dispatch(incrementCount({incrementBy: 5}))
 
 ### REDUCERS
 1. Reducers are pure functions
-  - the output is only determined by the input. What it returns, it is only determined by the things that get passed in
-  - it doesn't use anything else from outside of the function scope and it doesn't change anything outside of the function scope either
-  - we don't want to change variables outside of the reducer's scope
-  - and we don't want to rely on values from variables outise of the reducer's scope
-  - we just want to use the input the state and the action to return the new state value
+    - the output is only determined by the input. What it returns, it is only determined by the things that get passed in
+    - it doesn't use anything else from outside of the function scope and it doesn't change anything outside of the function scope either
+    - we don't want to change variables outside of the reducer's scope
+    - and we don't want to rely on values from variables outise of the reducer's scope
+    - we just want to use the input the state and the action to return the new state value
 2. Never change state or action
-  - mutating the state directly is going to have undesired effects
+    - mutating the state directly is going to have undesired effects
  
 ```javascript
 // A reducer
@@ -1505,16 +1505,17 @@ const store = createStore(
 
 ### TO CREATE A HIGHER ORDER COMPONENT:
 1. Create a regular function
-  - `const withAdminWarning = () => {..}`
+    - `const withAdminWarning = () => {..}`
 2. Pass in a wrapped component
-  - `const withAdminWarning = (WrappedComponent) => {..}`
-  - This function has access to a regular component(the wrapped component)
+    - `const withAdminWarning = (WrappedComponent) => {..}`
+    - This function has access to a regular component(the wrapped component)
 3. This function returns a new component. AND THIS NEW COMPONENT IS THE HOC
-  - The HOC renders the new stuff AND the regular component (WrappedComponent)
-  - To render the wrapped component, just create an instance of it: `<WrappedComponent />`
-  - Can pass in any props this wrapped component has using the spread operator: `<WrappedComponent {...props}/>`
+    - The HOC renders the new stuff AND the regular component (WrappedComponent)
+    - To render the wrapped component, just create an instance of it: `<WrappedComponent />`
+    - Can pass in any props this wrapped component has using the spread operator: `<WrappedComponent {...props}/>`
 4. Now render the HOC instance and pass in any props you want
-  - `ReactDOM.render(<AdminInfo isAdmin={true}/>, ...)`
+    - `ReactDOM.render(<AdminInfo isAdmin={true}/>, ...)`
+
 ```javascript
 import React from 'react'
 import ReactDOM from 'react-dom'
@@ -2125,7 +2126,7 @@ const array = useState(0)
 const [count, setCount] = useState(0)
 <p> The current count is {count}
 ```
-- 4 pieces to useState:
+- **4 pieces to useState:**
   - define the state: useState(10)
   - get access to its current value: const [count, setCount]
   - render it: {count}
@@ -2133,7 +2134,7 @@ const [count, setCount] = useState(0)
 
 **useState vs setState:**
 - If you want to keep track of multiple states, you don't need to use a state object. You can just call useState multiple times on different things you want to keep track of
-- Three things to note about state:
+- **Three things to note about state:**
   - State doesn't need to be an object with useState
   - You can call useState as many times as you need in a given component for all of the different things you want to track
   - when you are using useState and you update the state, it completely replaces what was there before as opposed to how state worked in the past with objects where the data was merged. This makes things less error prone and it allows us to break up our big state objects into individual values
@@ -2156,14 +2157,13 @@ useEffect(() => {
 
 **3 ways to use useEffect:**
 1. If we don't pass in a dependency array as 2nd arg to useEffect, the function (1st arg) runs if anything changes at all
-  - `useEffect(() => {...})`
+    - `useEffect(() => {...})`
 2. We can optionally pass in a dependency array as a 2nd arg. In here, we can explicitly list out our dependencies to update or take into effect when their state changes
-  - This means that the function (1st arg) runs once when the component first mounts and runs on updates for that list of dependencies 
-  - `useEffect(() => {...}, [dependencies_array])`
+    - This means that the function (1st arg) runs once when the component first mounts and runs on updates for that list of dependencies 
+    - `useEffect(() => {...}, [dependencies_array])`
 3. We can provide a dependency array but leave it empty
-  - This means the function (1st arg) runs once when the component first mounts, but never runs on updates
-  - `useEffect(() => {...}, [])`
-
+    - This means the function (1st arg) runs once when the component first mounts, but never runs on updates
+    - `useEffect(() => {...}, [])`
 - We can call useEffect multiple times for each specific feature, each with their own set of dependencies
 - In general, it's a good idea to provide the 2nd arg, because we should be explicity about what our effect depends on
 
