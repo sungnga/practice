@@ -230,17 +230,102 @@ render()
 - command line to run:
 `babel src/playground/state-component-indecision.js --out-file=public/scripts/app.js --presets=env,react --watch`
 
+### REACT COMPONENTS
+- Create a parent component where all other components will be nested in
+- Since a component renders JSX, it can render other components
+- This allows us to nest components inside another by referencing it
+- React.Component is a class itself
+- The IndecisionApp class extends the React.Component class
+- Now IndecisionApp is a React component. It has all the features of React
+- React components require one method to be defined. It is a special method that it calls. `render()`
+- When IndecisionApp component calls `rend()`, it returns JSX
+```javascript
+class IndecisionApp extends React.Component {
+    render() {
+        return (
+            <div>
+                <Header />
+                <Options />
+            </div>
+        )
+    }
+}
+```
+
+### COMPONENT PROPS: 
+- Component props allows components to comnunicate with one another
+- To do that, we pass data in when we initialize/define the instance of a component. for example: `<Header />`
+- That data is known as props
+- Props gets passed down from parent component to child component. One-way street
+- The props is defined in the parent component
+- Setting up component props is similar to setting up html attributes
+- Setting key/value pair: `<Header title="Test value" />`
+- The child component can then have access to this props by using this.props.keyName: `<h1>{this.props.title}</h1>`
+
+**To use component props:**
+- inside a component class, we have access to the 'this' keyword, which is a reference to the current instance of this component
+- React gives us access to the instance's props on an object(comes in as key/value pair): this.props
+- the props key is the name of the attribute in JSX when we initialize/define the instance: `<Header title={title} subtitle={subtitle} />`
+- to display this props inside a JSX: `<h1>{this.props.title}</h1>`
+```javascript
+class Header extends React.Component {
+    render() {
+        //console.log(this.props)
+        return (
+            <div>
+                <h1>{this.props.title}</h1>
+                <h2>{this.props.subtitle}</h2>
+            </div>
+        )
+    }
+}
+```
+
+### THE BIND METHOD:
+- the `.render()` method is able to bind to the 'this' value properly. `this.props` for example
+- however, the METHODS AND EVENT HANDLER FUNCTIONS inside a component class does not bind to the 'this' value, because of the context it's being called
+- to fix this in the most efficient way:
+  - 1. setup a constructor function for the class component. Pass in the props object
+    - The props in the constructor funct is the same props as the this.props in the `render()` method
+  - 2. call the `super(props)` method. If we don't call `super(this)`, we won't have access to `this.props`
+  - 3. define the method/event handler inside the constructor funct 
+  - 4. call the `.bind()` method on the method and pass in 'this' keyword
+    - This is making sure that wherever this method gets called, the context is correct
+```javascript
+class Counter extends React.Component {
+    constructor(props) {
+        super(props)
+        this.handleAddOne = this.handleAddOne.bind(this)
+        this.handleMinusOne = this.handleMinusOne.bind(this)
+        this.handleReset = this.handleReset.bind(this)
+        this.state = {
+            count: 0
+        }
+    }
+    render() {
+        return (
+            <div>
+                <h1>Counter: {this.state.count}</h1>
+                <button onClick={this.handleAddOne}>+1</button>
+                <button onClick={this.handleMinusOne}>-1</button>
+                <button onClick={this.handleReset}>Reset</button>
+            </div>
+        )
+    }
+}
+```
+
 ### WORKING WITH COMPONENT STATE
 1. Initialize the state in constructor function
-  - The value of the state is an object
-  - In this object, define properties and its initial values. Can have as many properties as you like
-  - `this.state = {count: 0}`
+    - The value of the state is an object
+    - In this object, define properties and its initial values. Can have as many properties as you like
+    - `this.state = {count: 0}`
 2. Display the state by calling `this.state.statePropertyName` in JSX
-  `- <h1>Counter: {this.state.count}</h1>`
+    - `<h1>Counter: {this.state.count}</h1>`
 3. To change the state, call the `.setState()` method: `this.setState(callback)`
-  - Inside the callback function, you have access to the previous state in 'prevState' keyword. `(prevState) => {}`
-  - To access its properties: `prevState.propertyName`
-  - You can set a new value of a property in this callback
+    - Inside the callback function, you have access to the previous state in 'prevState' keyword. `(prevState) => {}`
+    - To access its properties: `prevState.propertyName`
+    - You can set a new value of a property in this callback
 4. `.setState()` method will return the state object containing the updated properties and values
 
 ### PROPS VS. STATE
@@ -249,7 +334,7 @@ render()
 - can be used when rendering
 - changes (from above) cause re-renders
 - comes from above
-- can't be changed by component itself
+- can't be changed by component itself\
 **State:**
 - an object
 - can be used when rendering
@@ -678,7 +763,6 @@ Header.defaultProps = {
     title: 'Indecision'
 }
 
- 
 const Action = (props) => {
     return (
         <div>
@@ -856,8 +940,8 @@ module.exports = {
 
 ### ES6 IMPORT/EXPORT
 - 2 types of exports:
-1. default export: every file can have a single default export
-2. named exports: can have as many named exports as you like
+  1. default export: every file can have a single default export
+  2. named exports: can have as many named exports as you like
 
 **To export named exports:**
 - export at the bottom of the file
@@ -891,20 +975,20 @@ module.exports = {
 ### IMPORTING NPM MODULES
 - 3-step process to working with npm modules: install, import, use
 
-**Install a module:**
+**1. Install a module:**
 - `npm install react`  (using the react library)
 - `npm install react-dom` (this library renders the react components to the browser)
 - this will install locally to the project
 - it's saved as a dependency in package.json file with its version
 - its code now lives in the node_modules folder
 
-**Import a module:**
+**2. Import a module:**
 - refer to the documentation of the package for how to import
 - `import React from 'react'`
 - `import ReactDOM from 'react-dom'`
 - NOTE: we're grabbing the default export of React here. And we're not providing a relative path, so webpack will look for React in the node_modules folder
 
-**Use a module:**
+**3. Use a module:**
 - refer to the library doc to learn how to use it
 - `const template = React.createElement('p', {}, 'testing 123')`
 - `ReactDOM.render(template, document.querySelector('#app'))`
@@ -1056,7 +1140,7 @@ module.exports = {
 
 
 
-#STYLING REACT
+# STYLING REACT
 
 ### SETTING UP WEBPACK WITH SCSS
  - Install style loader and css loader: `npm install style-loader css-loader`
@@ -1168,9 +1252,9 @@ const routes = (
 **Setting up a 404 page:**
  - Import Switch from react-router-dom: 
  - `import { Switch } from 'react-router-dom'`
- - Switch will go through each Route one by one to see if the path matches with the requested path
- - If Switch finds a matched path, it will stop looking
- - The last Route inside Switch is a 404 not found component. This component gets rendered if the path does not match
+ - `Switch` will go through each `Route` one by one to see if the path matches with the requested path
+ - If `Switch` finds a matched path, it will stop looking
+ - The last `Route` inside Switch is a 404 not found component. This component gets rendered if the path does not match
  ```javascript
 <BrowserRouter>
     <Switch>
@@ -1186,13 +1270,13 @@ const routes = (
 **Linking between routes: Link and NavLink**
  - Import Link and NavLink from react-router-dom: 
  - `import { Link, NavLink } from 'react-router-dom'`
- - Use Link when we want to change or switch between pages/routes
- - Link and NavLink have a "to" attribute to specify the path of the link route
+ - Use `Link` when we want to change or switch between pages/routes
+ - `Link` and `NavLink` have a "`to`" attribute to specify the path of the link route
  - `<Link to="/">Go home</Link>`
- - The nice thing about Link is that we're using client-side routing as oppose to server-side routing
+ - The nice thing about `Link` is that we're using client-side routing as oppose to server-side routing
  - This means that it's not going through the full page refresh. Intead, Javascript just swaps things out on the fly. It makes a new call to `ReactDOM.render()` to render the new page
- - Use Link whenever we want to take advantage of client-side routing instead of using an anhcor tag
- - Use NavLink for navigation. This way, we can call out that specific link that we're on
+ - Use `Link` whenever we want to take advantage of client-side routing instead of using an anhcor tag
+ - Use `NavLink` for navigation. This way, we can call out that specific link that we're on
  - `<NavLink to="/" activeClassName="is-active" exact={true}>Dashboard</NavLink>`
 
 **Query Strings and URL Parameters:**
@@ -1206,7 +1290,7 @@ const routes = (
 
 
 
-#REDUX
+# REDUX
 
 ### WHY WE USE REDUX
 - Resource: redux.js.org
@@ -1243,10 +1327,10 @@ const store = createStore((state = { count: 0 }) => {
 - The createStore function expects a function as the first argument
 - The 1st argument to the function that we passed to createStore is the current state: state = current state
 - We can set the default state (as object) in the argument as well: `{count: 0}`
-- When invoking createStore(), this function passed in gets called once right away and the default state is used
-- We can fetch the current state object back using the .getState() method on the store
+- When invoking `createStore()`, this function passed in gets called once right away and the default state is used
+- We can fetch the current state object back using the `.getState()` method on the store
 
-The .getState() method returns the current state object
+The `.getState()` method returns the current state object
 `store.getState()`
 
 ### ACTIONS
@@ -1352,7 +1436,6 @@ store.dispatch(incrementCount({incrementBy: 5}))
 ```
 
 ### REDUCERS
-
 1. Reducers are pure functions
   - the output is only determined by the input. What it returns, it is only determined by the things that get passed in
   - it doesn't use anything else from outside of the function scope and it doesn't change anything outside of the function scope either
@@ -1393,7 +1476,7 @@ const store = createStore(countReducer)
 
 ### CombineReducers:
 - Import to file: `import { createStore, combineReducers } from 'redux';`
-- Instead of passing in just one reducer to createStore(), we can pass in multiple reducers using the combineReducers() method
+- Instead of passing in just one reducer to createStore(), we can pass in multiple reducers using the `combineReducers()` method
 - The combineReducers function will return an object
 - The object returned by the combineReducers is how we want our Redux store to look like, which is an object with expenses and filters properties
 ```javascript
@@ -1680,8 +1763,8 @@ database.ref('notes').push({
     body: 'React Native, Angular, Python'
 })
 database.ref('notes/-Klsdjfiewjrn3kre').remove()
-
-- Transform Firebase data to an array using forEach():
+```
+- **Transform Firebase data to an array using forEach():**
 ```javascript
 database.ref('expenses')
     .once('value')
@@ -1698,7 +1781,7 @@ database.ref('expenses')
     })
 ```
 
-- Subscribe to a change made to the database:
+- **Subscribe to a change made to the database:**
 ```javascript
 database.ref('expenses')
     .on('value', (snapshot) => {
@@ -1865,7 +1948,7 @@ firebase.auth().onAuthStateChanged((user) => {
   - here, we're defining our own component prop
   - we're setting up some conditional logic inside this function
   - first thing, let's get all of the props that were passed to Route (props). We want to pass those through to the individual component
-**The condition:**
+  - **The condition:**
   - if the user is authenticated, we want some jsx rendered to the screen
   - to do this, use/create a `<Component />` instance and pass in all the props
   - if the user is not authenticated, we want to redirect them
@@ -2072,14 +2155,14 @@ useEffect(() => {
 - In this case, we are using it to sychronize the count state with the document title 
 
 **3 ways to use useEffect:**
-- 1. If we don't pass in a dependency array as 2nd arg to useEffect, the function (1st arg) runs if anything changes at all
-    - `useEffect(() => {...})`
-- 2. We can optionally pass in a dependency array as a 2nd arg. In here, we can explicitly list out our dependencies to update or take into effect when their state changes
-    - This means that the function (1st arg) runs once when the component first mounts and runs on updates for that list of dependencies 
-    - `useEffect(() => {...}, [dependencies_array])`
-- 3. We can provide a dependency array but leave it empty
-    - This means the function (1st arg) runs once when the component first mounts, but never runs on updates
-    - `useEffect(() => {...}, [])`
+1. If we don't pass in a dependency array as 2nd arg to useEffect, the function (1st arg) runs if anything changes at all
+  - `useEffect(() => {...})`
+2. We can optionally pass in a dependency array as a 2nd arg. In here, we can explicitly list out our dependencies to update or take into effect when their state changes
+  - This means that the function (1st arg) runs once when the component first mounts and runs on updates for that list of dependencies 
+  - `useEffect(() => {...}, [dependencies_array])`
+3. We can provide a dependency array but leave it empty
+  - This means the function (1st arg) runs once when the component first mounts, but never runs on updates
+  - `useEffect(() => {...}, [])`
 
 - We can call useEffect multiple times for each specific feature, each with their own set of dependencies
 - In general, it's a good idea to provide the 2nd arg, because we should be explicity about what our effect depends on
@@ -2133,7 +2216,7 @@ Being able to call useEffect multiple time with different dependencies allows us
 
 **useReducer:**
 1. First, we need to define a reducer function before we can call useReducer
-  - This reducer function looks identical to the type of reducers we're already used to creating w/ Redux
+    - This reducer function looks identical to the type of reducers we're already used to creating w/ Redux
 ```javascript  
 const notesReducer = (state, action) => {
      switch (action.type) {
@@ -2152,9 +2235,9 @@ const notesReducer = (state, action) => {
    }
 ```
 2. Then call the useReducer:
-  - `const [notes, dispatch] = useReducer(notesReducer, [])`
-  - useReducer takes in a reducer function and a state
-  - useReducer returns an array of state and dispatch
+    - `const [notes, dispatch] = useReducer(notesReducer, [])`
+    - useReducer takes in a reducer function and a state
+    - useReducer returns an array of state and dispatch
 
 3. Lastly, dispatch the action type:
 ```javascript
