@@ -5,7 +5,7 @@
 - cubic-bezier curve: www.easings.net
 - Test media queries on different devices: www.sizzy.co
 
-### Three Pillars of Writing Good HTML and CSS
+### THREE PILLARS OF WRITING GOOD HTML AND CSS
 **Responsive design**
 - Building one website that works beautifully across all screen sizes on all devices
 - Fluid layout
@@ -34,25 +34,8 @@
 - Less images
 - Compress images - less bandwidth for users
 
-### Node Sass NPM package
-- Install: `npm install node-sass --save-dev`
-- Install package.js file: `npm init`
-- Install node_modules folder: `npm install`
 
-### Compile Sass
-- Setup NPM script:
-  - 1st arg: name of the npm package
-  - 2nd arg: the path to the Sass code
-  - 3rd arg: the path for the compiled output (CSS code)
-  - 4th arg: a watch flag. Recompile when there's a change in Sass file
-```javascript
-"scripts": {
-    "compile:sass": "node-sass sass/main.scss css/style.css -w"
-}
-```
-- Run the script: `npm run compile:sass`
-
-### 7-1 CSS Architecture with Sass
+### 7-1 CSS ARCHITECTURE WITH SASS
 - Inside sass folder:
   - abstracts folder
     - _functions.scss
@@ -72,14 +55,33 @@
 - A partial file starts with an underscore (_)
 - Import the partials in the main/root Sass file
 
+### NODE SASS NPM PACKAGE
+- Install: `npm install node-sass --save-dev`
+- Install package.js file: `npm init`
+- Install node_modules folder: `npm install`
+
+### COMPILE SASS
+- Setup NPM script:
+  - 1st arg: name of the npm package
+  - 2nd arg: the path to the Sass code
+  - 3rd arg: the path for the compiled output (CSS code)
+  - 4th arg: a watch flag. Recompile when there's a change in Sass file
+```javascript
+"scripts": {
+    "compile:sass": "node-sass sass/main.scss css/style.css -w"
+}
+```
+- Run the script: `npm run compile:sass`
+
+
 
 # MEDIA QUERIES
 
-- @mixin mixinName {}
-- @media () {}
-- @content
-- @if
-- $breakpoint argument
+- Mixin: @mixin mixinName {}
+- Media query: @media () {}
+- Content directive: @content
+- If directive: @if
+- Breakpoint argument: $breakpoint
 
 ### MEDIA QUERY MANAGER
 - 1em = 16px
@@ -186,13 +188,33 @@ html {
 }
 ``` 
 
+
+
+# RESPONSIVE IMAGES
+
+**When to use responsive images: the 3 use cases**
+- Resolution switching - decrease image resolution on small screen
+- Density switching - where the screen size doesn't matter, but the screen pixel density does
+  - Pixel density is the amount of pixels found in an inch or centimeter
+  - What matters is there are low-resolution screens and high-resolution screens
+  - Low-resolution screens can be called "1x screen" because they use one pixel to display onepixel of our design
+  - High-resolution screens are ones found in all modern smart phones or computers with retinadisplay
+  - They can be called "2x screen" because they actually use two physical pixels to displayone pixel of our design
+  - Density switching is to serve one image to a high-resolution screen and another one if thescreen is low resolution
+- Art direction is when you want to serve up a whole different image for a different screen size
+
+
 ### RESPONSIVE IMAGES IN HTML
 
 **Density switching in HTML:**
 - The browser will choose which image to display depending on the user's resolution screen
 - 1x and 2x are density switchers
 - 1x for low resolution screens. 2x for high resolution screens like retina screen
-- `<img srcset="img/logo-green-1x.png 1x, img/logo-green-2x.png 2x" alt="Full logo" class="footer__logo">`
+```html
+<img srcset="img/logo-green-1x.png 1x, img/logo-green-2x.png 2x"
+  alt="Full logo"
+  class="footer__logo">
+```
 
 **Art direction in HTML**
 - To tell the browser to use one image for one screen width and another image for another screen width
@@ -201,8 +223,11 @@ html {
 ```html
 <div class="footer__logo-box">
     <picture class="footer__logo">
-        <source srcset="img/logo-green-small-1x.png 1x, img/logo-green-small-2x.png 2x" media="(max-width: 37.5em)">
-        <img srcset="img/logo-green-1x.png 1x, img/logo-green-2x.png 2x" alt="Full logo" src="img/logo-green-2x.png 2x">
+        <source srcset="img/logo-green-small-1x.png 1x, img/logo-green-small-2x.png 2x" 
+            media="(max-width: 37.5em)">
+        <img srcset="img/logo-green-1x.png 1x, img/logo-green-2x.png 2x"
+            alt="Full logo"
+            src="img/logo-green-2x.png">
     </picture>
 </div>
 ```
@@ -221,4 +246,24 @@ html {
     alt="Photo 1"
     class="composition__photo composition__photo--p1"
     src="img/nat-1-large.jpg">
+```
+
+### RESPONSIVE IMAGES IN CSS
+- Types of media queries: screen resolution, viewport width, the device resolution
+- 192dpi(dots per inch) is the resolution of the Apple retina screen. It's a high resolution screen that's usually used as a reference
+
+**Targeting the device resolution and writing media query conditions**
+```html
+// If the screen resolution is higher than 192dpi AND the screen width is larger than 600px, load the large image
+// Use a comma separator(,) to apply an OR condition
+// If the screen width is larger than 2000px, load the large image
+@media (min-resolution: 192dpi) and (min-width: 37.5em),
+	  (min-width: 125em) {
+	  background-image: linear-gradient(
+			  to right bottom,
+			  rgba($color-primary-light, 0.8),
+			  rgba($color-primary-dark, 0.8)
+		),
+		url(../img/hero.jpg);
+}
 ```
