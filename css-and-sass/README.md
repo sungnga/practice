@@ -74,6 +74,27 @@
 ```
 - Run the script: `npm run compile:sass`
 
+### THE BUILD PROCESS IN CSS
+- Compile, concat, and compress all of your Sass files into one single CSS file for production
+- The final file is a style.css(or whatever name) file that is ready to deploy to a web server
+
+**Setup:**
+- Install concat: `npm install concat --save-dev`
+- Install prefix: `npm install postcss-cli autoprefixer --save-dev`
+- Install npm-run-call: `npm install npm-run-all --save-dev`
+- Setup scripts in package.json file:
+```javascript
+"scripts": {
+    "watch:sass": "node-sass sass/main.scss css/style.css -w",
+    "compile:sass": "node-sass sass/main.scss css/style.comp.css",
+    "concat:css": "concat -o css/style.concat.css css/icon-font.css css/style.comp.css",
+    "prefix:css": "postcss --use autoprefixer -b \"last 10 versions\" css/style.concat.css -o css/style.prefix.css",
+    "compress:css": "node-sass css/style.prefix.css css/style.css --output-style compressed",
+    "build:css": "npm-run-all compile:sass concat:css prefix:css compress:css"
+},
+```
+- Run the CSS build process: `npm run build:css`
+- Run during development mode: `npm run watch:sass`
 
 
 # MEDIA QUERIES
@@ -198,19 +219,19 @@ html {
 - Density switching - where the screen size doesn't matter, but the screen pixel density does
   - Pixel density is the amount of pixels found in an inch or centimeter
   - What matters is there are low-resolution screens and high-resolution screens
-  - Low-resolution screens can be called "1x screen" because they use one pixel to display onepixel of our design
-  - High-resolution screens are ones found in all modern smart phones or computers with retinadisplay
-  - They can be called "2x screen" because they actually use two physical pixels to displayone pixel of our design
-  - Density switching is to serve one image to a high-resolution screen and another one if thescreen is low resolution
+  - Low-resolution screens can be called "1x screen" because they use one pixel to display one pixel of our design
+  - High-resolution screens are ones found in all modern smartphones or computers with retina display
+  - They can be called "2x screen" because they actually use two physical pixels to display one pixel of our design
+  - Density switching is to serve one image to a high-resolution screen and another one if the screen is low resolution
 - Art direction is when you want to serve up a whole different image for a different screen size
 
 
 ### RESPONSIVE IMAGES IN HTML
 
 **Density switching in HTML:**
-- The browser will choose which image to display depending on the user's resolution screen
-- 1x and 2x are density switchers
-- 1x for low resolution screens. 2x for high resolution screens like retina screen
+- The browser will choose which image to display depending on the user's screen resolution
+- 1x and 2x are density switcher
+- 1x for low-resolution screens. 2x for high-resolution screens like retina display screen
 ```html
 <img srcset="img/logo-green-1x.png 1x, img/logo-green-2x.png 2x"
   alt="Full logo"
@@ -258,7 +279,9 @@ html {
 // If the screen resolution is higher than 192dpi AND the screen width is larger than 600px, load the large image
 // Use a comma separator(,) to apply an OR condition
 // If the screen width is larger than 2000px, load the large image
+// NOTE: Safari browser does not support 'min-resolution: 192dpi' property. Need to provide a webkit condition for this
 @media (min-resolution: 192dpi) and (min-width: 37.5em),
+    (-webkit-min-device-pixel-ratio: 2) and (min-width: 37.5em),
 	  (min-width: 125em) {
 	  background-image: linear-gradient(
 			  to right bottom,
