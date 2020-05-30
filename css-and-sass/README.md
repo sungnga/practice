@@ -4,6 +4,7 @@
 - Videos: www.coverr.co
 - cubic-bezier curve: www.easings.net
 - Test media queries on different devices: www.sizzy.co
+- Check browser support for CSS properties: www.caniuse.com
 
 ### THREE PILLARS OF WRITING GOOD HTML AND CSS
 **Responsive design**
@@ -150,20 +151,20 @@ html {
 
 ### WRITE A MIXIN FOR MEDIA QUERIES
 1. Define a mixin: `@mixin mixinName {}`
-- Define the media query inside the mixin
-- `@content` is a content directive. It allows us to pass a block of code into a mixin
-```javascript
-@mixin respond-phone {
-  @media (max-width: 600px) { @content };
-}
-```
+  - Define the media query inside the mixin
+  - `@content` is a content directive. It allows us to pass a block of code into a mixin
+  ```javascript
+  @mixin respond-phone {
+    @media (max-width: 600px) { @content };
+  }
+  ```
 2. To use the mixin: `@include mixinName {}`
-- Pass in your @content in here
-```javascript
-@include respond-phone {
-  font-size: 50%;
-}
-```
+  - Pass in your @content in here
+  ```javascript
+  @include respond-phone {
+    font-size: 50%;
+  }
+  ```
 
 ### WRITE A MIXIN WITH ARGUMENT AND @IF DIRECTIVE
 **$breakpoint argument choices:**
@@ -253,7 +254,7 @@ html {
 - 192dpi(dots per inch) is the resolution of the Apple retina screen. It's a high resolution screen that's usually used as a reference
 
 **Targeting the device resolution and writing media query conditions**
-```html
+```javascript
 // If the screen resolution is higher than 192dpi AND the screen width is larger than 600px, load the large image
 // Use a comma separator(,) to apply an OR condition
 // If the screen width is larger than 2000px, load the large image

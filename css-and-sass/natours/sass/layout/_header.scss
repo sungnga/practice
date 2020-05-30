@@ -10,14 +10,15 @@
 	background-size: cover;
 	background-position: top;
 	position: relative;
-
 	-webkit-clip-path: polygon(0 0, 100% 0, 100% 75vh, 0 100%);
 	clip-path: polygon(0 0, 100% 0, 100% 75vh, 0 100%);
 
 	// If the screen resolution is higher than 192dpi AND the screen width is larger than 600px, load the large image
-    // Use a comma separator(,) to apply an OR condition
+	// Use a comma separator(,) to apply an OR condition
 	// If the screen width is larger than 2000px, load the large image
+	// NOTE: Safari browser does not support 'min-resolution: 192dpi' property. Need to provide a webkit condition for this
 	@media (min-resolution: 192dpi) and (min-width: 37.5em),
+		(-webkit-min-device-pixel-ratio: 2) and (min-width: 37.5em),
 		(min-width: 125em) {
 		background-image: linear-gradient(
 				to right bottom,
@@ -27,7 +28,7 @@
 			url(../img/hero.jpg);
 	}
 
-	@include respond(phone) {
+	@include respond(tab-port) {
 		-webkit-clip-path: polygon(0 0, 100% 0, 100% 85vh, 0 100%);
 		clip-path: polygon(0 0, 100% 0, 100% 85vh, 0 100%);
 	}

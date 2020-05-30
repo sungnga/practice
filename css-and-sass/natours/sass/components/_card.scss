@@ -16,6 +16,7 @@
         left: 0;
         width: 100%;
         //If set to hidden, it will hide the back part of an element
+        -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
         border-radius: 3px;
         // The image and gradient is overflowing the parent element, so the border-radius is no longer there
