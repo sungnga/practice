@@ -35,3 +35,8 @@ body {
         padding: 0;
     }
 }
+
+::selection {
+    background-color: rgba($color-primary, .3);
+    color: $color-grey-dark;
+}
