@@ -3,6 +3,7 @@
 - Icons: www.linea.io
 - Videos: www.coverr.co
 - cubic-bezier curve: www.easings.net
+- Test media queries on different devices: www.sizzy.co
 
 ### Three Pillars of Writing Good HTML and CSS
 **Responsive design**
@@ -82,6 +83,9 @@
 
 ### MEDIA QUERY MANAGER
 - 1em = 16px
+- ORDER OF MEDIA QUERIES FOR DESKTOP-FIRST: PLACE THE LARGE ONE FIRST
+- WHY? BECAUSE THE LAST DECLARATION WILL BE APPLIED
+- ORDER OF MEDIA QUERIES FOR MOBILE FIRST: DO THE OPPOSITE: SMALL TO LARGE
 
 **Media sizes**
 - 0 - 600px:      Phone
@@ -95,6 +99,8 @@
 - tab-port
 - tab-land
 - big-desktop
+
+**ORDER: Base + typography > general layout + grid > page layout > components**
 
 ```javascript
 @mixin respond($breakpoint) {
@@ -117,7 +123,9 @@
 ### USING THE MEDIA QUERIES
 ```javascript
 html {
-    // THE ORDER TO PUT THE MEDIA QUERIES: THE LARGE ONE FIRST!
+    // ORDER OF MEDIA QUERIES FOR DESKTOP-FIRST: PLACE THE LARGE ONE FIRST
+    // WHY? BECAUSE THE LAST DECLARATION WILL BE APPLIED
+    // ORDER OF MEDIA QUERIES FOR MOBILE FIRST: DO THE OPPOSITE: SMALL TO LARGE
     // This defines what 1rem is
     // 1rem = 10px
     // 10px/16px = 62.5%
@@ -177,3 +185,40 @@ html {
   font-size: 50%;
 }
 ``` 
+
+### RESPONSIVE IMAGES IN HTML
+
+**Density switching in HTML:**
+- The browser will choose which image to display depending on the user's resolution screen
+- 1x and 2x are density switchers
+- 1x for low resolution screens. 2x for high resolution screens like retina screen
+- `<img srcset="img/logo-green-1x.png 1x, img/logo-green-2x.png 2x" alt="Full logo" class="footer__logo">`
+
+**Art direction in HTML**
+- To tell the browser to use one image for one screen width and another image for another screen width
+- Use the HTML element called `<picture>` to specify multiple image sources for specific screen width
+- Also, set the `src` attribute as the default image source, in case older browsers don't support `srcset` attribute
+```html
+<div class="footer__logo-box">
+    <picture class="footer__logo">
+        <source srcset="img/logo-green-small-1x.png 1x, img/logo-green-small-2x.png 2x" media="(max-width: 37.5em)">
+        <img srcset="img/logo-green-1x.png 1x, img/logo-green-2x.png 2x" alt="Full logo" src="img/logo-green-2x.png 2x">
+    </picture>
+</div>
+```
+
+**Resolution switching and density switching in HTML:**
+- Together with the width descripter and the sizes attribute, the browser can then figure out which is the perfect image to use for the current viewport width and the current display resolution
+- The `srcset` source attribute contains the same image of different sizes. We specify the width descripter and specify exactly the width, in pixels, that each image has
+- The width descriptor is to inform the browser of the width of an image: `300w`
+- For example, a 300px image has a width descripter of 300w
+- Use `sizes` attribute to inform the browser about the approximate width of the image at different viewport width
+- The `sizes` attribute is to specify the approximate view in viewport width units (vw) for different breakpoints
+- Also, set the `src` attribute as the default image source, in case older browsers don't support `srcset` attribute
+```html
+<img srcset="img/nat-1.jpg 300w, img/nat-1-large.jpg 1000w" 
+    sizes="(max-width: 900px) 20vw, (max-width:600px) 30vw, 300px"
+    alt="Photo 1"
+    class="composition__photo composition__photo--p1"
+    src="img/nat-1-large.jpg">
+```
