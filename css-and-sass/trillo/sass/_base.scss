@@ -16,8 +16,8 @@ Grey dark 3: #999
 
 */
 
-// Variables defined in root level are available to all its children
-// Custom variables start with double dashes(--)
+// Variables defined at root level are available to all its children
+// CSS custom variables start with double dashes(--)
 // Sass variables start with dollar symbol($)
 :root {
     --color-primary: #eb2f64;
@@ -32,6 +32,8 @@ Grey dark 3: #999
     --color-grey-dark-1: #333;
     --color-grey-dark-2: #777;
     --color-grey-dark-3: #999;
+
+    --shadow-dark: 0 2rem 6rem rgba(0,0,0,.3);
 }
 
 * {
