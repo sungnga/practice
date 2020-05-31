@@ -29,11 +29,17 @@
 
     // flex: flex-grow flex-shrink flex-basis
     flex: 0 0 18%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .hotel-view {
     background-color: #ffffff;
+
+    // TEST
     background-color: orangered;
+    height: 80rem;
 
     // Set flex value to 1 means take up the entire available space
     flex: 1;
