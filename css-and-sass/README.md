@@ -7,6 +7,40 @@
 - Check browser support for CSS properties: www.caniuse.com
 - SVG icons: www.icomoon.io
 
+
+
+### CSS TRICKS
+------------------
+- Use 'margin auto' when you want take up the extra space, but the content only occupies the space it needs:`margin-right: auto;`
+- Set an image to be a block or inline-block if you don't want to have a white space underneath when left as an inline element
+- To include the margin and padding into the width & height of an element: `box-sizing: border-box`. This setting is set as a global default on html element
+- To NOT include the margin & padding into the width & height of an element: `box-sizing: content-box`
+- To set an item to take up the entire available space: `flex: 1`
+- When using z-index, make sure to set the position on the parent element: `position: relative`
+- When using pseudo element before, make sure to include empty content property
+```javascript
+&__item::before {
+    content: "";
+}
+```
+- Newer browsers - icon masks:
+```css
+@supports (-webkit-mask-image: url()) or (mask-image: url()) {
+    background-color: var(--color-primary);
+    -webkit-mask-image: url(../img/chevron-thin-right.svg);
+    -webkit-mask-size: cover;
+    mask-image: url(../img/chevron-thin-right.svg);
+    mask-size: cover;
+    background-image: none;
+}
+```
+- Make a square image round:
+```css
+height: 4rem;
+width: 4rem;
+border-radius: 50%;
+```
+
 ### THREE PILLARS OF WRITING GOOD HTML AND CSS
 **Responsive design**
 - Building one website that works beautifully across all screen sizes on all devices
@@ -309,19 +343,19 @@ html {
 - The direction these flex items are laid out is called the main axis (horizontal axis)
 - The perpendicular direction is called the cross axis (vertical axis)
 
-**CONTAINER**
+**CONTAINER:**
 - flex-direction: **row** | row-reverse | column | column-reverse
 - flex-wrap: **nowrap** | wrap | wrap-reverse
 - justify-content: **flex-start** | flex-end | center | space-between | space-around | space-evenly
 - align-items: **stretch** | flex-start | flex-end | center | baseline
 - align-content: **stretch** | flex-start | flex-end | center | space-between | space-around
 
-**ITEM**
+**ITEM:**
 - align-self: **auto** | stretch | flex-start | flex-end | center | baseline
-- order: **0** | <integer>
-- flex-grow: **0** | <integer>
-- flex-shrink: **0** | <integer>
-- flex-basis: **auto** | <length>
+- order: **0** | integer
+- flex-grow: **0** | integer
+- flex-shrink: **0** | integer
+- flex-basis: **auto** | length
 - flex: flex-grow flex-shrink flex-basis  `flex: 0 0 66%`
 
 
@@ -342,38 +376,6 @@ html {
 **Using the CSS custom variables:**
 ```javascript
 background-image: linear-gradient(to right bottom, var(--color-primary-light), var(--color-primary-dark));
-```
-
-
-### CSS TRICKS
-- Use 'margin auto' when you want take up the extra space, but the content only occupies the space it needs:`margin-left: auto;`
-- Set an image to be a block or inline-block if you don't want to have a white space underneath when left as an inline element
-- To include the margin and padding into the width & height of an element: `box-sizing: border-box`. This setting is set as a global default on html element
-- To NOT include the margin & padding into the width & height of an element: `box-sizing: content-box`
-- To set an item to take up the entire available space: `flex: 1`
-- When using z-index, make sure to set the position on the parent element: `position: relative`
-- When using pseudo element before, make sure to include empty content property
-```javascript
-&__item::before {
-    content: "";
-}
-```
-- Newer browsers - icon masks:
-```css
-@supports (-webkit-mask-image: url()) or (mask-image: url()) {
-    background-color: var(--color-primary);
-    -webkit-mask-image: url(../img/chevron-thin-right.svg);
-    -webkit-mask-size: cover;
-    mask-image: url(../img/chevron-thin-right.svg);
-    mask-size: cover;
-    background-image: none;
-}
-```
-- Make a square image round:
-```css
-height: 4rem;
-width: 4rem;
-border-radius: 50%;
 ```
 
 **Steps to creating a page:**
