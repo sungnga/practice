@@ -5,6 +5,7 @@
 - cubic-bezier curve: www.easings.net
 - Test media queries on different devices: www.sizzy.co
 - Check browser support for CSS properties: www.caniuse.com
+- SVG icons: www.icomoon.io
 
 ### THREE PILLARS OF WRITING GOOD HTML AND CSS
 **Responsive design**
@@ -290,5 +291,164 @@ html {
 			  rgba($color-primary-dark, 0.8)
 		),
 		url(../img/hero.jpg);
+}
+```
+
+
+
+# FLEXBOX
+
+- Flexbox is a new module in CSS3 that makes it easy to align elements to one another, in different directions and orders
+- The main idea behind flexbox is to give the container the ability to expand and to shrink elements to best use all the available space
+- Flexbox replaces float layouts, using less, and more readable and logical code
+- Flexbox completely changes the way that we build one-dimensional layouts
+
+### FLEXBOX PROPERTIES
+- To create a flex container, set the display property to flex: `display: flex;`
+- All the direct children of the flex container are called the flex items
+- The direction these flex items are laid out is called the main axis (horizontal axis)
+- The perpendicular direction is called the cross axis (vertical axis)
+
+**CONTAINER**
+- flex-direction: **row** | row-reverse | column | column-reverse
+- flex-wrap: **nowrap** | wrap | wrap-reverse
+- justify-content: **flex-start** | flex-end | center | space-between | space-around | space-evenly
+- align-items: **stretch** | flex-start | flex-end | center | baseline
+- align-content: **stretch** | flex-start | flex-end | center | space-between | space-around
+
+**ITEM**
+- align-self: **auto** | stretch | flex-start | flex-end | center | baseline
+- order: **0** | <integer>
+- flex-grow: **0** | <integer>
+- flex-shrink: **0** | <integer>
+- flex-basis: **auto** | <length>
+- flex: flex-grow flex-shrink flex-basis  `flex: 0 0 66%`
+
+
+### CSS CUSTOM VARIABLES
+- CSS custom variables start with double dashes(--)
+- Sass variables start with dollar symbol($): `$color-primary: #eb2f64`
+- To use it: `var(--variable-name)`
+
+**Define CSS custom variables:**
+```javascript
+// Variables defined at root level are available to all its children
+:root {
+    --color-primary: #eb2f64;
+    --color-primary-light: #FF3366;
+}
+```
+
+**Using the CSS custom variables:**
+```javascript
+background-image: linear-gradient(to right bottom, var(--color-primary-light), var(--color-primary-dark));
+```
+
+
+### CSS TRICKS
+- Use 'margin auto' when you want take up the extra space, but the content only occupies the space it needs:`margin-left: auto;`
+- Set an image to be a block or inline-block if you don't want to have a white space underneath when left as an inline element
+- To include the margin and padding into the width & height of an element: `box-sizing: border-box`. This setting is set as a global default on html element
+- To NOT include the margin & padding into the width & height of an element: `box-sizing: content-box`
+- To set an item to take up the entire available space: `flex: 1`
+- When using z-index, make sure to set the position on the parent element: `position: relative`
+- When using pseudo element before, make sure to include empty content property
+```javascript
+&__item::before {
+    content: "";
+}
+```
+- Newer browsers - icon masks:
+```css
+@supports (-webkit-mask-image: url()) or (mask-image: url()) {
+    background-color: var(--color-primary);
+    -webkit-mask-image: url(../img/chevron-thin-right.svg);
+    -webkit-mask-size: cover;
+    mask-image: url(../img/chevron-thin-right.svg);
+    mask-size: cover;
+    background-image: none;
+}
+```
+- Make a square image round:
+```css
+height: 4rem;
+width: 4rem;
+border-radius: 50%;
+```
+
+**Steps to creating a page:**
+1. Build the overall page layout
+  - Define all main elements and its class names in index.html
+  - In _layout.scss file, give basic styles to these main elements  
+2. Style each components in _components.scss file
+
+**Media queries steps for Trillo project**
+- NOTE: THIS IS FOR DESKTOP-FIRST APPROACH
+- Declare Sass variables for breakpoints in _base.scss file:
+```javascript
+$bp-largest: 75em;  //1200px    1200/16 = 75
+$bp-large: 68.75em;  //1100px  1100/16 = 68.75
+$bp-medium: 56.25em;  //1100px  900/16 = 56.25
+$bp-small: 37.5em;  //600px
+$bp-smallest: 31.25em;  //500px
+```
+- At 1200px, remove the primary pink background and the container takes up 100% width
+```javascript
+.container {
+  @media only screen and (max-width: $bp-largest) {
+    margin: 0;
+    max-width: 100%;
+    width: 100%;
+  }
+}
+```
+- At 1100px, decrease font-size to 8px
+```javascript
+html {
+  @media only screen and (max-width: $bp-large) {
+    font-size: 50%;  //16px/8px = 50%
+  }
+}
+```
+- At 900px, move the sidebar navigation to the top, center the nav items, and reduce margin/padding in the main content
+```javascript
+.content {
+    display: flex;
+    
+    // Stack items on top of each other
+    @media only screen and (max-width: $bp-medium) {
+        flex-direction: column;
+    }
+}
+
+.side-nav {
+    // Stack items next to each other
+    @media only screen and (max-width: $bp-medium) {
+        display: flex;
+        margin: 0;
+    }
+    // Each item takes up its entire width (4 items, so 25% of the space)
+    &__item {
+        @media only screen and (max-width: $bp-medium) {
+            flex: 1;
+        }
+    }
+    // Center the items and add padding
+    &__link,
+    &__link:visited {
+        @media only screen and (max-width: $bp-medium) {
+            justify-content: center;
+            padding: 2rem;
+        }
+    }
+}
+```
+- At 600px, the content becomes one column and takes up 100% width, stack the nav icon
+```javascript
+.detail {
+    // Items stack on top of each other
+    @media only screen and (max-width: $bp-small) {
+        flex-direction: column;
+    }
 }
 ```
