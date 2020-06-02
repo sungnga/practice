@@ -13,7 +13,6 @@ Grey light 4: #ccc
 Grey dark 1: #333
 Grey dark 2: #777
 Grey dark 3: #999
-
 */
 
 // Variables defined at root level are available to all its children
@@ -34,7 +33,19 @@ Grey dark 3: #999
     --color-grey-dark-3: #999;
 
     --shadow-dark: 0 2rem 6rem rgba(0,0,0,.3);
+    --shadow-light: 0 2rem 5rem rgba(0,0,0,.06);
+
+    --line: 1px solid var(--color-grey-light-2);
+
 }
+
+// SASS VARIABLES
+$bp-largest: 75em;  //1200px    1200/16 = 75
+$bp-large: 68.75em;  //1100px  1100/16 = 68.75
+$bp-medium: 56.25em;  //1100px  900/16 = 56.25
+$bp-small: 37.5em;  //600px
+$bp-smallest: 31.25em;  //500px
+
 
 * {
     margin: 0;
@@ -50,6 +61,10 @@ Grey dark 3: #999
 html {
     box-sizing: border-box;
     font-size: 62.5%; //1rem = 10px, 10px/16pm = 62.5%
+
+    @media only screen and (max-width: $bp-large) {
+        font-size: 50%;  //16px/8px = 50%
+    }
 }
 
 body {
