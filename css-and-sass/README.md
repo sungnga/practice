@@ -454,3 +454,64 @@ html {
     }
 }
 ```
+
+
+
+# CSS GRID
+
+- To create a CSS grid container: `display: grid;`
+
+**Define the rows and columns:**
+```javascript
+grid-template-rows: 150px 150px; //2 rows of 150px height
+grid-template-rows: repeat(2, 150px); // 2 rows of 150px height each
+grid-template-rows: repeat(2, 1fr); // 2 rows each with equal height
+
+grid-template-columns: 150px 150px 150px;
+grid-template-columns: repeat(2, 150px) 1fr; //2 columns each with 150px width, 1 column fill the rest of the available space
+grid-template-columns: 1fr 3fr 1fr; //3 columns with the middle column is 3X as wide
+// The first column is 50% wide
+// Third column is 2X as wide as the second column
+// Note that the 50% column does not take the gutter into consideration
+grid-template-columns: 50% 1fr 2fr;
+grid-template-columns: repeat(3, 1fr); //3 columns with equal width
+```
+
+**Create the gutter:**
+```javascript
+// Longhand 
+grid-row-gap: 30px;
+grid-column-gap: 30px;
+
+// Shorthand when gutter row and column is the same
+grid-gap: 30px;
+
+// Shorthand for different row and column gutters
+// 1st value is row, 2nd value is column
+grid-gap: 30px 50px;
+```
+
+**3 ways to define span:**
+- Start at column 2 / end at column 3: `grid-column: 2 / 3;`
+- Start at column 2 / spand 2 columns: `grid-column: 2 / span 2;`
+- Start at column 1 / span all the way to the end: `grid-column: 1 / -1;`
+- span methods work for `grid-row` as well
+
+**Positioning grid items:**
+- Method 1: longhand
+```javascript
+grid-row-start: 2; 
+grid-row-end: 3;
+grid-column-start: 2;
+grid-column-end: 3;
+```
+- Method 2: shorthand
+```javascript
+grid-row: 2 / 3;  //shorthand for row-start / row-end
+column: 2 / 3;    //shorthand for column-start / column-end
+```
+- Method 3: even shorter-hand
+  - Start-row / start-col / end-row / end-col: `grid-area: 1 / 3 / 3 / 4;`
+
+- Multiple items can occupy the same cell
+- Use `z-index` property to display the order of the items
