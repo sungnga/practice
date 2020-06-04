@@ -13,3 +13,51 @@ $color-grey-dark-2: #6D5D4B;
 // FONT VARIABLES
 $font-primary: 'Nunito', sans-serif;
 $font-display: 'Josefin Sans', sans-serif;
+
+// Global reset
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+
+html {
+    box-sizing: border-box;
+    font-size: 62.5%; //So that 1rem = 10px. Browser default is 16px. 10/16=62.5% -> 1rem=10px
+}
+
+// Global font setting
+body {
+    font-family: $font-primary;
+    color: $color-grey-dark-2;
+    font-weight: 300;
+    line-height: 1.6;
+}
+
+.container {
+    display: grid;
+
+    // Defining the row track:
+    // When starting a project, think about how your content will grow
+    grid-template-rows: 80vh min-content 40vw repeat(3, min-content); //a 6-row track
+
+    // Define the column track:
+    // Start with the 8-column layout. 12-column layout is very common practice
+    // For each column, we want a minimum of min-content and max of 140px
+    // It will not shrink smaller than min-content and will not grow larger than 140px wide
+    // Next, add a 8rem sidebar column on the far left
+    // Then add 2 more columns IN BETWEEN the 8-column grid that take up the remain space (1fr)
+    // grid-template-columns: 8rem 1fr repeat(8, minmax(min-content, 14rem)) 1fr; //14rem = 140px
+    // Name the grid lines
+    // Naming the columns and not the rows because the focus is on the columns, not the rows
+    // For the 2 columns that wrap around the 8-column grid, we want to have a minimum of 60px wide
+    grid-template-columns: [sidebar-start] 8rem [sidebar-end full-start] minmax(6rem, 1fr) [center-start] repeat(8, [col-start] minmax(min-content, 14rem) [col-end]) [center-end] minmax(6rem, 1fr) [full-end];
+
+    // Styling the direct children of container class
+    & > * {
+        padding: 40px;
+        font-size: 3rem;;
+    }
+}

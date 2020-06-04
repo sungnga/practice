@@ -129,7 +129,18 @@ border-radius: 50%;
 },
 ```
 - Run the CSS build process: `npm run build:css`
-- Run during development mode: `npm run watch:sass`
+
+### DEVELOPMENT MODE
+- Set the browser flag to firefox to start live-server with firefox
+- You can inspect the CSS grid layout with firefox devtool
+```javascript
+"scripts": {
+  "watch:sass": "node-sass sass/main.scss css/style.css -w",
+  "devserver": "live-server --browser=firefox",
+  "start": "npm-run-all --parallel devserver watch:sass",
+}
+```
+- Run: `npm run start`
 
 
 
@@ -459,7 +470,25 @@ html {
 
 # CSS GRID
 
-- To create a CSS grid container: `display: grid;`
+- CSS Grid Layout is a brand new module that brings a two-dimensional grid system to CSS for the first time
+- CSS Grid replaces float layouts, using less, and more readable and logical CSS and HTML
+- CSS Grid works perfectly together with Flexbox, which is best to handle one-dimensional components and layouts
+- CSS Grid completely changes the way that we envision and build two-dimensional layouts
+
+### CSS GRID TERMINOLOGY
+- A CSS grid container is created when you set the display property of an element to grid: `display: grid;`
+- Then all the direct children of the Grid container are the Grid items
+- The Row axis is in X-direction
+- The Column axis is in Y-direction
+- Unlike axis in Flexbox which change direction, these axis are always the same
+- The vertical and horizontal lines that divide up the grid and separate the columns and the rows are called the Grid lines. And they're automatically numbered for the rows and the columns
+- The actual space between the rows and columns is called the gutter. The row gutter can be different from the column gutter
+- Grid track/row and grid track/column: The space between two grid lines is called a track, no matter if it's vertical or horizontal
+- Grid area: The area btween two vertical and two horizontal grid lines
+- Grid cell: The area btween two adjacent grid lines and two adjacent column lines
+
+### WORKIGN WITH CSS GRID
+- To create a CSS grid container, set the display property of an element to grid: `display: grid;`
 
 **Define the rows and columns:**
 ```javascript
@@ -493,7 +522,7 @@ grid-gap: 30px 50px;
 
 **3 ways to define span:**
 - Start at column 2 / end at column 3: `grid-column: 2 / 3;`
-- Start at column 2 / spand 2 columns: `grid-column: 2 / span 2;`
+- Start at column 2 / span 2 columns: `grid-column: 2 / span 2;`
 - Start at column 1 / span all the way to the end: `grid-column: 1 / -1;`
 - span methods work for `grid-row` as well
 
@@ -515,3 +544,32 @@ column: 2 / 3;    //shorthand for column-start / column-end
 
 - Multiple items can occupy the same cell
 - Use `z-index` property to display the order of the items
+
+### BUILDING THE OVERALL PAGE LAYOUT
+```javascript
+.container {
+    display: grid;
+
+    // Defining the row track:
+    // When starting a project, think about how your content will grow
+    grid-template-rows: 80vh min-content 40vw repeat(3, min-content); //a 6-row track
+
+    // Define the column track:
+    // Start with the 8-column layout. 12-column layout is very common practice
+    // For each column, we want a minimum of min-content and max of 140px
+    // It will not shrink smaller than min-content and will not grow larger than 140px wide
+    // Next, add a 8rem sidebar column on the far left
+    // Then add 2 more columns IN BETWEEN the 8-column grid that take up the remain space (1fr)
+    // grid-template-columns: 8rem 1fr repeat(8, minmax(min-content, 14rem)) 1fr; //14rem = 140px
+    // Name the grid lines
+    // Naming the columns and not the rows because the focus is on the columns, not the rows
+    // For the 2 columns that wrap around the 8-column grid, we want to have a minimum of 60px wide
+    grid-template-columns: [sidebar-start] 8rem [sidebar-end full-start] minmax(6rem, 1fr) [center-start] repeat(8, [col-start] minmax(min-content, 14rem) [col-end]) [center-end] minmax(6rem, 1fr) [full-end];
+
+    // Styling the direct children of container class
+    & > * {
+        padding: 40px;
+        font-size: 3rem;;
+    }
+}
+```
