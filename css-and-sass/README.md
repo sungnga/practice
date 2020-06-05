@@ -9,8 +9,8 @@
 
 
 
-### CSS TRICKS
-------------------
+# CSS TRICKS
+
 - Use 'margin auto' when you want take up the extra space, but the content only occupies the space it needs:`margin-right: auto;`
 - Set an image to be a block or inline-block if you don't want to have a white space underneath when left as an inline element
 - To include the margin and padding into the width & height of an element: `box-sizing: border-box`. This setting is set as a global default on html element
@@ -18,28 +18,39 @@
 - To set an item to take up the entire available space: `flex: 1`
 - When using z-index, make sure to set the position on the parent element: `position: relative`
 - When using pseudo element before, make sure to include empty content property
-```javascript
-&__item::before {
-    content: "";
-}
-```
+  ```javascript
+  &__item::before {
+      content: "";
+  }
+  ```
 - Newer browsers - icon masks:
-```css
-@supports (-webkit-mask-image: url()) or (mask-image: url()) {
-    background-color: var(--color-primary);
-    -webkit-mask-image: url(../img/chevron-thin-right.svg);
-    -webkit-mask-size: cover;
-    mask-image: url(../img/chevron-thin-right.svg);
-    mask-size: cover;
-    background-image: none;
-}
-```
+  ```css
+  @supports (-webkit-mask-image: url()) or (mask-image: url()) {
+      background-color: var(--color-primary);
+      -webkit-mask-image: url(../img/chevron-thin-right.svg);
+      -webkit-mask-size: cover;
+      mask-image: url(../img/chevron-thin-right.svg);
+      mask-size: cover;
+      background-image: none;
+  }
+  ```
 - Make a square image round:
-```css
-height: 4rem;
-width: 4rem;
-border-radius: 50%;
-```
+  ```css
+  height: 4rem;
+  width: 4rem;
+  border-radius: 50%;
+  ```
+- Create a color gradient on top of an image:
+  - `background-image: linear-gradient(rgba($color-primary, .5), rgba($color-primary, .5)), url(../img/back.jpg);`
+- **AUTO-FIT -> MEDIA QUERIES BREAKPOINT!**
+  - `auto-fit` creates as many tracks as it can fit based on the width that we define
+  - So we define the width with the `minmax()` function: the width of each of the tracks should always stay between 250px and one fractional unit
+  - Based on this, CSS will add as many tracks as fit in the container
+  - When the screen is too small to fit the 250px min width requirement, the grid columns will automatically shift to fit this minimum width requirement. INSTANT MEDIA QUERIES BREAKPOINT!!
+  - `grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));`
+
+
+
 
 ### THREE PILLARS OF WRITING GOOD HTML AND CSS
 **Responsive design**
