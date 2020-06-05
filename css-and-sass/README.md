@@ -573,3 +573,10 @@ column: 2 / 3;    //shorthand for column-start / column-end
     }
 }
 ```
+
+### AUTO-FIT -> MEDIA QUERIES BREAKPOINT!
+- `auto-fit` creates as many tracks as it can fit based on the width that we define
+- So we define the width with the `minmax()` function: the width of each of the tracks should always stay between 250px and one fractional unit
+- Based on this, CSS will add as many tracks as fit in the container
+- When the screen is too small to fit the 250px min width requirement, the grid columns will automatically shift to fit this minimum width requirement. INSTANT MEDIA QUERIES BREAKPOINT!!
+`grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));`

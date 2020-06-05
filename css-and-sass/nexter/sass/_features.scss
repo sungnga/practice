@@ -1,4 +1,38 @@
 .features {
-    background-color: $color-grey-light-2;
+    // background-color: $color-grey-light-2;
     grid-column: center-start / center-end;
+
+    margin: 15rem 0;
+
+    // Nesting a grid within another grid
+    display: grid;
+    // grid-template-columns: repeat(3, 1fr);
+    // AUTO-FIT: it creates as many tracks as it can fit based on the width that we define
+    // So we define the width with the minmax() function: the width of each of the tracks should always stay between 250px and one fractional unit
+    // When the screen is too small to fit the 250px min width requirement, the grid columns will automatically shift to fit this minimum width requirement. INSTANT MEDIA QUERIES BREAKPOINT!!
+    grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
+    grid-gap: 6rem;
+    // Align the items to the top along the Y-axis
+    align-items: start;
+}
+
+.feature {
+    display: grid;
+    grid-template-columns: min-content 1fr;
+    grid-gap: 1.5rem 2.5rem;
+
+    &__icon {
+        fill: $color-primary;
+        width: 4.5rem;
+        height: 4.5rem;
+        // Spanning the icon column to take up multiple rows
+        // Since we did not define an explicit grid row, we can not use -1 to span to the end
+        // So we use 'span 2' instead
+        grid-row: 1 / span 2;
+        transform: translateY(-1rem);
+    }
+
+    &__text {
+        font-size: 1.7rem;
+    }
 }
