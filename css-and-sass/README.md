@@ -11,6 +11,7 @@
 
 # CSS TRICKS
 
+- Emmet shortcut for creating multiple items at once: `.home{Home Card $}*6`
 - Use 'margin auto' when you want take up the extra space, but the content only occupies the space it needs:`margin-right: auto;`
 - Set an image to be a block or inline-block if you don't want to have a white space underneath when left as an inline element
 - To include the margin and padding into the width & height of an element: `box-sizing: border-box`. This setting is set as a global default on html element
