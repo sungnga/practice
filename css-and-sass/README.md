@@ -49,6 +49,13 @@
   - Based on this, CSS will add as many tracks as fit in the container
   - When the screen is too small to fit the 250px min width requirement, the grid columns will automatically shift to fit this minimum width requirement. INSTANT MEDIA QUERIES BREAKPOINT!!
   - `grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));`
+- Styling the direct children of an element:
+  ```scss
+  & > * {
+      padding: 40px;
+      font-size: 3rem;;
+  }
+  ```
 
 
 

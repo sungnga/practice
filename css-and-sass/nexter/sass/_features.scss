@@ -14,6 +14,10 @@
     grid-gap: 6rem;
     // Align the items to the top along the Y-axis
     align-items: start;
+
+    @media only screen and (max-width: $bp-medium) {
+        margin: 8rem 0;
+    }
 }
 
 .feature {
