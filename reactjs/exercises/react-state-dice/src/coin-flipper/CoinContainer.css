@@ -1,0 +1,15 @@
+.CoinContainer {
+    margin: 4em;
+}
+.CoinContainer button {
+    background-color: slateblue;
+    color: white;
+    font-size: 120%;
+    border-radius: 7px;
+    padding: 1rem 2rem;
+    border: none;
+    margin-top: 1em;
+    outline: none;
+    cursor: pointer;
+    transition: all .2s;
+}
