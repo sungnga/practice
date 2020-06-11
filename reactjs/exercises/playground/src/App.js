@@ -1,9 +1,9 @@
 import React from 'react';
 import './App.css'
-import RollDice from './dice/RollDice';
-import Lottery from './lotto/Lottery'
-import CoinContainer from './coin-flipper/CoinContainer';
-import BoxesContainer from './color-boxes/BoxesContainer';
+import RollDice from './state-dice/RollDice';
+import Lottery from './state-lotto/Lottery'
+import CoinContainer from './state-coin-flipper/CoinContainer';
+import BoxesContainer from './state-color-boxes/BoxesContainer';
 import ShoppingList from './forms-shopping-list/ShoppingList';
 
 function App() {
