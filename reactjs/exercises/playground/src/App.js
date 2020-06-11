@@ -5,6 +5,8 @@ import Lottery from './state-lotto/Lottery'
 import CoinContainer from './state-coin-flipper/CoinContainer';
 import BoxesContainer from './state-color-boxes/BoxesContainer';
 import ShoppingList from './forms-shopping-list/ShoppingList';
+import BoxList from './forms-box-maker/BoxList';
+
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
       <CoinContainer />
       <BoxesContainer />
       <ShoppingList />
+      <BoxList />
+
     </div>
   );
 }

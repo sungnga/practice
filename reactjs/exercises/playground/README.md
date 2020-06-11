@@ -1,3 +1,15 @@
+# NOTES
+
+### To remove an item from an array from state
+```javascript
+remove(id) {
+    this.setState({
+        boxes: this.state.boxes.filter(box => box.id !== id)
+    })
+}
+```
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
