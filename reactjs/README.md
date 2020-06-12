@@ -1,3 +1,44 @@
+# DESIGN PATTERNS
+---------------------
+
+- Sum up the values of an object
+    ```javascript
+    getTotalScore() {
+        const { score } = this.props;
+        let totalScore = 0;
+        // Loop thru the key of scores object
+        // Sum together the values of those keys, if they are not 'undefined'
+        // 'if (scores[key])' means if the value at that key is not 'undefined'
+        for (let key in scores) {
+            if (scores[key]) totalScore += scores[key];
+        }
+        return totalScore;
+    }
+    ```
+- If a prop doesn't ever change, define it in defaultProps attribute right above the constructor function
+    ```javascript
+    class Die extends Component {
+        static defaultProps = {
+            numberWords: ['one', 'two', 'three', 'four', 'five', 'six']
+        };
+        constructor(props) { ... }
+    }
+    ```
+- Methods and events don't bind to its own this value. Must bind it in the constructor function
+    ```javascript
+    constructor(props) {
+        super(props);
+        this.handleClick = this.handleClick.bind(this);
+    }
+    ```
+
+### USING FONT AWESOME
+- Install font awesome package: `npm install --save-dev @fortawesome/fontawesome-free`
+- Import in the index.js file. Font awesome can be used throughout the project
+    - `import '@fortawesome/fontawesome-free/css/all.css';`
+- To use the icon, call the icon's name in the className attribute of an element: 
+    - `<i className="fas fa-dice-five" onClick={this.handleClick} />`
+
 # JSX
 
 - command line to run:
