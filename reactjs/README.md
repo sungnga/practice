@@ -52,8 +52,17 @@
 - Install: `npm install axios`
 - Import: `import axios from 'axios'`
 - Make http requests inside `componentDidMount()`
+    ```javascript
+    async componentDidMount() {
+        let deck = await axios.get(API_URL)
+        this.setState({deck: deck.data})
+    }
+    ```
+
+
 
 # JSX
+---------------
 
 - command line to run:
 `babel src/playground/jsx_and_counter_example.js --out-file=public/scripts/app.js --presets=env,react --watch`
@@ -281,6 +290,7 @@ render()
 
 
 # REACT COMPONENTS
+--------------------
 
 - command line to run:
 `babel src/playground/state-component-indecision.js --out-file=public/scripts/app.js --presets=env,react --watch`
@@ -294,18 +304,18 @@ render()
 - Now IndecisionApp is a React component. It has all the features of React
 - React components require one method to be defined. It is a special method that it calls. `render()`
 - When IndecisionApp component calls `rend()`, it returns JSX
-```javascript
-class IndecisionApp extends React.Component {
-    render() {
-        return (
-            <div>
-                <Header />
-                <Options />
-            </div>
-        )
+    ```javascript
+    class IndecisionApp extends React.Component {
+        render() {
+            return (
+                <div>
+                    <Header />
+                    <Options />
+                </div>
+            )
+        }
     }
-}
-```
+    ```
 
 ### COMPONENT PROPS: 
 - Component props allows components to comnunicate with one another
@@ -322,19 +332,19 @@ class IndecisionApp extends React.Component {
 - React gives us access to the instance's props on an object(comes in as key/value pair): this.props
 - the props key is the name of the attribute in JSX when we initialize/define the instance: `<Header title={title} subtitle={subtitle} />`
 - to display this props inside a JSX: `<h1>{this.props.title}</h1>`
-```javascript
-class Header extends React.Component {
-    render() {
-        //console.log(this.props)
-        return (
-            <div>
-                <h1>{this.props.title}</h1>
-                <h2>{this.props.subtitle}</h2>
-            </div>
-        )
+    ```javascript
+    class Header extends React.Component {
+        render() {
+            //console.log(this.props)
+            return (
+                <div>
+                    <h1>{this.props.title}</h1>
+                    <h2>{this.props.subtitle}</h2>
+                </div>
+            )
+        }
     }
-}
-```
+    ```
 
 ### THE BIND METHOD:
 - the `.render()` method is able to bind to the 'this' value properly. `this.props` for example
@@ -346,29 +356,29 @@ class Header extends React.Component {
   - 3. define the method/event handler inside the constructor funct 
   - 4. call the `.bind()` method on the method and pass in 'this' keyword
     - This is making sure that wherever this method gets called, the context is correct
-```javascript
-class Counter extends React.Component {
-    constructor(props) {
-        super(props)
-        this.handleAddOne = this.handleAddOne.bind(this)
-        this.handleMinusOne = this.handleMinusOne.bind(this)
-        this.handleReset = this.handleReset.bind(this)
-        this.state = {
-            count: 0
+    ```javascript
+    class Counter extends React.Component {
+        constructor(props) {
+            super(props)
+            this.handleAddOne = this.handleAddOne.bind(this)
+            this.handleMinusOne = this.handleMinusOne.bind(this)
+            this.handleReset = this.handleReset.bind(this)
+            this.state = {
+                count: 0
+            }
+        }
+        render() {
+            return (
+                <div>
+                    <h1>Counter: {this.state.count}</h1>
+                    <button onClick={this.handleAddOne}>+1</button>
+                    <button onClick={this.handleMinusOne}>-1</button>
+                    <button onClick={this.handleReset}>Reset</button>
+                </div>
+            )
         }
     }
-    render() {
-        return (
-            <div>
-                <h1>Counter: {this.state.count}</h1>
-                <button onClick={this.handleAddOne}>+1</button>
-                <button onClick={this.handleMinusOne}>-1</button>
-                <button onClick={this.handleReset}>Reset</button>
-            </div>
-        )
-    }
-}
-```
+    ```
 
 ### WORKING WITH COMPONENT STATE
 1. Initialize the state in constructor function
