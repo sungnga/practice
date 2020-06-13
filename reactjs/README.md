@@ -1,6 +1,9 @@
 # DESIGN PATTERNS
 ---------------------
 
+- Do not use React setState `this.setState()` inside the constructor function
+- Do not load data inside the constructor function
+- Whenever you want to make AJAX requests and load data, do it in `componentDidMount()` method
 - Sum up the values of an object
     ```javascript
     getTotalScore() {
@@ -32,12 +35,23 @@
     }
     ```
 
+
+
+
+# LIBRARIES
+---------------
+
 ### USING FONT AWESOME
 - Install font awesome package: `npm install --save-dev @fortawesome/fontawesome-free`
 - Import in the index.js file. Font awesome can be used throughout the project
     - `import '@fortawesome/fontawesome-free/css/all.css';`
 - To use the icon, call the icon's name in the className attribute of an element: 
     - `<i className="fas fa-dice-five" onClick={this.handleClick} />`
+
+### AXIOS TO MAKE HTTP REQUESTS
+- Install: `npm install axios`
+- Import: `import axios from 'axios'`
+- Make http requests inside `componentDidMount()`
 
 # JSX
 

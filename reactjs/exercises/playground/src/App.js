@@ -6,6 +6,7 @@ import CoinContainer from './state-coin-flipper/CoinContainer';
 import BoxesContainer from './state-color-boxes/BoxesContainer';
 import ShoppingList from './forms-shopping-list/ShoppingList';
 import BoxList from './forms-box-maker/BoxList';
+import Deck from './lifecycle-deck_of_cards/Deck';
 
 
 function App() {
@@ -18,7 +19,7 @@ function App() {
       <BoxesContainer />
       <ShoppingList />
       <BoxList />
-
+      <Deck />
     </div>
   );
 }
