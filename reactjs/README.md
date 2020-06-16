@@ -59,6 +59,13 @@
     }
     ```
 
+### BOOTSTRAP
+- Inatall: `npm install bootstrap`
+- Install: `npm install jquery popper.js`
+- Import in index.js file:
+    - The Javascript file for Bootstrap: `import 'bootstrap';`
+    - The CSS file for Bootstrap: `import 'bootstrap/dist/css/bootstrap.min.css'`
+
 
 
 # JSX
