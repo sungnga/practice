@@ -10,6 +10,9 @@
 ### Material UI
 - Install: `npm install @material-ui/core @material-ui/icons`
 
+### uuid
+- Install: `npm install uuid`
+
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
