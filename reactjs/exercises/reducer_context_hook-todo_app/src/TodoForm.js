@@ -2,11 +2,12 @@ import React, { useContext } from 'react';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import useInputState from './hooks/useInputState';
-import { TodosContext } from './contexts/todosContext';
+import { DispatchContext } from './contexts/todosContext';
 
 function TodoForm() {
 	const [value, handleChange, reset] = useInputState('');
-	const { dispatch } = useContext(TodosContext);
+	// NOTE: the dispatch received from DispatchContext is not an object. So leave off the curly bracket i.e const {dispatch} = ...
+	const dispatch = useContext(DispatchContext);
 	return (
 		<Paper style={{ margin: '1rem 0', padding: '0 1rem' }}>
 			<form
