@@ -342,6 +342,207 @@
   }
   ```
 
+### Working with Arrays and Array of Objects
+- Array elements can be scalar values such as string, number, or boolean
+- **Array Type Definition**
+  - Remember that GraphQL is a strongly typed language. That means if a fields value should be an array, the type definition needs to reflect that
+  - There are 2 parts to the type definition:
+    - `[]!` - signifies the value is going to be a non-nullable array. Event if there's no element in the array, it'll return an empty array
+    - `Int!` - the inner type definition defines the type for the elements in the array
+    ```javascript
+    type Query {
+      grades: [Int!]!
+      add(numbers: [Float!]!): Float!
+    }
+    ```
+- **Set up Resolvers for an Array**
+  - Set up for all of the arguments in the resolver function, even if we don't use them. This is a good habit to do
+  ```javascript
+  grades(parent, args, ctx, info) {
+    return [99, 80, 93];
+  },
+  add(parent, args, ctx, info) {
+    if (args.numbers.length === 0) {
+      return 0
+    }
+
+    return args.numbers.reduce((accumulator, currentValue) => {
+      return accumulator + currentValue
+    })      
+  }
+  ```
+- **Querying for an Array**
+  - Queryng for an array of scalar values is just like querying for a scalar value.
+    ```
+    query {
+      grades
+      add(numbers: [1, 5, 6, 8])
+    }
+    ```
+  - The JSON response we get back
+    ```
+    {
+      "data": {
+        "grades": [99, 80, 93],
+        "add": 20
+      }
+    }
+    ```
+- **Array of Objects Type Definition**
+  - The type definition for an array of objects is almost identical to the type definition for an array of scalar values. This example schema sets up a users query which returns an array of User objects and it accepts query argument of String type
+    ```javascript
+    const typeDefs = `
+      type Query {
+        users(query: String): [User!]!
+        posts(query: String): [Post!]!
+        me: User!
+        post: Post!
+      }
+
+      type User {
+        id: ID!
+        name: String!
+        email: String!
+        age: Int
+      }
+      
+      type Post {
+        id: ID!
+        title: String!
+        body: String!
+        published: Boolean!
+      }
+      `;
+    ```
+  - Define the users array data outside of typeDefs query definition
+    ```javascript
+    const users = [
+      {
+        id: '1',
+        name: 'Nga',
+        email: 'nga@example.com',
+        age: 66
+      },
+      {
+        id: '2',
+        name: 'Sarah',
+        email: 'sarah@example.com'
+      },
+      {
+        id: '3',
+        name: 'Mike',
+        email: 'mike@example.com'
+      }
+    ];
+
+    const posts = [
+      {
+        id: '10',
+        title: 'GraphQL 101',
+        body: 'A book about GraphQL',
+        published: false
+      },
+      {
+        id: '11',
+        title: 'Nodejs Mastery',
+        body: 'A book about Node',
+        published: true
+      },
+      {
+        id: '12',
+        title: 'Javascript',
+        body: 'A book about Javascript',
+        published: true
+      }
+    ]
+    ```
+- **Set up Resolvers for an Array of Objects**
+  - The resolver function is now responsible for returning an array of objects, where each object matches the `User` type
+    ```javascript
+		users(parent, args, ctx, info) {
+      // If no query argument provided, just return regular users array of objects
+      if (!args.query) {
+        return users
+      }
+
+      // If query arg is provided, use .filter() method on users array to filter users based on given query arg
+      return users.filter((user) => {
+        return user.name.toLowerCase().includes(args.query.toLowerCase())
+      })
+		},
+		post(parent, args, ctx, info) {
+      if (!args.query) {
+        return posts
+      }
+
+      return posts.filter((post) => {
+        const isTitleMatch = post.title.toLowerCase().includes(args.query.toLowerCase())
+        const isBodyMatch = post.body.toLowerCase().includes(args.query.toLowerCase())
+        return isTitleMatch || isBodyMatch
+      })
+		}
+    ```
+- **Querying for an Array of Objects**
+  - When querying an object type, we've seen that it's necessary to provide a selection type where we describe all the fields we want. This same is true when working with an array of object types. It's necessary to explicitly list out what fields we need from each object in the array. Pass in the "query" argument is optional, but if provided, it must be of String type
+    ```
+    query {
+      users(query: "A") {
+        name
+        age
+      }
+      posts(query: "book") {
+        title
+        published
+        body
+      }
+    }
+    ```
+  - Note the JSON response we get back for "users" and "posts" query is an array of objects
+    ```
+    {
+      "data": {
+        "users": [
+          {
+            "name": "Nga",
+            "age": 66
+          },
+          {
+            "name": "Sarah",
+            "age": null
+          }
+        ],
+        "posts": [
+          {
+            "title": "GraphQL 101",
+            "published": false,
+            "body": "A book about GraphQL"
+          },
+          {
+            "title": "Javascript",
+            "published": true,
+            "body": "A book about Javascript"
+          }
+        ]
+      }
+    }
+    ```
+
+### Relational Data: Basics
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
