@@ -47,6 +47,33 @@ const posts = [
 	}
 ];
 
+const comments = [
+	{
+		id: '100',
+		text: 'Great book!',
+		author: '2',
+		post: '12'
+	},
+	{
+		id: '101',
+		text: 'I learned a lot from this book',
+		author: '3',
+		post: '12'
+	},
+	{
+		id: '102',
+		text: 'The author did an amazing job of explaining complex concepts',
+		author: '2',
+		post: '10'
+	},
+	{
+		id: '103',
+		text: 'Love love this book',
+		author: '1',
+		post: '11'
+	}
+];
+
 // Type definitions (schema)
 // Describes the operations and data structures
 // The schema also defines what the data looks like
@@ -54,6 +81,7 @@ const typeDefs = `
   type Query {
     users(query: String): [User!]!
     posts(query: String): [Post!]!
+    comments: [Comment!]!
     me: User!
     post: Post!
   }
@@ -64,6 +92,7 @@ const typeDefs = `
     email: String!
     age: Int
     posts: [Post!]!
+    comments: [Comment!]!
   }
   
   type Post {
@@ -72,6 +101,14 @@ const typeDefs = `
     body: String!
     published: Boolean!
     author: User!
+    comments: [Comment!]!
+  }
+
+  type Comment {
+    id: ID!
+    text: String!
+    author: User!
+    post: Post!
   }
   `;
 
@@ -88,6 +125,9 @@ const resolvers = {
 			return users.filter((user) => {
 				return user.name.toLowerCase().includes(args.query.toLowerCase());
 			});
+		},
+		comments(parent, args, ctx, info) {
+			return comments;
 		},
 		me() {
 			return {
@@ -121,12 +161,34 @@ const resolvers = {
 			return users.find((user) => {
 				return user.id === parent.author;
 			});
+		},
+		comments(parent, args, ctx, info) {
+			return comments.filter((comment) => {
+				return comment.post === parent.id;
+			});
 		}
 	},
 	User: {
 		posts(parent, args, ctx, info) {
 			return posts.filter((post) => {
 				return post.author === parent.id;
+			});
+		},
+		comments(parent, args, ctx, info) {
+			return comments.filter((comment) => {
+				return comment.author === parent.id;
+			});
+		}
+	},
+	Comment: {
+		author(parent, args, ctx, info) {
+			return users.find((user) => {
+				return user.id === parent.author;
+			});
+		},
+		post(parent, args, ctx, info) {
+			return posts.find((post) => {
+				return post.id === parent.post;
 			});
 		}
 	}

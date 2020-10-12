@@ -683,8 +683,31 @@
       }
     }
     ```
-
-
+    
+### Comment Challenge
+- **Part I**
+1. Set up a "Comment" type with id and text fields. Both non-nullable
+2. Set up a "comments" array with 4 comments
+3. Set up a "comments" query with a resolver that returns all of the comment
+4. Run a query to get all 4 comments with both id and text fields
+- **Part II**
+  - Goal: Set up a relationship between Comment and User
+1. Set up an author field on Comment
+2. Update all comments in an array to have a new author field (use one of the user ids as value)
+3. Create a resolver for the Comment author field that returns the user who wrote the comment
+4. Run a sample query that gets all comments and gets the author's name
+5. Set up a comments field on User
+6. Set up a resolver for the User comments field that returns all comments belonging to that user
+7. Run a sample query that gets all users and all their comments
+- **Part III**
+  - Goal: Set up a relationship between Comment and User
+1. Set up a post field on Comment
+2. Update all comments in the array to have a new post field (use one of the post ids as value)
+3. Create a resolver for the Comment post field that returns the post that the comment belongs to
+4. Run a sample query that gets all comments and gets the post name
+5. Set up a comments field on Post
+6. Set up a resolver for the Post comments field that returns all comments belonging to that post
+7. Run a sample query that gets all posts and all their comments
 
 
 
