@@ -96,41 +96,41 @@
   - Then run: `npm start`
 
 ### Creating Your Own GraphQL API
-**Picking a Server: graphql-yoga**
-- Install graphql-yoga: `npm i graphql-yoga`
-- GraphQL is nothing more than a specification for how GraphQL works. It's not an implementation. Before we can use GraphQL, we need to pick an implementation that works with the language/stack we're using. With Node.js, graphql-yoga is a great option. It supoorts the entire GraphQL spec
-- Now we can use graphql-yoga to create our GraphQL API server. Here's the barebone implementation
-  - In index.js file:
-  ```javascript
-  import { GraphQLServer } from 'graphql-yoga'
+- **Picking a Server: graphql-yoga**
+  - Install graphql-yoga: `npm i graphql-yoga`
+  - GraphQL is nothing more than a specification for how GraphQL works. It's not an implementation. Before we can use GraphQL, we need to pick an implementation that works with the language/stack we're using. With Node.js, graphql-yoga is a great option. It supoorts the entire GraphQL spec
+  - Now we can use graphql-yoga to create our GraphQL API server. Here's the barebone implementation
+    - In index.js file:
+    ```javascript
+    import { GraphQLServer } from 'graphql-yoga'
 
-  // Type definitions (schema)
-  // Describes the operations and data structures
-  // The schema also defines what the data looks like
-  const typeDefs = `
-    type Query {
-      hello: String!
-    }
-  `
+    // Type definitions (schema)
+    // Describes the operations and data structures
+    // The schema also defines what the data looks like
+    const typeDefs = `
+      type Query {
+        hello: String!
+      }
+    `
 
-  // Resolvers (functions)
-  const resolvers = {
-    Query: {
-      hello() {
-        return 'This is my first query!'
+    // Resolvers (functions)
+    const resolvers = {
+      Query: {
+        hello() {
+          return 'This is my first query!'
+        }
       }
     }
-  }
 
-  const server = new GraphQLServer({
-    typeDefs,
-    resolvers
-  })
+    const server = new GraphQLServer({
+      typeDefs,
+      resolvers
+    })
 
-  server.start(() => {
-    console.log('The server is up!')
-  })
-  ```
+    server.start(() => {
+      console.log('The server is up!')
+    })
+    ```
 - **Schema**
   - Type definitions or schema describes the operations and data structures. The schema also defines what the data looks like
   - The typeDefs varibale is where we define the types that make up our application schema. This is where we'll define all the operations we want the server to support. It's also where we'll define any custom typs our app needs
@@ -177,9 +177,49 @@
   })
   ```
 
+### GraphQL Scalar Types
+- **Scalar Types**
+  - A scalar value is a single discrete value. A scalar type is a type that stores a single value. There are five built-in scalar types in GraphQL
+    1. ID - Used to store unique identifier
+    2. String - Used to store string data as UTF-8 characters
+    3. Boolean - Use to store true or false
+    4. Int - Used to store 32-but integer numbers
+    5. Float - Used to store double-precision floating-point numbers
+  - The opposite of a scalar value is a non-scalar value. This would include arrays and objects, which are collection of values as opposed to a single discrete value
+- **Nullable & Non-Nullable Types**
+  - If the type value does not have a `!` at the end of it, it's a nullable type. A nullable type could return either the value or a null
+  - A non-nullable type has a `!` at the end of it and it must return a value
+  ```javascript
+  const typeDefs = `
+    type Query {
+      title: String!
+      price: Float!
+      releaseYear: Int
+      rating: Float
+      inStock: Boolean!
+    }
+  `;
 
-
-
+  const resolvers = {
+    Query: {
+      title() {
+        return 'The War of Art';
+      },
+      price() {
+        return 12.99;
+      },
+      releaseYear() {
+        return null;
+      },
+      rating() {
+        return 5;
+      },
+      inStock() {
+        return true;
+      }
+    }
+  };
+  ```
 
 
 

@@ -1,32 +1,44 @@
-import { GraphQLServer } from 'graphql-yoga'
+import { GraphQLServer } from 'graphql-yoga';
 
 // Type definitions (schema)
 // Describes the operations and data structures
 // The schema also defines what the data looks like
 const typeDefs = `
   type Query {
-    hello: String!
-    name: String!
+    title: String!
+    price: Float!
+    releaseYear: Int
+    rating: Float
+    inStock: Boolean!
   }
-`
+`;
 
 // Resolvers (functions)
 const resolvers = {
-  Query: {
-    hello() {
-      return 'This is my first query!'
-    },
-    name() {
-      return 'Nga La'
-    }
-  }
-}
+	Query: {
+		title() {
+			return 'The War of Art';
+		},
+		price() {
+			return 12.99;
+		},
+		releaseYear() {
+			return null;
+		},
+		rating() {
+			return 5;
+		},
+		inStock() {
+			return true;
+		}
+	}
+};
 
 const server = new GraphQLServer({
-  typeDefs,
-  resolvers
-})
+	typeDefs,
+	resolvers
+});
 
 server.start(() => {
-  console.log('The server is up!')
-})
+	console.log('The server is up!');
+});
