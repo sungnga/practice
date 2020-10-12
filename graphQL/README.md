@@ -306,9 +306,41 @@
     }
     ```
 
-
-
-
+### Operation Arguments
+- Operation arguments allows us to pass data from the client to the GraphQL server
+- **Defining Operational Arguments**
+  - Operational arguments are similar to function arguments. It's a way to pass data along with our GraphQL query
+  - Arguments can be of any type including all of the scalar types as well as any object types we create
+  - Arguments can also be required or optional
+  - Here, the `greeting` query has one optional argument `name` of type String
+    ```javascript
+    type Query {
+      greeting(name: String, position: String): String!
+      add(a: Float!, b: Float!): Float!
+    }
+    ```
+- **Setting up the resolvers method**
+  - There are 4 arguments that get passed to all resolvers functions: parent, args, context, and info 
+    - The args is an object and it contains all of the argument values provided
+    ```javascript
+    greeting(parent, args, ctx, info) {
+      if (args.name && args.position) {
+        return `Hello, ${args.name}! You are my favorite ${args.position}.`
+      } else {
+        return 'Hello!'
+      }
+    },
+    add(parent, args, ctx, info) {
+      return args.a + args.b
+    },
+    ```
+- **Querying Operational Arguments**
+  ```
+  query {
+    greeting(name: "Nga", position: "designer")
+    add(a: 8, b: 2)
+  }
+  ```
 
 
 
