@@ -88,9 +88,9 @@
 - Next, set up a start script that allows you to run the Node app after passing it through Babel
   - In package.json file, include this:
     ```javascript
-    {
-      "scripts": {
-    "start": "babel-node src/index.js" }
+    "scripts": {
+      "start": "babel-node src/index.js",
+      "test": "echo \"Error: no test specified\" && exit 1"
     }
     ```
   - Then run: `npm start`
@@ -221,6 +221,97 @@
   };
   ```
 
+### Live Reload for GraphQL-Yoga
+- Nodemon will automatically restart the server after we make any changes, allowing us to speed up development
+- **Setting up Nodemon**
+  - Install: `npm i nodemon --save-dev`
+  - In package.json file, include this:
+    ```javascript
+    "scripts": {
+      "start": "nodemon --exec babel-node src/index.js",
+      "test": "echo \"Error: no test specified\" && exit 1"
+    }
+    ```
+  - Then run: `npm start`
+
+### Creating Custom Types
+- **Creating a Custom Object Type**
+  - An empty object type definition for a product might look like this and notice the uppercase first letter:
+    ```
+    type User {
+
+    }
+    ```
+  - All the fields for a 'User' get defined in the curly braces. The syntax for this looks very similar to how queries are defined in the "Query" type. For each field, you pick a field name and set up the type definition for each
+    ```javascript
+    type User {
+      id: ID!
+      name: String!
+      email: String!
+      age: Int
+    }
+    ```
+- **Resolvers for a Custom Object Type**
+  ```javascript
+  const resolvers = {
+    Query: {
+      me() {
+        return {
+          id: '11233455',
+          name: 'Mike',
+          email: 'maike@example.com',
+          age: 99
+        };
+      }
+    }
+  };
+  ```
+- **Using an Object Type**
+  - This can now be used as the type for a query
+  - The `me` query has `User!` as its type 
+  ```javascript
+  const typeDefs = `
+    type Query {
+      me: User!
+    }
+
+    type User {
+      id: ID!
+      name: String!
+      email: String!
+      age: Int
+    }
+  `;
+  ```
+- **Querying an Object Type**
+  ```
+  query {
+    me {
+      id
+      name
+      email
+    }
+  }
+  ```
+  - The response we get back
+    ```
+    {
+      "data": {
+        "me": {
+          "id": "11233455",
+          "name": "Mike",
+          "email": "maike@example.com"
+        }
+      }
+    }
+    ```
+
+
+
+
+
+
+
 
 
 
@@ -235,13 +326,31 @@
 - Babel Javascript compiler
   - Install: `npm i babel-cli babel-preset-env`
   - Configure Babel in .babelrc file. This file sits at root of project directory
-  ```javascript
-  {
-    "presets": [
-  "env"
-  ]
-  }
-  ```
+    ```javascript
+    {
+      "presets": [
+    "env"
+    ]
+    }
+    ```
+  - In package.json file, include this:
+    ```javascript
+    "scripts": {
+      "start": "babel-node src/index.js",
+      "test": "echo \"Error: no test specified\" && exit 1"
+    }
+    ```
 - graphql-yoga
   - Website: https://github.com/prisma-labs/graphql-yoga
   - Install: `npm i graphql-yoga`
+  - Import in index.js file: `import { GraphQLServer } from 'graphql-yoga';`
+- Nodemon
+  - Install: `npm i nodemon --save-dev`
+  - In package.json file, include this:
+    ```javascript
+    "scripts": {
+      "start": "nodemon --exec babel-node src/index.js",
+      "test": "echo \"Error: no test specified\" && exit 1"
+    }
+    ```
+  - Then run `npm start`
