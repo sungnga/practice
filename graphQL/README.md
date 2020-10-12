@@ -528,14 +528,161 @@
     ```
 
 ### Relational Data: Basics
+- **Setting up Associations**
+  - Associations get set up in the object type definition. The type definition below sets up both `User` and `Post`, where every post has an `author` field that links to a user
+    ```javascript
+    type User {
+      id: ID!
+      name: String!
+      email: String!
+      age: Int
+    }
+    
+    type Post {
+      id: ID!
+      title: String!
+      body: String!
+      published: Boolean!
+      author: User!
+    }
+    ```
+  - In the posts data array, add another property called `author` to each object/post element and set it to the value of a user's id property which is found in the users data array. This creates a relationship that each post in the posts array has an author property that is linked to a user in the users array
+    ```javascript
+    {
+      id: '10',
+      title: 'GraphQL 101',
+      body: 'A book about GraphQL',
+      published: false,
+      author: '1'
+    } 
+    ```
+  - This relationship requires a new resolver method. This new method is responsible for returning the user for a given post. Notice that the `author` method lives on a new `Post` property at the root proprty of `resolvers` contant, not on `Query` property
+  - For associations, the root property name needs to match up with the object type name. The method name needs to match up with a new field name
+  - The data post is provided via the 1st argument, which is typically named `parent`. This means `parent.author` is where the author id can be accessed and used to determine which user is the author for the post
+    ```javascript
+    const resolvers = {
+      Query: { ... },
+      Post: {
+        author(parent, args, ctx, info) {
+          // Return the correct author for the post
+          // parent arg is the element in the posts array. parent arg is post data
+          // Looping over elements in users array to find and return the user with matching id
+          return users.find((user) => {
+            return user.id === parent.author
+          })
+        }
+      }
+    };
+    ```
+- **Querying Relational Data**
+  - To query posts to get a post's id, title, and name of author
+    ```
+    query {
+      posts {
+        id
+        title
+        author {
+          name
+        }
+      }
+    }
+    ```
+  - The JSON response we get back. Note that the author field is an object because we defined the author property type of User type and User type is an object
+    ```
+    {
+      "data": {
+        "posts": [
+          {
+            "id": "10",
+            "title": "GraphQL 101",
+            "author": {
+              "name": "Nga"
+            }
+          },
+          {
+            "id": "11",
+            "title": "Nodejs Mastery",
+            "author": {
+              "name": "Nga"
+            }
+          },
+          {
+            "id": "12",
+            "title": "Javascript",
+            "author": {
+              "name": "Sarah"
+            }
+          }
+        ]
+      }
+    }
+    ```
 
-
-
-
-
-
-
-
+### Relational Data: Arrays
+- **Setting up an Array-Based Associations**
+  - A link already exists for getting the author of a given post. The goal now is to create a link that lets us get all the posts that belong to a given user
+  - Add a `posts` property on to `User` with the type of `[Post!]!`
+    ```javascript
+    type User {
+      id: ID!
+      name: String!
+      email: String!
+      age: Int
+      posts: [Post!]!
+    }
+    ```
+  - If a field is not a scalar type, we need to set up a custom resolver function. When GraphQL API runs the query and it finds that a field is requesting for a relational data and not scalar value data, then it's going to call the type method of that field/property
+  - Once again, we need to write a new resolver method. The job of this method is to return an array of posts that belong to the given user. The user's data is accessible via `parent`, so the function can use the user's id to determine if a given post belongs to them
+    ```javascript
+    const resolvers = {
+      Query: { ... },
+      Post: { ... },
+      User: {
+        posts(parent, args, ctx, info) {
+          return posts.filter((post) => {
+            return post.author === parent.id;
+          });
+        }
+      }
+    };
+    ```
+- **Querying Array-Based Relational Data**
+  ```
+  query {
+    users {
+      id
+      name
+      posts {
+        id
+        title
+      }
+    }
+  }
+  ```
+  - The JSON response we get back
+    ```
+    {
+      "data": {
+        "users": [
+          {
+            "id": "1",
+            "name": "Nga",
+            "posts": [
+              {
+                "id": "10",
+                "title": "GraphQL 101"
+              },
+              {
+                "id": "11",
+                "title": "Nodejs Mastery"
+              }
+            ]
+          },
+          { ... }
+        ]
+      }
+    }
+    ```
 
 
 
