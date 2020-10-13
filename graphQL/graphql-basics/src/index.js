@@ -4,7 +4,7 @@ import cuid from 'cuid';
 // Scalar types - String, Boolean, Int, Float, ID
 
 // Demo user data
-const users = [
+let users = [
 	{
 		id: '1',
 		name: 'Nga',
@@ -24,7 +24,7 @@ const users = [
 ];
 
 // Demo post data
-const posts = [
+let posts = [
 	{
 		id: '10',
 		title: 'GraphQL 101',
@@ -48,7 +48,7 @@ const posts = [
 	}
 ];
 
-const comments = [
+let comments = [
 	{
 		id: '100',
 		text: 'Great book!',
@@ -89,6 +89,7 @@ const typeDefs = `
 
   type Mutation {
     createUser(data: CreateUserInput): User!
+    deleteUser(id: ID!): User!
     createPost(data: CreatePostInput): Post!
     createComment(data: CreateCommentInput): Comment!
   }
@@ -200,6 +201,39 @@ const resolvers = {
 			// Return user so the client can get values off of it
 			return user;
 		},
+		deleteUser(parent, args, ctx, info) {
+			// Find the user we want to delete
+			// .find method returns the actual element in the array
+			// .findIndex returns the index of that element in the array
+			// Return true if the user id matches the args id and store the user index in userIndex
+			const userIndex = users.findIndex((user) => user.id === args.id);
+
+			if (userIndex === -1) {
+				throw new Error('User not found');
+			}
+
+			// The .splice method removes a certain number of element, start at a specific index
+			// - 1st arg is the index to start the remove
+			// - 2nd arg is how many elements to remove
+			// - it returns the removed items in an array
+			const deletedUsers = users.splice(userIndex, 1);
+
+			// Updating the posts array by deleting all associated posts and comments made by this user
+			posts = posts.filter((post) => {
+				const match = post.author === args.id;
+
+				if (match) {
+					comments = comments.filter((comment) => comment.post !== post.id);
+				}
+
+				return !match;
+			});
+			// Updating the comments array by removing all the comments made by this user
+			comments = comments.filter((comment) => comment.author !== args.id);
+
+			// Return the deleted users
+			return deletedUsers[0];
+		},
 		createPost(parent, args, ctx, info) {
 			const userExists = users.some((user) => user.id === args.data.author);
 
@@ -220,8 +254,8 @@ const resolvers = {
 		},
 		createComment(parent, args, ctx, info) {
 			const userExists = users.some((user) => user.id === args.data.author);
-      const postExists = posts.some(
-        (post) => post.id === args.data.post && post.published
+			const postExists = posts.some(
+				(post) => post.id === args.data.post && post.published
 			);
 
 			if (!userExists || !postExists) {

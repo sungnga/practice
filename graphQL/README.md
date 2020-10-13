@@ -48,7 +48,7 @@
 
 ### Nested GraphQL Queries
 - When querying on an object, we must specify which fields from that object we want
-- **Custom Types**
+- **Custom Types:**
   - GraphQL allows you to defien custom types specific to your application. A customtype is nothing more than a template for an object
   - GraphQL is strongly typed language. All the data you have access to is of a specific type which can be found in the schema. Afield like 'course' might resolve to a string value, while a field like 'me' might resolve to a custom type such as a 'User' type
   - When querying for a custom type, the resolved JSON value is an object. Your query needs to explicitly list out all the fields it wants from the object
@@ -62,13 +62,13 @@
       }
     }
     ```
-- **Arrays of Custom Types**
+- **Arrays of Custom Types:**
   - GraphQL supports array of custom types, which is nothing more than an array of objects
 
 ### Setting Up Babel
 - Babel is a Javascript compiler. This will allow us to take advantage of all the latest Javascript features such as the ES6 import/export syntax
 
-- **Configuring Babel for Node.js**
+**Configuring Babel for Node.js**
 - Run this at the root of project directory to create npm package
   - `npm init`
 - Install: `npm i babel-cli babel-preset-env`
@@ -180,11 +180,11 @@
 ### GraphQL Scalar Types
 - **Scalar Types**
   - A scalar value is a single discrete value. A scalar type is a type that stores a single value. There are five built-in scalar types in GraphQL
-    1. ID - Used to store unique identifier
-    2. String - Used to store string data as UTF-8 characters
-    3. Boolean - Use to store true or false
-    4. Int - Used to store 32-but integer numbers
-    5. Float - Used to store double-precision floating-point numbers
+    - ID - Used to store unique identifier
+    - String - Used to store string data as UTF-8 characters
+    - Boolean - Use to store true or false
+    - Int - Used to store 32-but integer numbers
+    - Float - Used to store double-precision floating-point numbers
   - The opposite of a scalar value is a non-scalar value. This would include arrays and objects, which are collection of values as opposed to a single discrete value
 - **Nullable & Non-Nullable Types**
   - If the type value does not have a `!` at the end of it, it's a nullable type. A nullable type could return either the value or a null
@@ -664,32 +664,27 @@
     ```
 
 ### Comment Challenge
-**Part I**
-  - Set up Comment Type definition
-    1. Set up a "Comment" type with id and text fields. Both non-nullable
-    2. Set up a "comments" array with 4 comments
-    3. Set up a "comments" query with a resolver that returns all of the comment
-    4. Run a query to get all 4 comments with both id and text fields
-
-**Part II**
-  - Goal: Set up a relationship between Comment and User
-    1. Set up an author field on Comment
-    2. Update all comments in an array to have a new author field (use one of the user ids as value)
-    3. Create a resolver for the Comment author field that returns the user who wrote the comment
-    4. Run a sample query that gets all comments and gets the author's name
-    5. Set up a comments field on User
-    6. Set up a resolver for the User comments field that returns all comments belonging to that user
-    7. Run a sample query that gets all users and all their comments
-
-**Part III**
-  - Goal: Set up a relationship between Comment and User
-    1. Set up a post field on Comment
-    2. Update all comments in the array to have a new post field (use one of the post ids as value)
-    3. Create a resolver for the Comment post field that returns the post that the comment belongs to
-    4. Run a sample query that gets all comments and gets the post name
-    5. Set up a comments field on Post
-    6. Set up a resolver for the Post comments field that returns all comments belonging to that post
-    7. Run a sample query that gets all posts and all their comments
+- **Part I - Goal: Set up Comment Type definition**
+  - Set up a "Comment" type with id and text fields. Both non-nullable
+  - Set up a "comments" array with 4 comments
+  - Set up a "comments" query with a resolver that returns all of the comment
+  - Run a query to get all 4 comments with both id and text fields
+- **Part II - Goal: Set up a relationship between Comment and User**
+  - Set up an author field on Comment
+  - Update all comments in an array to have a new author field (use one of the user ids as value)
+  - Create a resolver for the Comment author field that returns the user who wrote the comment
+  - Run a sample query that gets all comments and gets the author's name
+  - Set up a comments field on User
+  - Set up a resolver for the User comments field that returns all comments belonging to that user
+  - Run a sample query that gets all users and all their comments
+- **Part III - Goal: Set up a relationship between Comment and User**
+  - Set up a post field on Comment
+  - Update all comments in the array to have a new post field (use one of the post ids as value)
+  - Create a resolver for the Comment post field that returns the post that the comment belongs to
+  - Run a sample query that gets all comments and gets the post name
+  - Set up a comments field on Post
+  - Set up a resolver for the Post comments field that returns all comments belonging to that post
+  - Run a sample query that gets all posts and all their comments
 
 
 ## S3: GRAPHQL BASICS: MUTATIONS
@@ -812,17 +807,16 @@
     }
   }
   ```
-- **createComment Mutation Challenge**
-  - Goal: Allow clients to create a new comment
-    1. Define a new createComment mutation
-      - Should take text, author, and post
-      - Should return a comment
-    2. Define a resolver method for createComment
-      - Confirm that the user exists, else throw error
-      - Confirm that the post exists and is published, else throw error
-      - If they do exist, create th ecomment and return it
-    3. Run the mutation and add a comment
-    4. Use the comments query to verify the comment was added
+- **createComment Mutation Challenge - Goal: Allow clients to create a new comment**
+  - Define a new createComment mutation
+    - Should take text, author, and post
+    - Should return a comment
+  - Define a resolver method for createComment
+    - Confirm that the user exists, else throw error
+    - Confirm that the post exists and is published, else throw error
+    - If they do exist, create th ecomment and return it
+  - Run the mutation and add a comment
+  - Use the comments query to verify the comment was added
 
   **Solution:**
   - Define createComment Mutation
@@ -914,51 +908,102 @@
   ```
 
 ### The Input Type
-  - Define an input type and then reference it in the arguments list
-  - Inside the curly braces is where we define all of the properties that could exist on an object input/arguments
-  - NOTE: everything inside an input type must be scalar values. Cannot have custom object type
-  - Inside typeDefs:
-    ```javascript
-    input CreateUserInput {
-      name: String!
-      email: String!
-      age: Int
-    }
+- Define an input type and then reference it in the arguments list
+- Inside the curly braces is where we define all of the properties that could exist on an object input/arguments
+- NOTE: everything inside an input type must be scalar values. Cannot have custom object type
+- Inside typeDefs:
+  ```javascript
+  input CreateUserInput {
+    name: String!
+    email: String!
+    age: Int
+  }
 
-    type Mutation {
-      createUser(data: CreateUserInput): User!
-    }
-    ```
-  - Performing a createUse Mutation:
-    - Note that data is an object input type
-    ```
-    mutation {
-      createUser(
-        data: {
-          name: "Jess",
-          email: "jess@example.com",
-          age: 11
-        }
-      ) {
+  type Mutation {
+    createUser(data: CreateUserInput): User!
+  }
+  ```
+- Performing a createUse Mutation:
+  - Note that data is an object input type
+  ```
+  mutation {
+    createUser(
+      data: {
+        name: "Jess",
+        email: "jess@example.com",
+        age: 11
+      }
+    ) {
+      id
+      posts {
         id
-        posts {
-          id
+      }
+    }
+  }
+  ```
+- **Challenge Goal: Create input types for createPost and createComment**
+  - Create an input type for createPost with the same fields. Use "data" as arg name
+  - Update createPost resolver to use this new object
+  - Verify application still works by creating a post and then fetching it
+  - Create an input type for createComment with the same fields. Use "data" as arg name
+  - Update createComment resolver to use this new object
+  - Verify application sitll works by creating a comment and then fetching it
+
+### Deleting Data with Mutations: deleteUser Mutation
+- **Define a Delete Mutation for deleting a User**
+  ```javascript
+  type Mutation {
+    deleteUser(id: ID!): User!
+  }
+  ```
+  - Create a resolver for deleteUser Mutation. In resolvers object:
+    ```javascript
+    Mutation: {
+      deleteUser(parent, args, ctx, info) {
+        // Find the user we want to delete
+        // .find method returns the actual element in the array
+        // .findIndex returns the index of that element in the array
+        // Return true if the user id matches the args id and store the user index in userIndex
+        const userIndex = users.findIndex((user) => user.id === args.id);
+
+        if (userIndex === -1) {
+          throw new Error('User not found');
         }
+
+        // The .splice method removes a certain number of element, start at a specific index
+        // - 1st arg is the index to start the remove
+        // - 2nd arg is how many elements to remove
+        // - it returns the removed items in an array
+        const deletedUsers = users.splice(userIndex, 1);
+
+        // Updating the posts array by deleting all associated posts and comments made by this user
+        posts = posts.filter((post) => {
+          const match = post.author === args.id;
+
+          if (match) {
+            comments = comments.filter((comment) => comment.post !== post.id);
+          }
+
+          return !match;
+        });
+        // Updating the comments array by removing all the comments made by this user
+        comments = comments.filter((comment) => comment.author !== args.id);
+
+        // Return the deleted users
+        return deletedUsers[0];
       }
     }
     ```
-  - **Challenge Goal: Create input types for createPost and createComment**
-    - Create an input type for createPost with the same fields. Use "data" as arg name
-    - Update createPost resolver to use this new object
-    - Verify application still works by creating a post and then fetching it
-    - Create an input type for createComment with the same fields. Use "data" as arg name
-    - Update createComment resolver to use this new object
-    - Verify application sitll works by creating a comment and then fetching it
+- **Performing a Delete Mutation**
+  ```
+  mutation {
+    deleteUser(id: "1") {
+      id
+    }
+  }
+  ```
 
-### Deleting Data with Mutations: Part I
-
-
-### Deleting Data with Mutations: Part II
+### Deleting Data with Mutations: deletePost Mutation
 
 
 ### A Pro GraphQL Project Structure
