@@ -1021,7 +1021,88 @@
   - Test by running query to delete a comment. Verify comment was removed
 
 ### A Pro GraphQL Project Structure
+- In src folder, create a file called schema.graphql. In schema.graphql file:
+  - This file contains all of the type definitions
+- In src folder, create a file called db.js. In db.js file:
+  - This file contains the database that's being shared across the applicatoin. For now, it contains the static data for users, posts, and comments arrays
+- Set up context for the application
+  - Context contains values that are universal and shared across the application
+  - Database/db will be one of the contexts
+- In index.js file:
+  - Import db: `import db from './db';`
+  - When setting up the server:
+    - Load in the schema.graphql file by providing the path as the value for typeDefs property
+    - Set up the context property to the server. This context is an object and list db as a property of context
+    ```javascript
+    const server = new GraphQLServer({
+      typeDefs: './src/schema.graphql',
+      resolvers,
+      context: {
+        db
+      }
+    });
+    ```
+- Next, we're going to break up the resolvers object into its own separate files based on the root property. These root properties are the type definitions we have defined in the schema.graphql file. For example, our resolvers object has the Query, Mutation, User, Post, and Comment properties. They will have their own files inside the resolvers folder
+- In src folder, create a folder called resolvers. Inside this resolvers folder, create the following files:
+  - Query.js - contains Query object
+  - Mutation.js - contains Mutation object
+  - User.js - contains User object
+  - Post.js - contains Post object
+  - Comment.js - contains object object
+- In index.js file:
+  - Import all the above resolver function files
+  - In the server setup:
+    - Add a resolvers property and this property is an object. Pass in the above resolvers as properties of resolvers object
+      ```javascript
+      const server = new GraphQLServer({
+        typeDefs: './src/schema.graphql',
+        resolvers: {
+          Query,
+          Mutation,
+          User,
+          Post,
+          Comment
+        },
+        context: {
+          db
+        }
+      });
+      ```
+- Final code in index.js file:
+  ```javascript
+  import { GraphQLServer } from 'graphql-yoga';
+  import db from './db';
+  import Query from './resolvers/Query';
+  import Mutation from './resolvers/Mutation';
+  import User from './resolvers/User';
+  import Post from './resolvers/Post';
+  import Comment from './resolvers/Comment';
 
+  const server = new GraphQLServer({
+    typeDefs: './src/schema.graphql',
+    resolvers: {
+      Query,
+      Mutation,
+      User,
+      Post,
+      Comment
+    },
+    context: {
+      db
+    }
+  });
+
+  server.start(() => {
+    console.log('The server is up!');
+  });
+  ```
+- In package.json file:
+  - Modify the Nodemon script to listen for changes in files with js and graphql extensions
+  ```javascript
+  "scripts": {
+    "start": "nodemon -e js,graphql --exec babel-node src/index.js"
+  }
+  ```
 
 ### Updating Data with Mutations
 
@@ -1067,7 +1148,6 @@
 - cuid
   - Install: `npm i cuid`
   - Import: `import cuid from 'cuid';`
-
 - babel-plugin-transform-object-rest-spread
   - This plugin allows Babel to transform rest properties for object destructuring assignment and spread properties for object literals
   - Source: https://www.npmjs.com/package/babel-plugin-transform-object-rest-spread
@@ -1083,3 +1163,15 @@
       ]
     }
     ```
+
+
+
+
+
+
+
+
+
+
+## VSCODE EXTENSIONS
+- GraphQL for VSCode - Kumar Harsh
