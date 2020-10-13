@@ -133,7 +133,7 @@
     ```
 - **Schema**
   - Type definitions or schema describes the operations and data structures. The schema also defines what the data looks like
-  - The typeDefs varibale is where we define the types that make up our application schema. This is where we'll define all the operations we want the server to support. It's also where we'll define any custom typs our app needs
+  - The typeDefs variable is where we define the types that make up our application schema. This is where we'll define all the operations we want the server to support. It's also where we'll define any custom typs our app needs
   - All the queries need to be defined in the `Query` type. The query definition is made up of 2 parts: a query name and query type
     - The query name can be anything
     - The query type is what type of data is coming back
@@ -665,28 +665,31 @@
 
 ### Comment Challenge
 **Part I**
-  1. Set up a "Comment" type with id and text fields. Both non-nullable
-  2. Set up a "comments" array with 4 comments
-  3. Set up a "comments" query with a resolver that returns all of the comment
-  4. Run a query to get all 4 comments with both id and text fields
+  - Set up Comment Type definition
+    1. Set up a "Comment" type with id and text fields. Both non-nullable
+    2. Set up a "comments" array with 4 comments
+    3. Set up a "comments" query with a resolver that returns all of the comment
+    4. Run a query to get all 4 comments with both id and text fields
+
 **Part II**
   - Goal: Set up a relationship between Comment and User
-  1. Set up an author field on Comment
-  2. Update all comments in an array to have a new author field (use one of the user ids as value)
-  3. Create a resolver for the Comment author field that returns the user who wrote the comment
-  4. Run a sample query that gets all comments and gets the author's name
-  5. Set up a comments field on User
-  6. Set up a resolver for the User comments field that returns all comments belonging to that user
-  7. Run a sample query that gets all users and all their comments
+    1. Set up an author field on Comment
+    2. Update all comments in an array to have a new author field (use one of the user ids as value)
+    3. Create a resolver for the Comment author field that returns the user who wrote the comment
+    4. Run a sample query that gets all comments and gets the author's name
+    5. Set up a comments field on User
+    6. Set up a resolver for the User comments field that returns all comments belonging to that user
+    7. Run a sample query that gets all users and all their comments
+
 **Part III**
   - Goal: Set up a relationship between Comment and User
-  1. Set up a post field on Comment
-  2. Update all comments in the array to have a new post field (use one of the post ids as value)
-  3. Create a resolver for the Comment post field that returns the post that the comment belongs to
-  4. Run a sample query that gets all comments and gets the post name
-  5. Set up a comments field on Post
-  6. Set up a resolver for the Post comments field that returns all comments belonging to that post
-  7. Run a sample query that gets all posts and all their comments
+    1. Set up a post field on Comment
+    2. Update all comments in the array to have a new post field (use one of the post ids as value)
+    3. Create a resolver for the Comment post field that returns the post that the comment belongs to
+    4. Run a sample query that gets all comments and gets the post name
+    5. Set up a comments field on Post
+    6. Set up a resolver for the Post comments field that returns all comments belonging to that post
+    7. Run a sample query that gets all posts and all their comments
 
 
 ## S3: GRAPHQL BASICS: MUTATIONS
@@ -702,7 +705,7 @@
       createUser(name: String!, email: String!, age: Int): User!
     }
     ```
-  - A resolver for createUser Mutation. In resolvers:
+  - A resolver method for createUser Mutation. In resolvers:
     ```javascript
     Mutation: {
       createUser(parent, args, ctx, info) {
@@ -764,7 +767,7 @@
       createPost(title: String!, body: String!, published: Boolean!, author: ID!): Post!
     }
     ```
-  - The resolver for createPost Mutation. In resolvers:
+  - The resolver method for createPost Mutation. In resolvers:
     ```javascript
     Mutation: {
       createPost(parent, args, ctx, info) {
@@ -810,6 +813,18 @@
   }
   ```
 - **createComment Mutation Challenge**
+  - Goal: Allow clients to create a new comment
+    1. Define a new createComment mutation
+      - Should take text, author, and post
+      - Should return a comment
+    2. Define a resolver method for createComment
+      - Confirm that the user exists, else throw error
+      - Confirm that the post exists and is published, else throw error
+      - If they do exist, create th ecomment and return it
+    3. Run the mutation and add a comment
+    4. Use the comments query to verify the comment was added
+
+  **Solution:**
   - Define createComment Mutation
   - In typeDefs:
     ```javascript
@@ -817,7 +832,7 @@
       createComment(text: String, author: ID!, post: ID!): Comment!
     }
     ```
-  - The resolver for createComment Mutation. In resolvers:
+  - The resolver method for createComment Mutation. In resolvers:
     ```javascript
     Mutation: {
       createComment(parent, args, ctx, info) {
@@ -864,12 +879,81 @@
     }
     ```
 
-
 ### The Object Spread Operator with Node.js
+- npm module: babel-plugin-transform-object-rest-spread
+  - This plugin allows Babel to transform rest properties for object destructuring assignment and spread properties for object literals
+- Source: https://www.npmjs.com/package/babel-plugin-transform-object-rest-spread
+- Install: `npm i babel-plugin-transform-object-rest-spread`
+- In .babelrc file:
+  ```javascript
+  {
+    "presets": [
+      "env"
+    ],
+    "plugins": [
+      "transform-object-rest-spread"
+    ]
+  }
+  ```
+- To use:
+  ```javascript
+  const post = {
+    id: cuid(),
+    title: args.title,
+    body: args.body,
+    published: args.published,
+    author: args.author
+  };
 
+  const post = {
+    id: cuid(),
+    // Using the args object spread operator
+    // - spreading the properties in args object to post object
+    ...args
+  };
+  ```
 
 ### The Input Type
+  - Define an input type and then reference it in the arguments list
+  - Inside the curly braces is where we define all of the properties that could exist on an object input/arguments
+  - NOTE: everything inside an input type must be scalar values. Cannot have custom object type
+  - Inside typeDefs:
+    ```javascript
+    input CreateUserInput {
+      name: String!
+      email: String!
+      age: Int
+    }
 
+    type Mutation {
+      createUser(data: CreateUserInput): User!
+    }
+    ```
+  - Performing a createUse Mutation:
+    - Note that data is an object input type
+    ```
+    mutation {
+      createUser(
+        data: {
+          name: "Jess",
+          email: "jess@example.com",
+          age: 11
+        }
+      ) {
+        id
+        posts {
+          id
+        }
+      }
+    }
+    ```
+  - **Challenge Goal: Create input types for createPost and createComment**
+    - Create an input type for createPost with the same fields. Use "data" as arg name
+    - Update createPost resolver to use this new object
+    - Verify application still works by creating a post and then fetching it
+    - Create an input type for createComment with the same fields. Use "data" as arg name
+    - Update createComment resolver to use this new object
+    - Verify application sitll works by creating a comment and then fetching it
 
 ### Deleting Data with Mutations: Part I
 
@@ -924,3 +1008,19 @@
 - cuid
   - Install: `npm i cuid`
   - Import: `import cuid from 'cuid';`
+
+- babel-plugin-transform-object-rest-spread
+  - This plugin allows Babel to transform rest properties for object destructuring assignment and spread properties for object literals
+  - Source: https://www.npmjs.com/package/babel-plugin-transform-object-rest-spread
+  - Install: `npm i babel-plugin-transform-object-rest-spread`
+  - Set up babel plugin in .babelrc file:
+    ```javascript
+    {
+      "presets": [
+        "env"
+      ],
+      "plugins": [
+        "transform-object-rest-spread"
+      ]
+    }
+    ```
