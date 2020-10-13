@@ -807,8 +807,8 @@
     }
   }
   ```
-- **createComment Mutation Challenge - Goal: Allow clients to create a new comment**
-  - Define a new createComment mutation
+- **Challenge - Goal: Allow clients to create a new comment**
+  - Define a new createComment Mutation
     - Should take text, author, and post
     - Should return a comment
   - Define a resolver method for createComment
@@ -941,7 +941,7 @@
     }
   }
   ```
-- **Challenge Goal: Create input types for createPost and createComment**
+- **Challenge - Goal: Create input types for createPost and createComment**
   - Create an input type for createPost with the same fields. Use "data" as arg name
   - Update createPost resolver to use this new object
   - Verify application still works by creating a post and then fetching it
@@ -951,18 +951,19 @@
 
 ### Deleting Data with Mutations: deleteUser Mutation
 - **Define a Delete Mutation for deleting a User**
-  ```javascript
-  type Mutation {
-    deleteUser(id: ID!): User!
-  }
-  ```
+  - Inside typeDefs:
+    ```javascript
+    type Mutation {
+      deleteUser(id: ID!): User!
+    }
+    ```
   - Create a resolver for deleteUser Mutation. In resolvers object:
     ```javascript
     Mutation: {
       deleteUser(parent, args, ctx, info) {
         // Find the user we want to delete
         // .find method returns the actual element in the array
-        // .findIndex returns the index of that element in the array
+        // .findIndex method returns the index of that element in the array
         // Return true if the user id matches the args id and store the user index in userIndex
         const userIndex = users.findIndex((user) => user.id === args.id);
 
@@ -1003,8 +1004,21 @@
   }
   ```
 
-### Deleting Data with Mutations: deletePost Mutation
-
+### Deleting Data with Mutations: deletePost and deleteComment Mutations
+- **Challenge - Goal: Set up a mutation for deleting a post**
+  - Define a mutation. It should take a post id. It should return the deleted post
+  - Define the resolver for the mutation
+    - Check if the post exists, else throw error
+    - Remove and return the post
+    - Remove all comments belonging to that post
+  - Test by running query to delete a post. Verify post/comments are removed
+- **Challenge - Goal: Set up a mutation for deleting a comment**
+  - Define a mutation. It should take a comment id. It should return the deleted comment
+  - Define the resolver for the mutation
+    - Check if the comment exists, else throw error
+    - Remove and return the comment
+    - Remove all comments belonging to that post
+  - Test by running query to delete a comment. Verify comment was removed
 
 ### A Pro GraphQL Project Structure
 

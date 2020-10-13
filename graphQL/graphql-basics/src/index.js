@@ -91,7 +91,9 @@ const typeDefs = `
     createUser(data: CreateUserInput): User!
     deleteUser(id: ID!): User!
     createPost(data: CreatePostInput): Post!
+    deletePost(id: ID!): Post!
     createComment(data: CreateCommentInput): Comment!
+    deleteComment(id: ID!): Comment!
   }
 
   input CreateUserInput {
@@ -204,7 +206,7 @@ const resolvers = {
 		deleteUser(parent, args, ctx, info) {
 			// Find the user we want to delete
 			// .find method returns the actual element in the array
-			// .findIndex returns the index of that element in the array
+			// .findIndex method returns the index of that element in the array
 			// Return true if the user id matches the args id and store the user index in userIndex
 			const userIndex = users.findIndex((user) => user.id === args.id);
 
@@ -252,6 +254,20 @@ const resolvers = {
 
 			return post;
 		},
+		deletePost(parent, args, ctx, info) {
+			const postIndex = posts.findIndex((post) => post.id === args.id);
+
+			// If post.id and the given post id doesn't match, it'll return -1
+			if (postIndex === -1) {
+				throw new Error('Post not found');
+			}
+
+			const deletedPosts = posts.splice(postIndex, 1);
+
+			comments = comments.filter((comment) => comment.post !== args.id);
+
+			return deletedPosts[0];
+		},
 		createComment(parent, args, ctx, info) {
 			const userExists = users.some((user) => user.id === args.data.author);
 			const postExists = posts.some(
@@ -271,6 +287,20 @@ const resolvers = {
 			comments.push(comment);
 
 			return comment;
+		},
+    deleteComment(parent, args, ctx, info) {
+      // Does the comment we want to delete exist in the comments array?
+			const commentIndex = comments.findIndex(
+				(comment) => comment.id === args.id
+			);
+
+			if (commentIndex === -1) {
+				throw new Error('Comment not found');
+			}
+
+			const deletedComments = comments.splice(commentIndex, 1);
+
+			return deletedComments[0];
 		}
 	},
 	Post: {
