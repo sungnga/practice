@@ -27,9 +27,9 @@
 ### GraphQL Queries
 - GraphQL Playground Tool: https://graphql-demo.mead.io
 - There are three major operations we can perform on any graphQL API
-  - The query allows us to fetch data
-  - The mutation allows us to change data
-  - The subscription allows us to watch data for changes, which is great for real time applications
+  - **The query** allows us to fetch data
+  - **The mutation** allows us to change data**
+  - **The subscription** allows us to watch data for changes, which is great for real time applications
 - **GraphQL Query Operation**
   - The query syntax allows the client to describle exactly what data it would like back. The operation name followed by curly braces
   ```
@@ -251,7 +251,7 @@
       age: Int
     }
     ```
-- **Resolvers for a Custom Object Type**
+- **Setting up a Resolver for a Custom Object Type**
   ```javascript
   const resolvers = {
     Query: {
@@ -319,7 +319,7 @@
       add(a: Float!, b: Float!): Float!
     }
     ```
-- **Setting up the resolvers method**
+- **Setting up the Resolver Method**
   - There are 4 arguments that get passed to all resolvers functions: parent, args, context, and info 
     - The args is an object and it contains all of the argument values provided
     ```javascript
@@ -355,7 +355,7 @@
       add(numbers: [Float!]!): Float!
     }
     ```
-- **Set up Resolvers for an Array**
+- **Set up a Resolver for an Array**
   - Set up for all of the arguments in the resolver function, even if we don't use them. This is a good habit to do
   ```javascript
   grades(parent, args, ctx, info) {
@@ -434,29 +434,8 @@
         email: 'mike@example.com'
       }
     ];
-
-    const posts = [
-      {
-        id: '10',
-        title: 'GraphQL 101',
-        body: 'A book about GraphQL',
-        published: false
-      },
-      {
-        id: '11',
-        title: 'Nodejs Mastery',
-        body: 'A book about Node',
-        published: true
-      },
-      {
-        id: '12',
-        title: 'Javascript',
-        body: 'A book about Javascript',
-        published: true
-      }
-    ]
     ```
-- **Set up Resolvers for an Array of Objects**
+- **Set up a Resolver for an Array of Objects**
   - The resolver function is now responsible for returning an array of objects, where each object matches the `User` type
     ```javascript
 		users(parent, args, ctx, info) {
@@ -683,40 +662,225 @@
       }
     }
     ```
-    
+
 ### Comment Challenge
-- **Part I**
-1. Set up a "Comment" type with id and text fields. Both non-nullable
-2. Set up a "comments" array with 4 comments
-3. Set up a "comments" query with a resolver that returns all of the comment
-4. Run a query to get all 4 comments with both id and text fields
-- **Part II**
+**Part I**
+  1. Set up a "Comment" type with id and text fields. Both non-nullable
+  2. Set up a "comments" array with 4 comments
+  3. Set up a "comments" query with a resolver that returns all of the comment
+  4. Run a query to get all 4 comments with both id and text fields
+**Part II**
   - Goal: Set up a relationship between Comment and User
-1. Set up an author field on Comment
-2. Update all comments in an array to have a new author field (use one of the user ids as value)
-3. Create a resolver for the Comment author field that returns the user who wrote the comment
-4. Run a sample query that gets all comments and gets the author's name
-5. Set up a comments field on User
-6. Set up a resolver for the User comments field that returns all comments belonging to that user
-7. Run a sample query that gets all users and all their comments
-- **Part III**
+  1. Set up an author field on Comment
+  2. Update all comments in an array to have a new author field (use one of the user ids as value)
+  3. Create a resolver for the Comment author field that returns the user who wrote the comment
+  4. Run a sample query that gets all comments and gets the author's name
+  5. Set up a comments field on User
+  6. Set up a resolver for the User comments field that returns all comments belonging to that user
+  7. Run a sample query that gets all users and all their comments
+**Part III**
   - Goal: Set up a relationship between Comment and User
-1. Set up a post field on Comment
-2. Update all comments in the array to have a new post field (use one of the post ids as value)
-3. Create a resolver for the Comment post field that returns the post that the comment belongs to
-4. Run a sample query that gets all comments and gets the post name
-5. Set up a comments field on Post
-6. Set up a resolver for the Post comments field that returns all comments belonging to that post
-7. Run a sample query that gets all posts and all their comments
+  1. Set up a post field on Comment
+  2. Update all comments in the array to have a new post field (use one of the post ids as value)
+  3. Create a resolver for the Comment post field that returns the post that the comment belongs to
+  4. Run a sample query that gets all comments and gets the post name
+  5. Set up a comments field on Post
+  6. Set up a resolver for the Post comments field that returns all comments belonging to that post
+  7. Run a sample query that gets all posts and all their comments
 
 
+## S3: GRAPHQL BASICS: MUTATIONS
+
+### Creating Data with Mutations: Part I
+- Install cuid: `npm i cuid`
+- Import in index.js file: `import cuid from 'cuid';`
+- **Defining a Mutation**
+  - createUser Mutation definition
+  - In typeDefs:
+    ```javascript
+    type Mutation {
+      createUser(name: String!, email: String!, age: Int): User!
+    }
+    ```
+  - A resolver for createUser Mutation. In resolvers:
+    ```javascript
+    Mutation: {
+      createUser(parent, args, ctx, info) {
+        // The some method will return true if some users have this email. False if no user has this email
+        const emailTaken = users.some((user) => user.email === args.email);
+
+        // Send an error message to the client
+        if (emailTaken) {
+          throw new Error('Email taken.');
+        }
+
+        // Create a user
+        const user = {
+          id: cuid(),
+          name: args.name,
+          email: args.email,
+          age: args.age
+        };
+
+        // Add the new user to the users array using .push method
+        users.push(user);
+
+        // Return user so the client can get values off of it
+        return user;
+      }
+    }
+    ```
+- **Performing a Mutation on Client side**
+  ```
+  mutation {
+    createUser(name: "Nga", email: "nga2@example.com") {
+      id
+      name
+      email
+      age
+    }
+  }
+  ```
+  - JSON response:
+    ```
+    {
+      "data": {
+        "createUser": {
+          "id": "ckg7ggj9900013mi2hvw998dl",
+          "name": "Nga",
+          "email": "nga2@example.com",
+          "age": null
+        }
+      }
+    }
+    ```
+
+### Creating Data with Mutations: Part II
+- **Muations and Data Associations**
+  - createPost Mutation definition
+  - In typeDefs:
+    ```javascript
+    type Mutation {
+      createPost(title: String!, body: String!, published: Boolean!, author: ID!): Post!
+    }
+    ```
+  - The resolver for createPost Mutation. In resolvers:
+    ```javascript
+    Mutation: {
+      createPost(parent, args, ctx, info) {
+        const userExists = users.some((user) => user.id === args.author);
+
+        if (!userExists) {
+          throw new Error('User not found');
+        }
+
+        // Create a post
+        const post = {
+          id: cuid(),
+          title: args.title,
+          body: args.body,
+          published: args.published,
+          author: args.author
+        };
+
+        // Add the new post to the posts array
+        posts.push(post);
+
+        return post;
+      }
+    }
+    ```
+- **Performing a Mutation on Client Side**
+  ```
+  mutation {
+    createPost(
+      title: "My new post",
+      body: "something",
+      published: false,
+      author: "ckg7hz7sw000195i2hidj4j3b"
+    ) {
+      id
+      title
+      body
+      published
+      author {
+        name
+      }
+    }
+  }
+  ```
+- **createComment Mutation Challenge**
+  - Define createComment Mutation
+  - In typeDefs:
+    ```javascript
+    type Mutation {
+      createComment(text: String, author: ID!, post: ID!): Comment!
+    }
+    ```
+  - The resolver for createComment Mutation. In resolvers:
+    ```javascript
+    Mutation: {
+      createComment(parent, args, ctx, info) {
+        const userExists = users.some((user) => user.id === args.author);
+        const postExists = posts.some(
+          (post) => post.id === args.post && post.published
+        );
+
+        if (!userExists || !postExists) {
+          throw new Error('Unable to find user and post');
+        }
+
+        // Create a comment
+        const comment = {
+          id: cuid(),
+          text: args.text,
+          author: args.author,
+          post: args.post
+        };
+
+        comments.push(comment);
+
+        return comment;
+      }
+    }
+    ```
+  - Performing a Mutation on Client Side
+    ```
+    mutation {
+      createComment(
+        text: "Check out Dido music"
+        author: "2"
+        post: "12"
+      ) {
+        id
+        text
+        author {
+          name
+        }
+        post {
+          title
+        }
+      }
+    }
+    ```
 
 
+### The Object Spread Operator with Node.js
 
 
+### The Input Type
 
 
+### Deleting Data with Mutations: Part I
 
+
+### Deleting Data with Mutations: Part II
+
+
+### A Pro GraphQL Project Structure
+
+
+### Updating Data with Mutations
 
 
 
@@ -757,3 +921,6 @@
     }
     ```
   - Then run `npm start`
+- cuid
+  - Install: `npm i cuid`
+  - Import: `import cuid from 'cuid';`

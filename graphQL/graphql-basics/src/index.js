@@ -1,4 +1,5 @@
 import { GraphQLServer } from 'graphql-yoga';
+import cuid from 'cuid';
 
 // Scalar types - String, Boolean, Int, Float, ID
 
@@ -86,6 +87,12 @@ const typeDefs = `
     post: Post!
   }
 
+  type Mutation {
+    createUser(name: String!, email: String!, age: Int): User!
+    createPost(title: String!, body: String!, published: Boolean!, author: ID!): Post!
+    createComment(text: String, author: ID!, post: ID!): Comment!
+  }
+
   type User {
     id: ID!
     name: String!
@@ -151,6 +158,73 @@ const resolvers = {
 					.includes(args.query.toLowerCase());
 				return isTitleMatch || isBodyMatch;
 			});
+		}
+	},
+	Mutation: {
+		createUser(parent, args, ctx, info) {
+			// The some method will return true if some users have this email. False if no user has this email
+			const emailTaken = users.some((user) => user.email === args.email);
+
+			// Send an error message to the client
+			if (emailTaken) {
+				throw new Error('Email taken.');
+			}
+
+			const user = {
+				id: cuid(),
+				name: args.name,
+				email: args.email,
+				age: args.age
+			};
+
+			// Add the new user to the users array using .push method
+			users.push(user);
+
+			// Return user so the client can get values off of it
+			return user;
+		},
+		createPost(parent, args, ctx, info) {
+			const userExists = users.some((user) => user.id === args.author);
+
+			if (!userExists) {
+				throw new Error('User not found');
+			}
+
+			// Create a post
+			const post = {
+				id: cuid(),
+				title: args.title,
+				body: args.body,
+				published: args.published,
+				author: args.author
+			};
+
+			// Add the new post to the posts array
+			posts.push(post);
+
+			return post;
+		},
+		createComment(parent, args, ctx, info) {
+			const userExists = users.some((user) => user.id === args.author);
+			const postExists = posts.some(
+				(post) => post.id === args.post && post.published
+			);
+
+			if (!userExists || !postExists) {
+				throw new Error('Unable to find user and post');
+			}
+
+			// Create a comment
+			const comment = {
+				id: cuid(),
+				text: args.text,
+				author: args.author,
+				post: args.post
+			};
+
+			comments.push(comment);
+
+			return comment;
 		}
 	},
 	Post: {
