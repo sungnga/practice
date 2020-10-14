@@ -1337,9 +1337,120 @@
   - Don't worry about updatePost or deletePost
 - Test it
 
+### Expanding the Post Subscription for Edits and Deletions
+- Notify subscribers when a post is updated or deleted
+- Modify the post subscription structure. In schema.graphql.js file:
+  - We need to restructure the post subscription type definition to let the client know about the data they are receiving. For example, did they receive this post because it's a new post, an updated post, or a deleted post?
+  - The value type assigned to post subscription is PostSubscriptionPayload type
+  - The PostSubscriptionPayload type is an object with 2 properties:
+    - The mutation property is of String type and it's an ACTION type performed on data the client received. For example, this data/post was CREATED, UPDATED, or DELETED
+    - The data property is the data they're receiving, the Post object
+    ```js
+    type PostSubscriptionPayload {
+      mutation: String!
+      data: Post!
+    }
 
+    type Subscription {
+      comment(postId: ID!): Comment!
+      post: PostSubscriptionPayload!
+    }
+    ```
+- Nothing is changed in the Subscription.js for post resolver method
+- In Mutation.js file:
+  - In createPost() method and inside the .publish() method:
+    - The data we publish is a post object, instead of a plain post, that contains the 2 properties that we defined in the PostSubscriptionPayload type definition
+    - The mutation property is a string describing the ACTION type that was performed on data they're receiving. For example, this data/post was CREATED, UPDATED, or DELETED
+    ```js
+    if (args.data.published) {
+      pubsub.publish('post', { 
+        post: {
+          mutation: 'CREATED',
+          data: post
+        }
+        });
+    }
+    ```
+  - In deletePost() method:
+    - Destructure pubsub
+    - Check to see if the deleted post is published. If it is, call pubsub.publish to notify the subscribers 
+    ```javascript
+    deletePost(parent, args, { db, pubsub }, info) {
+      const postIndex = db.posts.findIndex((post) => post.id === args.id);
 
+      // If post.id and the given post id doesn't match, it'll return -1
+      if (postIndex === -1) {
+        throw new Error('Post not found');
+      }
 
+      const deletedPosts = db.posts.splice(postIndex, 1);
+
+      db.comments = db.comments.filter((comment) => comment.post !== args.id);
+
+      if (deletedPosts[0].published) {
+        pubsub.publish('post', {
+          post: {
+            mutation: 'DELETED',
+            data: deletedPosts[0]
+          }
+        });
+      }
+
+      return deletedPosts[0];
+    }
+    ```
+  - In updatePost() method:
+    ```js
+    updatePost(parent, args, { db, pubsub }, info) {
+      const { id, data } = args;
+      const post = db.posts.find((post) => post.id === id);
+      const originalPost = { ...post };
+
+      if (!post) {
+        throw new Error('Post not found');
+      }
+
+      if (typeof data.title === 'string') {
+        post.title = data.title;
+      }
+
+      if (typeof data.body === 'string') {
+        post.body = data.body;
+      }
+
+      if (typeof data.published === 'boolean') {
+        post.published = data.published;
+
+        if (originalPost.published && !post.published) {
+          // deleted
+          pubsub.publish('post', {
+            post: {
+              mutation: 'DELETED',
+              data: originalPost
+            }
+          });
+        } else if (!originalPost.published && post.published) {
+          // created
+          pubsub.publish('post', {
+            post: {
+              mutation: 'CREATED',
+              data: post
+            }
+          });
+        }
+      } else if (post.published) {
+        // updated
+        pubsub.publish('post', {
+          post: {
+            mutation: 'UPDATED',
+            data: post
+          }
+        });
+      }
+
+      return post;
+    }
+    ```
 
 
 
