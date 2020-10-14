@@ -205,11 +205,16 @@ const Mutation = {
 		// This method takes 2 args
 		// - 1st arg is a string channel name
 		// - 2nd arg is an object of the data being sent
-		pubsub.publish(`comment ${args.data.post}`, { comment });
+		pubsub.publish(`comment ${args.data.post}`, {
+			comment: {
+				mutation: 'CREATED',
+				data: comment
+			}
+		});
 
 		return comment;
 	},
-	deleteComment(parent, args, { db }, info) {
+	deleteComment(parent, args, { db, pubsub }, info) {
 		// Does the comment we want to delete exist in the comments array?
 		const commentIndex = db.comments.findIndex(
 			(comment) => comment.id === args.id
@@ -219,11 +224,17 @@ const Mutation = {
 			throw new Error('Comment not found');
 		}
 
-		const deletedComments = db.comments.splice(commentIndex, 1);
+		const [deletedComment] = db.comments.splice(commentIndex, 1);
+		pubsub.publish(`comment ${deletedComment.post}`, {
+			comment: {
+				mutation: 'DELETED',
+				data: deletedComment
+			}
+		});
 
-		return deletedComments[0];
+		return deletedComment;
 	},
-	updateComment(parent, args, { db }, info) {
+	updateComment(parent, args, { db, pubsub }, info) {
 		const { id, data } = args;
 		const comment = db.comments.find((comment) => comment.id === id);
 
@@ -234,6 +245,13 @@ const Mutation = {
 		if (typeof data.text === 'string') {
 			comment.text = data.text;
 		}
+
+		pubsub.publish(`comment ${comment.post}`, {
+			comment: {
+				mutation: 'UPDATED',
+				data: comment
+			}
+		});
 
 		return comment;
 	}

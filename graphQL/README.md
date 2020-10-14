@@ -1337,7 +1337,7 @@
   - Don't worry about updatePost or deletePost
 - Test it
 
-### Expanding the Post Subscription for Edits and Deletions
+### Expanding the Posts Subscription for Edits and Deletions
 - Notify subscribers when a post is updated or deleted
 - Modify the post subscription structure. In schema.graphql.js file:
   - We need to restructure the post subscription type definition to let the client know about the data they are receiving. For example, did they receive this post because it's a new post, an updated post, or a deleted post?
@@ -1451,9 +1451,43 @@
       return post;
     }
     ```
+- Subscribe to a post on client-side. Try to create, update, and delete a post
+  ```
+  subscription {
+    post {
+      mutation
+      data {
+        id
+        title
+        author {
+          name
+        }
+      }
+    }
+  }
+  ```
 
-
-
+### Expanding the Comments Subscription for Edits and Deletions
+**Goal: Setup CREATED, UPDATED, and DELETED for comment description**
+- Set up a custom payload type for comment subscription with "mutation" and "data"
+- Update publish call in createComment to send back CREATED with the data
+- Add publish call in deleteComment using DELETED event. Destructure pubsub
+- Add publish call in updateComment using UPDATED event. Destructure pubsub
+- Test by creating, updating, and deleting a comment
+  ```
+  subscription {
+    comment(postId: "10") {
+      mutation
+      data {
+        id
+        text
+        author {
+          name
+        }
+      }
+    }
+  }
+  ```
 
 
 
