@@ -138,7 +138,7 @@ const Mutation = {
 
 		return post;
 	},
-	createComment(parent, args, { db }, info) {
+	createComment(parent, args, { db, pubsub }, info) {
 		const userExists = db.users.some((user) => user.id === args.data.author);
 		const postExists = db.posts.some(
 			(post) => post.id === args.data.post && post.published
@@ -155,6 +155,11 @@ const Mutation = {
 		};
 
 		db.comments.push(comment);
+		// Publish the comment to subscribers using the .publish() method on pubsub
+		// This method takes 2 args
+		// - 1st arg is a string channel name
+		// - 2nd arg is an object of the data being sent
+		pubsub.publish(`comment ${args.data.post}`, {comment})
 
 		return comment;
 	},

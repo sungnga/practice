@@ -1230,7 +1230,9 @@
       // - This function returns something from pubsub and call the .asyncIterator() method on pubsub
       // - asyncIterator method takes a string channel name as an argument. The asyncIterator method sets up the channel
       // - The .publish() method publishes the data to all the subscribers
-      // - The publish method takes 2 args: 1st arg is the channel name and 2nd arg is an object which contains the data that get sent to the client
+      // - The publish method takes 2 args: 
+      //  - 1st arg is the channel name
+      //  - 2nd arg is an object which contains the data that get sent to the client
       count: {
         subscribe(parent, args, { pubsub }, info) {
           let count = 0;
@@ -1258,12 +1260,73 @@
   }
   ```
 
+### Setting up a Comments Subscription
+- Defining the comment subscription
+  - In schema.graphql file:
+    ```js
+    type Subscription {
+      comment(postId: ID!): Comment!
+    }
+    ```
+- Create a resolver method for the comment subscription
+  - In Subscription.js file:
+    ```js
+    const Subscription = {
+      comment: {
+        subscribe(parent, { postId }, { db, pubsub }, info) {
+          const post = db.posts.find((post) => post.id === postId && post.published)
 
+          if (!post) {
+            throw new Error('Post not found')
+          }
 
+          // Setup and return the channel
+          return pubsub.asyncIterator(`comment ${postId}`) // "comment 22"
+        }
+      }
+    }
+    ```
+- Publish the comment to subscribers
+  - In Mutation.js file:
+    ```js
+    createComment(parent, args, { db, pubsub }, info) {
+      const userExists = db.users.some((user) => user.id === args.data.author);
+      const postExists = db.posts.some(
+        (post) => post.id === args.data.post && post.published
+      );
 
+      if (!userExists || !postExists) {
+        throw new Error('Unable to find user and post');
+      }
 
+      // Create a comment
+      const comment = {
+        id: cuid(),
+        ...args.data
+      };
 
+      db.comments.push(comment);
+      // Publish the comment to subscribers using the .publish() method on pubsub
+      // This method takes 2 arguments
+      // - 1st arg is a string channel name
+      // - 2nd arg is an object of the data being sent
+      pubsub.publish(`comment ${args.data.post}`, {comment})
 
+      return comment;
+    }
+    ```
+- Subscribing to comment on client-side
+  ```
+  subscription {
+    comment(postId: "10") {
+      id
+      text
+      author {
+        name
+      }
+    }
+  }
+  ```
 
 
 
