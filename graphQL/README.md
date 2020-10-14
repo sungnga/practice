@@ -1184,6 +1184,94 @@
   - Verify by updating all properties for a given comment
 
 
+## S4: GRAPHQL BASICS: SUBSCRIPTIONS
+
+### GraphQL Subscription Basics
+- Subscriptions give clients a way to subscribe to data changes and get notified by the server when data changes
+- Subscriptions make it possible to create real-time applications where the client renders data changes in real-time
+- The subscription operation is similar to the Query operation. The difference is how the data is fetched. With the subscription, we use web sockets to keep an open connection between the client and the server. That allows the server to transmit data direct to the client
+- The subscriptions are defined in the type definition, in schema.graphql file
+- graphql-yoga uses the graphql-subscriptions library, which we will use to create our subscription. The graphql-subscriptions provides a simple pubsub utility. Use Pub(publish) Sub(subscribe) features to allow us to communicate around our application
+
+**Configure subscription**
+- In index.js file:
+  - Import PubSub: `import { GraphQLServer, PubSub } from 'graphql-yoga';`
+  - Create a new pubsub instance using the `new PubSub()` method
+    - `const pubsub = new PubSub();`
+  - Add the pubsub instance to the context property in the server 
+    ```javascript
+    context: {
+      db,
+      pubsub
+    }
+    ```
+
+**Define Subscription type**
+- This is the third type of operator we can define in the type definition
+- In schema.graphql file:
+  - To define a subscription, give the subscription name in the type Subscription and define the value type this subscription returns
+  ```javascript
+  type Subscription {
+    count: Int!
+  }
+  ```
+
+**Create a resolver function for subscription**
+- In Subscription.js file:
+  - Inside the Subscription object:
+    ```js
+    const Subscription = {
+      // The property name needs to match up with the name of the subscription defined in type definition
+      // Unlike Query and Mutation, the value for count is not a method, it's an object
+      // On this object, setup a subscribe() method
+      // - The subscribe method runs every time someone tries to subscribe to count
+      // - It's a resolver method, so has all the regular arguments a resolver method gets
+      // - Destructure the pubsub property from context argument
+      // - This function returns something from pubsub and call the .asyncIterator() method on pubsub
+      // - asyncIterator method takes a string channel name as an argument. The asyncIterator method sets up the channel
+      // - The .publish() method publishes the data to all the subscribers
+      // - The publish method takes 2 args: 1st arg is the channel name and 2nd arg is an object which contains the data that get sent to the client
+      count: {
+        subscribe(parent, args, { pubsub }, info) {
+          let count = 0;
+
+          setInterval(() => {
+            count++;
+            pubsub.publish('count', {
+              count
+            });
+          }, 2000);
+
+          return pubsub.asyncIterator('count');
+        }
+      }
+    };
+
+    export { Subscription as default };
+    ```
+
+**Performing the Subscription on client side**
+  - This subscription returns an integer, a scalar value
+  ```
+  subscription {
+    count
+  }
+  ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

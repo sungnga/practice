@@ -183,6 +183,8 @@ const Mutation = {
 		if (typeof data.text === 'string') {
 			comment.text = data.text;
 		}
+
+		return comment
 	}
 };
 
