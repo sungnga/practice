@@ -1286,7 +1286,7 @@
       }
     }
     ```
-- Publish the comment to subscribers
+- Publish the new comment data to subscribers
   - In Mutation.js file:
     ```js
     createComment(parent, args, { db, pubsub }, info) {
@@ -1315,7 +1315,7 @@
       return comment;
     }
     ```
-- Subscribing to comment on client-side
+- Subscribing to a comment on client-side
   ```
   subscription {
     comment(postId: "10") {
@@ -1327,6 +1327,15 @@
     }
   }
   ```
+
+### Setting up a Posts Subscription
+**Goal: Create a subscription for new posts**
+- Define "post" subscription. No arguments are necessary. Response should be a post object
+- Setup the resolver for post. Since there are no args, a channel name like "post" is fine
+- Modify the mutation for creating a post to publish the new post data
+  - Only call pubsub.publish if the post had "published" set to true
+  - Don't worry about updatePost or deletePost
+- Test it
 
 
 
