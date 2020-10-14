@@ -1489,6 +1489,43 @@
   }
   ```
 
+### Enums (enumerations) in GraphQL
+- Enum:
+  - A special type that defines a set of constants
+  - This type can then be used as the type for a field (similar to scalar and custom object types)
+  - Values for the field must be one of the constants for the type
+- In schema.graphql file:
+  - Use enum for mutation type
+  ```js
+  enum MutationType {
+    CREATED
+    UPDATED
+    DELETED
+  }
+
+  type PostSubscriptionPayload {
+    mutation: MutationType!
+    data: Post!
+  }
+
+  type CommentSubscriptionPayload {
+    mutation: MutationType!
+    data: Comment!
+  }
+  ```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
