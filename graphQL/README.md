@@ -31,7 +31,7 @@
   - **The mutation** allows us to change data**
   - **The subscription** allows us to watch data for changes, which is great for real time applications
 - **GraphQL Query Operation**
-  - The query syntax allows the client to describle exactly what data it would like back. The operation name followed by curly braces
+  - The query syntax allows the client to describe exactly what data it would like back. The operation name followed by curly braces
   ```
   query {
     specify the field name we want from the graphQL API. One field per line
@@ -42,14 +42,14 @@
   - The response getting back is in JSON format. All of the response data can be found on the 'data' property
   - The response structure will match up with the query structure
 - **GraphQL Schema**
-  - Anohter great feature of GraphQL is that it's self-documenting. GraphQL APIs expose a schema that describes exactly what operations could be performed on the API and what data could be requested. If the field does not exist, it will give an error message
+  - Another great feature of GraphQL is that it's self-documenting. GraphQL APIs expose a schema that describes exactly what operations could be performed on the API and what data could be requested. If the field does not exist, it will give an error message
   - With REST APIs, someone needs to manually write and update documentation. Sometimes these documentations may be outdated or doesn't exist. This makes it hard to locate the data we need
   - It enables tools like GraphQL Playground to validate the structure of your operation before ever sending the operation to the server
 
 ### Nested GraphQL Queries
 - When querying on an object, we must specify which fields from that object we want
 - **Custom Types:**
-  - GraphQL allows you to defien custom types specific to your application. A customtype is nothing more than a template for an object
+  - GraphQL allows you to define custom types specific to your application. A custom type is nothing more than a template for an object
   - GraphQL is strongly typed language. All the data you have access to is of a specific type which can be found in the schema. Afield like 'course' might resolve to a string value, while a field like 'me' might resolve to a custom type such as a 'User' type
   - When querying for a custom type, the resolved JSON value is an object. Your query needs to explicitly list out all the fields it wants from the object
   - Let's say that the resolved value of the 'me' query is of the 'User' type. A selection set needs to be provided for the 'me' query. The following valid query defines a selection set for 'me' by requesting the 'id', 'name', and 'email' of the User type
@@ -98,7 +98,7 @@
 ### Creating Your Own GraphQL API
 - **Picking a Server: graphql-yoga**
   - Install graphql-yoga: `npm i graphql-yoga`
-  - GraphQL is nothing more than a specification for how GraphQL works. It's not an implementation. Before we can use GraphQL, we need to pick an implementation that works with the language/stack we're using. With Node.js, graphql-yoga is a great option. It supoorts the entire GraphQL spec
+  - GraphQL is nothing more than a specification for how GraphQL works. It's not an implementation. Before we can use GraphQL, we need to pick an implementation that works with the language/stack we're using. With Node.js, graphql-yoga is a great option. It supports the entire GraphQL spec
   - Now we can use graphql-yoga to create our GraphQL API server. Here's the barebone implementation
     - In index.js file:
     ```javascript
@@ -133,7 +133,7 @@
     ```
 - **Schema**
   - Type definitions or schema describes the operations and data structures. The schema also defines what the data looks like
-  - The typeDefs variable is where we define the types that make up our application schema. This is where we'll define all the operations we want the server to support. It's also where we'll define any custom typs our app needs
+  - The typeDefs variable is where we define the types that make up our application schema. This is where we'll define all the operations we want the server to support. It's also where we'll define any custom types our app needs
   - All the queries need to be defined in the `Query` type. The query definition is made up of 2 parts: a query name and query type
     - The query name can be anything
     - The query type is what type of data is coming back
@@ -146,7 +146,7 @@
   `
   ```
 - **Resolvers**
-  - While `typeDefs` allows us to define the operatoins, it's the resolvers that contain the code that runs when an operation is executed
+  - While `typeDefs` allows us to define the operations, it's the resolvers that contain the code that runs when an operation is executed
   - Notice that the `resolvers` object mirrors the structure of `typeDefs`
   - When query hello, the hello function inside the resolvers object, inside the Query object will execute
   ```javascript
@@ -535,7 +535,7 @@
       author: '1'
     } 
     ```
-  - This relationship requires a new resolver method. This new method is responsible for returning the user for a given post. Notice that the `author` method lives on a new `Post` property at the root proprty of `resolvers` contant, not on `Query` property
+  - This relationship requires a new resolver method. This new method is responsible for returning the user for a given post. Notice that the `author` method lives on a new `Post` property at the root property of `resolvers` constant, not on `Query` property
   - For associations, the root property name needs to match up with the object type name. The method name needs to match up with a new field name
   - The data post is provided via the 1st argument, which is typically named `parent`. This means `parent.author` is where the author id can be accessed and used to determine which user is the author for the post
     ```javascript
@@ -754,7 +754,7 @@
     ```
 
 ### Creating Data with Mutations: Part II
-- **Muations and Data Associations**
+- **Mutations and Data Associations**
   - createPost Mutation definition
   - In typeDefs:
     ```javascript
@@ -814,7 +814,7 @@
   - Define a resolver method for createComment
     - Confirm that the user exists, else throw error
     - Confirm that the post exists and is published, else throw error
-    - If they do exist, create th ecomment and return it
+    - If they do exist, create the comment and return it
   - Run the mutation and add a comment
   - Use the comments query to verify the comment was added
 
@@ -947,7 +947,7 @@
   - Verify application still works by creating a post and then fetching it
   - Create an input type for createComment with the same fields. Use "data" as arg name
   - Update createComment resolver to use this new object
-  - Verify application sitll works by creating a comment and then fetching it
+  - Verify application still works by creating a comment and then fetching it
 
 ### Deleting Data with Mutations: deleteUser Mutation
 - **Define a Delete Mutation for deleting a User**
@@ -1005,26 +1005,27 @@
   ```
 
 ### Deleting Data with Mutations: deletePost and deleteComment Mutations
-- **Challenge - Goal: Set up a mutation for deleting a post**
-  - Define a mutation. It should take a post id. It should return the deleted post
-  - Define the resolver for the mutation
-    - Check if the post exists, else throw error
-    - Remove and return the post
-    - Remove all comments belonging to that post
-  - Test by running query to delete a post. Verify post/comments are removed
-- **Challenge - Goal: Set up a mutation for deleting a comment**
-  - Define a mutation. It should take a comment id. It should return the deleted comment
-  - Define the resolver for the mutation
-    - Check if the comment exists, else throw error
-    - Remove and return the comment
-    - Remove all comments belonging to that post
-  - Test by running query to delete a comment. Verify comment was removed
+**Challenge - Goal: Set up a mutation for deleting a post**
+- Define a mutation. It should take a post id. It should return the deleted post
+- Define the resolver for the mutation
+  - Check if the post exists, else throw error
+  - Remove and return the post
+  - Remove all comments belonging to that post
+- Test by running query to delete a post. Verify post/comments are removed
+
+**Challenge - Goal: Set up a mutation for deleting a comment**
+- Define a mutation. It should take a comment id. It should return the deleted comment
+- Define the resolver for the mutation
+  - Check if the comment exists, else throw error
+  - Remove and return the comment
+  - Remove all comments belonging to that post
+- Test by running query to delete a comment. Verify comment was removed
 
 ### A Pro GraphQL Project Structure
 - In src folder, create a file called schema.graphql. In schema.graphql file:
   - This file contains all of the type definitions
 - In src folder, create a file called db.js. In db.js file:
-  - This file contains the database that's being shared across the applicatoin. For now, it contains the static data for users, posts, and comments arrays
+  - This file contains the database that's being shared across the application. For now, it contains the static data for users, posts, and comments arrays
 - Set up context for the application
   - Context contains values that are universal and shared across the application
   - Database/db will be one of the contexts
@@ -1105,8 +1106,82 @@
   ```
 
 ### Updating Data with Mutations
+- **Defining updateUser Mutation**
+  - In schema.graphql file:
+    ```javascript
+    type Mutation {
+      updateUser(id: ID!, data: UpdateUserInput!): User!
+    }
 
+    input UpdateUserInput {
+      name: String
+      email: String
+      age: Int
+    }
+    ```
+- **Create resolver method**
+  - In Mutation.js file:
+    - Write a resolver method for updateUser Mutation
+    ```javascript
+    updateUser(parent, args, { db }, info) {
+      // Destructure id and data properties from args
+      const { id, data } = args;
+      // Find the user
+      const user = db.users.find((user) => user.id === id);
 
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      if (typeof data.email === 'string') {
+        const emailTaken = db.users.some((user) => user.email === data.email);
+
+        if (emailTaken) {
+          throw new Error('Email taken');
+        }
+
+        user.email = data.email;
+      }
+
+      if (typeof data.name === 'string') {
+        user.name = data.name;
+      }
+
+      if (typeof data.age !== 'undefined') {
+        user.age === data.age;
+      }
+
+      // Return the updated user
+      return user;
+    }
+    ```
+- **Performing the updateUser Mutation on Client Side**
+  ```
+  mutation {
+    updateUser(id: "1", data:{name: "Mike", age: null, email: "mike22@example.com"}) {
+      id
+      name
+      email
+      age
+    }
+  }
+  ```
+- **Challenge - Goal: Set up a mutation for updating a post**
+  - Define mutation
+    - Add id/data for arguments. Setup data to support title, body, and published
+    - Return the updated post
+  - Create resolver method
+    - Verify post exists, else throw error
+    - Update post properties one at a time
+  - Verify by updating all properties for a given post
+- **Challenge - Goal: Set up a mutation for updating a comment**
+  - Define mutation
+    - Add id/data for arguments. Setup data to support text
+    - Return the updated comment
+  - Create resolver method
+    - Verify comment exists, else throw error
+    - Update comment properties one at a time
+  - Verify by updating all properties for a given comment
 
 
 
