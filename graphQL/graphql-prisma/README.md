@@ -51,7 +51,8 @@
 ### Prisma 101: Create Project with Prisma and Docker
 - Prisma website: https://www.prisma.io/
 - A blog post on how to create project with Prisma: https://medium.com/better-programming/prisma-graphql-how-to-9a3d09419e93
-- Install the Prisma module globally: `sudo npm i -g prisma` <br>
+- Install the Prisma module globally: `sudo npm i -g prisma`
+
 **1. Set Up Prisma**
 - Create a new directory and call it graphql-prisma
 - Cd into this directory and create an empty folder called prisma
@@ -59,7 +60,8 @@
   - Run: `prisma init --endpoint http://localhost:4466`
   - This process will create 2 files inside the prisma directory
     - datamodel.prisma file - This defines the GraphQL API for Prisma. That would be what we access at localhost:4466 and Prisma is what we interact with from our Node.js application. This file also determines what the data in our database is going to look like
-    - prisma.yml file - contains the endpoint and datamodel <br>
+    - prisma.yml file - contains the endpoint and datamodel
+
 **2. Set Up Docker**
 - Inside the prisma directory:
   - Create a file called docker.compose.yml and fill in the Postgres database credentials and port setup
@@ -136,6 +138,100 @@
       author {
         id
         name
+      }
+    }
+  }
+  ```
+
+### Adding Comment Type to Prisma
+**Goal: Add comments to Prisma API**
+  - Copy the comment type definition and mark the id as unique
+  - Redeploy the Prisma app
+  - Work with the comment API in GraphQL Playground
+    - Update our only post to be published
+    - Create a new user
+    - Have a new user comment on the one existing post (refer to schema for usage)
+    - Fetch all comments (include comment text and author name)
+- In datamodel.prisma file:
+  ```graphql
+  type Comment {
+    id: ID! @id
+    text: String!
+    author: User!
+    post: Post!
+  }
+  ```
+- In GraphQL Playground: query users
+  ```
+  query {
+    users{
+      id
+      name
+      email
+      posts {
+        id
+        title
+      }
+    }
+  }
+  ```
+- In GraphQL Playground: updatePost mutation
+  ```
+  mutation {
+    updatePost(
+      where: {
+        id: "ckgcm1sd700680807waza8p97"
+      },
+      data: {
+        published: true
+      }
+    ){
+      id
+      title
+      body
+      published
+    }
+  }
+  ```
+- In GraphQL Playground: createComment mutation
+  ```
+  mutation {
+    createComment(
+      data: {
+        text: "A comment from Prisma GraphQL"
+        author: {
+          connect: {
+            id: "ckgcn8djy008b0807zznc12ld"
+          }
+        }
+        post: {
+          connect: {
+            id: "ckgcm1sd700680807waza8p97"
+          }
+        }
+      }
+    ){
+      id
+      text
+      author {
+        name
+      }
+    }
+  }
+  ```
+- In GraphQL Playground: fetch all comments
+  ```
+  {
+    comments {
+      id
+      text
+      author {
+        id
+        name
+      }
+      post {
+        id
+        title
       }
     }
   }
