@@ -51,15 +51,15 @@
 ### Prisma 101: Create Project with Prisma and Docker
 - Prisma website: https://www.prisma.io/
 - A blog post on how to create project with Prisma: https://medium.com/better-programming/prisma-graphql-how-to-9a3d09419e93
-- Install the Prisma module globally: `sudo npm i -g prisma`
+- Install the Prisma module globally: `sudo npm i -g prisma` <br>
 **1. Set Up Prisma**
 - Create a new directory and call it graphql-prisma
 - Cd into this directory and create an empty folder called prisma
 - Inside the prisma directory:
   - Run: `prisma init --endpoint http://localhost:4466`
   - This process will create 2 files inside the prisma directory
-    - datamodel.prisma file - contains the schema
-    - prisma.yml file - contains the endpoint and datamodel
+    - datamodel.prisma file - This defines the GraphQL API for Prisma. That would be what we access at localhost:4466 and Prisma is what we interact with from our Node.js application. This file also determines what the data in our database is going to look like
+    - prisma.yml file - contains the endpoint and datamodel <br>
 **2. Set Up Docker**
 - Inside the prisma directory:
   - Create a file called docker.compose.yml and fill in the Postgres database credentials and port setup
@@ -70,3 +70,73 @@
 - Make sure you're still in the prisma directory, and run: `docker-compose up -d`. This will start up the Prisma service
 - Then run: `prisma deploy`. This will deploy the datamodel.prisma file to the Prisma service
 - If the deployment is successful, visit http://localhost:4466/_admin in the browser. This is the GraphQL Playground that is connected to the GraphQL API provided by Prisma
+
+### Adding Post Type to Prisma
+- **The functions of the datamodel.prisma file:**
+  - This file is used by Prisma to determine the database structure
+  - This file is used to generate the graphQL API schema
+- Whenever making changes to the datamodel.graphql file, run `prisma deploy` to send the schema to Prisma
+- **Attributes**
+  - Attributes modify the behavior of a field or block (e.g models). There are two ways to add attributes to your data model:
+    - Field attributes are prefixed with `@`
+    - Block attributes are prefixed with `@@`
+  - `@id` - Defines a single-field ID on the model
+  - `@unique` - Defines a unique constraint for this field
+- In datamodel.prisma file:
+  - Add email field to the User type
+  - Set up Post type
+  - Set up the relationship between the Post and User. Prisma will generate a PostToUser (Relation) table
+  ```graphql
+  type User {
+    id: ID! @id
+    name: String!
+    email: String! @unique
+    posts: [Post!]!
+  }
+
+  type Post {
+    id: ID! @id
+    title: String!
+    body: String!
+    published: Boolean!
+    author: User!
+  }
+  ```
+- In GraphQL Playground: createUser mutation
+  ```
+  mutation{
+    createUser(data: {
+      name: "Nga"
+      email: "nga@example.com"
+    }){
+      id
+      name
+      email
+    }
+  }
+  ```
+- In GraphQL Playground: createPost mutation
+  ```
+  mutation {
+    createPost(
+      data: {
+        title: "Prisma post"
+        body: ""
+        published: false
+        author: {
+          connect: {
+            id: "ckgckdkee003y0807rfr971c3"
+          }
+        }
+      }
+    ){
+      id
+      title
+      published
+      author {
+        id
+        name
+      }
+    }
+  }
+  ```
