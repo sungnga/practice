@@ -6,15 +6,18 @@
   "scripts": {
     "start": "nodemon src/index.js --ext js,graphql --exec babel-node",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "get-schema": "graphql get-schema -p prisma"
+    "get-schema": "fetch-graphql-schema http://localhost:4466 -o src/generated/prisma.graphql -r"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@graphql-cli/codegen": "^1.17.11",
+    "@graphql-codegen/schema-ast": "^1.17.8",
     "babel-cli": "^6.26.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "cuid": "^2.1.8",
+    "fetch-graphql-schema": "^0.2.1",
     "graphql-cli": "^4.1.0",
     "graphql-yoga": "^1.14.10",
     "prisma-binding": "^2.3.16"

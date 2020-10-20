@@ -257,34 +257,39 @@
         - The typeDefs property. The type definitions for the endpoint that we're connecting to. This is necessary so the the prisma-binding library can generate all of the various methods needed
         - The endpoint property. It specifies the actual URL where the Prisma GraphQL API lives
       ```javascript
+      import { Prisma } from 'prisma-binding';
 
+      const prisma = new Prisma({
+        typeDefs: 'src/generated/prisma.graphql',
+        endpoint: 'localhost:4466'
+      });
       ```
   - Install graphql-cli (command line interface) tool library:
     - The `graphql get-schema` command. This command allows us to fetch the schema and save it as a file in our project
-    - In graphql-prisma directory, run: `npm i graphql-cli`
-  - At the root of the project directory, create a file called .graphqlconfig
-    - This is a json file that contains 2 pieces of information for the configuration: where does the schema live and where should it be saved
-    - The schemaPath property is the path where the file should be saved. It is a common practice to create a folder called generated inside the src folder. And inside this generated folder, have a file called prisma.graphql. This file is where we have the type definitions saved. This path is the path we specify in the typeDefs property when we create a connection to Prisma endpoint
-    - The extensions property is where we specify the endpoint property which is the URL protocol we're using
+    - In graphql-prisma directory, run: `npm i graphql-cli @graphql-cli/codegen @graphql-codegen/schema-ast`
+  - At the root of the project directory, create a file called .graphqlrc.yml
+    - This file contains 2 pieces of information for the configuration: where does the schema live and where should it be saved
+    - The name of our project is called prisma and the schema property is where we specify the URL protocol we're using
+    - The codegen property is the path where the file should be saved. It is a common practice to create a folder called generated inside the src folder. And inside this generated folder, have a file called prisma.graphql. When we run the script `npm run get-schema`, it'll connect to that endpoint and fetch the schema and store it in our application, in generated/prisma.graphql file. Everything necessary for the Prisma GraphQL API to work lives inside of this file
     ```js
-    {
-      "projects": {
-        "prisma": {
-          "schemaPath": "src/generated/prisma.graphql",
-          "extension": {
-            "endpoints": {
-              "default": "http://localhost:4466"
-            }
-          }
-        }
-      }
-    }
+    projects:
+        prisma:
+          schema:
+            - http://localhost:4466
+          extensions:
+            codegen:
+              generates:
+                ./src/generated/prisma.graphql:
+                  plugins:
+                    - schema-ast
     ```
   - Last step to the configuration is creating a get-schema script in package.json file:
+    - Install: `npm i fetch-graphql-schema`
     ```js
     "scripts": {
-      "start": "nodemon src/index.js --ext js,graphql --exec babel-node",
-      "test": "echo \"Error: no test specified\" && exit 1",
-      "get-schema": "graphql get-schema -p prisma"
+      "get-schema": "fetch-graphql-schema http://localhost:4466 -o src/generated/prisma.graphql -r"
     },
     ```
+    - Run: `npm run get-schema`
+    - This will generate the generated/prisma.graphql file containing the long-version of the type definitions for Prisma GraphQL API
+    - If we want to make a change to a field or add another type to the datamodel.graphql, we would deploy to Docker container using `prisma deploy` and then fetch the updated schema by running the graphql-cli script`npm run get-schema`
