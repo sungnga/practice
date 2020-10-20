@@ -144,7 +144,7 @@
   ```
 
 ### Adding Comment Type to Prisma
-**Goal: Add comments to Prisma API**
+- **Goal: Add comments to Prisma API**
   - Copy the comment type definition and mark the id as unique
   - Redeploy the Prisma app
   - Work with the comment API in GraphQL Playground
@@ -236,3 +236,55 @@
     }
   }
   ```
+
+### Integrating Prisma into a Node.js Project
+- Integrate Nodejs and Prisma together. Our goal is to allow our Nodejs application to read and write from the Postgres database. Currently, the Prisma GraphQL API can read and write from the Postgres database. Now we need to configure Nodejs to interact with this API, then Nodejs will be able to read and write from the Postgres database
+- **Configure Node.js**
+  - Copy and paste the following files/folders from graphql-basics directory to graphql-prisma directory
+    - node_modules folder
+    - src folder
+    - .babelrc file
+    - package-loc.json file
+    - package.json file
+  - Install prisma-binding library:
+    - cd into graphql-prisma directory and run: `npm i prisma-binding`
+    - Gives us bindings for Node.js. It gives us a set of Nodejs methods that we can use to interact with Prisma GraphQL API
+  - Inside src folder, create a file called prisma.js. In this file:
+    - Import the Prisma constructor function: `import { Prisma } from 'prisma-binding';`
+    - Create a connection to a Prisma endpoint using the Prisma constructor function. Store the value in a prisma constant
+      - This constructor function takes an object argument. This is the options object and this is where we configure Nodejs to the correct Prisma endpoint
+      - We have two provide 2 things in this object:
+        - The typeDefs property. The type definitions for the endpoint that we're connecting to. This is necessary so the the prisma-binding library can generate all of the various methods needed
+        - The endpoint property. It specifies the actual URL where the Prisma GraphQL API lives
+      ```javascript
+
+      ```
+  - Install graphql-cli (command line interface) tool library:
+    - The `graphql get-schema` command. This command allows us to fetch the schema and save it as a file in our project
+    - In graphql-prisma directory, run: `npm i graphql-cli`
+  - At the root of the project directory, create a file called .graphqlconfig
+    - This is a json file that contains 2 pieces of information for the configuration: where does the schema live and where should it be saved
+    - The schemaPath property is the path where the file should be saved. It is a common practice to create a folder called generated inside the src folder. And inside this generated folder, have a file called prisma.graphql. This file is where we have the type definitions saved. This path is the path we specify in the typeDefs property when we create a connection to Prisma endpoint
+    - The extensions property is where we specify the endpoint property which is the URL protocol we're using
+    ```js
+    {
+      "projects": {
+        "prisma": {
+          "schemaPath": "src/generated/prisma.graphql",
+          "extension": {
+            "endpoints": {
+              "default": "http://localhost:4466"
+            }
+          }
+        }
+      }
+    }
+    ```
+  - Last step to the configuration is creating a get-schema script in package.json file:
+    ```js
+    "scripts": {
+      "start": "nodemon src/index.js --ext js,graphql --exec babel-node",
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "get-schema": "graphql get-schema -p prisma"
+    },
+    ```
