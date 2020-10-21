@@ -324,3 +324,50 @@
 		console.log(JSON.stringify(data, undefined, 2));
 	});
   ```
+
+### Mutations with Prisma Bindings
+- Use prisma.mutation to perform mutations inside Nodejs that allows us to create, update, delete data stored in the database
+- In prisma.js file:
+  - Promise chaining
+    ```js
+    prisma.mutation.createPost({
+      data: {
+        title: "A post from James",
+        body: "",
+        published: false,
+        author: {
+          connect: {
+            id: "ckgckdkee003y0807rfr971c3"
+          }
+        }
+      }
+    }, '{id title body published author {name}}').then((data) => {
+      console.log(data)
+      return prisma.query.users(null, '{id name}')
+    }).then((data) => {
+      console.log(JSON.stringify(data, undefined, 2))
+    })
+    ```
+  - Goal: update a post with mutations
+    - Update the newly created post changing its body and marking it as published
+    - Fetch all posts (id, title, body, published) and print them to the console
+    - View the list of posts and confirm that post did have its body and published values updated
+    ```js
+    prisma.mutation.updatePost({
+      where: {
+        id: "ckgiu6ozv00l008075f5tpn81"
+      },
+      data: {
+        title: "Updated title from James",
+        body: "Updated body",
+        published: true
+      }
+    }, '{id body published}').then((data) => {
+      console.log(data)
+      return prisma.query.posts(null, '{id title body published}')
+    }).then((data) => {
+      console.log(JSON.stringify(data, undefined, 2))
+    }).catch(error => {
+      console.log(error)
+    })
+    ```
