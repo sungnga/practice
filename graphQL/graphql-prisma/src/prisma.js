@@ -36,44 +36,121 @@ const prisma = new Prisma({
 // - 2nd arg is the selection set
 
 // Promise chaining:
-prisma.mutation.createPost({
-	data: {
-		title: "A post from James",
-		body: "",
-		published: false,
-		author: {
-			connect: {
-				id: "ckgckdkee003y0807rfr971c3"
-			}
-		}
-	}
-}, '{id title body published author {name}}').then((data) => {
-	console.log(data)
-	return prisma.query.users(null, '{id name}')
-}).then((data) => {
-	console.log(JSON.stringify(data, undefined, 2))
-})
+// prisma.mutation.createPost({
+// 	data: {
+// 		title: "A post from James",
+// 		body: "",
+// 		published: false,
+// 		author: {
+// 			connect: {
+// 				id: "ckgckdkee003y0807rfr971c3"
+// 			}
+// 		}
+// 	}
+// }, '{id title body published author {name}}').then((data) => {
+// 	console.log(data)
+// 	return prisma.query.users(null, '{id name}')
+// }).then((data) => {
+// 	console.log(JSON.stringify(data, undefined, 2))
+// })
 
-
-// Goal: Mess around with mutations
+// Goal: Update a post with mutations
 // 1. Update the newly created post changing it's body and marking it as published
 // 2. Fetch all posts (id, title, body, published) and print them to the console
 // 3. View the list of posts and confirm that post did have it body and published values updated
 
-prisma.mutation.updatePost({
-	where: {
-		id: "ckgiu6ozv00l008075f5tpn81"
-	},
-	data: {
-		title: "Change to published",
-		body: "????????",
-		published: true
-	}
-}, '{id body published}').then((data) => {
-	console.log(data)
-	return prisma.query.posts(null, '{id title body published}')
-}).then((data) => {
-	console.log(JSON.stringify(data, undefined, 2))
-}).catch(error => {
-	console.log(error)
-})
+// prisma.mutation.updatePost({
+// 	where: {
+// 		id: "ckgiu6ozv00l008075f5tpn81"
+// 	},
+// 	data: {
+// 		title: "Change to published",
+// 		body: "????????",
+// 		published: true
+// 	}
+// }, '{id body published}').then((data) => {
+// 	console.log(data)
+// 	return prisma.query.posts(null, '{id title body published}')
+// }).then((data) => {
+// 	console.log(JSON.stringify(data, undefined, 2))
+// }).catch(error => {
+// 	console.log(error)
+// })
+
+// ------ Async/Await Function ------
+// 1. Create a new post
+// 2. Fetch all of the info about the user (author)
+
+const createPostForUser = async (authorId, data) => {
+	const post = await prisma.mutation.createPost(
+		{
+			data: {
+				...data,
+				author: {
+					connect: {
+						id: authorId
+					}
+				}
+			}
+		},
+		'{id}'
+	);
+	const user = await prisma.query.user(
+		{
+			where: {
+				id: authorId
+			}
+		},
+		'{id name email posts {id title published}}'
+	);
+	return user;
+};
+
+// Calling the method
+createPostForUser('ckgcn8djy008b0807zznc12ld', {
+	title: 'Great books to read',
+	body: 'The War of Art',
+	published: true
+}).then((user) => {
+	console.log(JSON.stringify(user, undefined, 2));
+});
+
+//
+// Goal: Use async/await with prisma bindings
+//
+// 1. Create "updatePostForUser" that accepts the post id and data to update
+// 2. Update the post (get author id back)
+// 3. Fetch the user associated with the updated post and return the user data
+// 	- Grab the same fields grabbed for createPostForUser
+// 4. Call the function with the id and data and use a then method call to get the user info
+// 5. Print the user info to the console and test your work
+
+// Async/await function
+const updatePostForUser = async (postId, data) => {
+	const updatedPost = await prisma.mutation.updatePost(
+		{
+			where: {
+				id: postId
+			},
+			data
+		},
+		'{author {id}}'
+	);
+	const user = await prisma.query.user(
+		{
+			where: {
+				id: updatedPost.author.id
+			}
+		},
+		'{id name email posts {id title published}}'
+	);
+	return user;
+};
+
+// Calling the method
+updatePostForUser('ckgcm1sd700680807waza8p97', {
+	published: true,
+	title: 'Current books I am reading'
+}).then((user) => {
+	console.log(JSON.stringify(user, undefined, 2));
+});

@@ -371,3 +371,83 @@
       console.log(error)
     })
     ```
+
+### Using Async/Await with Prisma Bindings
+- Async/Await function
+  ```js
+  // 1. Create a new post
+  // 2. Fetch all of the info about the user (author)
+
+  // Async/await function
+  const createPostForUser = async (authorId, data) => {
+    const post = await prisma.mutation.createPost(
+      {
+        data: {
+          ...data,
+          author: {
+            connect: {
+              id: authorId
+            }
+          }
+        }
+      },
+      '{id}'
+    );
+    const user = await prisma.query.user(
+      {
+        where: {
+          id: authorId
+        }
+      },
+      '{id name email posts {id title published}}'
+    );
+    return user;
+  };
+
+  // Calling the method
+  createPostForUser('ckgcn8djy008b0807zznc12ld', {
+    title: 'Great books to read',
+    body: 'The War of Art',
+    published: true
+  }).then((user) => {
+    console.log(JSON.stringify(user, undefined, 2));
+  });
+  ```
+- Goal: Use async/await with prisma bindings
+  - Create "updatePostForUser" that accepts the post id and data to update
+  - Update the post (get author id back)
+  - Fetch the user associated with the updated post and return the user data
+	  - Grab the same fields grabbed for createPostForUser
+  - Call the function with the id and data and use a then method call to get the user info
+  - Print the user info to the console and test your work
+  ```js
+  // Async/await function
+  const updatePostForUser = async (postId, data) => {
+    const updatedPost = await prisma.mutation.updatePost(
+      {
+        where: {
+          id: postId
+        },
+        data
+      },
+      '{author {id}}'
+    );
+    const user = await prisma.query.user(
+      {
+        where: {
+          id: updatedPost.author.id
+        }
+      },
+      '{id name email posts {id title published}}'
+    );
+    return user;
+  };
+
+  // Calling the method
+  updatePostForUser('ckgcm1sd700680807waza8p97', {
+    published: true,
+    title: 'Current books I am reading'
+  }).then((user) => {
+    console.log(JSON.stringify(user, undefined, 2));
+  });
+  ```
