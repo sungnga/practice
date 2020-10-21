@@ -348,7 +348,7 @@
       console.log(JSON.stringify(data, undefined, 2))
     })
     ```
-  - Goal: update a post with mutations
+  - **Goal: update a post with mutations**
     - Update the newly created post changing its body and marking it as published
     - Fetch all posts (id, title, body, published) and print them to the console
     - View the list of posts and confirm that post did have its body and published values updated
@@ -413,7 +413,7 @@
     console.log(JSON.stringify(user, undefined, 2));
   });
   ```
-- Goal: Use async/await with prisma bindings
+- **Goal: Use async/await with prisma bindings**
   - Create "updatePostForUser" that accepts the post id and data to update
   - Update the post (get author id back)
   - Fetch the user associated with the updated post and return the user data
@@ -465,7 +465,8 @@
     console.log(exists)
   })
   ```
-- Improve the createPostForUser function by using prisma.exists to verify that the user exists before creating a post
+- **Improve the createPostForUser function**
+  - Use prisma.exists to verify that the user exists before creating a post
   - If user doesn't exist, throw an error
   - Note that the 2nd arg we're specifying the author info as the selection set we want to get back, we want to return `post.author`
   ```js
@@ -492,7 +493,7 @@
     return post.author;
   };
   ```
-- Goal: Improve the updatePostForUser function
+- **Goal: Improve the updatePostForUser function**
   - Use prisma.exists to verify that the post exists
 	  - If there is no post with that id, throw an error
   - Remove the unnecessary user query by updating the selection set for updatePost
@@ -532,3 +533,40 @@
     });
   ```
 
+### Customizing Type Relationships
+- If we try to delete a user, we will get an error because in the Post and Comment type, we made the author field of non-nullable value type. We can't delete a user because the User type has a relationship with the Post and Comment types
+- We can customize type relationships using the `@relation` directive
+  - The @relation directive allows us to modify the default behavior when there's a relationship between two types
+  - The name property can be whatever we want to specify it
+  - By default, the value of onDelete property of a given field is `SET_NULL`
+  - Set it to `CASCADE` to overwrite the default behavior
+- In datamodel.prisma file:
+  ```
+  # SET_NULL (default) - CASCADE
+
+  type User {
+    id: ID! @id
+    name: String!
+    email: String! @unique
+    posts: [Post!]! @relation(name: "PostToUser", onDelete: CASCADE)
+    comments: [Comment!]! @relation(name: "CommentToUser", onDelete: CASCADE)
+  }
+
+  type Post {
+    id: ID! @id
+    title: String!
+    body: String!
+    published: Boolean!
+    author: User! @relation(name: "PostToUser", onDelete: SET_NULL)
+    comments: [Comment!]! @relation(name: "CommentToPost", onDelete: CASCADE)
+  }
+
+  type Comment {
+    id: ID! @id
+    text: String!
+    author: User! @relation(name: "CommentToUser", onDelete: SET_NULL)
+    post: Post! @relation(name: "CommentToPost", onDelete: SET_NULL)
+  }
+  ```
+- Since we've updated the type definitions in datamodel.prisma file, we need to deploy this to the Docker container to update the Prisma GraphQL API service
+  - cd into graphql-prisma/prisma directory and run: `prisma deploy`
