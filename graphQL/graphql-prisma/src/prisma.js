@@ -79,9 +79,16 @@ const prisma = new Prisma({
 
 // ------ Async/Await Function ------
 // 1. Create a new post
-// 2. Fetch all of the info about the user (author)
+// 2. Use prisma.exists to verify that the user exists
+// 3. Fetch all of the info about the user (author)
 
 const createPostForUser = async (authorId, data) => {
+	const userExists = await prisma.exists.User({ id: authorId });
+
+	if (!userExists) {
+		throw new Error('User not found');
+	}
+
 	const post = await prisma.mutation.createPost(
 		{
 			data: {
@@ -93,27 +100,23 @@ const createPostForUser = async (authorId, data) => {
 				}
 			}
 		},
-		'{id}'
+		'{author {id name email posts {id title published}}}'
 	);
-	const user = await prisma.query.user(
-		{
-			where: {
-				id: authorId
-			}
-		},
-		'{id name email posts {id title published}}'
-	);
-	return user;
+	return post.author;
 };
 
 // Calling the method
-createPostForUser('ckgcn8djy008b0807zznc12ld', {
-	title: 'Great books to read',
-	body: 'The War of Art',
-	published: true
-}).then((user) => {
-	console.log(JSON.stringify(user, undefined, 2));
-});
+// createPostForUser('ckgcn8djy008b0807zznc12ld', {
+// 	title: 'Great books to read',
+// 	body: 'Drawing From the Right Side of the Brain',
+// 	published: true
+// })
+// 	.then((user) => {
+// 		console.log(JSON.stringify(user, undefined, 2));
+// 	})
+// 	.catch((error) => {
+// 		console.log(error.message);
+// 	});
 
 //
 // Goal: Use async/await with prisma bindings
@@ -126,7 +129,66 @@ createPostForUser('ckgcn8djy008b0807zznc12ld', {
 // 5. Print the user info to the console and test your work
 
 // Async/await function
+// const updatePostForUser = async (postId, data) => {
+// 	const updatedPost = await prisma.mutation.updatePost(
+// 		{
+// 			where: {
+// 				id: postId
+// 			},
+// 			data
+// 		},
+// 		'{author {id}}'
+// 	);
+// 	const user = await prisma.query.user(
+// 		{
+// 			where: {
+// 				id: updatedPost.author.id
+// 			}
+// 		},
+// 		'{id name email posts {id title published}}'
+// 	);
+// 	return user;
+// };
+
+// Calling the method
+// updatePostForUser('ckgcm1sd700680807waza8p97', {
+// 	published: true,
+// 	title: 'Current books I am reading'
+// }).then((user) => {
+// 	console.log(JSON.stringify(user, undefined, 2));
+// });
+
+// ------ prisma.exists ------
+// prisma.exists has one method for every type
+// The name of the method is the name of the type. For example, User, Comment, Post
+// These exists methods take a single object argument
+// These exists methods return a promise and that promise resolves to a boolean value, true or false
+
+// prisma.exists
+// 	.Comment({
+// 		id: 'ckgcnocva009o0807duxn01lj'
+// 	})
+// 	.then((exists) => {
+// 		console.log(exists);
+// 	});
+
+
+//
+// Goal: Improve the updatePostForUser function
+//
+// 1. Use prisma.exists to verify that the post exists
+//	- If there is no post with that id, throw an error
+// 2. Remove the unnecessary user query by updating the selection set for updatePost
+// 3. Add a catch method call to catch and print errors
+// 4. Test by updating an existing post and a non-existent post
+
 const updatePostForUser = async (postId, data) => {
+	const postExists = await prisma.exists.Post({ id: postId });
+
+	if (!postExists) {
+		throw new Error('Post not found');
+	}
+
 	const updatedPost = await prisma.mutation.updatePost(
 		{
 			where: {
@@ -134,23 +196,20 @@ const updatePostForUser = async (postId, data) => {
 			},
 			data
 		},
-		'{author {id}}'
+		'{author {id name email posts {id title body published}}}'
 	);
-	const user = await prisma.query.user(
-		{
-			where: {
-				id: updatedPost.author.id
-			}
-		},
-		'{id name email posts {id title published}}'
-	);
-	return user;
+	return updatedPost.author;
 };
 
 // Calling the method
-updatePostForUser('ckgcm1sd700680807waza8p97', {
-	published: true,
-	title: 'Current books I am reading'
-}).then((user) => {
-	console.log(JSON.stringify(user, undefined, 2));
-});
+// updatePostForUser('ckgcm1sd700680807waza8p97', {
+// 	published: true,
+// 	title: 'Books I enjoy reading',
+// 	body: 'LiveWired'
+// })
+// 	.then((user) => {
+// 		console.log(JSON.stringify(user, undefined, 2));
+// 	})
+// 	.catch((error) => {
+// 		console.log(error.message);
+// 	});

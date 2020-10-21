@@ -451,3 +451,84 @@
     console.log(JSON.stringify(user, undefined, 2));
   });
   ```
+
+### Checking If Data Exists Using Prisma Bindings
+- Use prisma.exists to verify if data exists
+  ```js
+  // prisma.exists has one method for every type
+  // The name of the method is the name of the type. For example, User, Comment, Post
+  // These exists methods take a single object argument
+  // These exists methods return a promise and that promise resolves to a boolean value, true or false
+  prisma.exists.Comment({
+    id: "ckgcnocva009o0807duxn01lj"
+  }).then((exists) => {
+    console.log(exists)
+  })
+  ```
+- Improve the createPostForUser function by using prisma.exists to verify that the user exists before creating a post
+  - If user doesn't exist, throw an error
+  - Note that the 2nd arg we're specifying the author info as the selection set we want to get back, we want to return `post.author`
+  ```js
+  const createPostForUser = async (authorId, data) => {
+    const userExists = await prisma.exists.User({ id: authorId });
+
+    if (!userExists) {
+      throw new Error('User not found');
+    }
+
+    const post = await prisma.mutation.createPost(
+      {
+        data: {
+          ...data,
+          author: {
+            connect: {
+              id: authorId
+            }
+          }
+        }
+      },
+      '{author {id name email posts {id title published}}}'
+    );
+    return post.author;
+  };
+  ```
+- Goal: Improve the updatePostForUser function
+  - Use prisma.exists to verify that the post exists
+	  - If there is no post with that id, throw an error
+  - Remove the unnecessary user query by updating the selection set for updatePost
+  - Add a catch method call to catch and print errors
+  - Test by updating an existing post and a non-existent post
+  ```js
+  const updatePostForUser = async (postId, data) => {
+    const postExists = await prisma.exists.Post({ id: postId });
+
+    if (!postExists) {
+      throw new Error('Post not found');
+    }
+
+    const updatedPost = await prisma.mutation.updatePost(
+      {
+        where: {
+          id: postId
+        },
+        data
+      },
+      '{author {id name email posts {id title body published}}}'
+    );
+    return updatedPost.author;
+  };
+
+  // Calling the method
+  updatePostForUser('ckgcm1sd700680807waza8p97', {
+    published: true,
+    title: 'Books I enjoy reading',
+    body: 'LiveWired'
+  })
+    .then((user) => {
+      console.log(JSON.stringify(user, undefined, 2));
+    })
+    .catch((error) => {
+      console.log(error.message);
+    });
+  ```
+
