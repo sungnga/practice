@@ -6,10 +6,12 @@ import User from './resolvers/User';
 import Post from './resolvers/Post';
 import Comment from './resolvers/Comment';
 import Subscription from './resolvers/Subscription';
+import './prisma'
 
 // Create a pubsub instance from PubSub constructor function
 const pubsub = new PubSub();
 
+// Initialize server
 const server = new GraphQLServer({
 	typeDefs: './src/schema.graphql',
 	resolvers: {
@@ -26,6 +28,7 @@ const server = new GraphQLServer({
 	}
 });
 
+// Start server
 server.start(() => {
 	console.log('The server is up!');
 });
