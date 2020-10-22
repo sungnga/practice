@@ -1,15 +1,35 @@
-import { Prisma } from "prisma-binding";
+import { Prisma } from 'prisma-binding';
+
+// prisma.query is an object
+// .users() is one of the prisma query methods
+// The 2nd arg to a query method can be nothing/null, string, or an object
+// We're going to provide an object as a 2nd arg and this object is provided by the client when they make a query operation and it is stored inside the info object param
+// So we pass in the info object as a 2nd arg here
+// What we get back from this query method is a promise
+// A resolver method, like users(), can return the value from the data we get back
 
 const Query = {
 	users(parent, args, { prisma }, info) {
-		// prisma.query is an object
-		// .users() is one of the prisma query methods
-		// The 2nd arg to a query method can be nothing/null, string, or an object
-		// We're going to provide an object as a 2nd arg and this object is provided by the client when they make a query operation and it is stored inside the info object param
-		// So we pass in the info object as a 2nd arg here
-		// What we get back from this query method is a promise
-		// A resolver method, like users(), can return the value from the data we get back
-		return prisma.query.users(null, info)
+		// Provide operation arguments to prisma
+		const opArgs = {};
+
+		// Check if the client provides a query argument in query operation
+		// To know which operation arguments to provide, refer to the schema tab in the GraphQL Playground
+		// We're looking for the 'where' argument
+		if (args.query) {
+			opArgs.where = {
+				OR: [
+					{
+						name_contains: args.query
+					},
+					{
+						email_contains: args.query
+					}
+				]
+			};
+		}
+
+		return prisma.query.users(opArgs, info);
 
 		// // If no query argument provided, just return regular users array of objects
 		// if (!args.query) {
@@ -22,7 +42,22 @@ const Query = {
 		// });
 	},
 	posts(parent, args, { prisma }, info) {
-		return prisma.query.posts(null, info)
+		const opArgs = {};
+
+		if (args.query) {
+			opArgs.where = {
+				OR: [
+					{
+						title_contains: args.query
+					},
+					{
+						body_contains: args.query
+					}
+				]
+			};
+		}
+
+		return prisma.query.posts(opArgs, info);
 
 		// if (!args.query) {
 		// 	return db.posts;

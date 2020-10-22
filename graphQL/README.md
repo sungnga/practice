@@ -2109,30 +2109,30 @@
     - Have each user leave a review for the book
     - Delete a user and ensure its review goes away
     - Delete the book and ensure the other review goes away
-- In datamodel.prisma file:
-  ```
-  type User {
-    id: ID! @id
-    username: String! @unique
-    reviews: [Review]! @relation(name: "ReviewToUser", onDelete: CASCADE)
-  }
+  - In datamodel.prisma file:
+    ```
+    type User {
+      id: ID! @id
+      username: String! @unique
+      reviews: [Review]! @relation(name: "ReviewToUser", onDelete: CASCADE)
+    }
 
-  type Review {
-    id: ID! @id
-    text: String
-    rating: Int!
-    book: Book! @relation(name: "BookToReview", onDelete: SET_NULL)
-    author: User! @relation(name: "ReviewToUser", onDelete: SET_NULL)
-  }
+    type Review {
+      id: ID! @id
+      text: String
+      rating: Int!
+      book: Book! @relation(name: "BookToReview", onDelete: SET_NULL)
+      author: User! @relation(name: "ReviewToUser", onDelete: SET_NULL)
+    }
 
-  type Book {
-    id: ID! @id
-    title: String!
-    author: String!
-    isbn: String!
-    reviews: [Review!]! @relation(name: "BookToReview", onDelete: CASCADE)
-  }
-  ```
+    type Book {
+      id: ID! @id
+      title: String!
+      author: String!
+      isbn: String!
+      reviews: [Review!]! @relation(name: "BookToReview", onDelete: CASCADE)
+    }
+    ```
 
 
 

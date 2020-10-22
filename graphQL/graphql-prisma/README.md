@@ -592,30 +592,30 @@
     - Have each user leave a review for the book
     - Delete a user and ensure its review goes away
     - Delete the book and ensure the other review goes away
-- In datamodel.prisma file:
-  ```
-  type User {
-    id: ID! @id
-    username: String! @unique
-    reviews: [Review]! @relation(name: "ReviewToUser", onDelete: CASCADE)
-  }
+  - In datamodel.prisma file:
+    ```
+    type User {
+      id: ID! @id
+      username: String! @unique
+      reviews: [Review]! @relation(name: "ReviewToUser", onDelete: CASCADE)
+    }
 
-  type Review {
-    id: ID! @id
-    text: String
-    rating: Int!
-    book: Book! @relation(name: "BookToReview", onDelete: SET_NULL)
-    author: User! @relation(name: "ReviewToUser", onDelete: SET_NULL)
-  }
+    type Review {
+      id: ID! @id
+      text: String
+      rating: Int!
+      book: Book! @relation(name: "BookToReview", onDelete: SET_NULL)
+      author: User! @relation(name: "ReviewToUser", onDelete: SET_NULL)
+    }
 
-  type Book {
-    id: ID! @id
-    title: String!
-    author: String!
-    isbn: String!
-    reviews: [Review!]! @relation(name: "BookToReview", onDelete: CASCADE)
-  }
-  ```
+    type Book {
+      id: ID! @id
+      title: String!
+      author: String!
+      isbn: String!
+      reviews: [Review!]! @relation(name: "BookToReview", onDelete: CASCADE)
+    }
+    ```
 
 
 ## S6: AUTHENTICATION WITH GRAPHQL
@@ -656,7 +656,7 @@
       }
     }
     ```
-  - Test out this method by querying all users in the Prisma GraphQL API Playground: `http://localhost:4000/`
+  - Test out this method by querying all users in the GraphQL Playground for Node.js: `http://localhost:4000/`
   - graphql-yoga uses port 4000 as the default port
   - **Goal: Modify posts query to return posts from the database**
     - Comment out existing code
@@ -669,3 +669,81 @@
       return prisma.query.posts(null, info)
     }
     ```
+
+### Integrating Operation Arguments
+- In graphql-prisma/src/resolvers/Query.js file:
+  ```js
+  const Query = {
+    users(parent, args, { prisma }, info) {
+      // Provide operation arguments to prisma
+      // An empty object is equivalent to null
+      const opArgs = {};
+
+      // Check if the client provides a query argument in query operation
+      // To know which operation arguments to provide, refer to the schema tab in the GraphQL Playground
+      // We are looking for the 'where' argument
+      if (args.query) {
+        opArgs.where = {
+          OR: [
+            {
+              name_contains: args.query
+            },
+            {
+              email_contains: args.query
+            }
+          ]
+        };
+      }
+
+      // Pass in the operation arguments as 1st arg
+      return prisma.query.users(opArgs, info);
+    }
+  }
+  ```
+  - **Goal: Modify posts to support the query argument**
+    - Set up an object for operation arguments
+    - If query is provided, modify object to return only posts that have string in title or body
+    - Test your work by performing a few different queries
+    ```js
+    posts(parent, args, { prisma }, info) {
+      const opArgs = {};
+
+      if (args.query) {
+        opArgs.where = {
+          OR: [
+            {
+              title_contains: args.query
+            },
+            {
+              body_contains: args.query
+            }
+          ]
+        };
+      }
+
+      return prisma.query.posts(opArgs, info);
+    }  
+    ```
+- Perform the query operation for users and posts with query argument
+  ```
+  query {
+    users (
+      query: "s@example.com"
+    ) {
+      id
+      name
+      email
+    }
+  }
+
+  query {
+    posts (
+      query: "enjoy"
+    ) {
+      id
+      title
+      body
+      published
+    }
+  }
+  ```
