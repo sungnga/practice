@@ -570,3 +570,49 @@
   ```
 - Since we've updated the type definitions in datamodel.prisma file, we need to deploy this to the Docker container to update the Prisma GraphQL API service
   - cd into graphql-prisma/prisma directory and run: `prisma deploy`
+
+### Modeling a Review System with Prisma
+- **Steps to creating a new Prisma project**
+  - Create a new Prisma directory. Name it whatever we like. This directory contains:
+    - A datamodel.prisma file: all type definitions are defined in here 
+    - A prisma.yml file: contains the endpoint and datamodel properties
+      - Make the endpoint be descriptive to the prisma project
+    - Does not need another docker-compose.yml file: only need to set up once
+  - Deploy the prisma project to Docker container using `prisma deploy`. Make sure to tbe in this project directory when deploying
+  - If successfully deployed, the endpoint URL will be provided to the Prisma graphQL API Playground
+- **Goal: Model a review website using prisma**
+  - Define Book, User, and Review with their scalar fields
+  - Configure the relationships between the types
+    - Deleting a book should delete its reviews
+    - Deleting a user should delete its reviews
+  - Deploy the application
+  - Test your work from the prisma playground
+    - Create a book
+    - Crate two users
+    - Have each user leave a review for the book
+    - Delete a user and ensure its review goes away
+    - Delete the book and ensure the other review goes away
+- In datamodel.prisma file:
+  ```
+  type User {
+    id: ID! @id
+    username: String! @unique
+    reviews: [Review]! @relation(name: "ReviewToUser", onDelete: CASCADE)
+  }
+
+  type Review {
+    id: ID! @id
+    text: String
+    rating: Int!
+    book: Book! @relation(name: "BookToReview", onDelete: SET_NULL)
+    author: User! @relation(name: "ReviewToUser", onDelete: SET_NULL)
+  }
+
+  type Book {
+    id: ID! @id
+    title: String!
+    author: String!
+    isbn: String!
+    reviews: [Review!]! @relation(name: "BookToReview", onDelete: CASCADE)
+  }
+  ```
