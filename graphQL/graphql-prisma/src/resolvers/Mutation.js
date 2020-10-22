@@ -1,58 +1,35 @@
 import cuid from 'cuid';
 
 const Mutation = {
-	createUser(parent, args, { db }, info) {
-		// The some method will return true if some users have this email. False if no user has this email
-		const emailTaken = db.users.some((user) => user.email === args.data.email);
-
-		// Send an error message to the client
+	// This function is an async operation
+	// Destructure the prisma instance of context param
+	async createUser(parent, args, { prisma }, info) {
+		// Check to see if the email the client provides already exists
+		// This returns a boolean value
+		const emailTaken = await prisma.exists.User({ email: args.data.email })
+		
 		if (emailTaken) {
-			throw new Error('Email taken.');
+			throw new Error('Email taken');
 		}
 
-		const user = {
-			id: cuid(),
-			...args.data
-		};
-
-		// Add the new user to the users array using .push method
-		db.users.push(user);
-
-		// Return user so the client can get values off of it
-		return user;
+		// This method takes 2 args:
+		// - 1st arg is the data the client provides when they try to create a user
+		// - 2nd arg is the info object, what the client wants in return
+		// This prisma .createUser() method returns a promise
+		// Our createUser() resolve function can return the value coming back from the promise
+		// Since we're returning the value, we can leave off the await keyword in front of the method and add the return keyword
+		return prisma.mutation.createUser({ data: args.data }, info)
 	},
-	deleteUser(parent, args, { db }, info) {
-		// Find the user we want to delete
-		// .find method returns the actual element in the array
-		// .findIndex method returns the index of that element in the array
-		// Return true if the user id matches the args id and store the user index in userIndex
-		const userIndex = db.users.findIndex((user) => user.id === args.id);
+	async deleteUser(parent, args, { prisma }, info) {
+		const userExists = await prisma.exists.User({ id: args.id })
 
-		if (userIndex === -1) {
-			throw new Error('User not found');
+		if (!userExists) {
+			throw new Error('User not found')
 		}
 
-		// The .splice method removes a certain number of element, start at a specific index
-		// - 1st arg is the index to start the remove
-		// - 2nd arg is how many elements to remove
-		// - it returns the removed items in an array
-		const deletedUsers = db.users.splice(userIndex, 1);
-
-		// Updating the posts array by deleting all associated posts and comments made by this user
-		db.posts = db.posts.filter((post) => {
-			const match = post.author === args.id;
-
-			if (match) {
-				db.comments = db.comments.filter((comment) => comment.post !== post.id);
-			}
-
-			return !match;
-		});
-		// Updating the comments array by removing all the comments made by this user
-		db.comments = db.comments.filter((comment) => comment.author !== args.id);
-
-		// Return the deleted users
-		return deletedUsers[0];
+		// 1st arg is the operation arguments
+		// 2nd arg is the info object, what the client wants back in return
+		return prisma.mutation.deleteUser({where: {id: args.id}}, info)
 	},
 	updateUser(parent, args, { db }, info) {
 		// Destructure id and data properties from args

@@ -810,3 +810,74 @@
     }
   }
   ```
+
+### Adding Prisma into GraphQL Mutations
+- In graphql-prisma/src/resolvers/Mutation.js file:
+  - Integrate prisma in Node.js resolver functions so it can interact with the database
+  - In the createUser mutation resolver function:
+    ```js
+    const Mutation = {
+      // This function is an async operation
+      // Destructure the prisma instance of context param
+      async createUser(parent, args, { prisma }, info) {
+        // Check to see if the email the client provides already exists
+        // This returns a boolean value
+        const emailTaken = await prisma.exists.User({ email: args.data.email })
+        
+        if (emailTaken) {
+          throw new Error('Email taken');
+        }
+
+        // This method takes 2 args:
+        // - 1st arg is the data the client provides when they try to create a user
+        // - 2nd arg is the info object, what the client wants in return
+        // This prisma .createUser() method returns a promise
+        // Our createUser() resolve function can return the value coming back from the promise
+        // Since we're returning the value, we can leave off the await keyword in front of the method and add the return keyword
+        return prisma.mutation.createUser({ data: args.data }, info)
+      }
+    }
+    ```
+  - **Goal: Wire up deleteUser to work with the Prisma database**
+    - Refactor the deleteUser mutation resolver to use prisma instead of the array data
+      - Check that a user exists with that id, else throw error. Delete and return the user
+      - Don't worry about removing posts or comments. That was configured with @relation
+    - Test your work by removing a user and verifying they were delete from the database
+      ```js
+      const Mutation = {
+        async deleteUser(parent, args, { prisma }, info) {
+          const userExists = await prisma.exists.User({ id: args.id })
+
+          if (!userExists) {
+            throw new Error('User not found')
+          }
+
+          // 1st arg is the operation arguments
+          // 2nd arg is the info object, what the client wants back in return
+          return prisma.mutation.deleteUser({where: {id: args.id}}, info)
+        }
+      }
+      ```
+- In GraphQL API Playground for Node.js:
+  ```
+  mutation {
+    createUser(
+      data: {
+        name: "Jess"
+        email: "jess@example.com"
+      }
+    ) {
+      id
+      name
+      email
+    }
+  }
+
+  mutation {
+    deleteUser(id: "ckgckdkee003y0807rfr971c3") {
+      id
+      name
+      email
+    }
+  }
+  ```
