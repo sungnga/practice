@@ -747,3 +747,66 @@
     }
   }
   ```
+
+### Refactoring Custom Type Resolvers
+- **Goal: Convert the comments query over to Prisma**
+  - Modify the comments query to fetch data from prisma
+  - Modify code to allow for relational requests when using comments query
+  - Test your work by performing a few different queries
+  - In graphql-prisma/src/resolvers/Query.js file:
+    ```js
+    const Query = {
+      // Destructure prisma instance as context param
+      comments(parent, args, { prisma }, info) {
+        // Use the .comments() query method on prisma.query to fetch comments from the database based on the provided info object by the client
+        // The return value is the data we get back from the resolved promise of the query method
+        return prisma.query.comments(null, info)
+      },
+    }
+    ```
+  - In graphql-prisma/src/resolvers/Comment.js file:
+    - By leaving the Comment type empty, this allows prisma to handle all the work for relational requests when using comments query
+    ```js
+    const Comment = {
+
+    };
+
+    export { Comment as default };
+    ```
+- Convert the users and posts query over to Prisma by following the same steps above
+- In GraphQL Playground:
+  ```
+  query {
+    users {
+      id
+      name
+      email
+      posts {
+        id
+        title
+      }
+    }
+  }
+
+  query {
+    posts {
+      id
+      title
+      body
+      published
+      author {
+        name
+      }
+    }
+  }
+
+  query {
+    comments {
+      id
+      text
+      author {
+        name
+      }
+    }
+  }
+  ```

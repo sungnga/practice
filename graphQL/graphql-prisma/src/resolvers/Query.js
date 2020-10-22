@@ -73,8 +73,8 @@ const Query = {
 		// 	return isTitleMatch || isBodyMatch;
 		// });
 	},
-	comments(parent, args, { db }, info) {
-		return db.comments;
+	comments(parent, args, { prisma }, info) {
+		return prisma.query.comments(null, info)
 	},
 	me() {
 		return {
