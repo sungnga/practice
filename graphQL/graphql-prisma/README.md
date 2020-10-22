@@ -639,7 +639,7 @@
   ```
 - In graphql-prisma/src/resolvers/Query.js file:
   - In the end, we want to use prisma.query, prisma.mutation, prisma.exists etc inside these methods to interact with the Postgres database
-  - In users resolve method, destructure the prisma context param
+  - In users resolve method, destructure the prisma instance from context param
   - Use the .users() query method on prisma.query to fetch the users from the database based on the info object param
   - The return value is the value we get back from the promise
     ```js
@@ -756,7 +756,7 @@
   - In graphql-prisma/src/resolvers/Query.js file:
     ```js
     const Query = {
-      // Destructure prisma instance as context param
+      // Destructure prisma instance from context param
       comments(parent, args, { prisma }, info) {
         // Use the .comments() query method on prisma.query to fetch comments from the database based on the provided info object by the client
         // The return value is the data we get back from the resolved promise of the query method
@@ -818,7 +818,7 @@
     ```js
     const Mutation = {
       // This function is an async operation
-      // Destructure the prisma instance of context param
+      // Destructure the prisma instance from context param
       async createUser(parent, args, { prisma }, info) {
         // This method takes 2 args:
         // - 1st arg is the data the client provides when they try to create a user
@@ -922,7 +922,7 @@
     ```js
     const Mutation = {
       // Mark this is an async function
-      // Destructure the prisma instance of context param
+      // Destructure the prisma instance from context param
       async deletePost(parent, args, { prisma }, info) {
         return prisma.mutation.deletePost({ where: { id: args.id } }, info);
       }
@@ -1029,6 +1029,95 @@
         title: "An updated title"
         body: "..."
         published: false
+    }) {
+      id
+      title
+      body
+      published
+      author {
+        name
+      }
+    }
+  }
+  ```
+
+### Adding Prisma into GraphQL Subscriptions
+- In graphql-prisma/src/resolvers/Subscription.js file:
+  - **Goal: Set up the post subscription to work with prisma**
+    - Update schema.graphql to use "node" as nullable instead of "data" for post
+    - Update the subscribe method to use the correct prisma method
+      - Limit the subscription to posts that are published using "where" argument
+    - Test your work. Subscribe to posts and then create a published and unpublished post
+  ```js
+  const Subscription = {
+    comment: {
+      subscribe(parent, { postId }, { prisma }, info) {
+        return prisma.subscription.comment(
+          {
+            where: {
+              node: {
+                post: {
+                  id: postId
+                }
+              }
+            }
+          },
+          info
+        );
+      }
+    },
+    post: {
+      subscribe(parent, args, { prisma }, info) {
+        return prisma.subscription.post(
+          {
+            where: {
+              node: {
+                published: true
+              }
+            }
+          },
+          info
+        );
+      }
+    }
+  };
+
+  export { Subscription as default };
+  ```
+- In graphql-prisma/src/schema.graphql file:
+  ```
+  type PostSubscriptionPayload {
+    mutation: MutationType!
+    node: Post
+  }
+
+  type CommentSubscriptionPayload {
+    mutation: MutationType!
+    node: Comment
+  }
+  ```
+- Subscribe to a post in GraphQL Playground:
+  ```
+  subscription {
+    post {
+      mutation
+      node {
+        id
+        title
+        body
+        author {
+          name
+        }
+      }
+    }
+  }
+
+  mutation {
+    createPost(data: {
+      title: "Secret Stories by Samantha"
+      body: "..."
+      published: true
+      author: "ckgcn8djy008b0807zznc12ld"
     }) {
       id
       title
