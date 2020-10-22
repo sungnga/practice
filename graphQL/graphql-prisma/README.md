@@ -616,3 +616,56 @@
     reviews: [Review!]! @relation(name: "BookToReview", onDelete: CASCADE)
   }
   ```
+
+
+## S6: AUTHENTICATION WITH GRAPHQL
+
+### Adding Prisma into GraphQL Queries
+- We don't want any users to be able to directly interact with the Prisma GraphQL API because they can read and write from the database like deleting other users' data. So we want Node.js to be the middleman. This is going to allow us to set up things like authentication and data validation. This can be customized to our needs
+- Put Node.js between the public users and the Prisma GraphQL API
+- In graphql-prisma/src/prisma.js file:
+  - Export as default the prisma instance. This way, other files can use the prisma instance
+  - `export { prisma as default };`
+- In graphql-prisma/src/index.js file:
+  - Import the prisma instance: `import prisma from './prisma';`
+  - Add the prisma instance to the context object when initializing the server
+  - This way, prisma object is accessible to all of resolver functions
+  ```js
+	context: {
+		db,
+		pubsub,
+		prisma
+	}
+  ```
+- In graphql-prisma/src/resolvers/Query.js file:
+  - In the end, we want to use prisma.query, prisma.mutation, prisma.exists etc inside these methods to interact with the Postgres database
+  - In users resolve method, destructure the prisma context param
+  - Use the .users() query method on prisma.query to fetch the users from the database based on the info object param
+  - The return value is the value we get back from the promise
+    ```js
+    const Query = {
+      users(parent, args, { prisma }, info) {
+        // prisma.query is an object
+        // .users() is one of the prisma query methods
+        // The 2nd arg to a query method can be nothing/null, string, or an object
+        // We're going to provide an object as a 2nd arg and this object is provided by the client when they make a query operation and it is stored inside the info object param
+        // So we pass in the info object as a 2nd arg here
+        // What we get back from this query method is a promise
+        // A resolver method, like users(), can return the value from the data we get back
+        return prisma.query.users(null, info)
+      }
+    }
+    ```
+  - Test out this method by querying all users in the Prisma GraphQL API Playground: `http://localhost:4000/`
+  - graphql-yoga uses port 4000 as the default port
+  - **Goal: Modify posts query to return posts from the database**
+    - Comment out existing code
+    - User the correct prisma method
+      - Ignore operation arguments for now
+    - Run the posts query on the Node.js GraphQL API to verify it works
+      - Just ask for scalar fields
+    ```js
+    posts(parent, args, { prisma }, info) {
+      return prisma.query.posts(null, info)
+    }
+    ```
