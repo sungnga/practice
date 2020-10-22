@@ -820,14 +820,6 @@
       // This function is an async operation
       // Destructure the prisma instance of context param
       async createUser(parent, args, { prisma }, info) {
-        // Check to see if the email the client provides already exists
-        // This returns a boolean value
-        const emailTaken = await prisma.exists.User({ email: args.data.email })
-        
-        if (emailTaken) {
-          throw new Error('Email taken');
-        }
-
         // This method takes 2 args:
         // - 1st arg is the data the client provides when they try to create a user
         // - 2nd arg is the info object, what the client wants in return
@@ -846,12 +838,6 @@
       ```js
       const Mutation = {
         async deleteUser(parent, args, { prisma }, info) {
-          const userExists = await prisma.exists.User({ id: args.id })
-
-          if (!userExists) {
-            throw new Error('User not found')
-          }
-
           // 1st arg is the operation arguments
           // 2nd arg is the info object, what the client wants back in return
           return prisma.mutation.deleteUser({where: {id: args.id}}, info)
@@ -878,6 +864,179 @@
       id
       name
       email
+    }
+  }
+  ```
+
+### Adding Prisma into GraphQL Update, Delete, and Create Mutations
+- In graphql-prisma/src/resolvers/Mutation.js file:
+  - In the updateUser mutation resolver function:
+    ```js
+    const Mutation = {
+      // Mark this resolver function an async function
+      async updateUser(parent, args, { prisma }, info) {
+        // 1st arg is the operation arguments. The where property is the user that we want to update. The data property is what we want to update
+        // 2nd arg is the info object
+        // Return the value from the promise
+        return prisma.mutation.updateUser(
+          {
+            where: {
+              id: args.id
+            },
+            data: args.data
+          },
+          info
+        );
+      }
+    }
+    ```
+  - **Goal: Refactor the createPost mutation to use Prisma**
+    - Refactor createPost mutation resolver to use prisma instead of the array data
+      - Don't worry about pubsub or subscriptions
+    - Test the mutation from localhost:4000
+    ```js
+    const Mutation = {
+      async createPost(parent, args, { prisma }, info) {
+        return prisma.mutation.createPost(
+          {
+            data: {
+              title: args.data.title,
+              body: args.data.body,
+              published: args.data.published,
+              author: {
+                connect: {
+                  id: args.data.author
+                }
+              }
+            }
+          },
+          info
+        );
+      }
+    }
+    ```
+  - **Goal: Refactor the deletePost mutation to use Prisma**
+    - Refactor deletePost mutation resolver to use prisma instead of the array data
+      - Don't worry about pubsub or subscriptions
+    - Test the mutation from localhost:4000
+    ```js
+    const Mutation = {
+      // Mark this is an async function
+      // Destructure the prisma instance of context param
+      async deletePost(parent, args, { prisma }, info) {
+        return prisma.mutation.deletePost({ where: { id: args.id } }, info);
+      }
+    }
+    ```
+  - **Goal: Refactor the updatePost, createComment, deleteComment, updateComment mutations to use Prisma**
+    ```js
+    const Mutation = {
+      updatePost(parent, args, { prisma }, info) {
+        return prisma.mutation.updatePost(
+          {
+            where: {
+              id: args.id
+            },
+            data: args.data
+          },
+          info
+        );
+      },
+      createComment(parent, args, { prisma }, info) {
+        return prisma.mutation.createComment(
+          {
+            data: {
+              text: args.data.text,
+              author: {
+                connect: {
+                  id: args.data.author
+                }
+              },
+              post: {
+                connect: {
+                  id: args.data.post
+                }
+              }
+            }
+          },
+          info
+        );
+      },
+      updateComment(parent, args, { prisma }, info) {
+        return prisma.mutation.updateComment(
+          {
+            where: {
+              id: args.id
+            },
+            data: args.data
+          },
+          info
+        );
+      },
+      deleteComment(parent, args, { prisma }, info) {
+        return prisma.mutation.deleteComment({ where: { id: args.id } }, info);
+      }
+    }
+    ```
+- Perform the updateUser mutation in GraphQL Playground:
+  ```
+  mutation {
+    updateUser(
+      id: "ckgl7yrdm04hz08074kfa39s7"
+      data: {
+        name: "Jesse James"
+        
+      }
+    ) {
+      id
+      name
+      email
+    }
+  }
+
+  mutation {
+    createPost(data: {
+      title: "A great new book"
+      body: "I highly recommend this book"
+      published: true
+      author: "ckgl7yrdm04hz08074kfa39s7"
+    }) {
+      id
+      title
+      body
+      published
+      author {
+        name
+      }
+    }
+  }
+
+  mutation {
+    deletePost(id: "ckgivpphc00m30807c3bka757") {
+      id
+      title
+      body
+      author {
+        name
+      }
+    }
+  }
+
+  mutation {
+    updatePost(
+      id: "ckglbhwqt04jk0807qbadz46h"
+      data: {
+        title: "An updated title"
+        body: "..."
+        published: false
+    }) {
+      id
+      title
+      body
+      published
+      author {
+        name
+      }
     }
   }
   ```
