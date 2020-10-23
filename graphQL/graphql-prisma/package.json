@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon src/index.js --ext js,graphql --exec babel-node",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "get-schema": "fetch-graphql-schema http://localhost:4466 -o src/generated/prisma.graphql -r"
+    "get-schema": "graphql-codegen --config .graphqlrc.yml"
   },
   "author": "",
   "license": "ISC",
@@ -19,10 +19,10 @@
     "cuid": "^2.1.8",
     "fetch-graphql-schema": "^0.2.1",
     "graphql-cli": "^4.1.0",
-    "graphql-yoga": "^1.14.10",
+    "graphql-yoga": "^1.18.3",
     "prisma-binding": "^2.3.16"
   },
   "devDependencies": {
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.6"
   }
 }

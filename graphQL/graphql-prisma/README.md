@@ -1167,3 +1167,42 @@
       }
       ```
     - Now we can use the GraphQL playground to interact with the database
+
+### Allowing for Generated Schemas
+- In graphql-prisma/prisma/datamodel.prisma file:
+  - Add a password field of non-nullable String type to the User type
+  ```
+  type User {
+    id: ID! @id
+    name: String!
+    email: String! @unique
+    password: String!
+    posts: [Post!]! @relation(name: "PostToUser", onDelete: CASCADE)
+    comments: [Comment!]! @relation(name: "CommentToUser", onDelete: CASCADE)
+  }
+  ```
+- In graphql-prisma/src/schema.graphql file:
+  - Add a password field of non-nullable String type to the User type
+  ```
+  type User {
+    id: ID!
+    name: String!
+    email: String!
+    password: String!
+    posts: [Post!]!
+    comments: [Comment!]!
+  }
+  ```
+- What we want to do next is wipe out our database and redeploy to add this new field to Postgres database
+  - cd into graphql-prisma/prisma directory and run: `prisma delete`
+  - Then run: `prisma deploy`
+- Since we made a change to the datamodel.prisma file, we need to re-generate the prisma.graphql file by running the `prisma generate` command
+  - cd into graphql-prisma/prisma directory and run: `prisma generate`
+  - However, before running this command, in prisma.yml file:
+    - Add this code to the file
+    ```yml
+    generate:
+      - generator: graphql-schema
+        output: ../src/generated/prisma.graphql
+    ```
+  - NOTE: the `prisma generate` command replaces the `npm run get-schema` script
