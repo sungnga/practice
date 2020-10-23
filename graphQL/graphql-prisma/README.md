@@ -1129,3 +1129,41 @@
     }
   }
   ```
+
+### Closing Prisma to the Outside World
+- Right now, the Prisma API is open to the public, allowing anyone to read and write from the database without needing to authenticate. That's a problem. We need to lock down access to the Prisma API. What we want is have the client pass all the requests through Node to get the data. What we need to set up is a Prisma secret, a password in order to communicate with Prisma API. So we set up the password in the Nodejs backend and the Prisma backend
+- **Configuring a Prisma Secret:**
+  - To restrict access to the database, Prisma allows a secret to be configured. The secret, similar to a password, is required in order to read or write from the database using the Prisma API
+  - That can be done by adding a single line to prisma.yml file:
+    ```yml
+    endpoint: http://localhost:4466
+    datamodel: datamodel.graphql
+    secret: secrettexthere
+    ```
+  - Then redeploy the Prisma app
+    - cd into graphql-prisma/prisma directory and run: `prisma deploy`
+  - We don't want to lock everyone out of Prisma. The secret should be shared with the Node.js application, giving it exclusive rights to interact with the Prisma API. That can be done by adding `secret` onto the options object for the `prisma-binding` constructor functions
+  - In graphql-prisma/src/prisma.js file:
+    ```js
+    import { Prisma } from 'prisma-binding';
+
+    const prisma = new Prisma({
+      typeDefs: 'src/generated/prisma.graphql',
+      endpoint: 'http://localhost:4466',
+      secret: 'secrettexthere'
+    });
+
+    export { prisma as default };
+    ```
+- **Generating Access Tokens:**
+  - We can still access the Prisma API from GraphQL playground for development purposes by setting up an authorization token. First, generate a token
+    - cd into graphql-prisma/prisma directory and run: `prisma token`
+    - Copy this token
+  - From there, we'll want to set up an HTTP authorization header that uses the generated token
+    - In the GraphQL API playground for Prisma (port 4466), click on the "HTTP HEADERS" tab and provide the authorization token:
+      ```
+      {
+        "Authorization":"Bearer PasteTheGeneratedTokenHere"
+      }
+      ```
+    - Now we can use the GraphQL playground to interact with the database
