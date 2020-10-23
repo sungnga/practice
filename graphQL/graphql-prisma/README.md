@@ -1208,7 +1208,7 @@
   - NOTE: the `prisma generate` command replaces the `npm run get-schema` script
 
 ### Storing Passwords
-- STEPS: Take in password -> Validate password -> Hash password -> Generate auth token
+- **STEPS: Take in password -> Validate password -> Hash password -> Generate auth token**
 - **Step 1: Take in password**
   - In graphql-prisma/src/schema.graphql file:
     - Add the password field to the CreateUserInput input. This input is used as value type of data argument for createUser mutation
@@ -1301,11 +1301,95 @@
   }
   ```
   - Go to pgAdmin browser and see that a hash password has been generated for the new user
+
+### Creating Auth Tokens with JSON Web Tokens
+- JSON Web Tokens, also known as JWTs, provide us with a secure way to create authentication tokens for our application
+- A JWT is nothing more than a string. When a user signs up or logs in to the application, a JWT will be generated and provided to them. The client can then store this token and send it along with future requests to authenticate itself
+- **Creating a token:**
+  ```js
+  // The jwt.sign() method creates a new token
+  // It takes 2 arguments:
+  // 	- 1st arg is a payload object and it can have anything we want in it
+  // 	- 2nd arg is a secret and it's used to verify the integrity of a token. It's only going to live on the Node.js server. The secret can be anything
+  // What's returned from this method is a token. Save it to a token variable
+  const token = jwt.sign({ id: 46 }, 'mysecret')
+  console.log(token)
+  ```
+- **Decoding a token:**
+  ```js
+  // The jwt.verify() method verifies that a token was created by a particular server
+  // This method decodes the token and also verifies that the token was created with a specific secret. This is how we ensure that the tokens we're reading are tokens created by that particular server
+  // This method takes 2 arguments:
+  //	- 1st arg is the token we want to verify
+  //  - 2nd arg is the secret
+  // If the token wasn't created with the same secret, this verify method will fail
+  // This method returns the token string, the decoded data object, and the decoded and verified data object
+  // The decoded data contains the payload when the token was created and the 'issued at' timestamp
+  // The client cannot tamper with the token because the client won't ever know that secret, therefore they can never be able to generate the same token. Only the server that generated the token knows the secret
+  const decoded = jwt.verify(token, 'mysecret')
+  console.log(decoded)
+  ```
 - **Step 4: Generate auth token**
+  - Install JSON Web Token: `npm i jsonwebtoken`
+  - In graphql-prisma/src/resolvers/Mutation.js file:
+    - Import jwt: `import jwt from 'jsonwebtoken';`
+    ```js
+    const Mutation = {
+      async createUser(parent, args, { prisma }, info) {
+        if (args.data.password.length < 8) {
+          throw new Error('Password must be 8 characters or longer');
+        }
 
+        const password = await bcrypt.hash(args.data.password, 10);
+        const user = await prisma.mutation.createUser(
+          {
+            data: {
+              ...args.data,
+              password
+            }
+          },
+          info
+        )
 
+        // What we want to return from this function is an object that contains the user information and the generated auth token
+        return {
+          user,
+          token: jwt.sign({userId: user.id}, 'thisisasecret')
+        }
+      }
+    }
+    ```
+  - When someone runs the createUser mutation, we no longer just returning a User model, we're returning an auth token as well. We need to modify our createUser mutation type in schema.graphql file
+  - In graphql-prisma/src/schema.graphql file:
+    ```
+    type Mutation {
+      createUser(data: CreateUserInput): AuthPayload!
+    }
 
-
+    type AuthPayload {
+      token: String!
+      user: User!
+    }
+    ```
+- Perform a createUser mutation in GraphQL Playground:
+  ```
+  mutation {
+    createUser(
+      data: {
+        name: "Andrew"
+        email: "andrew@example.com"
+        password: "andrew1234"
+      }
+    ) {
+      user {
+        id
+        name
+        email
+      }
+      token
+    }
+  }
+  ```
 
 
 
@@ -1317,3 +1401,6 @@
 - Hashing Algorithm - bcrypt.js
   - Install: `npm i bcryptjs`
   - Import in Mutation.js file: `import bcrypt from 'bcryptjs';`
+- JSON Web Token - jsonwebtoken
+  - Install: `npm i jsonwebtoken`
+  - Import in Mutation.js file: `import jwt from 'jsonwebtoken';`

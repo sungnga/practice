@@ -1,4 +1,31 @@
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+
+// ======= JSON Web Token ========
+//
+// CREATE A TOKEN:
+// jwt.sign() method creates a new token
+// It takes 2 arguments:
+// 	- 1st arg is a payload object and it can have anything we want
+// 	- 2nd arg is a secret and it's used to verify the integrity of a token. It's only going to live on the Node.js server. The secret can be anything
+// What's returned from this method is a token and save it to a token variable
+// const token = jwt.sign({ id: 46 }, 'mysecret')
+// console.log(token)
+
+// VERIFY A TOKEN:
+// The jwt.verify() method is to verify that a token was created by a particular server
+// This method decodes the token and also verifies that the token was created with a specific secret. This is how to ensure that the tokens we're reading are tokens created by that particular server
+// This method takes 2 arguments:
+//	- 1st arg is the token we want to verify
+//  - 2nd arg is the secret
+// If the token wasn't created with the same secret, this verify will fail
+// This method returns the token, the decoded data object, and the decoded and verified data object
+// The decoded data contains the payload when the token was created and the 'issued at' timestamp
+// The client cannot tamper with the token because the client won't ever know that secret, therefore they can never be able to generate the same token. Only the server that generated the token knows the secret
+// const decoded = jwt.verify(token, 'mysecret')
+// console.log(decoded)
+
+// ======================================
 
 const Mutation = {
 	// This function is an async operation
@@ -26,16 +53,19 @@ const Mutation = {
 		// - 2nd arg is the info object, what the client wants in return
 		// This prisma .createUser() method returns a promise
 		// Our createUser() resolve function can return the value coming back from the promise
-		// Since we're returning the value, we can leave off the await keyword in front of the method and add the return keyword
-		return prisma.mutation.createUser(
+		const user = await prisma.mutation.createUser(
 			{
 				data: {
 					...args.data,
 					password
 				}
-			},
-			info
-		);
+			})
+
+		// What we want to return from this function is an object that contains the user information and the generated auth token
+		return {
+			user,
+			token: jwt.sign({userId: user.id}, 'thisisasecret')
+		}
 	},
 	async deleteUser(parent, args, { prisma }, info) {
 		// const userExists = await prisma.exists.User({ id: args.id });
