@@ -1206,3 +1206,114 @@
         output: ../src/generated/prisma.graphql
     ```
   - NOTE: the `prisma generate` command replaces the `npm run get-schema` script
+
+### Storing Passwords
+- STEPS: Take in password -> Validate password -> Hash password -> Generate auth token
+- **Step 1: Take in password**
+  - In graphql-prisma/src/schema.graphql file:
+    - Add the password field to the CreateUserInput input. This input is used as value type of data argument for createUser mutation
+      ```
+      type Mutation {
+        createUser(data: CreateUserInput): User!
+      }
+
+      input CreateUserInput {
+        name: String!
+        email: String!
+        password: String!
+      }
+      ```
+    - Now, whenever someone runs the createUser mutation operation, they must provide a password
+- **Step 2: Validate password**
+  - We're going to validate the password's length. Must be at least 8 chars long
+  - In graphql-prisma/src/resolvers/Mutation.js file:
+    ```js
+    const Mutation = {
+      async createUser(parent, args, { prisma }, info) {
+        // Password validation
+        if (args.data.password.length < 8) {
+          throw new Error('Password must be 8 characters or longer')
+        }
+
+        return prisma.mutation.createUser({ data: args.data }, info);
+      }
+    }
+    ```
+- **Step 3: Hash password**
+  - It's not a good idea to store plain text passwords in the database. Instead, we're going to pass the plain text passwords through a hashing algorithm. We're going to use the bcrypt algorithm, an npm module
+  - Install bcrypt.js: `npm i bcryptjs`
+  - In graphql-prisma/src/resolvers/Mutation.js file:
+    - Import bcrypt.js: `import bcrypt from 'bcryptjs';`
+    - In createUser resolver function:
+      - Use the bcrypt.hash() method to hash the plain-text password
+      ```js
+      const Mutation = {
+        async createUser(parent, args, { prisma }, info) {
+          // Password validation
+          if (args.data.password.length < 8) {
+            throw new Error('Password must be 8 characters or longer');
+          }
+
+          // The bcrypt.hash() method takes in plain text and returns the hashed version
+          // It takes 2 arguments:
+          //	- 1st arg is the plain text password
+          //	- 2nd arg is a salt, we provide the length of salt we want to use
+          // A salt is a random series of chars that are hashed along with the string being hashed, making the hash password more secure
+          // This method returns a promise. That promise resolves with the hash value
+          // We're going to await that promise
+          // Store the hash value in a password variable
+          const password = await bcrypt.hash(args.data.password, 10);
+
+          // This method takes 2 args:
+          // - 1st arg is the data the client provides when they try to create a user
+          // - Here, we use the spread operator to spread the existing data the client provides
+          // - But for the password property, we take its value and pass it through the bcrypt.hash() method and return the hashed version here
+          // - 2nd arg is the info object, what the client wants in return
+          // This prisma .createUser() method returns a promise
+          // Our createUser() resolve function can return the value coming back from the promise
+          // Since we're returning the value, we can leave off the await keyword in front of the method and add the return keyword
+          return prisma.mutation.createUser(
+            {
+              data: {
+                ...args.data,
+                password
+              }
+            },
+            info
+          );
+        }
+      }
+      ```
+- Perform a createUser mutation in GraphQL playground for Node.js localhost:4000:
+  ```
+  mutation {
+    createUser(
+      data: {
+        name: "Jess"
+        email: "jess@example.com"
+        password: "jess1234"
+      }
+    ) {
+      id
+      name
+      email
+    }
+  }
+  ```
+  - Go to pgAdmin browser and see that a hash password has been generated for the new user
+- **Step 4: Generate auth token**
+
+
+
+
+
+
+
+
+
+
+
+## NPM MODULES USED
+- Hashing Algorithm - bcrypt.js
+  - Install: `npm i bcryptjs`
+  - Import in Mutation.js file: `import bcrypt from 'bcryptjs';`
