@@ -1391,6 +1391,118 @@
   }
   ```
 
+### Logging in Existing Users
+- **Comparing passwords:**
+  - When a user logs into our application, they're going to give their email and  password. We need to compare that email and password with the email and hashed password in the database
+  - The bcrypt.compare() method compares the plain-text password with the hashed password
+  - This method takes 2 arguments:
+    - 1st arg is the password
+    - 2nd arg is the hashed password
+  - This is an async operation. The resolved value that comes back is either true or false
+  ```js
+  const dummy = async () => {
+    const email = 'andrew@example.com'
+    const password = 'andrew1234'
+
+    const hashedPassword = '$2a$10$Z7l3Wlk/aqkN7qe/80VJveonARgvta29YNjZiggssttwsrhIkcFhS'
+    
+    const isMatch = await bcrypt.compare(password, hashedPassword)
+    console.log(isMatch)
+  }
+  dummy()
+  ```
+
+**Goal: Create a login mutation**
+- Part I: Create the mutation:
+  - Define the mutation in schema.graphql
+    - It should accept email/password as arguments
+    - It should return AuthPayload
+  - Define the mutation resolver method in Mutation.js with 4 arguments 
+- Part II: Verify email and password:
+  - Query for user by email. Just need scalar fields
+    - If no user, throw an error
+  - Verify hashed user password by the plain text password argument
+    - If not a match, throw an error
+- Part III: Send back the user with a new token:
+  - Send back an object that match up with AuthPayload
+    - Generate a new JWT using the same secret used in createUser
+  - Login with existing user and get back user details and auth token
+- In graphql-prisma/src/schema.graphql file:
+  ```
+  type Mutation {
+    login(data: LoginUserInput): AuthPayload!
+  }
+
+  type AuthPayload {
+    token: String!
+    user: User!
+  }
+
+  input LoginUserInput {
+    email: String!
+    password: String!
+  }
+  ```  
+- In graphql-prisma/src/resolvers/Mutation.js file:
+  - Import bcrypt.js: `import bcrypt from 'bcryptjs';`
+  - Import jwt: `import jwt from 'jsonwebtoken';`
+  ```js
+  const Mutation = {
+    async login(parent, args, { prisma }, info) {
+      const user = await prisma.query.user({
+        where: {
+          email: args.data.email
+        }
+      });
+
+      if (!user) {
+        throw new Error('Unable to login');
+      }
+
+      const isMatch = await bcrypt.compare(args.data.password, user.password);
+
+      if (!isMatch) {
+        throw new Error('Unable to login');
+      }
+
+      return {
+        user,
+        token: jwt.sign({ userId: user.id }, 'thisisasecret')
+      };
+    }
+  }
+  ```
+- Perform login mutation as existing user in GraphQL Playground (port 4000):
+  ```
+  mutation {
+    login (
+      data: {
+        email: "nga@example.com"
+        password: "nga12345"
+      }
+    ) {
+      user {
+        id
+        name
+      }
+      token
+    }
+  }
+  ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

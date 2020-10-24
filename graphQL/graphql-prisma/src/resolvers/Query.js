@@ -80,8 +80,7 @@ const Query = {
 		return {
 			id: '11233455',
 			name: 'Mike',
-			email: 'maike@example.com',
-			age: 99
+			email: 'maike@example.com'
 		};
 	},
 	post() {

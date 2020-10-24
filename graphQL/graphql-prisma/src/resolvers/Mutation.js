@@ -25,6 +25,22 @@ import jwt from 'jsonwebtoken';
 // const decoded = jwt.verify(token, 'mysecret')
 // console.log(decoded)
 
+// COMPARE PASSWORD:
+// The bcrypt.compare() method compares the plain-text password with the hashed password
+// This method takes 2 arguments:
+// - 1st arg is the password
+// - 2nd arg is the hashed password
+// This is an async operation. The resolved value that comes back is either true or false
+// const dummy = async () => {
+// 	const email = 'nga@example.com'
+// 	const password = 'nga12345'
+
+// 	const hashedPassword = '$2a$10$d0oMRA4j67oNN8z1tOKG3u.8JvZZtCsuYD1nRRGTg7IsJ/lnDOFaW'
+
+// 	const isMatch = await bcrypt.compare(password, hashedPassword)
+// 	console.log(isMatch)
+// }
+// dummy()
 // ======================================
 
 const Mutation = {
@@ -53,19 +69,40 @@ const Mutation = {
 		// - 2nd arg is the info object, what the client wants in return
 		// This prisma .createUser() method returns a promise
 		// Our createUser() resolve function can return the value coming back from the promise
-		const user = await prisma.mutation.createUser(
-			{
-				data: {
-					...args.data,
-					password
-				}
-			})
+		const user = await prisma.mutation.createUser({
+			data: {
+				...args.data,
+				password
+			}
+		});
 
 		// What we want to return from this function is an object that contains the user information and the generated auth token
 		return {
 			user,
-			token: jwt.sign({userId: user.id}, 'thisisasecret')
+			token: jwt.sign({ userId: user.id }, 'thisisasecret')
+		};
+	},
+	async login(parent, args, { prisma }, info) {
+		const user = await prisma.query.user({
+			where: {
+				email: args.data.email
+			}
+		});
+
+		if (!user) {
+			throw new Error('Unable to login');
 		}
+
+		const isMatch = await bcrypt.compare(args.data.password, user.password);
+
+		if (!isMatch) {
+			throw new Error('Unable to login');
+		}
+
+		return {
+			user,
+			token: jwt.sign({ userId: user.id }, 'thisisasecret')
+		};
 	},
 	async deleteUser(parent, args, { prisma }, info) {
 		// const userExists = await prisma.exists.User({ id: args.id });
