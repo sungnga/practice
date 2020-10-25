@@ -1650,10 +1650,116 @@
   }
   ```
 
+### Locking Down Mutations (Posts and Comments)
+- **Goal: Lock down updatePost**
+  - Validate the authentication token
+  - Check if that post exists with the post id and the correct author id
+    - Else throw an error
+- **Goal: Lock down createComment**
+  - Validate the authentication token
+  - Update mutation to no longer accept author id
+  - Create comment with the authenticated user as the author
+- **Goal: Lock down deleteComment and updateComment**
+- In schema.graphql file:
+  - In the CreateCommentInput input, remove the author field
+    ```
+    type Mutation {
+      createComment(data: CreateCommentInput): Comment!
+    }
+    input CreateCommentInput {
+      text: String!
+      post: ID!
+    }
+    ```
+- In graphql-prisma/src/resolvers/Mutation.js file:
+  ```js
+  const Mutation = {
+    async updatePost(parent, args, { prisma, request }, info) {
+      const userId = getUserId(request);
 
+      const postExists = await prisma.exists.Post({
+        id: args.id,
+        author: {
+          id: userId
+        }
+      });
 
+      if (!postExists) {
+        throw new Error('Unable to update post');
+      }
 
+      return prisma.mutation.updatePost(
+        {
+          where: {
+            id: args.id
+          },
+          data: args.data
+        },
+        info
+      );
+    },
+    createComment(parent, args, { prisma, request }, info) {
+      const userId = getUserId(request)
 
+      return prisma.mutation.createComment(
+        {
+          data: {
+            text: args.data.text,
+            author: {
+              connect: {
+                id: userId
+              }
+            },
+            post: {
+              connect: {
+                id: args.data.post
+              }
+            }
+          }
+        },
+        info
+      );
+    },
+    async deleteComment(parent, args, { prisma, request }, info) {
+      const userId = getUserId(request);
+      const commentExists = await prisma.exists.Comment({
+        id: args.id,
+        author: {
+          id: userId
+        }
+      });
+
+      if (!commentExists) {
+        throw new Error('Unable to delete comment');
+      }
+
+      return prisma.mutation.deleteComment({ where: { id: args.id } }, info);
+    },
+    async updateComment(parent, args, { prisma, request }, info) {
+      const userId = getUserId(request);
+      const commentExists = await prisma.exists.Comment({
+        id: args.id,
+        author: {
+          id: userId
+        }
+      });
+
+      if (!commentExists) {
+        throw new Error('Unable to update comment');
+      }
+
+      return prisma.mutation.updateComment(
+        {
+          where: {
+            id: args.id
+          },
+          data: args.data
+        },
+        info
+      );
+    }
+  }
+  ```
 
 
 
