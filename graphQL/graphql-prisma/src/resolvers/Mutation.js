@@ -104,18 +104,23 @@ const Mutation = {
 
 		return { user, token };
 	},
-	async deleteUser(parent, args, { prisma }, info) {
-		// const userExists = await prisma.exists.User({ id: args.id });
+	async deleteUser(parent, args, { prisma, request }, info) {
+		const userId = getUserId(request);
 
 		// 1st arg is the operation arguments
 		// 2nd arg is the info object, what the client wants back in return
-		return prisma.mutation.deleteUser({ where: { id: args.id } }, info);
+		return prisma.mutation.deleteUser({ where: { id: userId } }, info);
 	},
-	async updateUser(parent, args, { prisma }, info) {
+	// Destructure request from context param
+	async updateUser(parent, args, { prisma, request }, info) {
+		// Call the getUserId function and pass in the request
+		const userId = getUserId(request);
+
+		// The userId comes from authentication
 		return prisma.mutation.updateUser(
 			{
 				where: {
-					id: args.id
+					id: userId
 				},
 				data: args.data
 			},
@@ -145,7 +150,23 @@ const Mutation = {
 			info
 		);
 	},
-	deletePost(parent, args, { prisma }, info) {
+	async deletePost(parent, args, { prisma, request }, info) {
+		// Check to see if this is an authenticated user
+		const userId = getUserId(request);
+		// Check to see if there is a post created by this authenticated user
+    // Only the author of the post can delete the post
+		const postExists = await prisma.exists.Post({
+			id: args.id,
+			author: {
+				id: userId
+			}
+		});
+
+		if (!postExists) {
+			throw new Error('Unable to delete post');
+		}
+
+		// This code only runs if postExists is true, meaning that this post can be deleted by this authorized user
 		return prisma.mutation.deletePost({ where: { id: args.id } }, info);
 	},
 	async updatePost(parent, args, { prisma }, info) {

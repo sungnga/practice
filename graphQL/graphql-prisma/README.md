@@ -1588,8 +1588,67 @@
     export { getUserId as default };
     ```
 
+### Locking Down Mutations (Users): updateUser, deleteUser, and deletePost
+- Only an authenticated user can update their own profile or delete their own account. So when someone is requesting an updateUser or deleteUser mutation, they no longer need to provide a user id. The user id will come from the authentication. To update a user, they just need to provide the data they want to update and the token. To delete a user, they need to provide a token. To delete a post, they need to provide the post id and the token
+- In schema.graphql file:
+  - Remove the required id argument from the updateUser mutation
+  - Remove the required id argument from the deleteUser mutation
+  ```
+  type Mutation {
+    updateUser(data: UpdateUserInput!): User!
+    deleteUser: User!
+    deletePost(id: ID!): Post!
+  }
+  ```
+- In graphql-prisma/src/resolvers/Mutation.js file:
+  ```js
+  const Mutation = {
+    // Destructure request from context param
+    async updateUser(parent, args, { prisma, request }, info) {
+      // Call the getUserId function and pass in the request
+      const userId = getUserId(request)
 
+      // The userId comes from authentication
+      return prisma.mutation.updateUser(
+        {
+          where: {
+            id: userId
+          },
+          data: args.data
+        },
+        info
+      );
+    },
+    async deleteUser(parent, args, { prisma, request }, info) {
+      const userId = getUserId(request);
 
+      // 1st arg is the operation arguments
+      // 2nd arg is the info object, what the client wants back in return
+      return prisma.mutation.deleteUser({ where: { id: userId } }, info);
+    },
+    // Mark this as an async function
+    async deletePost(parent, args, { prisma, request }, info) {
+      // Check to see if this is an authenticated user
+      const userId = getUserId(request);
+      // Check to see if there is a post created by this authenticated user
+      // Only the author of the post can delete the post
+      // prisma.exists returns a promise, which resolves in a boolean value
+      const postExists = await prisma.exists.Post({
+        id: args.id,
+        author: {
+          id: userId
+        }
+      });
+
+      if (!postExists) {
+        throw new Error('Unable to delete post');
+      }
+
+      // This code only runs if postExists is true, meaning that this post can be deleted by this authorized user
+      return prisma.mutation.deletePost({ where: { id: args.id } }, info);
+    }
+  }
+  ```
 
 
 
