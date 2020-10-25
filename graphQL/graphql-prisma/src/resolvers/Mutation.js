@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import getUserId from '../utils/getUserId';
 
 // ======= JSON Web Token ========
 //
@@ -99,10 +100,9 @@ const Mutation = {
 			throw new Error('Unable to login');
 		}
 
-		return {
-			user,
-			token: jwt.sign({ userId: user.id }, 'thisisasecret')
-		};
+		const token = jwt.sign({ userId: user.id }, 'thisisasecret');
+
+		return { user, token };
 	},
 	async deleteUser(parent, args, { prisma }, info) {
 		// const userExists = await prisma.exists.User({ id: args.id });
@@ -122,7 +122,13 @@ const Mutation = {
 			info
 		);
 	},
-	async createPost(parent, args, { prisma }, info) {
+	// Destructure request from context param
+	createPost(parent, args, { prisma, request }, info) {
+		// Call the getUserId function and pass in the request
+		// This method validates the client token. If it's successful, it'll return the user id
+		const userId = getUserId(request);
+
+		// This code only runs if there's a userId, which means, the user is an authenticated user
 		return prisma.mutation.createPost(
 			{
 				data: {
@@ -131,7 +137,7 @@ const Mutation = {
 					published: args.data.published,
 					author: {
 						connect: {
-							id: args.data.author
+							id: userId
 						}
 					}
 				}
@@ -139,7 +145,7 @@ const Mutation = {
 			info
 		);
 	},
-	async deletePost(parent, args, { prisma }, info) {
+	deletePost(parent, args, { prisma }, info) {
 		return prisma.mutation.deletePost({ where: { id: args.id } }, info);
 	},
 	async updatePost(parent, args, { prisma }, info) {

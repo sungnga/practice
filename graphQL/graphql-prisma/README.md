@@ -1465,10 +1465,9 @@
         throw new Error('Unable to login');
       }
 
-      return {
-        user,
-        token: jwt.sign({ userId: user.id }, 'thisisasecret')
-      };
+      const token = jwt.sign({ userId: user.id }, 'thisisasecret');
+
+      return { user, token };
     }
   }
   ```
@@ -1490,11 +1489,104 @@
   }
   ```
 
+### Validating Auth Tokens
+- **Providing the token with the request:**
+  - To authenticate a user in the Node.js GraphQL API, the client will send along an authentication header that includes the auth token provided when either signing up or logging in
+  - In the 'HTTP HEADERS' tab in the GraphQL Playground when making an operation:
+    ```
+    {
+      "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJja2dtc3Rnc3kwYzlvMDgwN3F0bnhod2hpIiwiaWF0IjoxNjAzNTc0NjUzfQ.GV4jq-FhQ4h5noDdOjhzSquXJRzaVogIy-ER50QWubA"
+    }
+    ```
+- **Validating the token:**
+  - In the Node.js application, the goal is to get the head into the resolver methods by adding it onto the application context. The `context` property can be set equal to an object or a function. This function is called with a single argument which contains information about the request. That's where the authorization header lives
+  - In graphql-prisma/src/index.js file:
+    ```js
+    const server = new GraphQLServer({
+      typeDefs: './src/schema.graphql',
+      resolvers: {
+        Query,
+        Mutation,
+        Subscription,
+        User,
+        Post,
+        Comment
+      },
+      context(request) {
+        return {
+          db,
+          pubsub,
+          prisma,
+          request
+        };
+      }
+    });
+    ```
+  - With `request` being added onto the context, it can now be used inside the resolver methods
+  - In graphql-prisma/src/resolvers/Mutation.js file:
+    - Import the getUserId function: `import getUserId from '../utils/getUserId';`
+    - Implement user authentication in createPost resolver function
+      ```js
+      const Mutation = {
+        // Destructure request from context param
+        createPost(parent, args, { prisma, request }, info) {
+          // Call the getUserId function and pass in the request
+          // This method validates the client token. If it's successful, it'll return the user id
+          const userId = getUserId(request);
 
+          // This code only runs if there's a userId, which means, the user is an authenticated user
+          return prisma.mutation.createPost(
+            {
+              data: {
+                title: args.data.title,
+                body: args.data.body,
+                published: args.data.published,
+                author: {
+                  connect: {
+                    id: userId
+                  }
+                }
+              }
+            },
+            info
+          );
+        }
+      }
+      ```
+  - When making a createPost mutation, the client no longer required to provide an author id. Only an authenticated user can create a post
+  - In schema.graphql file:
+    - In the CreatePostInput input, remove the author field
+    ```
+    input CreatePostInput {
+      title: String!
+      body: String!
+      published: Boolean!
+    }
+    ```
+- **Create a getUserId utility function:**
+  - This getUserId function extracts the token from the authorization headers, verifying the token, and returning the authenticated user id. This function will throw an error if authentication fails for any reason
+  - In src/utils folder, create a file called getUserId.js
+  - In getUserId.js file:
+    ```js
+    import jwt from 'jsonwebtoken';
 
+    const getUserId = (request) => {
+      const header = request.request.headers.authorization;
 
+      if (!header) {
+        throw new Error('Authentication required');
+      }
 
+      const token = header.replace('Bearer ', '');
+      // This method returns the token and the data object (contains the payload and issued time)
+      const decoded = jwt.verify(token, 'thisisasecret');
 
+      // userId is the payload
+      return decoded.userId;
+    };
+
+    export { getUserId as default };
+    ```
 
 
 
