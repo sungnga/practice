@@ -1844,8 +1844,7 @@
 
     export { getUserId as default };
     ```
-
-**Goal: Lock down me query**
+- **Goal: Lock down me query**
   - Require authentication
   - Use correct prisma query to get/return user by their id
   - In graphql-prisma/src/resolvers/Query.js file:
@@ -1861,7 +1860,6 @@
       }
     }
     ```
-
 - For the posts query, we only want to send back published posts
   ```js
   const Query = {
@@ -1889,8 +1887,7 @@
     }
   }
   ```
-
-**Goal: Create a query for accessing your posts (myPosts)**
+- **Goal: Create a query for accessing your posts (myPosts)**
   - Define the query in schema.graphql
     - Accept optional query string. Return array of posts
   - Require authentication
@@ -1947,6 +1944,68 @@
       "Authorization": "user_token_here"
     }
     ```
+
+### Locking Down Individual Type Fields
+- In graphql-prisma/src/schema.graphql file:
+  - If a field will be hidden from unauthenticated users, it should be marked as nullable in schema.graphql. If the users email will be hidden from unauthenticated users, its type should be changed from `String!` to `String`
+    ```
+    type User {
+      id: ID!
+      name: String!
+      email: String
+      password: String!
+      posts: [Post!]!
+      comments: [Comment!]!
+    }
+    ```
+- In graphql-prisma/src/resolvers/User.js file:
+  - The email address isn't something that should always be hidden. A user should be able to see their own email address. To set that up, a resolver is required for `User.email`
+  - Notice that `getUserId` is called with `requireAuth` set to false. If the user is authenticated and they're fetching their own profile, the email address will be returned. If the user is unauthenticated or they're fetching someone else's profile, `null` will be returned instead of the user's email
+    ```js
+    import getUserId from '../utils/getUserId';
+
+    const User = {
+      // email resolver function
+      // This function returns either a string, an email, or null
+      // parent arg is the user object
+      email(parent, args, { request }, info) {
+        // Check if the user is authenticated
+        // Authentication is optional here. If a user is not authenticated, it'll return null
+        const userId = getUserId(request, false);
+
+        // console.log(parent)
+
+        // Check to see if the authenticated user id matches up with parent.id
+        // If it does, then the user is trying to select their own email
+        // If it doesn't, then they're trying to select a different user's email. So return null
+        if (userId && userId === parent.id) {
+          return parent.email;
+        } else {
+          return null;
+        }
+      }
+    };
+
+    export { User as default };
+    ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
