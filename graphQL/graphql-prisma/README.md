@@ -2127,9 +2127,114 @@
     }
     ```
 
+### Cleaning Up Some Edge Cases
+- In src/resolvers/Query.js:
+  - When querying for a user, we only want them to be able to search by name and not by email
+  - Remove the ability to query users by email
+    ```js
+    const Query = {
+      users(parent, args, { prisma }, info) {
+        // Provide operation arguments to prisma
+        const opArgs = {};
 
+        if (args.query) {
+          opArgs.where = {
+            OR: [
+              {
+                name_contains: args.query
+              }
+            ]
+          };
+        }
 
+        return prisma.query.users(opArgs, info);
+      }
+    }
+    ```
+- In src/resolvers/Mutation.js:
+  - Allow comments on published post only
+  - Check if the post is published
+  - Throw an error if it's not published
+    ```js
+    async createComment(parent, args, { prisma, request }, info) {
+      const userId = getUserId(request);
+      // Check if the post is published
+      const postExists = await prisma.exists.Post({
+        id: args.data.post,
+        published: true
+      })
 
+      if (!postExists) {
+        throw new Error('Unable to find post')
+      }
+
+      return prisma.mutation.createComment(
+        {
+          data: {
+            text: args.data.text,
+            author: {
+              connect: {
+                id: userId
+              }
+            },
+            post: {
+              connect: {
+                id: args.data.post
+              }
+            }
+          }
+        },
+        info
+      );
+    }
+    ```
+- In src/resolvers/Mutation.js:
+  - **Goal: Delete all comments when unpublishing a post**
+    - Use exists to determine if the post is published or not
+    - If published, but about to be unpublished, delete all post comments
+      - Check out the deleteManyComments mutation in the schema tab for Prisma
+    ```js
+    async updatePost(parent, args, { prisma, request }, info) {
+        const userId = getUserId(request);
+
+        const postExists = await prisma.exists.Post({
+          id: args.id,
+          author: {
+            id: userId
+          }
+        });
+        // Check if this is a published post
+        const isPublished = await prisma.exists.Post({
+          id: args.id,
+          published: true
+        });
+
+        if (!postExists) {
+          throw new Error('Unable to update post');
+        }
+
+        // If published post exists and the post is about to be unpublished
+        if (isPublished && args.data.published === false) {
+          await prisma.mutation.deleteManyComments({
+            where: {
+              post: {
+                id: args.id
+              }
+            }
+          });
+        }
+
+        return prisma.mutation.updatePost(
+          {
+            where: {
+              id: args.id
+            },
+            data: args.data
+          },
+          info
+        );
+      }
+    ```
 
 
 
