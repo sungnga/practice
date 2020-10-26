@@ -1761,6 +1761,195 @@
   }
   ```
 
+### Locking Down Queries: post, me, posts, myPosts
+- In graphql-prisma/src/schema.graphql file:
+  - Add a post id as a required argument for post query
+  ```
+  type Query {
+    users(query: String): [User!]!
+    posts(query: String): [Post!]!
+    comments: [Comment!]!
+    me: User!
+    post(id: ID!): Post!
+  }
+  ```
+- In graphql-prisma/src/resolvers/Query.js file:
+  - Import the getUserId function: `import getUserId from '../utils/getUserId';`
+  - Make user authentication optional for post query
+    ```js
+    const Query = {
+      // Mark this as an async function
+      async post(parent, args, { prisma, request }, info) {
+        // Check if the user is an authenticated user
+        // If the user is authenticated, userId will get set to their string id
+        // If the user is not authenticated, userId will get set to null
+        const userId = getUserId(request, false);
+
+        // Get the post by id. It also makes sure that the post is either published or owned by the authenticated user
+        const posts = await prisma.query.posts(
+          {
+            where: {
+              id: args.id,
+              OR: [
+                {
+                  published: true
+                },
+                {
+                  author: {
+                    id: userId
+                  }
+                }
+              ]
+            }
+          },
+          info
+        );
+
+        if (posts.length === 0) {
+          throw new Error('Post not found');
+        }
+
+        return posts[0];
+      }
+    }
+    ```
+- In graphql-prisma/src/utils/getUserId.js file:
+  - Modify this function so that authentication can be optional
+  - Add a 2nd argument, requireAuth, to getUserId function and set its default value to true. By default, authentication is required
+  - This 2nd arg determines if authentication is required or optional. If authentication is marked as optional and the user isn't authenticated, null will be returned instead of the user id
+    ```js
+    import jwt from 'jsonwebtoken';
+
+    const getUserId = (request, requireAuth = true) => {
+      const header = request.request.headers.authorization;
+
+      // If there is a header, get the token, verify the token, and return the user id
+      if (header) {
+        const token = header.replace('Bearer ', '');
+        // This method returns the token and the data object (contains the payload and issued time)
+        const decoded = jwt.verify(token, 'thisisasecret');
+
+        // userId is the payload
+        return decoded.userId;
+      }
+
+      // If a resolver requires authentication and the user is not authenticated, throw an error
+      if (requireAuth) {
+        throw new Error('Authentication required');
+      }
+
+      // If authentication is marked optional and the user isn't authenticated, return null instead of the user id
+      return null;
+    };
+
+    export { getUserId as default };
+    ```
+
+**Goal: Lock down me query**
+  - Require authentication
+  - Use correct prisma query to get/return user by their id
+  - In graphql-prisma/src/resolvers/Query.js file:
+    ```js
+    const Query = {
+      async me(parent, args, { prisma, request }, info) {
+        const userId = getUserId(request);
+        return prisma.query.user({
+          where: {
+            id: userId
+          }
+        });
+      }
+    }
+    ```
+
+- For the posts query, we only want to send back published posts
+  ```js
+  const Query = {
+    posts(parent, args, { prisma }, info) {
+      // We're only getting posts where published is true
+      const opArgs = {
+        where: {
+          published: true
+        }
+      };
+
+      // If query argument is provided
+      if (args.query) {
+        opArgs.where.OR = [
+          {
+            title_contains: args.query
+          },
+          {
+            body_contains: args.query
+          }
+        ];
+      }
+
+      return prisma.query.posts(opArgs, info);
+    }
+  }
+  ```
+
+**Goal: Create a query for accessing your posts (myPosts)**
+  - Define the query in schema.graphql
+    - Accept optional query string. Return array of posts
+  - Require authentication
+  - Setup opArgs to just fetch posts by the authenticated user
+  - Setup support for query argument list with posts
+  - Use correct prisma query to get/return data
+  - In graphql-prisma/src/schema.graphql file:
+    ```
+    type Query {
+      myPosts(query: String): [Post!]!
+    }
+    ```
+  - In graphql-prisma/src/resolvers/Query.js file:
+    ```js
+    const Query = {
+      async myPosts(parent, args, { prisma, request }, info) {
+        const userId = getUserId(request);
+        const opArgs = {
+          where: {
+            author: {
+              id: userId
+            }
+          }
+        };
+
+        if (args.query) {
+          opArgs.where.OR = [
+            {
+              title_contains: args.query
+            },
+            {
+              body_contains: args.query
+            }
+          ];
+        }
+
+        return prisma.query.posts(opArgs, info);
+      }
+    }
+    ```
+  - In GraphQL Playground:
+    ```
+    query {
+      myPosts(query: "post") {
+        id
+        title
+        body
+        published
+      }
+    }
+
+    // HTTP HEADERS
+    {
+      "Authorization": "user_token_here"
+    }
+    ```
+
+
+
 
 
 

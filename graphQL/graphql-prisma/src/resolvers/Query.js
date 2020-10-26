@@ -1,4 +1,5 @@
 import { Prisma } from 'prisma-binding';
+import getUserId from '../utils/getUserId';
 
 // prisma.query is an object
 // .users() is one of the prisma query methods
@@ -30,66 +31,94 @@ const Query = {
 		}
 
 		return prisma.query.users(opArgs, info);
-
-		// // If no query argument provided, just return regular users array of objects
-		// if (!args.query) {
-		// 	return db.users;
-		// }
-
-		// // If query arg is provided, use .filter() method on users array to filter users based on given query arg
-		// return db.users.filter((user) => {
-		// 	return user.name.toLowerCase().includes(args.query.toLowerCase());
-		// });
 	},
-	posts(parent, args, { prisma }, info) {
-		const opArgs = {};
+	async myPosts(parent, args, { prisma, request }, info) {
+		const userId = getUserId(request);
+		const opArgs = {
+			where: {
+				author: {
+					id: userId
+				}
+			}
+		};
 
 		if (args.query) {
-			opArgs.where = {
-				OR: [
-					{
-						title_contains: args.query
-					},
-					{
-						body_contains: args.query
-					}
-				]
-			};
+			opArgs.where.OR = [
+				{
+					title_contains: args.query
+				},
+				{
+					body_contains: args.query
+				}
+			];
 		}
 
 		return prisma.query.posts(opArgs, info);
+	},
+	posts(parent, args, { prisma }, info) {
+		// We're only getting posts where published is true
+		const opArgs = {
+			where: {
+				published: true
+			}
+		};
 
-		// if (!args.query) {
-		// 	return db.posts;
-		// }
+		if (args.query) {
+			opArgs.where.OR = [
+				{
+					title_contains: args.query
+				},
+				{
+					body_contains: args.query
+				}
+			];
+		}
 
-		// return db.posts.filter((post) => {
-		// 	const isTitleMatch = post.title
-		// 		.toLowerCase()
-		// 		.includes(args.query.toLowerCase());
-		// 	const isBodyMatch = post.body
-		// 		.toLowerCase()
-		// 		.includes(args.query.toLowerCase());
-		// 	return isTitleMatch || isBodyMatch;
-		// });
+		return prisma.query.posts(opArgs, info);
 	},
 	comments(parent, args, { prisma }, info) {
-		return prisma.query.comments(null, info)
+		return prisma.query.comments(null, info);
 	},
-	me() {
-		return {
-			id: '11233455',
-			name: 'Mike',
-			email: 'maike@example.com'
-		};
+	async me(parent, args, { prisma, request }, info) {
+		const userId = getUserId(request);
+		return prisma.query.user({
+			where: {
+				id: userId
+			}
+		});
 	},
-	post() {
-		return {
-			id: '34',
-			title: 'GraphQL 101',
-			body: '',
-			published: false
-		};
+	// Mark this as an async function
+	async post(parent, args, { prisma, request }, info) {
+		// Check if the user is an authenticated user
+		// If the user is authenticated, userId will get set to their string id
+		// If the user is not authenticated, userId will get set to null
+		const userId = getUserId(request, false);
+
+		// Get the post by id. It also makes sure that the post is either published or owned by the authenticated user
+		const posts = await prisma.query.posts(
+			{
+				where: {
+					id: args.id,
+					OR: [
+						{
+							published: true
+						},
+						{
+							author: {
+								id: userId
+							}
+						}
+					]
+				}
+			},
+			info
+		);
+
+		if (posts.length === 0) {
+			throw new Error('Post not found');
+		}
+
+		return posts[0];
 	}
 };
 
