@@ -1989,19 +1989,143 @@
     export { User as default };
     ```
 
+### Fragments
+- Fragments give us a reusable way to define a selection set. No longer will we have to list out all the fields for a user, post, or comment every time we define our selection sets
+- **Fragments in GraphQL Playground**
+  - Fragments are a GraphQL feature and are not specific to Prisma. They can be used on the client to define reuseable selection sets
+  - Fragments can be used anywhere we would normally define a selection set. This could be for a query, mutation, or subscription
+  - Define a userFields fragment for the User type. The fragment lists out all of the fields from User that it wants
+  - GraphQL Playground:
+    ```
+    query {
+      users {
+        ...userFields
+        email
+      }
+    }
 
+    // fragment name can be anything we want to call it
+    // provide the type we are selecting from
+    // then list the selection set
+    fragment userFields on User {
+      id
+      name
+      posts {
+        title
+      }
+    }
+    ```
+- **Integrating Fragments into Prisma**
+  - First, build the resolvers object in a separate file and import it into the main index.js file
+    - Create a src/resolvers/index.js file: 
+      ```js
+      import Query from './Query';
+      import Mutation from './Mutation';
+      import User from './User';
+      import Post from './Post';
+      import Comment from './Comment';
+      import Subscription from './Subscription';
 
+      const resolvers = {
+        Query,
+        Mutation,
+        Subscription,
+        User,
+        Post,
+        Comment
+      };
 
+      export { resolvers };
+      ```
+  - In src/index.js file:
+    - Import the resolvers: `import { resolvers } from './resolvers/index';`
+    - List the resolvers object in server object
+      ```js
+      const server = new GraphQLServer({
+        typeDefs: './src/schema.graphql',
+        resolvers,
+        context(request) {
+          return {
+            db,
+            pubsub,
+            prisma,
+            request
+          };
+        }
+      });
+      ```
+  - Fragments can also be used when interacting with Prisma. To configure this, we need to use `extractFragmentReplacements` from `prisma-binding`. We call that function with the resolver object and it returns the extracted fragments. From there, we set a `extractFragmentReplacements` property on the option object for both `Prisma` and `GraphQLServer`. The value for `extractFragmentReplacements` should be the extracted fragments from `extractFragmentReplacements`
+  - In src/resolvers/index.js file:
+    - Import the extractFragmentReplacements function from prisma-binding library
+    - Call the extractFragmentReplacements() function and pass in the resolvers object
+    - Export the fragmentReplacements
+      ```js
+      import { extractFragmentReplacements } from 'prisma-binding';
 
+      // fragmentReplacements contains a list of all the graphQL fragment definitions
+      // It goes through all of the resolvers and extracts all of the fragments and returns them in fragmentReplacements
+      // This allows us to specify the fields that are required for the resolver function to run correctly
+      const fragmentReplacements = extractFragmentReplacements(resolvers);
 
+      export { resolvers, fragmentReplacements };
+      ```
+  - **Configure both the server and Prisma to use the fragmentReplacements:**
+  - In graphql-prisma/src/prisma.js file:
+    - Import the fragmentReplacements
+    - Pass in the fragmentReplacements to the prisma instance
+      ```js
+      import { fragmentReplacements } from './resolvers/index';
 
+      const prisma = new Prisma({
+        typeDefs: 'src/generated/prisma.graphql',
+        endpoint: 'http://localhost:4466',
+        secret: 'myveryverysecrettext',
+        fragmentReplacements
+      });
+      ```
+  - In graphql-prisma/src/index.js file:
+    - Import the fragmentReplacements
+    - Pass in the fragmentReplacements in the server instance
+      ```js
+      import { resolvers, fragmentReplacements } from './resolvers/index';
 
-
-
-
-
-
-
+      const server = new GraphQLServer({
+        typeDefs: './src/schema.graphql',
+        resolvers,
+        context(request) {
+          return {
+            db,
+            pubsub,
+            prisma,
+            request
+          };
+        },
+        fragmentReplacements
+      });
+      ```
+- **Goal: Limit User.posts to showing just published posts**
+  - Set up a field resolver for User posts
+  - Set up a fragment to ensure you have the user's id
+  - Use the correct prisma method to fetch published posts where the user is the author
+  - In graphql-prisma/src/resolvers/User.js file:
+    ```js
+    const User = {
+      posts: {
+        // Ensure that we always have access to the user id
+        fragment: 'fragment userId on User { id }',
+        resolve(parent, args, { prisma }, info) {
+          return prisma.query.posts({
+            where: {
+              published: true,
+              author: {
+                id: parent.id
+              }
+            }
+          });
+        }
+      }
+    }
+    ```
 
 
 
