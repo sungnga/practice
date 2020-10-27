@@ -2297,26 +2297,26 @@
     ```
 - Subscribe to myPost in GraphQL Playground:
   - Perform an updatePost mutation to see the change
-  ```
-  subscription {
-    myPost {
-      mutation
-      node {
-        id
-        title
-        body
-        author {
-          name
+    ```
+    subscription {
+      myPost {
+        mutation
+        node {
+          id
+          title
+          body
+          author {
+            name
+          }
         }
       }
     }
-  }
 
-  // HTTP HEADERS
-  {
-    "Authorization": "Bearer user_token_here"
-  }
-  ```
+    // HTTP HEADERS
+    {
+      "Authorization": "Bearer user_token_here"
+    }
+    ```
 
 ### Token Expiration
 - **Creating tokens that expire:**
@@ -2385,9 +2385,71 @@
       }
       ```
 
+### Password Updates
+- When a user wants to update their user info, we want them to be able to update their password as well. We're going to create a utility function to hash a password
+- In graphql-prisma/src/schema.graphql file:
+  - Add a password field to UpdateUserInput input and set its value type to nullable String
+    ```
+    input UpdateUserInput {
+      name: String
+      email: String
+      password: String
+    }
+    ```
+- In graphql-prisma/src/utils folder, create a file called hashPassword.js
+- In hashPassword.js file:
+  - Create a utility function for validating and hashing a password
+    - Import bcrypt
+    - This function takes plain text password as an argument
+    - Validate the password
+    - Call the bcrypt.hash() method to hash the password
+    - Return the hash value
+    ```js
+    import bcrypt from 'bcryptjs';
 
+    const hashPassword = (password) => {
+      // Password validation
+      if (password.length < 8) {
+        throw new Error('Password must be 8 characters or longer');
+      }
 
+      // The bcrypt.hash() method takes in plain text and returns the hashed version
+      // It takes 2 arguments:
+      //	- 1st arg is the plain text password
+      //	- 2nd arg is a salt, we provide the length of salt we want to use
+      // A salt is a random series of chars that are hashed along with the string being hashed, making the hash password more secure
+      // This method returns a promise. That promise resolves with the hash value
+      // Return the hash value. We don't need to use the 'await' keyword since we're returning it
+      return bcrypt.hash(password, 10);
+    };
 
+    export { hashPassword as default };
+    ```
+- In graphql-prisma/src/resolvers/Mutation.js file:
+  - Import the hashPassword utility function
+  - Call the hashPassword function in createUser and updateUser mutations
+    ```js
+    import hashPassword from '../utils/hashPassword';
+
+    const Mutation = {
+      async createUser(parent, args, { prisma }, info) {
+        // Call the hashPassword method to hash the plain text password
+        // Store the hashed value in password variable
+        const password = await hashPassword(args.data.password)
+
+        // The rest of the code remains the same
+      },
+      async updateUser(parent, args, { prisma, request }, info) {
+        // Check if the password is a string
+        // If it is, we're going to hash the password
+        if (typeof args.data.password === 'string') {
+          args.data.password = await hashPassword(args.data.password)
+        }
+
+        // The rest of the code remains the same
+      }
+    }
+    ```
 
 
 

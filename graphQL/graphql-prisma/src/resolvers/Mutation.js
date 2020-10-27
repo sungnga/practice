@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import getUserId from '../utils/getUserId';
 import generateToken from '../utils/generateToken';
+import hashPassword from '../utils/hashPassword';
 
 // ======= JSON Web Token ========
 //
@@ -49,20 +50,9 @@ const Mutation = {
 	// This function is an async operation
 	// Destructure the prisma instance from context param
 	async createUser(parent, args, { prisma }, info) {
-		// Password validation
-		if (args.data.password.length < 8) {
-			throw new Error('Password must be 8 characters or longer');
-		}
-
-		// The bcrypt.hash() method takes in plain text and returns the hashed version
-		// It takes 2 arguments:
-		//	- 1st arg is the plain text password
-		//	- 2nd arg is a salt, we provide the length of salt we want to use
-		// A salt is a random series of chars that are hashed along with the string being hashed, making the hash password more secure
-		// This method returns a promise. That promise resolves with the hash value
-		// We're going to await that promise
-		// Store the hash value in a password variable
-		const password = await bcrypt.hash(args.data.password, 10);
+		// Call the hashPassword method to hash the plain text password
+    // Store the hashed value in password variable
+		const password = await hashPassword(args.data.password)
 
 		// This method takes 2 args:
 		// - 1st arg is the data the client provides when they try to create a user
@@ -115,6 +105,12 @@ const Mutation = {
 	async updateUser(parent, args, { prisma, request }, info) {
 		// Call the getUserId function and pass in the request
 		const userId = getUserId(request);
+
+		// Check if the password is a string
+		// If it is, we're going to hash the password
+		if (typeof args.data.password === 'string') {
+			args.data.password = await hashPassword(args.data.password)
+		}
 
 		// The userId comes from authentication
 		return prisma.mutation.updateUser(
