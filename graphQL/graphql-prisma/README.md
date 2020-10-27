@@ -2588,7 +2588,11 @@
     }
     ```
 
-### Add createdAt and updatedAt Fields to Schema
+### Adding createdAt and updatedAt Fields to Schema
+- There are 3 properties Prisma manages: id, updatedAt, and createdAt
+- updatedAt and createdAt can be exposed by updating the prisma datamodel to include those fields. The type for both should be `DateTime!`, which is a Prisma provided type for these fields
+- Next, the model (User, Comment, Post) in schema.graphql can be updated to support both properties. In this case, both fields should have the type `String!`
+- Now, clients can add createAt and updatedAt to their selection sets
 - In graphql-prisma/prisma/datamodel.prisma file:
   - Add updatedAt and createdAt fields to User type. Set its value type to non-nullable DateTime and add the directives
     ```
@@ -2619,10 +2623,25 @@
       createdAt: String!
     }
     ```
+- Perform users query in GraphQL Playground:
+  ```
+  query {
+    users(
+      first: 8
+      skip: 0
+    ) {
+      id
+      name
+      email
+      updatedAt
+      createdAt
+    }
+  }
+  ```
 - **Goal: Configure updatedAt and createdAt for posts and comments**
   - Update prisma models (in datamodel.prisma file) with those fields
   - Redeploy and fetch/generate new schema
-  - Update schema.graphql with those fields
+  - Update the Comment and Post models in schema.graphql with those fields
 
 
 
