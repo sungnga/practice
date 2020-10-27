@@ -2588,6 +2588,50 @@
     }
     ```
 
+### Add createdAt and updatedAt Fields to Schema
+- In graphql-prisma/prisma/datamodel.prisma file:
+  - Add updatedAt and createdAt fields to User type. Set its value type to non-nullable DateTime and add the directives
+    ```
+    type User {
+      id: ID! @id
+      name: String!
+      email: String! @unique
+      password: String!
+      posts: [Post!]! @relation(name: "PostToUser", onDelete: CASCADE)
+      comments: [Comment!]! @relation(name: "CommentToUser", onDelete: CASCADE)
+      updatedAt: DateTime! @updatedAt
+      createdAt: DateTime! @createdAt
+    }
+    ```
+- Redeploy the changes to prisma. cd into the prisma directory and run: `prisma deploy --force`
+- Still in prisma directory, run: `prisma generate`. This will generate a new schema in prisma.graphql file for Node.js server
+- In graphql-prisma/src/schema.graphql file:
+  - Add the updatedAt and createdAt fields to User type. Its value type is non-nullable string
+    ```
+    type User {
+      id: ID!
+      name: String!
+      email: String
+      password: String!
+      posts: [Post!]!
+      comments: [Comment!]!
+      updatedAt: String!
+      createdAt: String!
+    }
+    ```
+- **Goal: Configure updatedAt and createdAt for posts and comments**
+  - Update prisma models (in datamodel.prisma file) with those fields
+  - Redeploy and fetch/generate new schema
+  - Update schema.graphql with those fields
+
+
+
+
+
+
+
+
+
 
 
 
