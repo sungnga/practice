@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import getUserId from '../utils/getUserId';
+import generateToken from '../utils/generateToken';
 
 // ======= JSON Web Token ========
 //
@@ -77,11 +78,10 @@ const Mutation = {
 			}
 		});
 
+		const token = generateToken(user.id);
+
 		// What we want to return from this function is an object that contains the user information and the generated auth token
-		return {
-			user,
-			token: jwt.sign({ userId: user.id }, 'thisisasecret')
-		};
+		return { user, token };
 	},
 	async login(parent, args, { prisma }, info) {
 		const user = await prisma.query.user({
@@ -100,7 +100,7 @@ const Mutation = {
 			throw new Error('Unable to login');
 		}
 
-		const token = jwt.sign({ userId: user.id }, 'thisisasecret');
+		const token = generateToken(user.id);
 
 		return { user, token };
 	},

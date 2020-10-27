@@ -2188,7 +2188,7 @@
       );
     }
     ```
-- In src/resolvers/Mutation.js:
+- In src/resolvers/Mutation.js file:
   - **Goal: Delete all comments when unpublishing a post**
     - Use exists to determine if the post is published or not
     - If published, but about to be unpublished, delete all post comments
@@ -2317,6 +2317,80 @@
     "Authorization": "Bearer user_token_here"
   }
   ```
+
+### Token Expiration
+- **Creating tokens that expire:**
+  - To create a toke that expires, we need to set up a single option when signing the token. `jwt.sign()` accepts a third argument, an options object. This object can be configured with an `expiredIn` value to expire the token after a specific period of time
+  - `jwt.verify()` will automatically check if a given token is expired. If the token is expired, it will throw an error
+  - `jwt.sign({ userId: user.id }, 'thisisasecret', { expiresIn: '7 days' })`
+- **Goal: Create a utility function for generating JWTs**
+  - Create a new generateToken.js file in the utils directory
+  - Create the function that takes in the user id and returns a token
+  - Replace the two jwt.sign() calls with calls to generateToken instead
+  - In graphql-prisma/src/utils folder, create a file called generateToken.js
+  - In generateToken.js file:
+    - Import jwt
+      ```js
+      import jwt from 'jsonwebtoken';
+
+      const generateToken = (userId) => {
+        return jwt.sign({ userId }, 'thisisasecret', { expiresIn: '7 days' });
+      };
+
+      export { generateToken as default };
+      ```
+  - In graphql-prisma/src/resolvers/Mutation.js file:
+    - Import the generateToken utility function
+      ```js
+      import generateToken from '../utils/generateToken';
+
+      const Mutation = {
+        async createUser(parent, args, { prisma }, info) {
+          if (args.data.password.length < 8) {
+            throw new Error('Password must be 8 characters or longer');
+          }
+
+          const password = await bcrypt.hash(args.data.password, 10);
+          const user = await prisma.mutation.createUser({
+            data: {
+              ...args.data,
+              password
+            }
+          });
+          const token = generateToken(user.id);
+
+          return { user, token };
+        },
+        async login(parent, args, { prisma }, info) {
+          const user = await prisma.query.user({
+            where: {
+              email: args.data.email
+            }
+          });
+
+          if (!user) {
+            throw new Error('Unable to login');
+          }
+
+          const isMatch = await bcrypt.compare(args.data.password, user.password);
+
+          if (!isMatch) {
+            throw new Error('Unable to login');
+          }
+
+          const token = generateToken(user.id);
+
+          return { user, token };
+        }
+      }
+      ```
+
+
+
+
+
+
+
 
 
 
