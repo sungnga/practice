@@ -1,3 +1,5 @@
+import getUserId from '../utils/getUserId';
+
 // The property name needs to match up with the name of the subscription defined in type definition
 // Unlike Query and Mutation, the value for comment is not a method, it's an object
 // On this object, setup a subscribe() method
@@ -33,6 +35,24 @@ const Subscription = {
 					where: {
 						node: {
 							published: true
+						}
+					}
+				},
+				info
+			);
+		}
+	},
+	myPost: {
+		subscribe(parent, args, { prisma, request }, info) {
+			const userId = getUserId(request);
+
+			return prisma.subscription.post(
+				{
+					where: {
+						node: {
+							author: {
+								id: userId
+							}
 						}
 					}
 				},

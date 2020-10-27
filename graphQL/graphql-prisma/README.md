@@ -2236,7 +2236,87 @@
       }
     ```
 
+### Locking Down Subscriptions
+- In graphql-prisma/src/utils/getUserId.js file:
+  - We need to make a small change to the getUserId method, because the authorization header for subscriptions lives on a different property than it does for queries and mutations
+  ```js
+  const getUserId = (request, requireAuth = true) => {
+    // For queries and mutations, we're using standard http requests. The authorization comes from http headers
+    // For subscriptions, we're using web sockets. The data lives somewhere else on request
+    const header = request.request
+      ? request.request.headers.authorization
+      : request.connection.context.Authorization;
 
+    // The rest of the code remains the same
+  }
+  ```
+- In graphql-prisma/src/resolvers/Subscription.js file:
+  - Create a subscription for myPost which requires authentication
+  - Once authenticated, it will notify this user about changes to any posts that this user authored
+  - Use correct prisma method to subscribe to posts
+    - Limit to posts by a particular author using "where"
+  - Import the getUserId utility method
+    ```js
+    import getUserId from '../utils/getUserId';
+
+    const Subscription = {
+      myPost: {
+        subscribe(parent, args, { prisma, request }, info) {
+          const userId = getUserId(request);
+
+          return prisma.subscription.post(
+            {
+              where: {
+                node: {
+                  author: {
+                    id: userId
+                  }
+                }
+              }
+            },
+            info
+          );
+        }
+      }
+    }
+
+    ```
+- In graphql-prisma/src/schema.graphql file:
+  - Define a subscription for myPost
+    ```
+    type Subscription {
+      comment(postId: ID!): CommentSubscriptionPayload!
+      post: PostSubscriptionPayload!
+      myPost: PostSubscriptionPayload!
+    }
+
+    type PostSubscriptionPayload {
+      mutation: MutationType!
+      node: Post
+    }
+    ```
+- Subscribe to myPost in GraphQL Playground:
+  - Perform an updatePost mutation to see the change
+  ```
+  subscription {
+    myPost {
+      mutation
+      node {
+        id
+        title
+        body
+        author {
+          name
+        }
+      }
+    }
+  }
+
+  // HTTP HEADERS
+  {
+    "Authorization": "Bearer user_token_here"
+  }
+  ```
 
 
 
