@@ -2452,6 +2452,74 @@
     ```
 
 
+## PAGINATION AND SORTING WITH GRAPHQL
+
+### Support Pagination for Users and Posts Queries
+- **Pagination**
+  - There are 2 new arguments that will be added to queries that need to support pagination: `first` and `skip`
+  - `first` can be used to determine how many records should be fetched. Set `first` to `10` would give us the first 10 records
+  - `skip` can be used to skip a number of records
+- In graphql-prisma/src/schema.graphql file:
+  - Prisma has built-in support for `first` and `skip`. Pagination can be set up by first adding the arguments to the query
+  - Add first and skip as arguments to the the users query. Set its value type to nullable integer
+    ```
+    type Query {
+      users(query: String, first: Int, skip: Int): [User!]!
+    }
+    ```
+- In graphql-prisma/src/resolvers/Query.js file:
+  ```js
+    const Query = {
+      users(parent, args, { prisma }, info) {
+        // Provide operation arguments to prisma
+        const opArgs = {
+          first: args.first,
+          skip: args.skip
+        };
+      }
+    }
+  ```
+- Perform a users query with pagination in GraphQL Playground:
+  ```
+  query {
+    users(first: 2, skip: 3) {
+      id
+      name
+      email
+    }
+  }
+  ```
+- **Goal: Add pagination for posts query**
+  - Add necessary arguments to posts query in schema.graphql
+  - Pass arguments through to prisma in posts resolver
+  - In graphql-prisma/src/schema.graphql file:
+    ```
+    type Query {
+      posts(query: String, first: Int, skip: Int): [Post!]!
+    }
+    ```
+  - In graphql-prisma/src/resolvers/Query.js file:
+  ```js
+    const Query = {
+      posts(parent, args, { prisma }, info) {
+        // We're only getting posts where published is true
+        const opArgs = {
+          first: args.first,
+          skip: args.skip,
+          where: {
+            published: true
+          }
+        };
+      }
+    }
+  ```
+
+
+
+
+
+
+
 
 
 

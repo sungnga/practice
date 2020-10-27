@@ -12,7 +12,10 @@ import getUserId from '../utils/getUserId';
 const Query = {
 	users(parent, args, { prisma }, info) {
 		// Provide operation arguments to prisma
-		const opArgs = {};
+		const opArgs = {
+			first: args.first,
+			skip: args.skip
+		};
 
 		// Check if the client provides a query argument in query operation
 		// To know which operation arguments to provide, refer to the schema tab in the GraphQL Playground
@@ -55,6 +58,8 @@ const Query = {
 	posts(parent, args, { prisma }, info) {
 		// We're only getting posts where published is true
 		const opArgs = {
+			first: args.first,
+			skip: args.skip,
 			where: {
 				published: true
 			}

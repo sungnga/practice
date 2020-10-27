@@ -3,8 +3,8 @@
 # The schema also defines what the data looks like
 
 type Query {
-	users(query: String): [User!]!
-	posts(query: String): [Post!]!
+	users(query: String, first: Int, skip: Int): [User!]!
+	posts(query: String, first: Int, skip: Int): [Post!]!
 	comments: [Comment!]!
 	me: User!
 	myPosts(query: String): [Post!]!
