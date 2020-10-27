@@ -14,7 +14,8 @@ const Query = {
 		// Provide operation arguments to prisma
 		const opArgs = {
 			first: args.first,
-			skip: args.skip
+			skip: args.skip,
+			after: args.after
 		};
 
 		// Check if the client provides a query argument in query operation
@@ -35,6 +36,9 @@ const Query = {
 	async myPosts(parent, args, { prisma, request }, info) {
 		const userId = getUserId(request);
 		const opArgs = {
+			first: args.first,
+			skip: args.skip,
+			after: args.after,
 			where: {
 				author: {
 					id: userId
@@ -60,6 +64,7 @@ const Query = {
 		const opArgs = {
 			first: args.first,
 			skip: args.skip,
+			after: args.after,
 			where: {
 				published: true
 			}
@@ -79,7 +84,14 @@ const Query = {
 		return prisma.query.posts(opArgs, info);
 	},
 	comments(parent, args, { prisma }, info) {
-		return prisma.query.comments(null, info);
+		// Pass arguments through to prisma
+		const opArgs = {
+			first: args.first,
+			skip: args.skip,
+			after: args.after
+		};
+
+		return prisma.query.comments(opArgs, info);
 	},
 	async me(parent, args, { prisma, request }, info) {
 		const userId = getUserId(request);

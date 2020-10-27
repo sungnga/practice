@@ -2461,7 +2461,7 @@
   - `skip` can be used to skip a number of records
 - In graphql-prisma/src/schema.graphql file:
   - Prisma has built-in support for `first` and `skip`. Pagination can be set up by first adding the arguments to the query
-  - Add first and skip as arguments to the the users query. Set its value type to nullable integer
+  - Add first and skip as arguments to users query. Set its value type to nullable integer
     ```
     type Query {
       users(query: String, first: Int, skip: Int): [User!]!
@@ -2514,12 +2514,79 @@
     }
   ```
 
+### Pagination Using Cursors
+- Pagination using cursors requires a new argument named `after`. The value for `after` will be the id of the record we want to start fetching from
+- `after` allows use to fetch data after a specific record
+- In graphql-prisma/src/schema.graphql file:
+  - Add the after argument to users and posts query. Its value type is nullable string
+  ```
+  type Query {
+    users(query: String, first: Int, skip: Int, after: String): [User!]!
+    posts(query: String, first: Int, skip: Int, after: String): [Post!]!
+  }
+  ```
+- In graphql-prisma/src/resolvers/Query.js file:
+  - Pass the argument through to prisma in users and posts resolvers
+  ```js
+  const Query = {
+    users(parent, args, { prisma }, info) {
+      // Provide operation arguments to prisma
+      const opArgs = {
+        first: args.first,
+        skip: args.skip,
+        after: args.after
+      };
+    },
+    posts(parent, args, { prisma }, info) {
+      // We're only getting posts where published is true
+      const opArgs = {
+        first: args.first,
+        skip: args.skip,
+        after: args.after,
+        where: {
+          published: true
+        }
+      };
+    }
+   }
+  ```
+- Perform users and posts query using pagination in GraphQL Playground:
+  ```
+  query {
+    users(
+      first: 4, 
+      skip: 0, 
+      after: "ckgmstgsy0c9o0807qtnxhwhi"
+    ) {
+      id
+      name
+      email
+    }
+  }
 
-
-
-
-
-
+  query {
+    posts(
+      first: 5, 
+      skip: 0
+      after: "ckgpejne30dd70807ctlsjboc"
+    ) {
+      id
+      title
+      body
+      published
+    }
+  }
+  ```
+- **Goal: Add pagination for myPosts and comments query**
+  - Add 3 necessary arguments to query definition
+  - Pass arguments through to prisma in resolvers
+  - In graphql-prisma/src/schema.graphql file:
+    ```
+    type Query {
+      comments(first: Int, skip: Int, after: String): [Comment!]!
+      myPosts(query: String, first: Int, skip: Int, after: String): [Post!]!
+    }
+    ```
 
 
 
