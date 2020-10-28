@@ -2330,6 +2330,11 @@
   - In graphql-prisma/src/utils folder, create a file called generateToken.js
   - In generateToken.js file:
     - Import jwt
+    - Write a generateToken utility function that takes in a user id and returns a token
+      - Call the jwt.sign() method to generate the token. It takes 3 arguments
+        - 1st arg is a userId object
+        - 2nd arg is the secret
+        - 3rd arg is the options object. Here, specify the token expiration using the expiresIn property
       ```js
       import jwt from 'jsonwebtoken';
 
@@ -2341,6 +2346,7 @@
       ```
   - In graphql-prisma/src/resolvers/Mutation.js file:
     - Import the generateToken utility function
+    - Call the generateToken function and pass in the user id to generate a token
       ```js
       import generateToken from '../utils/generateToken';
 
@@ -2643,12 +2649,80 @@
   - Redeploy and fetch/generate new schema
   - Update the Comment and Post models in schema.graphql with those fields
 
+### Sorting Data
+- Prisma exposes an `orderBy` argument for all operations that respond with an array of items. Records of a given type can be sorted by any of their field values in either ascending or descending fashion. Like with our pagination arguments, `orderBy` should be accepted by our operations and passed through to Prisma
+- To find out the available input type definition for a particular query, go to GraphQL Playground and click on the DOCS schema tab or search in the generated prisma.graphql file. This type definition comes directly from Prisma
+  - Click on the query type
+  - A list of available arguments and its input type that can be used for that query type is found here
+  - One of the arguments should be orderBy and the name of its input type is what we want to import from prisma.graphql file
+  - For example, for users query, the input type of orderBy argument is  UserOrderByInput. We import this name from prisma.graphql file to have access to the enum of that input
+- We can always use the import syntax to import definitions from other GraphQL files. To import multiple definitions, just separate them by a comma
+- **Goal: Set up sorting for users, posts, myPosts, and comments**
+  - Set up the orderBy argument with the correct imported enum
+  - Update resolvers to pass the argument through to Prisma
+- In graphql-prisma/src/schema.graphql file:
+  - Modify users, posts, myPosts, and comments query definitions that support orderBy argument
+    - Set the input type, and as nullable type, that corresponds to that query type 
+    - These input type definitions come directly from Prisma
+    - Use the import syntax to import these from generated prisma.graphql file
+    ```
+    # import UserOrderByInput, PostOrderByInput, CommentOrderByInput from './generated/prisma.graphql'
 
-
-
-
-
-
+    type Query {
+      users(
+        query: String
+        first: Int
+        skip: Int
+        after: String
+        orderBy: UserOrderByInput
+      ): [User!]!
+      posts(
+        query: String
+        first: Int
+        skip: Int
+        after: String
+        orderBy: PostOrderByInput
+      ): [Post!]!
+      comments(
+        first: Int
+        skip: Int
+        after: String
+        orderBy: CommentOrderByInput
+      ): [Comment!]!
+      me: User!
+      myPosts(
+        query: String
+        first: Int
+        skip: Int
+        after: String
+        orderBy: PostOrderByInput
+      ): [Post!]!
+      post(id: ID!): Post!
+    }
+    ```
+- In graphql-prisma/src/resolvers/Query.js file:
+  - Update the users, posts, myPosts, and comments resolvers to pass the arguments through to Prisma
+    ```js
+		const opArgs = {
+			first: args.first,
+			skip: args.skip,
+			after: args.after,
+			orderBy: args.orderBy
+		};
+    ```
+- Perform users, posts, myPosts, or comments query in GraphQL Playground:
+  ```
+  query {
+    myPosts(
+      orderBy: title_DESC
+    ) {
+      id
+      title
+      body
+      published
+    }
+  }
+  ```
 
 
 
@@ -2664,3 +2738,10 @@
 - JSON Web Token - jsonwebtoken
   - Install: `npm i jsonwebtoken`
   - Import in Mutation.js file: `import jwt from 'jsonwebtoken';`
+- Prisma
+  - Install the Prisma module globally: `sudo npm i -g prisma`
+- prisma-binding
+  - Install: `npm i prisma-binding`
+  - Import in prisma.js file: `import { Prisma } from 'prisma-binding';`
+- graphql-cli
+  - Install: `npm i graphql-cli`
