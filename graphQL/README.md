@@ -4242,16 +4242,36 @@
   ```
 
 
-
-
-
-
-
-
-
-
-
-
+## PRODUCTION DEPLOYMENT
+### Creating a Prisma Service with Prisma Cloud
+- We're going to use Heroku service to host our production database, the Prisma Docker container, and our Node.js application
+- We're going to use Prisma Cloud service to manage the Heroku Prisma instances
+- Prisma Cloud website and click on Prisma Cloud 1 product: https://app.prisma.io/
+- Login to account and in the Prisma Cloud dashboard:
+  - It has Servers and Services tabs
+  - We're going to create a single Prisma server and we can have as many services as we like
+- **Creating a Prisma server**
+  - Click on the Servers tab at the top
+  - Click on the 'ADD SERVER' button to create our server
+  - Fill out the Server name (graphql-blog) and Server description (GraphQL blogging app) and click the 'CREATE A SERVER' button
+  - Choose Heroku for as a database provider and connect to Heroku account
+  - Select the free tier plan and click the 'CREATE DATABASE' button
+  - Once the database successfully created, click the 'SET UP A SERVER' button
+  - Select Heroku as a server provider
+  - Select the free tier as Server plan and then click the 'CREATE SERVER' button
+  - Once the server is successfully created, we can view the server in the Servers tab
+  - Both the server and the database are hosted on Heroku
+    - The server will host our Prisma Docker container
+    - The database will host our production database
+- **Connect to production database via pgAdmin**
+  - Go to pgAdmin browser page where we get to see our database
+  - On the left menu tree, and at the very top of the tree, right click on the 'Servers' directory. Select the 'create' and then select 'server'
+  - In the Create Server pop-up window, click on the Connection tab at the top
+    - Name this database: Heroku Production Database
+    - Fill in the database credentials. These credentials can be found on the Heroku website under settings and database credentials section
+    - If successful, a new database is listed on the left menu tree by the name we just gave it
+    - It will show many databases under databases directory. Use the find tool and paste in the name of our database (given by Heroku) to find ours
+    - Once we found our database, under the Schemas directory, we see our two Prisma schemas we created - blogging and review
 
 
 
