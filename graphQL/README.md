@@ -4243,6 +4243,7 @@
 
 
 ## PRODUCTION DEPLOYMENT
+
 ### Creating a Prisma Service with Prisma Cloud
 - We're going to use Heroku service to host our production database, the Prisma Docker container, and our Node.js application
 - We're going to use Prisma Cloud service to manage the Heroku Prisma instances
@@ -4272,6 +4273,53 @@
     - If successful, a new database is listed on the left menu tree by the name we just gave it
     - It will show many databases under databases directory. Use the find tool and paste in the name of our database (given by Heroku) to find ours
     - Once we found our database, under the Schemas directory, we see our two Prisma schemas we created - blogging and review
+
+### Prisma Configuration and Deployment
+- **Creating configuration files**
+  - Our Prisma project is going to run in multiple environments. This includes a development environment and a production environment. The development environment is on our local machine, and the production environment is on Heroku
+  - Supporting multiple environments will require a few small changes to the project. For example, prisma.yml has hardcoded endpoint value. The endpoint value is used to determine where to deploy the application, and right now it's always getting deployed to http://localhost:4466
+  - To address this, prisma.yml will rely on environmental variables instead of hardcoded values
+  - In graphql-prisma/config folder, create 2 files: dev.env and prod.env
+  - In dev.env file:
+    - Create a PRISMA_ENDPOINT environment variable and set it to the prisma localhost 
+      ```
+      PRISMA_ENDPOINT=http://localhost:4466
+      ```
+  - Next, update the prisma.yml file to rely on that variable's value as opposed to relying on the hardcoded endpoint
+  - In graphql-prisma/prisma/prisma.yml file:
+    - Set the endpoint property to the environment variable we created
+    - Use `${}` to inject env variable
+      - `endpoint: ${env:PRISMA_ENDPOINT}`
+  - Now we need to deploy to multiple environments
+- **Deploying to development**
+  - cd into graphql-prisma/prisma directory and run: `prisma deploy -e ../config/dev.env`
+  - The -e flag allows us to specify the path to the config file we want to use
+  - It will first load in the environmental variables from dev.env file and then it will inject the env variable into the prisma.yml file 
+- **Deploying to production**
+  - We're not going to provide any values in the prod.env file. We're going to let Prisma inject the URL for us
+  - First step is we need to login to Prisma to confirm who we are before we have access to the Prisma server
+    - In the terminal, run: `prisma login`. And then click grant permission to be authenticated
+    - cd into graphql-prisma/prisma directory and run: `prisma deploy -e ../config/prod.env`
+    - Since there's nothing in the prod.env file, it will ask us to select a server from a list of servers. Choose the 'graphql-blog' server
+    - Choose a name for your service: graphql-blogging-app
+    - Choose a name for your stage: prod
+    - What this does is, 
+      - it first writes an endpoint (a URL) to the prisma.yml file
+      - it then tries to deploy to the server that Prisma Cloud created
+  - Second step is to move this URL endpoint in prisma.yml file to the prod.env file
+    - In prod.env file:
+      - `PRISMA_ENDPOINT=url_goes_here`
+    - In prisma.yml file, the endpoint looks like this:
+      - `endpoint: ${env:PRISMA_ENDPOINT}`
+- Now we can deploy to different environments by specifying the endpoint we want to use from the config files
+  - To development: `prisma deploy -e ../config/dev.env`
+  - To production: `prisma deploy -e ../config/prod.env`
+
+
+
+
+
+
 
 
 
