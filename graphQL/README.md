@@ -4315,7 +4315,7 @@
   - To development: `prisma deploy -e ../config/dev.env`
   - To production: `prisma deploy -e ../config/prod.env`
 
-### Node.js Production App Deployment
+### Node.js Production App Deployment to Heroku
 - We want to host our Node.js application in production and we'll be using Heroku
 - **Installing the tools**
   - To start, we need to install Git and the Heroku CLI. We also need to login to the Heroku CLI so we can create and manage our production Node.js application
@@ -4390,7 +4390,7 @@
   - Since we're switching from `babel-node` to `babel`, we also need to install babel/polyfill library. babel/polyfill comes with many advanced features, including `regenerator runtime`. `regenerator runtime` allows us to use advanced features such as async/await. `babel` does not automatically come with `regenerator runtime` and we need to include it manually with babel/polyfill. This will ensure that features like async/await continue to work in production
     - Install: `npm i @babel/polyfill`
   - In src/index.js file:
-    - Import babel/polyfill at the very top of the file: `import '@babel/polyfill';`
+    - Import babel/polyfill at the very top of the file: `import '@babel/polyfill/noConflict';`
     - This will ensure that our code will work with or without babel-node. We use babel, not babel-node, in production
   - We need to run `npm run heroku-postbuild` again to re-generate the dist directory 
   to update the change we just made
@@ -4430,7 +4430,74 @@
     - https://fast-savannah-69073.herokuapp.com/
     - This is a GraphQL Playground instance and it's the production version of our Node.js app connect to our production version of our Prisma application
 
-
+### Node.js Production Environment Variables
+- We're going to extract sensitive information out of our codebase and inject those values via environment variables instead
+- It makes it much easier to change those values in the config instead of digging through the code to find them
+- By convention, the environment variable name is all in uppercase
+- **Extract Prisma secret to environment variable**
+  - In graphql-prisma/src/prisma.js file:
+    - Assign the value of secret to an environment variable. We'll call it PRISMA_SECRET
+      ```js
+      const prisma = new Prisma({
+        typeDefs: 'src/generated/prisma.graphql',
+        endpoint: process.env.PRISMA_ENDPOINT,
+        secret: process.env.PRISMA_SECRET,
+        fragmentReplacements
+      });
+      ```
+  - In graphql-prisma/prisma/prisma.yml file:
+    - Assign the value of secret to an environment variable. It'll be the same env variable name
+      ```
+      endpoint: ${env:PRISMA_ENDPOINT}
+      datamodel: datamodel.prisma
+      secret: ${env:PRISMA_SECRET}
+      generate:
+        - generator: graphql-schema
+          output: ../src/generated/prisma.graphql
+      ```
+  - In graphql-prisma/config/dev.env file:
+    - Add the prisma secret environment variable and assign a secret value. Can be anything
+    - `PRISMA_SECRET=secret_goes_here`
+  - In graphql-prisma/config/prod.env file:
+    - Add the prisma secret environment variable and assign a secret value. Can be different from the secret used in dev.env config
+    - `PRISMA_SECRET=secret_goes_here`
+  - Remember that the prod.env file is not sent to Heroku. So we need to set the config on Heroku via the Heroku cli
+    - cd into graphql-prisma project directory and run: `heroku config:set PRISMA_SECRET=prod_secret_goes_here`
+    - run `heroku config` to see a list of config we've set
+  - Next, we need to deploy the config changes we made to Prisma service
+    - cd into graphql-prisma/prisma directory and run:
+    - Deploy to development: `prisma deploy -e ../config/dev.env`
+    - Deploy to production: `prisma deploy -e ../config/prod.env`
+  - Test that our local development server is working
+    - cd into graphql-prisma directory and run: `npm run dev`
+    - Visit http://localhost:4000/ GraphQL Playground and perform a few operations
+  - Deploy the changes to Heroku, this is where our production Node.js application is being host
+    - Run: `git status` to see the files being changed
+    - Commit the changes: `git commit -am "Extract prisma secret to env var"`
+    - Deploy the code: `git push heroku master`
+  - Test that our production Node.js app is working
+    - Visit the app on Heroku: https://fast-savannah-69073.herokuapp.com/
+- **Goal: Pull JWT secret out of the code and into env var for dev and production**
+  - Reference env vars in Node app
+  - Add vars to config files and to heroku
+  - Deploy and test
+  - In graphql-prisma/src/utils/getUserId.js file:
+    `const decoded = jwt.verify(token, process.env.JWT_SECRET);`
+  - In graphql-prisma/src/utils/generateToken.js file:
+    ```js
+    const generateToken = (userId) => {
+      return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '7 days' });
+    };
+    ```
+  - In dev.env and prod.env files:
+    - Add the jwt secret env var and set the secret value. Can be anything
+      `JWT_SECRET=secret_goes_here`
+  - Set the production value, from prod.env file, on Heroku:
+    - cd into graphql-prisma directory and run: `heroku config:set JWT_SECRET=prod_jwt_secret_value`
+  - To test in dev, run `npm run dev` to start the dev server
+  - Deploy production Node.js app on Heroku:
+    - `git commit -am "Extract jwt secret to env var"`
+    - `git push heroku master`
 
 
 

@@ -14,7 +14,7 @@ const getUserId = (request, requireAuth = true) => {
 	if (header) {
 		const token = header.replace('Bearer ', '');
 		// This method returns the token and the data object (contains the payload and issued time)
-		const decoded = jwt.verify(token, 'thisisasecret');
+		const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
 		// userId is the payload
 		return decoded.userId;

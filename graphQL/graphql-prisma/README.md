@@ -2725,13 +2725,317 @@
   ```
 
 
+## PRODUCTION DEPLOYMENT
+- We're going to use Heroku service to host our production database, the Prisma Docker container, and our Node.js application
+- We're going to use Prisma Cloud service to manage the Heroku Prisma instances
 
+### Creating a Prisma Service with Prisma Cloud
+- Go to Prisma Cloud website and select the Prisma Cloud 1 product: https://app.prisma.io/
+- Log in to account with github account. In the Prisma Cloud dashboard:
+  - It has the Servers and Services tabs
+  - We're going to create a single Prisma server and we can have as many services as we like
+- **Creating a Prisma server**
+  - Click on the Servers tab at the top
+  - Click on the 'ADD SERVER' button to create our server
+  - Fill out the Server name (graphql-blog) and Server description (GraphQL blogging app) and click the 'CREATE A SERVER' button
+  - Choose Heroku for as a database provider and connect to Heroku account
+  - Select the free tier plan and click the 'CREATE DATABASE' button
+  - Once the database successfully created, click the 'SET UP A SERVER' button
+  - Select Heroku as a server provider
+  - Select the free tier as Server plan and then click the 'CREATE SERVER' button
+  - Once the server is successfully created, we can view the server in the Servers tab
+  - Both the server and the database are hosted on Heroku
+    - The server will host our Prisma Docker container
+    - The database will host our production database
+- **Connect to production database via pgAdmin**
+  - Go to pgAdmin browser page where we get to see our database
+  - On the left menu tree, and at the very top of the tree, right click on the 'Servers' directory. Select the 'create' and then select 'server'
+  - In the Create Server pop-up window, click on the Connection tab at the top
+    - Name this database: Heroku Production Database
+    - Fill in the database credentials. These credentials can be found on the Heroku website under settings and database credentials section
+    - If successful, a new database is listed on the left menu tree by the name we just gave it
+    - It will show many databases under databases directory. Use the find tool and paste in the name of our database (given by Heroku) to find ours
+    - Once we found our database, under the Schemas directory, we see our two Prisma schemas we created - blogging and review
+
+### Prisma Configuration and Deployment
+- **Creating configuration files**
+  - Our Prisma project is going to run in multiple environments. This includes a development environment and a production environment. The development environment is on our local machine, and the production environment is on Heroku
+  - Supporting multiple environments will require a few small changes to the project. For example, prisma.yml has hardcoded endpoint value. The endpoint value is used to determine where to deploy the application, and right now it's always getting deployed to http://localhost:4466
+  - To address this, prisma.yml will rely on environmental variables instead of hardcoded values
+  - In graphql-prisma/config folder, create 2 files: dev.env and prod.env
+  - In dev.env file:
+    - Create a PRISMA_ENDPOINT environment variable and set it to the prisma localhost 
+      ```
+      PRISMA_ENDPOINT=http://localhost:4466
+      ```
+  - Next, update the prisma.yml file to rely on that variable's value as opposed to relying on the hardcoded endpoint
+  - In graphql-prisma/prisma/prisma.yml file:
+    - Set the endpoint property to the environment variable we created
+    - Use `${}` to inject env variable
+      - `endpoint: ${env:PRISMA_ENDPOINT}`
+  - Now we need to deploy to multiple environments
+- **Deploying to development**
+  - cd into graphql-prisma/prisma directory and run: `prisma deploy -e ../config/dev.env`
+  - The -e flag allows us to specify the path to the config file we want to use
+  - It will first load in the environmental variables from dev.env file and then it will inject the env variable into the prisma.yml file 
+- **Deploying to production**
+  - We're not going to provide any values in the prod.env file. We're going to let Prisma inject the URL for us
+  - First step is we need to log in to Prisma Cloud via the Prisma command line interface. We need to confirm who we are before having access to our Prisma server
+    - In the terminal, run: `prisma login`. And then click grant permission to be authenticated
+    - cd into graphql-prisma/prisma directory and run: `prisma deploy -e ../config/prod.env`
+    - Since there's nothing in the prod.env file, it will ask us to select a server from a list of servers. Choose the 'graphql-blog' server
+    - Choose a name for your service: graphql-blogging-app
+    - Choose a name for your stage: prod
+    - What this does is, 
+      - it first writes an endpoint (a URL) to the prisma.yml file
+      - it then tries to deploy to the server that Prisma Cloud created
+  - Second step is to move this URL endpoint in prisma.yml file to the prod.env file
+    - In prod.env file:
+      - `PRISMA_ENDPOINT=url_goes_here`
+    - In prisma.yml file, the endpoint looks like this:
+      - `endpoint: ${env:PRISMA_ENDPOINT}`
+- Now we can deploy to different environments by specifying the endpoint we want to use from the config files
+  - To development: `prisma deploy -e ../config/dev.env`
+  - To production: `prisma deploy -e ../config/prod.env`
+
+### Node.js Production App Deployment to Heroku
+- We want to host our Node.js application in production and we'll be using Heroku
+- **Installing the tools**
+  - To start, we need to install Git and the Heroku CLI. We also need to login to the Heroku CLI so we can create and manage our production Node.js application
+  - We use Git (the version control system) to track code changes and push those changes to the Heroku server, so Heroku can deploy our application
+  - The Heroku CLI allows us to manage our Heroku applications. We can create apps and deploy new versions of the app
+    - Install the heroku cli globally: `npm i -g heroku`
+    - Login to heroku account: `npm login`. A Heroku pop-up window will appear to login
+- **Configuring the port**
+  - Heroku requires our application to start the server on a specific port. The value for that port is set as an environment variable on Heroku. The code starts the server on the correct port if a `PORT` environment variable is set, otherwise it uses port 4000
+  - In index.js file:
+    - The server.start() function takes an optional options object as 1st argument
+    - One of the properties for the options object is `port`. This port determines the port our server will be listening to. We can specify the port by setting the `PORT` environment variable
+    - We can also set a default port of port 4000 if the `PORT` env variable doesn't exist
+      ```js
+      server.start({ port: process.env.PORT || 4000 }, () => {
+        console.log('The server is up!');
+      });
+      ```
+- **Connecting to the correct endpoint in local development**
+  - In package.json file:
+    - Create a `dev` script. This is what we want to run when we start our application for local development. Nodemon is suitable for local development only
+      ```
+      "scripts": {
+        "dev": "nodemon src/index.js --ext js,graphql --exec babel-node",
+      }
+      ```
+    - The `start` script is for Heroku when it runs our Node.js application
+  - In prisma.js file, the endpoint our app connects to also needs to change. Instead of the hardcoded string `'http://localhost:4466'`, the value will come from the `PRISMA_ENDPOINT` environment variable, making the endpoint dynamic
+    ```js
+    const prisma = new Prisma({
+      typeDefs: 'src/generated/prisma.graphql',
+      endpoint: process.env.PRISMA_ENDPOINT,
+      secret: 'myveryverysecrettext',
+      fragmentReplacements
+    });
+    ```
+  - The `dev` script in package.json file can then be changed, which will first load in the environment variables from dev.env file
+    - To ensure that there's a value for `PRISMA_ENDPOINT` when the app runs locally, the npm library `env-cmd` will be used
+      - Install: `npm i env-cmd`
+    - In package.json file:
+      - In the dev script, specify the path to the dev.env file
+      ```
+      "scripts": {
+        "dev": "env-cmd -f ./config/dev.env nodemon src/index.js --ext js,graphql --exec babel-node",
+      }
+      ```
+  - Now, to run our Node.js app in local development mode: `npm run dev`
+- **Heroku production scripts**
+  - Heroku uses the scripts in package.json file to start up our Node.js application. This application needs two. The first is `heroku-postbuild` which will let us run Babel. This script runs just before `start` script runs. The second is `start` which will start up the web server
+  - In package.json file:
+    - `heroku-postbuild` script:
+      - Runs our code through Babel and will start up our Node.js application
+      - We can not use babel-node because it's for local development purposes, not suited for production
+      - We use babel. Babel takes our code and transforms them. It takes a series of arguments
+        - The first is list out where our code lives. In our case, it's in the src directory
+        - The second is where we want to put the output. Once our code is transformed, where will they go. Use `--out-dir` flag and specify the directory. Call it dist
+        - The third is the `--copy-files` flag. This is going to make sure to copy all files, even if they're not getting processed, such as our schema.graphql and generated prisma graphql files
+        ```
+        "scripts": {
+          "heroku-postbuild": "babel src --out-dir dist --copy-files"
+        }
+        ```
+      - Run `npm run heroku-postbuild` to run Babel and generate the dist directory 
+    - `start` script:
+      - Node will use the generated files in the dist directory to run our application
+      - Since we want to run our Node.js application in the production environment, we want to provide the production env variable endpoint which is in prod.env config file
+        ```
+        "scripts": {
+          "start": "env-cmd -f ./config/prod.env node dist/index.js"
+        }
+        ```
+  - Since we're switching from `babel-node` to `babel`, we also need to install babel/polyfill library. babel/polyfill comes with many advanced features, including `regenerator runtime`. `regenerator runtime` allows us to use advanced features such as async/await. `babel` does not automatically come with `regenerator runtime` and we need to include it manually with babel/polyfill. This will ensure that features like async/await continue to work in production
+    - Install: `npm i @babel/polyfill`
+  - In src/index.js file:
+    - Import babel/polyfill at the very top of the file: `import '@babel/polyfill/noConflict';`
+    - This will ensure that our code will work with or without babel-node. We use babel, not babel-node, in production
+  - We need to run `npm run heroku-postbuild` again to re-generate the dist directory 
+  to update the change we just made
+  - Now, run: `npm start` to start up our production server
+- **Adding version control, Git**
+  - With the scripts set up, the Node.js app is ready to run on Heroku. Git, a version control system, will be used to track changes to the code and to send those changes to Heroku so a new version of the app can be deployed
+  - There are two folders we don't want to add to version control. The first is `node_modules`. Heroku will install the dependencies listed in package.json, so there's no need to include this folder in Git. The second is `config`. This folder contains sensitive information and should be left out of version control. This can be done by creating a `.gitignore` file in the root of the project
+    - In .gitignore file:
+      ```
+      node_modules/
+      config/
+      dist/
+      ```
+  - In package.json file:
+    - In `start` script, remove the path to prod.env config file. We will configure the endpoint env variable in Heroku separately
+      ```
+      "scripts": {
+        "start": "node dist/index.js"
+      }
+      ```
+  - Step 1: initialize a Git repository
+    - cd into graphql-prisma project directory and run: `git init`
+  - Step 2: add project files to the staging area so they'll be included with the next commit
+    - `git add .`
+  - Step 3: create the initial commit
+    - `git commit -m "Initial commit"`
+  - Step 4: create the Heroku application. This will create a new application (on the free tier) using the account you logged in
+    - To login to Heroku: `heroku login` 
+    - `heroku create`
+  - Step 5: set configuration in Heroku. This is the environment variable endpoint in prod.env config file
+    - `heroku config:set PRISMA_ENDPOINT=the_prisma_server_url_goes_here`
+    - To view all the environment variables that are set by us, run: `heroku config`
+  - Step 6: push the application code to Heroku
+    - To view all the git remote, run: `git remote -v`
+    - `git push heroku master`
+  - Once the deployment process is done, we can view our Node.js app using the URL provided by Heroku
+    - https://fast-savannah-69073.herokuapp.com/
+    - This is a GraphQL Playground instance and it's the production version of our Node.js app connect to our production version of our Prisma application
+
+### Node.js Production Environment Variables
+- We're going to extract sensitive information out of our codebase and inject those values via environment variables instead
+- It makes it much easier to change those values in the config instead of digging through the code to find them
+- By convention, the environment variable name is all in uppercase
+- **Extract Prisma secret to environment variable**
+  - In graphql-prisma/src/prisma.js file:
+    - Assign the value of secret to an environment variable. We'll call it PRISMA_SECRET
+      ```js
+      const prisma = new Prisma({
+        typeDefs: 'src/generated/prisma.graphql',
+        endpoint: process.env.PRISMA_ENDPOINT,
+        secret: process.env.PRISMA_SECRET,
+        fragmentReplacements
+      });
+      ```
+  - In graphql-prisma/prisma/prisma.yml file:
+    - Assign the value of secret to an environment variable. It'll be the same env variable name
+      ```
+      endpoint: ${env:PRISMA_ENDPOINT}
+      datamodel: datamodel.prisma
+      secret: ${env:PRISMA_SECRET}
+      generate:
+        - generator: graphql-schema
+          output: ../src/generated/prisma.graphql
+      ```
+  - In graphql-prisma/config/dev.env file:
+    - Add the prisma secret environment variable and assign a secret value. Can be anything
+    - `PRISMA_SECRET=secret_goes_here`
+  - In graphql-prisma/config/prod.env file:
+    - Add the prisma secret environment variable and assign a secret value. Can be different from the secret used in dev.env config
+    - `PRISMA_SECRET=secret_goes_here`
+  - Remember that the prod.env file is not sent to Heroku. So we need to set the config on Heroku via the Heroku cli
+    - cd into graphql-prisma project directory and run: `heroku config:set PRISMA_SECRET=prod_secret_goes_here`
+    - run `heroku config` to see a list of config we've set
+  - Next, we need to deploy the config changes we made to Prisma service
+    - cd into graphql-prisma/prisma directory and run:
+    - Deploy to development: `prisma deploy -e ../config/dev.env`
+    - Deploy to production: `prisma deploy -e ../config/prod.env`
+  - Test that our local development server is working
+    - cd into graphql-prisma directory and run: `npm run dev`
+    - Visit http://localhost:4000/ GraphQL Playground and perform a few operations
+  - Deploy the changes to Heroku, this is where our production Node.js application is being host
+    - Run: `git status` to see the files being changed
+    - Commit the changes: `git commit -am "Extract prisma secret to env var"`
+    - Deploy the code: `git push heroku master`
+  - Test that our production Node.js app is working
+    - Visit the app on Heroku: https://fast-savannah-69073.herokuapp.com/
+- **Goal: Pull JWT secret out of the code and into env var for dev and production**
+  - Reference env vars in Node app
+  - Add vars to config files and to heroku
+  - Deploy and test
+  - In graphql-prisma/src/utils/getUserId.js file:
+    `const decoded = jwt.verify(token, process.env.JWT_SECRET);`
+  - In graphql-prisma/src/utils/generateToken.js file:
+    ```js
+    const generateToken = (userId) => {
+      return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '7 days' });
+    };
+    ```
+  - In dev.env and prod.env files:
+    - Add the jwt secret env var and set the secret value. Can be anything
+      `JWT_SECRET=secret_goes_here`
+  - Set the production value, from prod.env file, on Heroku:
+    - cd into graphql-prisma directory and run: `heroku config:set JWT_SECRET=prod_jwt_secret_value`
+  - To test in dev, run `npm run dev` to start the dev server
+  - Deploy production Node.js app on Heroku:
+    - `git commit -am "Extract jwt secret to env var"`
+    - `git push heroku master`
 
 
 
 
 
 ## NPM MODULES USED
+- Babel Javascript compiler
+  - Install: `npm i babel-cli babel-preset-env`
+  - Configure Babel in .babelrc file. This file sits at root of project directory
+    ```javascript
+    {
+      "presets": [
+    "env"
+    ]
+    }
+    ```
+  - In package.json file, include this:
+    ```javascript
+    "scripts": {
+      "start": "babel-node src/index.js",
+      "test": "echo \"Error: no test specified\" && exit 1"
+    }
+    ```
+- graphql-yoga
+  - Website: https://github.com/prisma-labs/graphql-yoga
+  - Install: `npm i graphql-yoga`
+  - Import in index.js file: `import { GraphQLServer } from 'graphql-yoga';`
+- Nodemon
+  - Install: `npm i nodemon --save-dev`
+  - In package.json file, include this:
+    ```javascript
+    "scripts": {
+      "start": "nodemon --exec babel-node src/index.js",
+      "test": "echo \"Error: no test specified\" && exit 1"
+    }
+    ```
+  - Then run `npm start`
+- cuid
+  - Install: `npm i cuid`
+  - Import: `import cuid from 'cuid';`
+- babel-plugin-transform-object-rest-spread
+  - This plugin allows Babel to transform rest properties for object destructuring assignment and spread properties for object literals
+  - Source: https://www.npmjs.com/package/babel-plugin-transform-object-rest-spread
+  - Install: `npm i babel-plugin-transform-object-rest-spread`
+  - Set up babel plugin in .babelrc file:
+    ```javascript
+    {
+      "presets": [
+        "env"
+      ],
+      "plugins": [
+        "transform-object-rest-spread"
+      ]
+    }
+    ```
 - Hashing Algorithm - bcrypt.js
   - Install: `npm i bcryptjs`
   - Import in Mutation.js file: `import bcrypt from 'bcryptjs';`
@@ -2745,3 +3049,10 @@
   - Import in prisma.js file: `import { Prisma } from 'prisma-binding';`
 - graphql-cli
   - Install: `npm i graphql-cli`
+- env-cmd
+  - This library allows us to load the env variable in the `dev` script in package.json
+  - Install: `npm i env-cmd`
+- babel/polyfill
+  - This library ensures that we can use JS advanced features in production
+  - Install: `npm i @babel/polyfill`
+  - Import in src/index.js file: `import '@babel/polyfill';`
