@@ -24,6 +24,10 @@
 - `sub` Elements
 - VSCode Emmet shortcuts
 
+**Block vs. inline elements:**
+- Block level elements take up a whole "block" of space
+- Inline elements fit in alongside other elements
+
 
 ## S5: HTML FORMS AND TABLES
 #### TOPICS:
@@ -94,12 +98,12 @@
 - Common Text Properties
 
 **Basic CSS syntax:**
+- Must have a semicolon `;` at the end of every property declaration
   ```css
   selector {
     property: value;
   }
   ```
-  - Must have a semicolon `;` at the end of every property declaration
 
 **Color System:**
 - color name: `color: red;`
@@ -118,7 +122,7 @@
   - The 1st font is the first font choice
   - The 2nd font specified is a font to fall back on
 
-**font-size**
+**font-size:**
 - Relative
   - em
   - rem
@@ -293,6 +297,66 @@
   ```
 
 
+## S8: CSS BOX MODEL AND UNITS
+#### TOPICS:
+- Width & height
+- Border
+- Padding
+- Margin
+- Display property
+- Units - percentages, EMS, & REMS
+- Border radius
+
+**The CSS Box Model:**
+- Properties of the Box Model
+  - width - horizontal measure of the box
+  - height - vertical measure of the box
+  - border - the border around the box
+  - padding - the space between the content and the border
+  - margin - the space between the outside border and other elements
+
+**Border properties:**
+- border-width - controls the thickness of the border
+- border-color - controls the color of the border
+- border-style - controls the line style - dashed, solid, dotted, etc.
+- Use `box-sizing: border-box` to set the border properties to fit inside the border box
+  - If an element has a width of 100px and a border-width of 5px, the content inside the border property is 90px
+- The border property is the border shorthand property to set the border-width, border-color, and border-style all at once
+  ```css
+  color: 2px dashed green;
+  ```
+- border-radius - rounds the corners of an element's outer border edge
+
+**Display property:**
+- INLINE
+  - Width & Height are ignored.
+  - Margin & Padding push elements away horizontally but not vertically
+- BLOCK
+  - Block elements break the flow of a document
+  - Width, Height, Margin, & Padding are respected
+- INLINE-BLOCK
+  - Behaved like an inline element except Width, Height, Margin, & Padding are respected
+
+**CSS Units:**
+- Absolute units
+  - px - by far the most commonly used absolute unit
+  - 1px does not necessarily equal the width of exactly one pixel!
+  - Not recommended for responsive websites
+- Relative unit: percentages
+  - Percentages are always relative to some other value
+  - Sometimes, it's a value from the parent and other times, it's a value from the element itself. It depends what that property is. For example:
+    - `width: 50%;` - half the width of the parent
+    - `line-height: 50%;` - half the font-size of the element itself
+- Relative unit: ems
+  - With font-size, 1em equals the font-size of the parent. 2em is twice the font-size of the parent, etc
+  - With other properties, 1rem is equal to the computed font-size of the element itself
+- Relative unit: rems
+  - Relative to the **root html element**'s font-size. Often easier to work with than ems
+  - If the root font-size is 20px, 1rem is always 20px, 2rem is always 40px, etc
+
+
+
+
 
 
 
@@ -309,4 +373,4 @@
 
 
 ## RESOURCES
-- Color inspiration: wwww.coolers.co/palettes/trending
+- Color inspiration: www.coolers.co/palettes/trending
