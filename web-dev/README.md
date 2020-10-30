@@ -131,3 +131,182 @@
   - cm
   - in
   - mm
+
+
+## S7: CSS SELECTORS
+#### TOPICS:
+- Element selector
+- Class selector
+- ID selector
+- Descendent selector
+- CSS specificity
+- Adjacent selector
+- Direct descendent selector
+- Attribute selector
+- Pseudo elements
+- Pseudo classes
+
+**Element Selector:**
+- Select all element of a certain type
+- For example, select all images
+  ```css
+  img {
+    width: 100px;
+    height: 200px;
+  }
+  ```
+
+**Selector List:**
+- Use a comma to combine multiple selectors in a list
+- For example, select all h1's and h2's
+  ```css
+  h1, h2 {
+    color: magenta;
+  }
+  ```
+
+**ID Selector:**
+- Important to remember that only one thing on a page should have a given id
+- Id selector is used for unique identifier
+- Use a pound symbol `#` in front of the id name
+- Try to keep using id to a minimal on a page. There are other approaches
+  ```css
+  #signup {
+    color: #f1faee;
+  }
+  ```
+
+**Class Selector:**
+- Similar idea to an id selector, but a class selector can be applied to multiple elements
+- Use a period `.` in front of the class name
+- For example, select elements with class of 'complete'
+  ```css
+  .complete {
+    color: green;
+  }
+  ```
+
+**Descendant Selector:**
+- A space is used to select the descendant element of an element
+- Select all `<a>` tags that are nested inside an `<li>` tag
+  ```css
+  li a {
+    color: teal;
+  }
+  ```
+
+**Adjacent Selector, also known as Adjacent Combinator:**
+- Uses a plus sign `+` to select elements that are immediately after another element
+- They're on the same level. Not nested or child/parent of each other
+- Select only the paragraphs that are immediately preceded by an `<h1>`
+  ```css
+  h1 + p {
+     color: red;
+  }
+  ```
+
+**Direct-Descendant Selector, also known as Direct Child Combinator:**
+- Uses the greater than sign `>` to select the direct child of an element. In other words, the element that is one level down
+- Select only the `<li>`'s that are direct children of the `<div>` element
+  ```css
+  div > li {
+    color: white:
+  }
+  ```
+
+**Attribute Selector:**
+- Select elements based upon some particular attribute
+- Use square bracket after the element type and specify the attribute inside the square bracket
+- Select all input elements where the type attribute is set to "text"
+  ```css
+  input[type="text"] {
+    width: 300px;
+    color: yellow;
+  }
+  ```
+
+**Pseudo Classes:**
+- They are modifiers. Keyword added to a selector that specifies a special **state** of the selected element(s)
+- Starts with a colon `:` to signify that it's a pseudo class
+  - :active
+  - :checked
+  - :first
+  - :hover
+  - :not()
+  - :nth-child()
+  - :nth-of-type() - Select based on position in a group of siblings
+- The LVHA-order: `:link` - `:visited` - `:hover` - `:active`
+- For example, select any `<button>` element inside the post class when "hovered". Select every other element with a class of post
+  ```css
+  .post button:hover {
+    color: orange;
+  }
+
+  .post:nth-of-type(2n) {
+    background-color: #dfe8dc;
+  }
+  ```
+
+**Pseudo Elements:**
+- Keyword added to a selector that lets you style a particular **part** of selected element(s)
+  - ::after
+  - ::before
+  - ::first-letter
+  - ::first-line
+  - ::selection
+- For example, change background color of selection when selecting any part of the `<p>` element
+  ```css
+  p::selection {
+    background-color: #fcdf49;
+  }
+  ```
+
+**The Cascade:**
+- The order your styles are declared in and linked to matters!
+- The latter wins
+- In this example, the color purple wins
+  ```css
+  h1 {
+    color: red;
+  }
+  h1 {
+    color: purple;
+  }
+  ```
+
+**Specificity:**
+- What happens when conflicting styles target the same elements?
+- Specificity is how the browser decides which rules to apply when multiple rules could apply to the same element
+- It is a measure of how specific a given selector is. The more specific selector "wins"
+- Order of specificity: !important > inline styles > id > class > element
+- Only use `!important` if it's a must must
+- Not recommended using inline styles
+
+**CSS Inheritance:**
+- A child element can inherit styles from the closest parent element
+- Not all elements inherit styles from its parent. However, if you want it to inherit the styles from its nearest parent, set the value of a particular property to `inherit`
+- Not all properties are inherited, such as border property
+  ```css
+  button {
+    color: inherit; 
+  }
+  ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## RESOURCES
+- Color inspiration: wwww.coolers.co/palettes/trending
