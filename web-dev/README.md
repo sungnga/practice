@@ -1,7 +1,7 @@
 # TOPICS AND NOTES
 
 ## S3: INTRO TO HTML
-#### TOPICS
+#### TOPICS:
 - Paragraph Elements, p tags
 - HTML Headings
 - HTML Lists
@@ -13,7 +13,7 @@
 
 
 ## S4: HTML ELEMENTS AND SEMANTICS
-#### TOPICS
+#### TOPICS:
 - Understanding what HTML5 Actually is
 - Block vs. Inline Elements
 - `<span>` and `<div>` Elements
@@ -26,7 +26,7 @@
 
 
 ## S5: HTML FORMS AND TABLES
-#### TOPICS
+#### TOPICS:
 - Table Basics: `<table>`, `<tr>`, `<td>`, and `<th>`
 - Form Element Basics
 - Button Elements
@@ -37,12 +37,12 @@
 - Form Validations
 - Table Colspan & Rowspan
 
-**<form>**
+**`<form>`**
 - The form element "represents a document section containing interactive controls for submitting information"
 - The action attribute specifies WHERE the form data should be sent
 - The method attribute specifies which HTTP method should be used
  
-**form <input> element**
+**form `<input>` element**
 - The input element is used to create a variety of different form controls
 - We have 20+ possible types of inputs, ranging from date pickers to checkboxes
 - The type attribute is where the magic happens. Changing type dramatically alters the input's behavior and appearance
@@ -53,7 +53,7 @@
   - name
   - value
 
-**<label> element**
+**`<label>` element**
 - represents a caption for an item in a user interface
 - Always include labels for an input element
 - To associate the `<label>` with an `<input>` element, you need to give the `<input>` an id attribute. The `<label>` then needs a for an attribute whose value is the same as the input's id
@@ -70,7 +70,7 @@
   </label>
   ```
 
-**form <button> element**
+**form `<button>` element**
 - By default, you have a `<button>` element inside a `<form>` element, it will act as a submit button. It will submit the form
 - However, if you add a type attribute of button to the `<button>` element, it'll then act as a regular button
   - `<button type="button">Please do not submit the form</button>`
@@ -79,16 +79,55 @@
 - Name of the element. For example used by the server to identify the fields in form submits
 - Name attribute should be used in every form `<input>` element. It will be used when you send data to the server
 - The value for the name attribute of an input is what the user provides
-  - <input name="username" type="text">
+  - `<input name="username" type="text">`
   - User enters "james007" into the input field
   - The result of name attribute is: username=james007
 
 
 ## S6: CSS BASICS
-#### TOPICS
+#### TOPICS:
 - Conceptual Overview of CSS
 - Basic CSS Syntax
 - Including Styles Correctly
 - Color Systems: RGB, Hex, etc.
 - Font-family Property
 - Common Text Properties
+
+**Basic CSS syntax:**
+  ```css
+  selector {
+    property: value;
+  }
+  ```
+  - Must have a semicolon `;` at the end of every property declaration
+
+**Color System:**
+- color name: `color: red;`
+- RGB: `background-color: rgb(89, 141, 0);`
+- HEX: `color: #0f5679;`
+- HSL
+
+**CSS text properties:**
+- text-align
+- font-weight
+- text-decoration
+- line-height
+- letter-spacing
+- font-size
+- font-family: `font-family: Verdana, sans-serif`
+  - The 1st font is the first font choice
+  - The 2nd font specified is a font to fall back on
+
+**font-size**
+- Relative
+  - em
+  - rem
+  - vh
+  - wh
+  - %
+- Absolute
+  - px
+  - pt
+  - cm
+  - in
+  - mm
