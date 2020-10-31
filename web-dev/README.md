@@ -323,18 +323,18 @@
   - If an element has a width of 100px and a border-width of 5px, the content inside the border property is 90px
 - The border property is the border shorthand property to set the border-width, border-color, and border-style all at once
   ```css
-  color: 2px dashed green;
+  border: 2px dashed green;
   ```
 - border-radius - rounds the corners of an element's outer border edge
 
 **Display property:**
-- INLINE
+- inline
   - Width & Height are ignored.
   - Margin & Padding push elements away horizontally but not vertically
-- BLOCK
+- block
   - Block elements break the flow of a document
   - Width, Height, Margin, & Padding are respected
-- INLINE-BLOCK
+- inline-block
   - Behaved like an inline element except Width, Height, Margin, & Padding are respected
 
 **CSS Units:**
@@ -355,19 +355,84 @@
   - If the root font-size is 20px, 1rem is always 20px, 2rem is always 40px, etc
 
 
+## S9: MORE CSS PROPERTIES
+#### TOPICS:
+- Transitions
+- Position property
+- Opacity and alpha channel
+- Google fonts
+- The full story on the background property
+- Transforms
 
+**Opacity and the alpha channel:**
+- `background-color: rgba(0, 209, 112, 0.5);`
+- rgba has a 4th channel, the alpha channel
+- The alpha channel governs the transparency of a color
+- Its value is from 0 to 1. 0 being completely transparent and 1 is not at all transparent
+- Other elements won't be impacted, only the specified property declaration set to rgba
+- Opacity property
+  - `opacity: 0.3;`
+  - Opacity is different from the alpha channel
+  - Opacity is a property that we set on an element
+  - It governs the entire element's transparency, including its content and any descendants
+  - Opacity goes from 0 to 1. 0 being completely transparent and 1 is not at all transparent
 
+**Position property:**
+- The position CSS property sets how an element is positioned in a document. The top, right, bottom, and left properties determine the final location of positioned elements
+ ```css
+  position: static;
 
+  position: relative;
+  top: 40px; left: 40px;
 
+  position: absolute;
+  top: 40px; left: 40px;
 
+  position: -webkit-sticky;
+  position: sticky;
+  top: 20px;
+ ```
+- The position property is specified as a single keyword chosen from the list of values below:
+  - static
+  - relative
+  - absolute
+  - fixed
+  - sticky
+- The default position is static
 
+**CSS transition:**
+- Transition allows us to animate the transition of one property value to another property value
+- Elements of transition property
+  - transition: property name | duration | timing function | delay
+- transition-timing-function property:
+  - linear
+  - ease-in, ease-out
+  - steps
+  - cubic-bezier
 
+**CSS transform:**
+  - transform: rotate(45deg);
+  - transform: scale(2, 1);
+  - transform: translate(-200px, 30px);
+  - transform: skew(30deg)
+  - transform: translateX(10px) rotate(10deg) translateY(5px);
 
+**Background property:**
+- background-image
+- background-size
+- background-repeat
+- background-position
+- The background property is background shorthand to set everything at once. The order does not matter, except the position/size properties
 
-
-
-
-
+**Google fonts:**
+- Website: https://fonts.google.com/
+- We can include a font as part of our document. Include it in the `<head>` element of an html doc
+  ```html
+  <head>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;1,400&display=swap" rel="stylesheet">
+  </head>
+  ```
+- Use the font in CSS stylesheet: `font-family: Montserrat, sans-serif;`
 
 
 
