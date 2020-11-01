@@ -377,7 +377,7 @@
   - It governs the entire element's transparency, including its content and any descendants
   - Opacity goes from 0 to 1. 0 being completely transparent and 1 is not at all transparent
 
-**Position property:**
+**The position property:**
 - The position CSS property sets how an element is positioned in a document. The top, right, bottom, and left properties determine the final location of positioned elements
  ```css
   position: static;
@@ -417,7 +417,7 @@
   - transform: skew(30deg)
   - transform: translateX(10px) rotate(10deg) translateY(5px);
 
-**Background property:**
+**The background property:**
 - background-image
 - background-size
 - background-repeat
@@ -497,6 +497,185 @@
   - `@media (min-width: 800px) {...}` this says, a minimum of 800px and upward
   - `@media (max-width: 800px) {...}` this says, up to a maximum width of 800px
   - Most common use is `min-width`
+
+
+## S12: CSS FRAMEWORKS: BOOTSTRAP
+#### TOPICS:
+- Working with CSS frameworks
+- Including 3rd party CSS and CDNS
+- Bootstrap grid
+- Responsive Bootstrap grid
+- Bootstrap navbars
+- Icons
+- Typography and utilities
+- Bootstrap forms
+- Bootstrap buttons
+
+**Including Bootstrap and containers:**
+- Include Bootstrap CDN in html doc file
+  - Put this in the head element
+  - Put this BEFORE your own custom CSS stylesheets. This way, your styles won't be overwritten by Bootstrap
+  ```html
+  <head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="app.css">
+  </head>
+  ```
+- Include Bootstrap JS scripts in html doc file
+  - Put this at the very bottom of the body element
+  ```html
+  <body>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+  ```
+- **Containers:**
+  - Containers are the most basic layout element in Bootstrap and are required when using Bootstrap default grid system
+  - Containers are used to contain, pad, and sometimes center the content within them
+  - Bootstrap comes with 3 different containers:
+    - `.container`, which sets a `max-width` at each responsive breakpoint
+    - `.container-fluid`, which is `width: 100%` at all breakpoints
+    - `.container-{breakpoint}`, which is `width: 100%` until the specified breakpoint
+  - Container breakpoint: container's `max-width`
+    - .container
+    - .container-sm
+    - .container-md
+    - .container-lg
+    - .container-xl
+    - .container-fluid
+    ```html
+    <div class="container">
+      <!-- Content here -->
+    </div>
+    ```
+
+**Bootstrap typography and utilities classes:**
+- display
+- blockquote
+- blockquote-footer
+- Alignment: text-center | text-left | text-right
+- Text color: text-primary | text-white | text-black-50 etc
+- Background color: bg-danger | bg-primary etc
+
+**Badges, alerts, and button groups:**
+- Badge: badge badge-pill
+- Button group groups multiple buttons together: btn-group
+- Alert: alert alert-danger | alert-heading | alert-dismissible
+
+**Bootstrap grid:**
+- Bootstrap grid only works inside a Bootstrap class of container
+- Also, must use class of row
+- Every row in Bootstrap has 12 units of space
+- Use the column class to divide up the row however you want
+  - col | col-6 | 
+  ```html
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        1 of 3
+      </div>
+      <div class="col-8">
+        2 of 3
+      </div>
+      <div class="col">
+        3 of 3
+      </div>
+    </div>
+  </div>
+  ```
+
+**Responsive Bootstrap grids:**
+- We can create responsive layouts and shift content around based upon the screen size
+- Bootstrap has built-in grid breakpoints that's used as predefined screen size
+  - Extra small - less than 576px - `.col-`
+  - Small - greater or equal to 576px - `.col-sm-`
+  - Medium - greater or equal to 768px - `.col-med-`
+  - Large - greater or equal to 992px - `.col-lg-`
+  - Extra large - greater or equal to 1200px - `.col-xl-`
+- Can specify multiple breakpoints to define the content layout for each breakpoint
+  ```html
+  <div class="container">
+    <div class="row">
+      <div class="col-xl-4 col-md-6">
+        <img class="img-fluid" src="..." alt="..." />
+      </div>
+    </div>
+  </div>
+  ```
+- Responsive images: 
+  - Make the image scale based upon the size of its containing element
+  - image-fluid
+
+**Useful grid utilities:**
+- Alignment
+  - align-items-start | align-items-end | align-items-center
+  - align-self-start | align-self-end | align-self-center
+  - justify-content-*
+- Can use these grid utilities at different screen sizes
+  - For example, justify-content-md-between
+
+**Forms:**
+- form-row
+- form-group - add some structure to forms
+- form-control - add this class to the input element
+- form-check
+- custom-control custom-checkbox
+
+**Navbar:**
+- This feature uses a lot of classes. Refer to the documentation
+- navbar navbar-light | navbar-dark (the light/dark is for the navbar text) 
+- navbar-toggler - toggles the hamburger menu
+- collapse navbar-collapse
+- Placement
+  - navbar fixed-top | stick-top
+
+**Bootstrap icons:**
+- A free set of icons
+- Uses svg
+- Another great icon source is font awesome
+
+**Other Bootstrap utilities:**
+- Border: border | border-top | border-bottom | border-right | border-left
+- Turn border off: border-0 | border-top-0 | etc
+- Border-radius: rounded | rounded-0 | rounded-circle | rounded-pill | rounded-lg | rounded-sm | etc
+- Shadow: shadow | shadow-none | shadow-sm | shadow-lg
+- **Spacing**
+  - The format: 
+    - {property}{sides}-{size} for xs
+    - {property}{sides}-{breakpoint}-{size}
+  - Where property is one of:
+    - `m` - for classes that set margin
+    - `p` - for classes that set padding
+  - Where sides is one of:
+    - `t` - set margin-top or padding-top
+    - `b` - set margin or padding bottom
+    - `l` - left
+    - `r` - right
+    - `x` - set both left and right
+    - `y` - set both top and bottom
+    - blank - for classes that set a margin or padding on all 4 sides of the element
+  - Where size is one of:
+    - `0` - for classes that eliminate the padding/margin by setting it to 0
+    - `1` - spacer * .25
+    - `2` - spacer * .5
+    - `3`
+    - `4`
+    - `5`
+    - `auto` - for classes that set the margin to auto
+- Display: d-none | d-block d-sm-none | etc
+- Sizing: width and height
+
+**Other useful Bootstrap components:**
+- Card
+- Carousel
+- Dropdown menu
+- Spinner
+- Modal
+
+
+
+
 
 
 
