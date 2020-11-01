@@ -315,7 +315,7 @@
   - padding - the space between the content and the border
   - margin - the space between the outside border and other elements
 
-**Border properties:**
+**The border properties:**
 - border-width - controls the thickness of the border
 - border-color - controls the color of the border
 - border-style - controls the line style - dashed, solid, dotted, etc.
@@ -327,7 +327,7 @@
   ```
 - border-radius - rounds the corners of an element's outer border edge
 
-**Display property:**
+**The display property:**
 - inline
   - Width & Height are ignored.
   - Margin & Padding push elements away horizontally but not vertically
@@ -433,6 +433,71 @@
   </head>
   ```
 - Use the font in CSS stylesheet: `font-family: Montserrat, sans-serif;`
+
+
+## S10: RESPONSIVE CSS AND FLEXBOX
+#### TOPICS
+- Media queries
+- Flex shorthand
+- Flex-basis, grow, and shrink
+- Align-items
+- Flex-wrap
+- Align-content and align-self
+
+**Working with flexbox:**
+- Flexbox determines how the content flows in the container
+- Can nest flex containers
+- Turn on flexbox: `display: flex;`
+- Main axis - by default, goes from left to right
+- Cross axis - by default, goes from top to bottom
+- Flex direction
+  - flex-direction: row(default) | row-reverse | column | column-reverse
+- Justify content
+  - It determines how the content is distributed across the main axis
+  - The way it behaves depends on flex-direction (row vs. column main axis)
+  - justify-content:  flex-start(default) | flex-end | center | space-between | space-around | space-evenly
+    - flex-start - content starts on the left
+    - flex-end - content moves to the end of the main axis
+    - space-between - distribute space between the elements, but not outside edges
+    - space-around - similar to space-between, but distributes space around the edges as well
+    - space-evenly - distributes space evenly between elements and around the edges
+- Flex wrap
+  - It determines whether the elements is wrapped along the main axis onto a new line (if it's horizontal) or a new column (if it's a vertical main axis)
+  - flex-wrap: wrap | wrap-reverse | nowrap
+- Align items
+  - It determines how the content is aligned along the cross axis
+  - align-items: flex-start(default) | flex-end | center | baseline
+    - baseline value aligns the elements along its text baseline 
+- Align content
+  - Uses to distribute space along the cross axis
+  - Space between rows or columns, depending on the orientation of the cross axis
+  - It does nothing if you don't have flex-wrap
+  - align-content: flex-start | flex-end | center | space-between | space-around
+- Align self
+  - Is similar to align-items, except a property we add to individual items in the flex container
+  - It's not applied to the flex container itself, but to the flex element
+  - align-self: flex-start | flex-end | center
+- Flex sizing properties
+  - flex-basis - defines the initial size of an element before additional space is distributed
+    - `flex-basis: 400px;`
+  - flex-grow - controls the amount of available space an element should take up. Accepts a unit-less number value
+    - `flex-grow: 1;`
+  - flex-shrink - if items are larger than the container, they shrink according to flex-shrink
+    - `flex-shrink: 2;`
+- Flex shorthand
+  - The flex property sets how a flex item will grow or shrink to fit the space available in its flex container
+  - It's a shorthand for flex-grow, flex-shrink, and flex-basis (in this order)
+  - flex: flex-grow | flex-shrink | flex-basis
+
+**Responsive design:**
+- Media queries
+  - Allows us to modify our styles depending on particular parameters like screen width or device type
+  - Starts with `@media`
+  - The `width ` feature is specified as a `<length>` value representing the viewport width. It is a range feature, meaning that you can also use the prefixed `min-width` and `max-width` variants to query minimum and maximum values, respectively
+  - `@media (min-width: 800px) {...}` this says, a minimum of 800px and upward
+  - `@media (max-width: 800px) {...}` this says, up to a maximum width of 800px
+  - Most common use is `min-width`
+
 
 
 
