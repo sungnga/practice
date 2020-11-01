@@ -674,6 +674,81 @@
 - Modal
 
 
+## S14: JAVASCRIPT BASICS
+#### TOPICS:
+- JS numbers
+- Variables and let
+- Const
+- Booleans
+- Variable naming
+
+**Primitive types:**
+- The basic building blocks
+  - Number
+  - String
+  - Boolean
+  - Null
+  - Undefined
+
+**Numbers in Javascript:**
+- JS has one number type
+- Positive numbers
+- Negative numbers
+- Whole numbers (integers)
+- Decimal numbers
+- NaN - not a number
+  - Nan is a numeric value that represents something that is...not a number
+  - `0/0 //NaN`
+  - `1 + NaN //NaN`
+
+**Variables:**
+- Variables are like labels for values
+- Variables can change types
+  - let numPuppies = 23;  //number type
+  - numPuppies = false;  //change to boolean type
+- We can store a value and give it a name so that we can:
+  - Refer back to it later
+  - Use that value to do...stuff
+  - Or change it later on
+
+**Updating variables:**
+- let score = 0;  //0 
+- score = 5;  //5
+- score = score + 5;  //10
+- Shorthand: score += 5;  //15
+- Shorthand: score -= 10;  //5
+- Decrement by one: score--  //4
+
+**Let, const, and var variables:**
+- let allows you to update the value later
+- const works just like let, except you CANNOT change the value
+- var is the old variable keyword. Before let and const, var was the only way of declaring variables. These days, there isn't really a reason to use it
+
+**Booleans:**
+- True or false, all in lowercase. `true` `false`
+- Booleans are very simple. You have two possible options: true or false
+
+**Variable naming and conventions:**
+- Cannot start with a digit. `let 1digit = 9;`
+- Uncommon to start with an underscore `_`
+- Common practice when naming variables is use camelCase. Lowercase for the first word and uppercase for each word after
+- No spaces between words and not common practice to separate words with underscore
+- Come up with variable names that are meaningful, that explains what it is
+- Avoid one-letter name
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
