@@ -737,22 +737,90 @@
 - Avoid one-letter name
 
 
+## S15: JAVASCRIPT STRINGS
+#### TOPICS:
+- String basics
+- Indices and length
+- Undefined and null
+- String methods
+- String template literals
+- Random numbers and math object
+
+**Strings:**
+- "Strings of characters"
+- Strings are another primitive type in Javascript. They represent text, and must be wrapped in quotes
+- It's fine to use either single or double quotes, just be consistent in your codebase
+
+**Indices and length property:**
+- Strings are indexed. Each characters has a corresponding index (a positional number)
+- Index position starts at 0
+- Use square bracket notion `[]` after the string to access the value at a particular index
+  - `let animal = "Elephant"; animal[0];  //E `
+- Strings has a built-in length property 
+  - The length property tells the total number of characters in a given string
+  - `animal.length;  //7`
+- Can concatenate strings together
+- We cannot change a string. We can update a string by giving it a new value, but this is a completely new string. It is different in memory
+
+**String methods:**
+- Methods are built-in actions we can perform with individual strings
+- They help us to do things like:
+  - Searching within a string
+  - Replacing part of a string
+  - Changing the casing of a string
+- The syntax: thing.method()
+- Some methods accept arguments and some don't
+- When adding the parenthesis at the end of a method, we're executing the method
+- When calling a method on a string, a new copy of the string is created. The original string has not been modified
+- We can chain multiple methods together on a string
+  - `greeting.trim().toUpperCase();`
+
+**String methods with arguments:**
+- The syntax: thing.method(arg)
+- Some methods accepts arguments that modify their behavior. Think of them as input that we can pass in. We pass these arguments inside of the parentheses
+- Common methods that accept arguments:
+  - .indexOf('cat') - returns the index of the first instance that it finds
+  - .slice(2, 5) - the begin and end index
+  - .replace('the', 'an') - 1st arg is what to replace, 2nd arg is what to place it with
+  - .repeat(3) - number of times to repeat
 
 
+**String template literal:**
+- Template literals are strings that allow embedded expressions, which will be evaluated and then turned into a resulting string
+- The syntax: ``${expressions}``
+- Template literal uses back-tick, not single quote: ``I am a template literal``
+- Anything that's inside the template literal `${}` are will be evaluated. This allows us to embed variables, math operations, methods, etc, inside a string template literal
 
+**Undefined and null:**
+- Both null and undefined are primitive values
+- Null
+  - It's a single value
+  - "The intentional absence or lack of any value"
+  - It's a concept of nothing
+  - Must be assigned
+- Undefined
+  - It's a single value 
+  - Variables that do not have an assigned value are undefined
 
+**The Math object:**
+- The Math object contains properties and methods for mathematical constants and functions
+  - Math.PI //3.141592...
+  - Math.round(4.9) //5
+  - Math.abs(-567) //567
+  - Math.pow(2,5) //32
+  - Math.floor(3.9999) //3 - removes the decimal
+  - Math.random()
+- Random numbers
+  - Math.random() gives us a random decimal between 0 and 1 (non-inclusive, meaning, not include 1)
+- Create random numbers between 1 and 10:
+  ```js
+  const step1 = Math.random(); //0.56835785532473
+  const step2 = step1 * 10; //5.6835785532473
+  const step3 = Math.floor(step2); //5
+  const step4 = step3 + 1; //6 shifts the number by 1
 
-
-
-
-
-
-
-
-
-
-
-
+  Math.floor(Math.random() * 10) + 1; //combined steps
+  ```
 
 
 
