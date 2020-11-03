@@ -1039,6 +1039,63 @@
 - To access an element of an array inside another array, use square bracket chaining notation `array[][]`
 
 
+## S18: JAVASCRIPT OBJECT LITERALS
+#### TOPICS:
+- Creating and working with object literals
+- Nesting arrays and objects
+
+**JS objects:**
+- It's another data structure that stores data as objects
+- Objects are collections of **properties**
+- Property = key + value
+- Properties are a key-value pair
+- The order of properties does not matter
+- Rather than accessing data using an index, we use custom keys
+- The syntax:
+  ```js
+  const object = {
+    key1: value1,
+    key2: value2,
+    key3: value3
+  }
+  ```
+
+**Creating object literals:**
+- The object literal is referring the key-value pair object data structure using the curly braces: `object = {key: value}`
+- Objects are reference-type
+- The variable name is pointing to a memory address that has that particular object
+- Separate multiple properties by commas `,`
+- The value can be any of the primitive types, arrays, or objects
+- An object can have different types of values
+- The order of the properties does not matter
+
+**Accessing data out of objects:**
+- Every key turns into a string, regardless of its type
+- Use the dot notation `.` to access a value out of an object. This is most common
+- Another way is to use the square bracket notation `[]`
+- The syntax:
+  ```js
+  // Using the dot notation
+  object.key
+
+  // Using bracket notation
+  // Doesn't work if the key is not wrapped in quotation
+  object["key"]
+  ```
+
+**Modifying objects:**
+- If the object is assigned to a const variable, the content inside the object can change, as long as the reference remains the same
+- To modify/update the object, first access the property using the object.key notation and then assign its value to a new value
+  - The syntax: `object.key = newValue`
+- Use the same syntax to add a new property to an object 
+  - The syntax: `object.newKey = newValue`
+
+**Nesting arrays and objects:**
+- An array can contain a list of objects and an object can contain a list of arrays or objects. Inside each of these arrays and objects can nest other arrays and objects
+- It is very common to mix and match arrays and objects together
+
+
+
 
 
 
