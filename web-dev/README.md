@@ -930,17 +930,113 @@
   ```
 
 
+## S17: JAVASCRIPT ARRAYS
+#### TOPICS:
+- Array basics - creating and updating
+- Push and pop
+- Shift and unshift
+- Concat, indexOf
+- Slice and splice
+- Multi-dimensional arrays
 
+**Arrays:**
+- A type of data structure that allows us to store collections of data
+- It's an ordered collections of values
+- **Creating arrays**
+  ```js
+  // To make an empty array
+  let students = [];
 
+  // An array of strings
+  let colors = ['red', 'orange', 'yellow'];
 
+  // An array of numbers
+  let lottoNums = [19,22,34,12,54];
 
+  // a mix array
+  let stuff = [true, 98, 'car', null];
+  ```
+- Arrays are indexed
+  - Each element has a corresponding index (counting starts at 0)
+- Arrays have length property to get the total number of elements in that array
+- Use the square bracket `array[0]` notation and specify the index to access the value of an element. If there's no value at that index, it will return undefined
+- **Modifying arrays**
+  - Assign a new value at a particular index
+    ```js
+    let colors = ['rad', 'orange'];
 
+    colors[0] = 'red';
+    colors[1] = 88;
+    colors[2] = 'green';
+    //['red', 88, 'green']
+    ```
 
+**Array methods:**
+- push - add to the end
+- pop - remove from end
+- shift - remove from start
+- unshift - add to start
+- These 4 methods will modify the original array
 
+**Other simple array methods:**
+- concat - merge arrays
+  - It will create a new array that combines the two arrays, but doesn't modify the original arrays
+  - `array1.concat(array2)`
+- includes - look for a value
+  - It checks to see if the array contains a particular value
+  - It will return a boolean value, true or false
+  - `array.includes(value)`
+- indexOf - just like string.indexOf
+  - Returns the first index at which a given element can be found in the array, or -1 if it is not present
+  - `array.indexOf(element)`
+- join - creates a string from an array
+- reverse - reverses an array
+  - `array.reverse()`
+  - This method doesn't take any arguments 
+  - This is a destructive method, it will change the original array
+- slice - copies a portion of an array
+  - `array.slice(startIndex, endIndex)`
+  - It will return a copy of a portion of an array
+  - If no arguments passed in, it will return a new copy of the array with all the elements in it
+  - If only one argument is passed in, it will return elements starting from that specified index to the end of the array
+  - The 2nd argument is the stopping point. Note that it DOES NOT INCLUDE the end element. It does, however, include the starting element
+  - Use negative number to return the last x number of elements of the array. For example, array.slice(-3) will return the last three elements of the array
+- splice - removes/replaces elements
+  - `array.splice(start, deleteCount, optionalInsertItem)`
+  - Changes the contents of an array by removing or replacing existing elements and/or adding new elements
+  - This is a destructive method. Will mutate the original array
+    ```js
+    const months = ['jan', 'mar', 'apr', 'jun']
 
+    // Inserts at index 1
+    months.splice(1, 0, 'feb') //['jan', 'feb', 'mar', 'apr', 'jun']
 
+    // Deletes at index 0
+    // Returns an array of elements being deleted
+    months.splice(0, 2) //['jan', 'feb']
 
+    // Replaces 1 element at index 2
+    months.splice(2, 1, 'may') //['mar', 'apr', 'may']
+    ```
+- sort - sorts an array
+  - This method is not useful if we don't pass in any arguments to it
 
+**Arrays and const**
+- When assigning an array to a const variable, the values inside the array can change, as long as the reference remains the same
+- Each array object has an address in memory
+- When assigning an array to a variable, the variable is referencing/pointing to that memory address
+- Will get an error if the const variable is reassigned to a different array, if it's referencing/pointing to a different memory address in memory
+  ```js
+  const nums = [1, 2, 3, 4];
+
+  nums = 1 //No!
+  nums = [1, 2, 3, 4] //No! This is pointing to a different array in memory even though it has the same content
+  nums.push(5) //Yes! Adding another element at the end of nums array
+  ```
+
+**Multi-dimensional arrays:**
+- Nested arrays: arrays can be stored inside other arrays
+- To access an element of an array inside another array, use square bracket chaining notation `array[][]`
 
 
 
