@@ -704,20 +704,20 @@
 **Variables:**
 - Variables are like labels for values
 - Variables can change types
-  - let numPuppies = 23;  //number type
-  - numPuppies = false;  //change to boolean type
+  - `let numPuppies = 23;  //number type`
+  - `numPuppies = false;  //change to boolean type`
 - We can store a value and give it a name so that we can:
   - Refer back to it later
   - Use that value to do...stuff
   - Or change it later on
 
 **Updating variables:**
-- let score = 0;  //0 
-- score = 5;  //5
-- score = score + 5;  //10
-- Shorthand: score += 5;  //15
-- Shorthand: score -= 10;  //5
-- Decrement by one: score--  //4
+- `let score = 0;  //0`
+- `score = 5;  //5`
+- `score = score + 5;  //10`
+- Shorthand: `score += 5;  //15`
+- Shorthand: `score -= 10;  //5`
+- Decrement by one: `score--;  //4`
 
 **Let, const, and var variables:**
 - let allows you to update the value later
@@ -779,16 +779,16 @@
 - The syntax: thing.method(arg)
 - Some methods accepts arguments that modify their behavior. Think of them as input that we can pass in. We pass these arguments inside of the parentheses
 - Common methods that accept arguments:
-  - .indexOf('cat') - returns the index of the first instance that it finds
-  - .slice(2, 5) - the begin and end index
-  - .replace('the', 'an') - 1st arg is what to replace, 2nd arg is what to place it with
-  - .repeat(3) - number of times to repeat
+  - `.indexOf('cat')` - returns the index of the first instance that it finds
+  - `.slice(2, 5)` - the begin and end index
+  - `.replace('the', 'an')` - 1st arg is what to replace, 2nd arg is what to place it with
+  - `.repeat(3)` - number of times to repeat
 
 
 **String template literal:**
 - Template literals are strings that allow embedded expressions, which will be evaluated and then turned into a resulting string
-- The syntax: ``${expressions}``
-- Template literal uses back-tick, not single quote: ``I am a template literal``
+- The syntax: back-tick ${expressions} back-tick
+- Template literal uses back-tick, not single quote
 - Anything that's inside the template literal `${}` are will be evaluated. This allows us to embed variables, math operations, methods, etc, inside a string template literal
 
 **Undefined and null:**
@@ -804,14 +804,16 @@
 
 **The Math object:**
 - The Math object contains properties and methods for mathematical constants and functions
-  - Math.PI //3.141592...
-  - Math.round(4.9) //5
-  - Math.abs(-567) //567
-  - Math.pow(2,5) //32
-  - Math.floor(3.9999) //3 - removes the decimal
-  - Math.random()
+  ```js
+  Math.PI //3.141592...
+  Math.round(4.9) //5
+  Math.abs(-567) //567
+  Math.pow(2,5) //32
+  Math.floor(3.9999) //3 - removes the decimal
+  Math.random()
+  ```
 - Random numbers
-  - Math.random() gives us a random decimal between 0 and 1 (non-inclusive, meaning, not include 1)
+  - `Math.random()` gives us a random decimal between 0 and 1 (non-inclusive, meaning, not include 1)
 - Create random numbers between 1 and 10:
   ```js
   const step1 = Math.random(); //0.56835785532473
@@ -821,6 +823,130 @@
 
   Math.floor(Math.random() * 10) + 1; //combined steps
   ```
+
+
+## S16: JAVASCRIPT MAKING DECISIONS
+#### TOPICS:
+- Comparison operations
+- Conditionals: if, else-if, and else
+- Truth-y and false-y values
+- Logical AND
+- Logical OR
+- Logical NOT
+
+**Comparison operators:**
+- It returns a boolean value: true or false
+  ```js
+  > //greater than
+  < //less than
+  >= //greater than or equal to
+  <= //less than or equal to
+  == //equality
+  != //not equal
+  === //strict equality
+  !== //strict non-equality
+  ```
+- Can also compare special characters. It uses unicode character values
+
+**Equality: triple vs. double equals:**
+- == (double equals)
+  - Checks for equality of value, but not equality of type
+  - It coerces(transforms) both values to the same type and then compares them
+  - This can lead to some unexpected results
+- === (triple equals)
+  - Called the strict equality operators
+  - Checks for equality of value and type
+  - Will not coerce the values
+  - Use strict equality when making comparison
+
+**The if statements:**
+- The if statement only runs code if given condition is true
+- The condition evaluates to either true or false
+- The syntax:
+  ```js
+  if (condition) {
+    // This code run will run if the condition is true
+  }
+  ```
+
+**Else-if:**
+- If the first if statement is false, then the else-if statement will run
+- The syntax:
+  ```js
+  if (firstCondition) {
+    // Run this code if firstCondition is true
+  } else if (secondCondition) {
+    // Run this code if secondCondition is true
+  }
+  ```
+
+**Else:**
+- If nothing else was true, do this...
+- The syntax:
+  ```js
+  if (firstCondition) {
+    //Run this code
+  } else if (secondCondition) {
+    //Run this code
+  } else {
+    //If nothing else, run this code
+  }
+  
+  ```
+
+**Truthy and falsy values:**
+- All JS values have an inherent truthyness or falsyness about them
+- Falsy values:
+  - false
+  - 0
+  - "" (empty string)
+  - null
+  - undefined
+  - NaN
+- Everything else is truthy!
+
+**Logical operators:**
+- Combining expressions
+- Logical AND: `&&`
+  - Both sides must be true, for the entire things to be true
+  ```js
+  1 <= 4 && 'a' === 'a' //true
+  9 > 10 && 9 >= 9 //false
+  'abc'.length === 3 && 1 + 1 === 4 //false
+  ```
+- Logical OR: `||`
+  - If one side is true, the entire thing is true
+  ```js
+  1 !== 1 || 10 === 10 //true
+  10/2 === 5 || null //true
+  0 || undefined //false
+  ```
+- Logical NOT: `!`
+  - !expression returns true if the expression is false
+  ```js
+  !null  //true
+  !(0 === 0) //false
+  !(3 <= 4>) //false
+  ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
