@@ -1191,6 +1191,99 @@
 - Iterating over objects is not as common as iterating over arrays
 
 
+## S20: JAVASCRIPT FUNCTIONS 101
+#### TOPICS:
+- Defining functions
+- Working with arguments
+- Function return values
+
+**Functions:**
+- Reusable procedures
+- Functions allow us to write reusable, modular code
+- We define a "chunk" of code that we can define then execute at a later point
+- We can pass in some input that will impact the output that we get
+
+**Creating a function:**
+- It's a 2-step process: 
+  - Define/register the function
+  - Then execute/run the function. Can run as many times as we want
+- Syntax for defining a function:
+  ```js
+  function funcName() {
+    //do something
+  }
+  ```
+- Syntax for executing a function:
+  ```js
+  funcName(); //run once
+
+  funcName(); //run again!
+  ```
+- Only when executing the function will the code inside that function runs
+- By convention, first define the function and then execute the function
+
+**Arguments:**
+- Inputs to a function
+- The input impacts the output we get back
+- Can pass in multiple arguments, separated by commas
+- Define the argument when defining the function. This is called a parameter. Can give the parameter a name
+- The parameter name should be meaningful. This param name is going to hold the value of an argument that is passed to the function
+- If the expected argument is not provided or not passed in, it's going to have a value of undefined
+- Example:
+  ```js
+  // Defining the function with parameter
+  function greet(person) {
+    console.log(`Hi ${person}!`)
+  }
+
+  // Calling the function with argument passed in
+  greet(James); //"Hi James!"
+  greet(Nancy); //"Hi Nancy!"
+  ```
+
+**Functions with multiple arguments:**
+- A function can be defined to expect multiple arguments to be passed in. - Separate multiple parameters by commas
+- The order of the params defined in a function and the arguments passed to the function is very important. The order of the parameter and argument must match
+- Each argument can be of different type. Can be a string, integer, boolean, array, object, etc
+- If no arguments is provided, it's value will set to undefined
+- Example:
+  ```js
+  function profile(name, age) {
+    console.log(`${name} is ${age} years old.`)
+  }
+
+  profile(James, 22); // James is 22 years old.
+  profile(Nancy, 51); // Nancy is 51 years old.
+  ```
+
+**The return keyword:**
+- The return keyword returns the output value of a function and we can capture that value in a variable
+- Built-in methods return values when we call them. We can store those values
+- The return statement ends function execution AND specifies the value to be returned by that function. Anything after the return keyword will not run
+- The return keyword returns a single value
+- Example:
+  ```js
+  function sumArray(array) {
+    let total = 0;     
+    for (let i = 0; i < array.length; i++) {
+      total += array[i]
+    }
+    return total;
+  }
+  ```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
