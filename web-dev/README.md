@@ -1095,6 +1095,103 @@
 - It is very common to mix and match arrays and objects together
 
 
+## S19 - REPEATING CODE WITH LOOPS
+#### TOPICS:
+- For loops
+- While loops
+- The break keyword
+- For...of loop
+- Iterating arrays
+- Nested loops
+- Iterating objects
+
+**Loops:**
+- Loops allow us to repeat code, repeat some functionality
+  - Print 'hello' 10 times
+  - Sum all numbers in an array
+- There are multiple types:
+  - for loop
+  - while loop
+  - for...of loop
+  - for...in loop
+
+**For loop:**
+- The for loop syntax:
+  ```js
+  // Start out at initialExpression
+  // Check if the condition is true
+  // If it is, execute the code block
+  // Increment/decrement/etc the expression
+  // The loop starts again -> check if condition is true -> run the code block if it is -> increment
+  for ([initialExpression]; [condition]; [incrementExpression]) {
+    // Run this code after each loop, while the condition is true
+  }
+  ```
+- Example:
+  ```js
+  for (let i = 1; i <= 10; i++) {
+    console.log(i)
+  }
+  // 1 2 3 4 5 6 7 8 9 10
+  ```
+
+**Looping over arrays:**
+- Looping over an array is called iterating over an array
+- To loop over an array, start at index 0 and continue looping to until last index (length-1)
+- Example:
+  ```js
+  const animals = ['lions', 'tigers', 'bears'];
+
+  for (let i = 0; i < animal.length; i++) {
+    console.log(i, animals[i]);
+  }
+  //0 'lions'
+  //1 'tigers'
+  //2 'bears'
+  ```
+
+**While loops:**
+- While loops continue running as long as the test condition is true
+- While loop is useful when we don't know when something ends, when we don't know the number of iterations
+- The syntax:
+  ```js
+  ([initialExpression];
+  while([condition]) {
+    // Run this code while the condition is true
+    [incrementExpression];
+  }
+  ```
+
+**The break keyword:**
+- The break keyword will break out of a loop or a conditional when the condition is met
+
+**The for...of loop:**
+- A nice and easy way of iterating over arrays (or other iterable objects)
+- The syntax:
+  ```js
+  for (variable of iterable) {
+    statement
+  }
+  ```
+- Example:
+  ```js
+  const fruits = ['apple', 'mango', 'pineapple', 'logan', 'papaya']
+
+  for (let fruit of fruits) {
+    console.log(fruit)
+  }
+  ```
+
+**Iterating over objects:**
+- The object literals are not considered iterables. They're objects, but they're not iterable objects
+- We can create a new array by iterating over object literals using the `Object` keyword followed by one of the following methods
+  - .keys(object) method that returns an array of that object keys
+  - .values(object) method that returns an array of that object values
+  - .entries(object) method that returns an array of arrays of key and value of that object
+- Iterating over objects is not as common as iterating over arrays
+
+
+
 
 
 
