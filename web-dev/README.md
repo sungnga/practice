@@ -1273,19 +1273,153 @@
   ```
 
 
+## S21: MORE ON FUNCTIONS
+#### TOPICS:
+- Function scope
+- Block scope
+- Lexical scope
+- Function expressions
+- Higher order functions
+- Returning functions
+- The keyword "this"
+- Adding methods to objects
 
+**Scope:**
+- Variable "visibility"
+- The location where a variable is defined dictates where we have access to that variable
 
+**Block scope:**
+- Let and const keywords to making variables are block scope. This means you can only access the variable inside the block defined by the curly braces `{}`
+- The var keyword is not scoped to block. The result is hard to predict and can run into issues with scoping
+- This is true for conditionals, loops, functions
+  ```js
+  for (let i = 0; i < 5; i++) {
+    let msg = "Inside a block"
+    console.log(msg) //Will print the message 5 times
+  }
 
+  console.log(msg) //Can't access msg here
+  ```
 
+**Function scope:**
+- If you define a variable in a function, it is scope to that function
+  ```js
+  function helpMe() {
+    let msg = "I'm on fire!" //msg is scoped to the helpMe function
 
+    msg: //"I'm on fire!"
+  }
 
+  msg; //NOT DEFINED!
+  ```
 
+**Lexical scope:**
+- An inner function that is nested inside another function has access to the scope, the variable, defined in the scope of the outer function and outer outer function
+- However, this is not true the other way around. Outer functions don't have access to variables defined in the inner function
 
+**Function expressions**
+- Function statement defines a function using the function keyword
+  ```js
+  function add(x, y) {
+    return x + y;
+  }
+  ```
+- Function expression defines an anonymous function and stores it in a variable
+- Javascript treats functions just like a value, they can be passed around
+  ```js
+  const add = function (x, y) {
+    return x + y;
+  }
+  ```
 
+**Higher order functions:**
+- Functions that operate on/with other functions
+- They can:
+  - Accept other functions as arguments
+  - Return a function
+- A function is just a value that can be stored in a variable, which means, it can be passed around
+- **Functions as arguments:**
+  ```js
+  function callTwice(func) {
+    func(); //executing the function
+    func(); //executing the function again
+  }
 
+  function rollDie() {
+    const roll = Math.floor(Math.random() * 6) + 1;
+    console.log(roll);
+  }
 
+  callTwice(rollDie); //pass a function as an arg!
+  ```
+- **Returning functions:**
+  - Just like any return value, if we want to use it, we need to capture it and save it
+  - So, save the return function in a variable
+  - Then to execute the function, just call the variable with the parentheses
+  ```js
+  function makeBetweenFunc(min, max) {
+    // Making a factory function
+    return function(num) {
+      return num >= min && num <= max;
+    }
+  }
 
+  const isChild = makeBetweenFunc(0, 18)
+  isChild(7) //true
+  isChild(20) //false
 
+  const isAdult = makeBetweenFunc(19, 65)
+  isAdult(30) //true
+  ```
+
+**Methods:**
+- We can add functions as properties on objects
+- We call them **methods**
+- Every method is a function. But on every function is a method
+- Syntax for calling a method: `object.method(arg)`
+  ```js
+  const math = {
+    PI: 3.14159,
+    multiply: function(x,y) {
+      return x * y;
+    },
+    divide: function(x,y) {
+      return x / y;
+    }
+
+    // SHORTHAND
+    multiply(x,y) {
+      return x * y;
+    },
+    divide(x,y) {
+      return x / y;
+    }
+  }
+  ```
+  
+**'this' in methods:**
+- Use the keyword 'this' to access other properties on the same object
+- The most common way of using the this keyword is inside a method
+  ```js
+  const person = {
+    first: 'Robert',
+    last: 'Johnson',
+    fullName() {
+      return `${this.first} ${this.last}`
+    }
+  }
+
+  person.fullName(); //"Robert Johnson"
+  person.last = "Plant";
+  person.fullName(); //"Robert Plant"
+
+  const fullName2 = person.fullName;
+  fullName2(); //"undefined undefined" The this keyword refers to the global window object, not person object
+  ```
+- The value of 'this' depends on the invocation context of the function it is used in. It depends on how we call the function
+  - The keyword this refers to the object that is on the left of the dot. `object.method()`
+  - In the example `person.fullName();`, the keyword this refers to the person object
+  - When invoking a method and nothing is specified on the left of the dot, the object the this keyword refers to is the window object
 
 
 
