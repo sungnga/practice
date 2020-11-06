@@ -1396,7 +1396,7 @@
     }
   }
   ```
-  
+
 **'this' in methods:**
 - Use the keyword 'this' to access other properties on the same object
 - The most common way of using the this keyword is inside a method
@@ -1420,6 +1420,217 @@
   - The keyword this refers to the object that is on the left of the dot. `object.method()`
   - In the example `person.fullName();`, the keyword this refers to the person object
   - When invoking a method and nothing is specified on the left of the dot, the object the this keyword refers to is the window object
+
+
+## S22: CALLBACKS AND ARRAY METHODS
+#### TOPICS:
+- ForEach
+- Map
+- Arrow functions
+- Filters
+- Some and every
+- Reduce
+
+- There are a set of built-in array methods that we have access to for every array in JS. These methods require that we pass in a function, they accept a callback function as an argument
+
+**The forEach method:**
+- Accepts a callback function
+- Calls the function once per element in the array
+- The for...of loop does the same thing as this method
+  ```js
+  const nums = [9, 8, 7, 6, 5, 4, 3, 2, 1];
+
+  nums.forEach(function (n) {
+    console.log(n * n)
+    //prints: 81, 64, 49, 36, 25, 16, etc
+  })
+
+  for (let n of nums) {
+    console.log(n * n)
+  }
+
+  nums.forEach(function (el) {
+    if (el % 2 === 0) {
+      console.log(el)
+      //prints: 8, 6, 4, 2
+    }
+  })
+  ```
+
+**The map method:**
+- Creates a new array with the results of calling a callback on every element in the array
+- The callback function will return a value and map adds this value to a new array that it generates
+- Map returns this new array and we can save this array in a variable
+- It is useful when we want to transform the starting array and create a new array based upon that starting array
+  ```js
+  const texts = ['cat', 'dog', 'wolf', 'rabbit'];
+  const caps = texts.map(function (t) {
+    return t.toUpperCase();
+  })
+
+  text; //["cat", "dog", "wolf", "rabbit"]
+  caps; //["CAT", "DOG", "WOLF", "RABBIT"]
+  ```
+
+**Arrow functions:**
+- It's a newer syntax for defining function expressions
+- "Syntactically compact alternative" to a regular function expression
+  ```js
+  const square = (x) => {
+    return x * x;
+  }
+
+  const sum = (x, y) => {
+    return x + y;
+  }
+  ```
+- A **function expression** cannot exist on its own. It's a value that we can save it to a variable, we can pass it as an argument, we can return it
+  ```js
+  con add = function(x, y) {
+    return x + y;
+  }
+  ```
+- We can't declare a function expression on its own. We have to use a function statement and give it a name
+  ```js
+  function add(x, y) {
+    return x + y;
+  }
+  ```
+- **Arrow function** is the same way. We can't do this:
+  ```js
+  (x, y) => {
+    return x + y;
+  }
+  ```
+- Arrow function assigned to a variable:
+  ```js
+  const add = (x, y) => {
+    return x + y;
+  }
+
+  // To execute the function
+  add(2, 4);
+
+  // Parens are optional if there's only one parameter
+  const square = x => {
+    return x * x;
+  }
+
+  // Use empty parens for functions with no parameters
+  const singSong = () => {
+    return "lalalala";
+  }
+  ```
+
+**Arrow function implicit returns:**
+- All these functions do the same thing:
+  ```js
+  const isEven = function (num) { //regular function expression
+    return num % 2 === 0;
+  }
+  const isEven = (num) => { //arrow function with parens param
+    return num % 2 === 0;
+  }
+  const isEven = num => { //no parens around param
+    return num % 2 === 0;
+  }
+  const isEven = num => ( //implicit return
+    num % 2 === 0;
+  );
+  const isEven = num => num % 2 === 0; //one-liner implicit return
+  ```
+
+**The filter method:**
+- Creates a new array with all elements that pass the test implemented by the provided function
+  ```js
+  const nums = [9, 8, 7, 6, 5, 4, 3, 2, 1];
+  const odds = nums.filter(n => {
+    return n % 2 === 1; //our callback returns true or false
+    //if it returns true, n is added to the filtered array
+  })
+  //[9, 7, 5, 3, 1]
+
+  const smallNums = nums.filters(n => n < 5);
+  //[4, 3, 2, 1]
+  ```
+
+**The some method:**
+- Similar to every, but returns true if ANY of the array elements pass the test function
+  ```js
+  const words = ['dog', 'jello', 'log', 'cupcake', 'bag', 'wag'];
+
+  // Are there any words longer than 4 characters?
+  words.some(word => {
+    return word.length > 4;
+  }) //true
+
+  // Do any words start with 'Z'?
+  words.some(word => word[0] === 'Z'); //false
+
+  // Do any words contain 'cake'?
+  words.some(w => w.includes('cake')); //true
+  ```
+
+**The every method:**
+- Test whether ALL elements in the array pass the provided function
+- It returns a boolean value, true or false
+  ```js
+  const words = ['dog', 'jello', 'log', 'cupcake', 'bag', 'wag'];
+
+  words.every(word => {
+    return word.length === 3;
+  }) //true
+
+  words.every(word => word[0] === 'd'); //false
+
+  words.every(w => {
+    let last_letter = w[w.length - 1];
+    return last_letter === 'g'
+  }) //true
+  ```
+
+**The reduce method:**
+- Execute a reducer function on each element of the array, **resulting in a single value**
+- Example: summing an array
+  ```js
+  const nums = [9, 8, 7, 6, 5, 4, 3, 2, 1];
+
+  const sum = nums.reduce((accumulator, currentValue) => {
+    return accumulator + currentValue;
+  }, initialValue);
+  // The reducer method accepts an optional initial value as 2nd arg
+  ```
+
+**Arrow function and 'this':**
+- The keyword this behaves differently inside an arrow function vs. inside a regular function
+- The this keyword inside a non-arrow function has nothing to do with the scope where the function is created. It has to do with how the function is executed
+- Keyword this inside a traditional function:
+  ```js
+  const person = {
+    firstName: 'Shawn',
+    lastName: 'Kemp',
+    fullName: function () {
+      return `${this.firstName} ${this.lastName}`
+    }
+  }
+
+  person.fullName(); //"Shawn Kemp"
+  ```
+- The this keyword inside an arrow function refers to the scope that the function was created in
+- Keyword this inside an arrow function:
+  ```js
+  const person = {
+    firstName: 'Shawn',
+    lastName: 'Kemp',
+    fullName: () => {
+      return `${this.firstName} ${this.lastName}`
+    }
+  }
+
+  person.fullName(); //"undefined undefined"
+  //this keyword refers to the window object
+  ```
+- It's not common to use an arrow function to define a method in an object
 
 
 
