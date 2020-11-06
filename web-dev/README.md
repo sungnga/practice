@@ -1423,6 +1423,8 @@
 
 
 ## S22: CALLBACKS AND ARRAY METHODS
+- There are a set of built-in array methods that we have access to for every array in JS. These methods require that we pass in a function, they accept a callback function as an argument
+
 #### TOPICS:
 - ForEach
 - Map
@@ -1431,7 +1433,6 @@
 - Some and every
 - Reduce
 
-- There are a set of built-in array methods that we have access to for every array in JS. These methods require that we pass in a function, they accept a callback function as an argument
 
 **The forEach method:**
 - Accepts a callback function
@@ -1631,6 +1632,202 @@
   //this keyword refers to the window object
   ```
 - It's not common to use an arrow function to define a method in an object
+
+
+## S23: NEWER JAVASCRIPT FEATURES
+#### TOPICS:
+- Spread with arrays
+- Spread with objects
+- Destructuring
+- Default params
+- Spread in function calls
+- Rest params
+
+**Default params:**
+- Add the equal sign and the default value directly in the parameter list
+- When calling the function, if an argument is not provided, it will default to the assigned default value in the function definition 
+  ```js
+  function multiply(a, b = 1) {
+    return a * b;
+  }
+
+  multiply(4); //4  When 2nd arg is not provided
+  multiply(4, 5); //20
+  ```
+
+**Spread:**
+- Spread syntax allows an iterable such as
+  - an array to be expanded in places where zero or more arguments (for function calls)
+  - or elements (for array literals) are expected,
+  - or an object expression to be expanded in places where zero or more key-value pairs (for object literals) are expected
+- The idea is we're taking iterables and spreading them out. Where we spread the iterables into may vary
+
+**Spread with function calls:**
+- Expands an iterable (array, string, etc.) into a list of arguments
+- Each element/item becomes each individual arguments
+  ```js
+  const nums = [9, 3, 2, 8];
+
+  Math.max(nums); //NaN
+
+  // Use spread
+  Math.max(...nums); //67
+  // Same as calling: Math.max(9,3,2,8);
+
+  console.log(...'hello') //h e l l o
+  ```
+
+**Spread with array literals:**
+- Expands an iterable or multiple iterables of different types into a new array
+- Use square braces `[]` to spread into array literal
+- The order of the spreads impacts the order of items in the new array
+  ```js
+  const fruits = ['apple', 'orange']
+  const veggies = ['carrot', 'mushroom']
+
+  const copy = [...fruits] //make a copy of an array
+  const mix = [...fruits, ...veggies]
+  //['apple', 'orange', 'carrot', 'mushroom']
+  const mix = [1, 2, 3, ...fruits, ...veggies, 'cooking']
+  //[1, 2, 4, 'apple', 'orange', 'carrot', 'mushroom', 'cooking']
+  [...'hello'] //["h", "e", "l", "l", "o"]
+  ```
+
+**Spread with object literals:**
+- Copies properties from one object into another object literal
+- Use curly braces `{}` to spread into object literal
+- The order of the spread matters. If there's a property conflict, the last property in the list will win
+  ```js
+  const feline = { legs: 4, family: 'Felidae' }
+  const canine = { family: 'Caninae', furry: true }
+
+  const copyFeline = { ...feline }
+  //{legs: 4, family: "Felidae"}
+
+  const dog = { ...canine, isPet: true }
+  //{family: "Caninae", furry: true, isPet: true}
+
+  const lion = { ...feline, genus: 'Panthera' }
+  //{legs: 4, family: "Felidae", genus: "Panthera"}
+
+  const catDog = { ...feline, ...canine }
+  //{legs: 4, family: "Caninae", furry: true}
+  ```
+
+**Rest params**
+- It looks like spread, but it's not! 
+- It does the opposite of spread. It collects all the params into an array
+- **The arguments object:**
+  - Available inside every function
+  - It's an array-like object
+    - Has a length property and it's indexed just like an array
+    - Does not have array methods like push/pop
+  - Contains all the arguments passed to the function
+  - Not available inside of arrow functions
+  ```js
+  function sumAll() {
+    let total = 0;
+    for (let i = 0; i < arguments.length; i++) {
+      total += arguments[i];
+    }
+    return total;
+  }
+
+  sumAll(8, 4, 3, 2); //17
+  ```
+- **The rest params:**
+  - Collects all remaining arguments into an actual array
+  - Use the 3 dots followed by the custom name of param
+  - Can call array methods on it
+    ```js
+    function sum(...nums) {
+      console.log(nums)
+    }
+
+    sum(34, 65, 77);
+    //[34, 65, 77]
+    ```
+  - With rest params, we can call out specific params and collect all remaining arguments. Cannot do this with arguments object
+    ```js
+    function raceResults(gold, silver, ...everyoneElse) {
+      console.log(gold)
+      console.log(silver)
+      console.log(everyoneElse)
+    }
+
+    raceResults('Tammy', 'Tod', 'Tina', 'Travis', 'Tim')
+    //Tammy
+    //Tod
+    //Tina,Travis,Tim
+    ```
+
+**Destructuring:**
+- A short, clean syntax to 'unpack':
+  - Values from arrays
+  - Properties from objects
+- Into distinct variables
+- The original array or object doesn't change
+- **Destructuring arrays:**
+  - Assigns the array elements into distinct variables
+  - The syntax: `const [] = array;`
+  - Note that order matters because it's based on position
+    ```js
+    const raceResults = [ 'Eliud', 'Feyisa', 'Galen' ];
+
+    // Destructuring an array
+    const [ gold, silver, bronze ] = raceResults;
+    gold; //"Eliud"
+    silver; //"Feyisa"
+    bronze; //"Galan"
+
+    const [ fastest, ...everyoneElse] = raceResults;
+    fastest; //"Eliud"
+    everyoneElse; //["Feyisa", "Galen"]
+    ```
+- **Destructuring objects:**
+  - Extracts a property value into its own variable
+  - The syntax: `const {} = object;`
+  - The order does not matter, however, the variable name must match the property name
+  - Can re-assign the variable name to a new name using colon sign: `const { currentName: newName } = object;`
+  - Can also assign a default value using equal sign
+    ```js
+    const runner = {
+      first: 'Eliud',
+      last: 'Kipchoge',
+      country: 'Kenya',
+      title: 'Elder of the Order of the Golden Heart'
+    }
+    // Destructuring an object
+    const { first, last, country, died = 'N/A' } = runner;
+
+    first; //"Eliud"
+    last; //"Kipchoge"
+    country; //"Kenya"
+    ```
+- **Destructuring params:**
+  - When we're defining a function, we can destructure the values that are being passed in
+  - It's most frequent use with objects
+  - Can also assign a default value to the destructure param
+    ```js
+    function fullName(user) {
+      const { firstName, lastName } = user;
+      return `${firstName} ${lastName}`
+    }
+    ```
+  - When a function is expecting an object as an argument, we can destructure just the properties that we want to use from the object in the function param
+    - Use the curly braces `{}` and list out the properties
+    ```js
+    function fullName({ firstName, lastName }) {
+      return `${firstName} ${lastName}`
+    }
+    ```
+
+
+
+
+
+
+
 
 
 
