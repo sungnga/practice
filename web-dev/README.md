@@ -1823,6 +1823,114 @@
     ```
 
 
+## S24: INTRO TO THE DOM
+#### TOPICS:
+- getElementById
+- querySelector
+- innerHTML and text
+- Changing styles
+- classList
+- Creating/removing elements
+- Manipulating attributes
+- Traversing the DOM
+
+#### Properties and Methods (the important ones):
+- classList
+- getAttribute()
+- setAttribute()
+- appendChild()
+- append()
+- prepend()
+- removeChild()
+- remove()
+- createElement
+- innerText
+- textContent
+- innerHTML
+- value
+- parentElement
+- children
+- nextSibling
+- previousSibling
+- style
+
+**The DOM:**
+- The DOM is a Javascript representation of a webpage
+- It's your JS "window" into the contents of a webpage
+- It's just a bunch of JS objects that you can interact with via JS
+
+**The document object:**
+- The document object is our entry point into the world of the DOM. It contains representations of all the content of a page, plus tons of useful methods and properties
+- The browser automatically creates this document object based on the content of the page
+- In the browser console, type in `console.dir(document)` to see the document object
+- We use the JS document object to manipulate the web page
+
+**Selecting methods:**
+- **getElementById()**
+  - This is selecting the Javascript DOM object representation of the element of matching id
+  - We're not selecting the HTML or the CSS styles, we're selecting the DOM object which Javascript created
+  - The returned element is an object
+  - If no element is found with that id, it will return null
+  - `const banner = document.getElementById('banner')`
+  - `console.dir(banner) //div#banner`
+- **getElementsByTagName()**
+  - Get multiple elements by its tag name
+  - It returns an array-like HTMLCollection of Elements. These Elements are objects
+  - The HTMLCollection array is iterable, is indexed, has a length property, and can use for...of loop on it. But it does not have regular array methods
+  - `const allImages = document.getElementsByTagName('img');`
+- **getElementsByClassName()**
+  - Get elements by class name
+  - It returns an HTMLCollection of Elements
+  - If it can't find elements by that class name, it will return an empty HTMLCollection array
+  - `const squareImages = document.getElementsByClassName('square');`
+- **querySelector**
+  - A newer, all-in-one method to select a single element
+  - It will return the first matching element found
+    ```js
+    // Finds first h1 element
+    document.querySelector('h1');
+
+    // Finds first element with ID of red
+    document.querySelector('#red');
+
+    // Finds first element with class of
+    document.querySelector('.big');
+    ```
+- **querySelectorAll**
+  - Same idea as querySelector, but returns **a collection** of matching elements, instead of the first match
+  - It returns a NodeList array
+  - `document.querySelectorAll('p a'); //Select all anchor tags inside p tag`
+
+**innerHTML, textContent, and innerText:**
+- These are properties inside an Element object. So we can call these properties on an object/Element
+- Use these properties to retrieve and update the content of an element
+- The difference between innerText and textContent is innerText will not display text that is set to hidden
+  ```js
+  // Retrieve the text value inside the first p tag found
+  document.querySelector('p').innerText
+  ```
+- The innerHTML property gets or sets the entirety of the markup, including all the tag names, contained within some element
+- The innerHTML syntax:
+  ```js
+  const content = element.innerHTML
+
+  element.innerHTML = htmlString;
+  ```
+
+**Working with attributes:**
+- Some elements have more attributes than others
+- Class, id, and type are considered attribute
+- `document.querySelector('a').title`
+- **getAttribute() method**
+- **setAttribute() method**
+
+
+
+
+
+
+
+
 
 
 
