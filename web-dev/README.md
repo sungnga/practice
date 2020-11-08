@@ -1925,17 +1925,69 @@
 - **setAttribute() method**
 
 
+## S25: THE DOM EVENTS
+#### TOPICS:
+- Introducing events
+- addEventListener
+- Forms events
+- Keyboard events
+- Input and change events
+- Event bubbling
+- Event delegation
 
+**Events:**
+- Listen for and respond to user inputs and actions 
+- Javascript listens for events such as clicks, drags, drops, hovers, scrolls, form submission, key presses, focus/blur, etc.
 
+**addEventListener:**
+- It's a generic event listener method we can use to specify the event type and a callback to run when the event occurs
+- The 1st argument is the event type the element is listening for. It's in a string
+- The 2nd argument is the callback function we want to run when the event occurs
+  ```js
+  // Selecting the element
+  const button = document.querySelector('h1');
 
+  // Add event listener to the element
+  button.addEventListener('click', () => {
+    alert('You clicked me!!')
+  })
+  ```
 
+**The event object:**
+- The event object is automatically passed in to every event handler or event callback function
+- We can capture this event object in the callback parameter by giving it a name
+- It contains properties and information about that particular event. We rely on this event object to get certain data on the event 
+  ```js
+  document.querySelector('button').addEventListener('click', (event) => {
+    console.log(event)
+    //do something
+  })
+  ```
 
+**Form events and preventDefault:**
+- By default, when a form is submitted, the browser will submit the data and redirect the page to somewhere else. We can use Javascript to prevent this default behavior using the preventDefault method on the event object
+- We can then use the submitted data to do something on the same page
+  ```js
+  document.querySelector('#tweetForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+  })
+  ```
+- The user input value is stored in the object event elements value property
+  - `formElement.elements.inputName.value`
+  - `tweetForm.elements.username.value`
 
+**Input and change events:**
+- The change event gets fired when the user blurs out of the input field 
+- The input event fires when there's a value change in the input field
+  ```js
+  const input = document.querySelector('input');
+  const h1 = document.querySelector('h1');
 
-
-
-
-
+  input.addEventListener('input', (e) => {
+    // Update the h1 text to the input value
+    h1.innerText = input.value;
+  })
+  ```
 
 
 
