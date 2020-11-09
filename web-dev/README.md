@@ -1990,6 +1990,148 @@
   ```
 
 
+## S27: ASYNC JAVASCRIPT
+#### TOPICS:
+- Working with promises
+- Async functions
+- The callback stack
+- Callback hell
+- Understanding WebAPI's
+- Creating our own promises
+
+**Call stack:**
+- The mechanism the JS interpreter uses to keep track of its place in a script that calls multiple functions
+- How JS "knows" what function is currently being run and what functions are called from within what function, etc
+- A stack is a basic data structure in computer science. It is known as a last in first out (LIFO) data structure
+- **How it works**
+  - When a script calls a function, the interpreter adds it to the call stack and then starts carrying out the function
+  - Any functions that are called by that function are added to the call stack further up, and fun where their calls are reached
+  - When the current function is finished, the interpreter takes it off the stack and resumes execution where it left off in the last code listing
+  ```js
+  const multiply = (x, y) => x * y;
+
+  const square = (x) =>  multiply(x, x);
+
+  const isRightTriangle = (a, b, c) => {
+    return square(a) + square(b) === square(c);
+  };
+
+  isRightTriangle(3, 4, 5); //true
+  ```
+
+**WebAPIs and single threaded:**
+- JS is single threaded. This means that at any given point in time, that single JS thread is running at most one line of JS code
+- Certain lines of code may take longer to complete than others. For example, it takes time when making requests to the server to fetch data
+- Browsers come with Web APIs that are able to handle certain tasks in the background (like making requests or setTimeout)
+- The JS call stack recognizes these Web API functions and passes them off to the browser to take care of
+- Once the browser finishes those tasks, they return and are pushed onto the stack as a callback
+
+**Working with promises:**
+- A Promise is an object representing the eventual completion or failure of an asynchronous operation
+- A promise has three states: a pending, a resolved, or a rejected
+- A promise is a returned object to which you can attach callbacks to it that will run, depending on whether the promise is resolved or rejected
+  - Use the .then() method and pass in the callback as an argument for a promise that is resolved
+  - Use the .catch() method and pass in a callback as an argument for a promise that is rejected
+- A promise can be resolved or rejected with a value passed to it. We can capture the value (often called data for resolved and error for rejected) in the callback parameter 
+
+**Creating our own promises:**
+- To make a promise: `new Promise()`
+- It takes a callback function
+- The callback takes two parameters: 
+  - resolve - it represents the resolution of the promise
+  - reject - it represents the rejection of the promise
+  - resolve and reject are functions we can execute inside the promise
+- If resolve or reject isn't called, the promise will be pending
+- The syntax:
+  ```js
+  new Promise((resolve, reject) => {
+
+  })
+  ```
+- An example:
+  ```js
+  const fakeRequest = (url) => {
+    // Use the return keyword to return a promise
+    return new Promise((resolve, request) => {
+      const rand = Math.random();
+      setTimeout(() => {
+        if (rand < 0.7) {
+          resolve('Your data here');
+        }
+        reject('Request error!');
+      }, 1000)
+    })
+  }
+
+  fakeRequest('/dogs/1')
+    .then((data) => {
+      console.log('Done with request!');
+      console.log('data is: ', data)
+    })
+    .catch((err) => {
+      console.log('Oh no!', err);
+    })
+  ```
+
+**Async functions:**
+- A newer and cleaner syntax for working with async code. It's a syntactic sugar for promises
+- Two keywords for async functions and they work together: async and await
+- **The async keyword**
+  - To declare a function as an async function is by adding the async keyword in front it. Can declare an async function with arrow function
+  - Async functions always return a promise. It does this automatically behind the scene without us writing a promise
+  - If the function returns a value, the promise will be resolved with that value
+  - If the function throws an exception, the promise will be rejected
+  - Since it returns a promise, we can chain on the then/catch methods to handle the resolved data or rejected error in a callback function
+  ```js
+  const login = async (username, password) => {
+    if (!username || !password) throw 'Missing Credentials'
+    if (password === 'corgi') return 'Welcome!'
+    throw 'Invalid Password'
+  }
+
+  login('dkieei', 'corgi')
+    .then(msg => {
+      console.log('Logged in!')
+      console.log(msg)
+    })
+    .catch(err => {
+      console.log('Error!')
+      console.log(err)
+    })
+  ```
+- **The await keyword**
+  - We can only use the await keyword inside of functions declared with async
+  - await will pause the execution of the function, waiting for a promise to be resolved before continuing on
+- If an async function returns a promise with a value, we can capture that value in a variable
+  - `let data = await fakeRequest('/page1');`
+- Use try/catch block to handle errors in async functions
+  ```js
+  async function makeTwoRequests() {
+    try {
+      // Capture the value from the returned promise in a variable
+      let data1 = await fakeRequest('/page1');
+      console.log(data1);
+      let data1 = await fakeRequest('/page2');
+      console.log(data2);
+    } catch (err) {
+      console.log('Caught an error!');
+      console.log('error is: ', err);
+    }
+  }
+  ```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
