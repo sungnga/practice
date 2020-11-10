@@ -2121,13 +2121,132 @@
   ```
 
 
+## S28: AJAX AND API'S
+#### TOPICS:
+- Working with API's
+- Intro to JSON
+- Working with Axios
+- Postman
+- The fetch API
 
+**Ways to make requests:**
+- XMLHTTP
+- fetch 
+- axios
 
+**AJAX**
+- Asynchronous
+- Javascript
+- And
+- XML -> JSON
 
+**API** - application programming interface
+- A broad term that refers to one software interface with another piece of software
+- It does not have to do with the web. What most developers refer to is web API's
+- Web API's are web interfaces that are web-based, HTTP-based
+- Companies expose certain endpoints and these endpoints (URLs) respond with information for other pieces of software/application to consume. These endpoints are like portals to applications, database, information, etc
+- Most of the time, the API response is in JSON format
+- Every API is different. Refer to the company's api doc on how to use it
 
+**JSON**
+- Java 
+- Script
+- Object
+- Notation
+- JSON is just a format for sending data
+- It's a way of formatting data that is consistent and predictable
+- JSON can work with other programming languages, not just JS. Each programming language has their way of parsing JSON data into their native language
+- It's very similar to Javascript and it's based upon on JS object and syntax. But there are keep differences
+  - All keys must be wrapped in double quotations
+  - Values that JSON accepts include: object, array, string, number, "true", "false", "null"
+- `JSON.parse()` is a method to parse JSON string into Javascript object
+- `JSON.stringify()` is a method that turns Javascript object into JSON string format. By default, all instances of `undefined` are replaced with `null`
 
+**Query strings and headers:**
+- A query string is a way of providing additional information to a request
+- Query string is key-value pair information we can pass in to the URL as part of the endpoint
+- Some API's require that we specify the header
 
+**The fetch API:**
+- The newer way of making HTTP requests using Javascript
+- Supports promises
+- Not supported in Internet Explorer
+- The syntax: `fetch('url')` 
+  - It will return a Promise with a Response object
+  - However, this Response object does not have the body data yet. The data comes on a different stream
+  - We need to call the .json() method on the Response object. This will return a promise and it is an asynchronous operation. It will wait for the data to arrive and then parse it in json string
+  - We can then chain on a 2nd .then() method to capture the data returned from the promise
+  ```js
+  fetch('https://api.cryptonator.com/api/ticker/btc-usd')
+    .then(res => {
+      console.log('Response, waiting to parse...', res)
+      return res.json()
+    })
+    .then(data => {
+      console.log('Data parsed...')
+      console.log(data.ticker.price)
+    })
+    .catch(err => {
+      console.log('Oh no! Error!', err)
+    })
 
+    // Async function with fetch api
+    const fetchBitcoinPrice = async () => {
+      try {
+        const res = await fetch('https://api.cryptonator.com/api/ticker/btc-usd');
+        const data = await res.json();
+        console.log(data.ticker.price);
+      } catch (err) {
+        console.log('Something went wrong!', err)
+      }
+    }
+  ```
+
+**Making requests with Axios:**
+- A library for making HTTP requests. It's build on top of fetch
+- Axios works both with client-side JS and Node.js on the server-side
+- For client-side, include the jsDelivr CDN script before the app.js script in index.html file. Inside the `<head>` tag works
+  - `<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>`
+- The syntax: `axios.get('url')`
+  - It returns a Promise with the Response object
+  - Unlike fetch, the promise is resolved only when everything is finished
+  - If the promise is resolved, the data is already included and parsed
+  ```js
+  axios.get('https://api.cryptonator.com/api/ticker/btc-usd')
+    .then(res => {
+      console.log(res.data.ticker.price);
+    })
+    .catch(err => {
+      console.log('Error!', err)
+    })
+
+  // Async function with fetch api
+  const fetchBitcoinPrice = async () => {
+    try {
+      const res = await axios.get('https://api.cryptonator.com/api/ticker/btc-usd');
+      console.log(res.data.ticker.price);
+    } catch (err) {
+      console.log('Error!', err)
+    }
+  }
+  ```
+
+**Setting headers with Axios:**
+- Some API's require that you specify the headers. Refer to their doc
+- The headers itself is an object
+- We can specify the headers as a 2nd argument to the axios.get() method
+- The syntax: `const res = await axios.get('url', headers)`
+  ```js
+  const getDadJoke = async () => {
+    try {
+      const config = { headers: { Accept: 'application/json' } }
+      const res = await axios.get('https://icanhasdadjoke.com/', config)
+      console.log(res.data.joke)
+    } catch (e) {
+      return 'No jokes available! Sorry'
+    }
+  }
+  ```
 
 
 
