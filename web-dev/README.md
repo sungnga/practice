@@ -2249,7 +2249,43 @@
   ```
 
 
+## S30: INTRO TO NODE.JS
+#### TOPICS:
+- Installation
+- The Node REPL
+- Running Node files
+- Process
+- argv
+- File system module
 
+**What is Node?**
+- A Javascript runtime
+- Until recently, we could only run Javascript code in a web browser, Node is a Javascript runtime that executes code outside of the browser
+- We can use the same Javascript syntax to write a server-side code, instead of relying on other languages like Python or Ruby
+- Some of Node use cases
+  - Web servers
+  - Command line tools
+  - Native apps
+  - Video games
+  - Drone software
+- Node comes with many built-in modules that don't exist in the browser. These modules help us do things like interact with the operating system and files/folders
+- To enter Node REPL, run in the command line: `node`
+
+**Running Node files:**
+- To execute a JS file in the terminal, run in the terminal: `node fileName.js`
+- Make sure you're in the current directory or reference the correct path to the file
+
+**Process and argv**
+- Process is a global object that contains useful methods and properties
+- The `process.argv` property returns an array containing the command line arguments passed when the Node.js process was launched
+  - 1st element is the executable path
+  - 2nd element is the path to the file you're running
+  - The remaining elements are additional arguments you pass in
+
+**File system module:**
+- FS module has to do with the file system. For example, make a file, copy a file, or delete a file or folder
+- Need to import/require in the fs module: `const fs = require('fs');`
+- fs is an object with a whole bunch of methods we can call on
 
 
 
