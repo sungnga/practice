@@ -2288,6 +2288,64 @@
 - fs is an object with a whole bunch of methods we can call on
 
 
+## S31: NODE MODULES AND NPM
+#### TOPICS:
+- Module.exports
+- Requiring modules
+- Using NPM
+- Installing packages
+- Creating package.js files
+
+**Working with module.exports:**
+- `module.exports` by default, is an empty object
+- `module.exports` is an object that we can add other properties on to. Other files can then require in the module and have access to the properties that were exported
+- In a file, we can specify exactly what properties we want to export
+- We can also destructure only the properties we want to use from a module
+- The `exports` variable is a shorthand syntax to refer to `module.exports` object
+- If we export our own file, we need to reference the path to the file
+- We can actually require the entire directory. This is a very common pattern when working with npm packages, a third-party libraries written by other developers
+  - When require in a directory, Node is going to look for the index.js file and whatever this file exports, it's what the directory will export
+  - For example, there's a directory called shelter and in it contains four files: index.js file, cat1.js, cat2.js, cat3.js. The index.js file requires in the three cat modules and exports the three modules as an array. Another file called app.js requires in the shelter directory: `const cats = require('./shelter')`
+
+**NPM: Node Package Manager:**
+- NPM is two things:
+  - It's a library of thousands of packages published by other developers that we can use for free
+  - A command line tool to easily install and manage those packages in our Node projects
+- npm comes with Node
+
+**Installing npm packages:**
+- When installing an npm package in our Node application, the code for that library will be stored in a directory called node_module
+- A file called package-lock.json is also created. This file is a record of the contents of the node_module directory
+- When require in the library in a file, we just refer to the name of the library. Node will go look for the module in the node_module directory
+  - `const jokes = require('give-me-a-joke');`
+- Refer to the library's doc on how to use it
+- Some npm packages we want to install globally and others we want to install them locally, meaning, installing in a particular project directory. When installing locally, files outside of the directory will not have access to the module
+- To install a package globally, add the `-g` flag
+
+**The package.json file:**
+- Every Node app that we create should have the package.json file. It contains the metadata or information about the application or package 
+- This file also contains a list of dependencies and its version used. It acts as a record that keeps track of all the dependencies installed in an application
+- To create the package.json file, run in the command line: `npm init`
+- Put this file at the root directory of a project
+- We use this package.json file to share dependencies used in a project with other developers
+- To install all the dependencies at once, go to the project directory and run: `npm install`. This will generate the node_module directory necessary to run the application
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
