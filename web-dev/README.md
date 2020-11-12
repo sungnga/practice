@@ -2314,9 +2314,9 @@
 - npm comes with Node
 
 **Installing npm packages:**
-- When installing an npm package in our Node application, the code for that library will be stored in a directory called node_module
-- A file called package-lock.json is also created. This file is a record of the contents of the node_module directory
-- When require in the library in a file, we just refer to the name of the library. Node will go look for the module in the node_module directory
+- When installing an npm package in our Node application, the code for that library will be stored in a directory called node_modules
+- A file called package-lock.json is also created. This file is a record of the contents of the node_modules directory
+- When require in the library in a file, we just refer to the name of the library. Node will go look for the module in the node_modules directory
   - `const jokes = require('give-me-a-joke');`
 - Refer to the library's doc on how to use it
 - Some npm packages we want to install globally and others we want to install them locally, meaning, installing in a particular project directory. When installing locally, files outside of the directory will not have access to the module
@@ -2328,16 +2328,141 @@
 - To create the package.json file, run in the command line: `npm init`
 - Put this file at the root directory of a project
 - We use this package.json file to share dependencies used in a project with other developers
-- To install all the dependencies at once, go to the project directory and run: `npm install`. This will generate the node_module directory necessary to run the application
+- To install all the dependencies at once, go to the project directory and run: `npm install`. This will generate the node_modules directory necessary to run the application
 
 
+## S32: CREATING SERVERS WITH EXPRESS
+#### TOPICS:
+- What are frameworks?
+- Our first Express app
+- Routing basics
+- Path parameters
+- Working with query strings
+- Nodemon
 
+**Express:**
+- Express is a web development framework
+- Express is a "fast, unopinionated, minimalist web framework for Node.js." It helps us build web applications. It helps us get servers up and running with Node
+- It's just an NPM package which comes with a bunch of methods and optional plugins that we can use to build web applications and API's
+- Express helps us...
+  - Start up a server to listen for requests
+  - Parse incoming requests
+  - Match those requests to particular routes
+  - Craft our http response and associated content
+- Libraries vs. frameworks
+  - When you use a library, you're in charge. You control the flow of the application code, and you decide when to use the library
+  - With frameworks, that control is inverted. The framework is in charge, and you are merely a participant. The framework tells you where to plug in the code
 
+**Our first Express app**
+- Create a project directory and cd into the directory. Run `npm init -y` to create the package.json file
+- Install Express package: `npm i express`
+- In project directory, create a file called index.js
+- In index.js file:
+  - Require in Express in order to use it: `const express = require('express');`
+  - Next, execute express because it's a function. Save the returned value in an app variable: `const app = express();`
+  - The app object contains a whole bunch of properties and methods. It is an Express application
+  - To start an Express server, call the listen() method on app object
+    - The 1st argument is the port to listen to. We'll listen on port 3000
+    - The 2nd arg is a callback function. This function runs when the app starts listening on port 3000
+- Run the Node application in the terminal: `node index.js`
+  - Now the server is listening for incoming requests on port 3000
+  - Run `Ctrl c` to quit the server from listening
+- This server is only served on local machine. If you're on a different network or other machine, you won't be able to make requests on this server
+- To view the server listening on a particular port on the local machine, go the the browser and type in: `localhost:3000`
+- Our goal is to have an incoming request and get an outgoing response
+- Call the use() method on app and pass in a callback function. Anytime when there's an incoming request on this port, `app.use()` will run and the callback will execute. This registers that there's an incoming request
+  ```js
+  const express = require('express');
+  const app = express();
+  //console.dir(app);
 
+  app.use(() => {
+    console.log('We got a new request!');
+  });
 
+  app.listen(3000, () => {
+    console.log('Server is running on port 3000!');
+  });
+  ```
 
+**The request and response objects**
+- Express automatically makes two objects on every incoming request. These two objects are automatically passed in as two parameters in the callback function of `app.use()` method
+  - The first param, usually called req, is the request object which represents the incoming request
+  - The second param, usually called res, is the response object representing the outgoing response
+  - We have access to both of these objects
+  - So an HTTP request is not a Javascript object. It's just text information. It is not particular to any programming language
+  - In this case, Express parses the HTTP request data and turns it into a req object that it passes in to our callback `app.use()`
+    - This req object contains a whole bunch of information about the request, such as the pathname, the port number, the headers object
+  - The res object has a whole bunch of methods and properties that can be used to generate a response to whoever made the request
+    - The send() method sends the HTTP response. If the response is an array or object, the content-type is in application/json format
+  ```js
+  app.use((req, res) => {
+    // Sending a response with a string
+    res.send('Hello, we got your request!');
+    // Sending a response with an object
+    res.send({ color: 'violet' });
+  })
+  ```
 
+**Express routing basics:**
+- Routing is taking incoming requests in a path that is requested and matching that to some code in some response
+- The path of the request is a route. We are routing some incoming request to some outgoing response
+- The app.get() method is used to receive the path of an incoming request and a callback to send a response to the matching path
+  - This method expects two arguments
+  - 1st arg is the pathname of the request
+  - 2nd arg is a callback that takes req and res as arguments. In this callback, we can call res.send() method to send a response to the requested path
+  - The callback only runs if the route pathname matches
+  ```js
+  app.get('/', (req, res) => {
+    res.send('This is the home page!');
+  });
 
+  app.get('/cats', (req, res) => {
+    res.send('Meow!');
+  });
+
+  app.get('/dogs', (req, res) => {
+    res.send('Woof!');
+  });
+  ```
+- The `'/'` path is considered the root route. It's the home page
+- There are other HTTP incoming requests that we can listen for. We respond with different contents for different incoming requests
+  - app.get()
+  - app.post()
+  - app.put()
+  - app.delete()
+
+**Express path parameters:**
+- In the URL pathname, the colon followed by the path definition string indicates a variable, not the actual name in the path itself: `'/r/:subreddit/:postId'`. We're looking for a pattern
+- We can access the values of path params in the `req.params` property
+```js
+app.get('/r/:subreddit/:postId', (req, res) => {
+  const { subreddit, postId } = req.params;
+  res.send(`<h1>Browsing the ${subreddit} subreddit with post Id ${postId}</h1>`);
+});
+```
+
+**Working with query strings:**
+- A query string is a portion of the URL that comes after a question mark. We can include information, as key-value pairs, as part of this query string
+- The request object that Express constructs for us and passes in to our callback has a property called query. This query property contains the key-value pair based upon the query string. We can access the query string in `req.query`
+- If there are multiple key-value pairs query strings, separate them with ampersand `&`
+```js
+app.get('/search', (req, res) => {
+  const { q } = req.query;
+  res.send(`<h1>Search results for: ${q}</h1>`)
+})
+
+// In the browser
+localhost:3000/search?q=cat
+// Output
+Search results for: cat
+```
+
+**Auto-restart with Nodemon:**
+- There's a way to automatically restart/reload the server when we change our codebase
+- Nodemon is a tool that will watch for changes to our files and will restart the server for us
+- Install nodemon globally: `npm i -g nodemon` 
+- Run: `nodemon index.js`
 
 
 
