@@ -2325,7 +2325,7 @@
 **The package.json file:**
 - Every Node app that we create should have the package.json file. It contains the metadata or information about the application or package 
 - This file also contains a list of dependencies and its version used. It acts as a record that keeps track of all the dependencies installed in an application
-- To create the package.json file, run in the command line: `npm init`
+- To create the package.json file, run in the command line: `npm init -y`
 - Put this file at the root directory of a project
 - We use this package.json file to share dependencies used in a project with other developers
 - To install all the dependencies at once, go to the project directory and run: `npm install`. This will generate the node_modules directory necessary to run the application
@@ -2465,9 +2465,162 @@ Search results for: cat
 - Run: `nodemon index.js`
 
 
+## S33: CREATING DYNAMIC HTML WITH TEMPLATING
+#### TOPICS:
+- What is templating
+- Configuring Express for EJS
+- Passing data to templates
+- Serving static assets 
+- Creating partials
+- EJS loops and conditionals
 
+**What is templating?**
+- Templating allows us to define a preset "pattern" for a webpage, that we can dynamically modify
+- Instead of writing static HTML code that's always the same, we can embed information and logic. So we can repeat parts of the template over and over with a loop as an example. Or conditionally show or hide something
+- For example, we could define a single "Search" template that displays all the results for a given search term. We don't know what the term is or how many results there are ahead of time. The webpage is created on the fly
+- There are many templating engines out there to help us do this. These include EJS, handlebars, jade language, pug, and nunjucks
+- The tool we will be using is EJS - Embedded Javascript templating
+  - It embeds actual Javascript inside the template
 
+**Configuring Express for EJS:**
+- In index.js file:
+  - Use the `app.set()` method to specify the view engine as EJS
+    - This method takes 2 arguments. 1st arg is the key and 2nd arg is the value
+  - `app.set('view engine', 'ejs');`
+- Install EJS: `npm i ejs`
+- We don't need to require in ejs, because Express, behind the scenes, will require the package called ejs 
+- By default, when we create an Express app and we're using some view engine, Express is going to assume that our views (our templates) exists in a directory called views
+- Create a directory called view. In view folder, create a file called home.ejs
+- In home.ejs file:
+  - Generate an HTML DOCTYPE boilerplate
+  - Add an h1 text
+  - Add two paragraphs of text
+- In index.js file:
+  - In the callback `app.get()` method, use the `res.render()` method and pass in the home template as an argument. This will render the home.ejs template onto the home page
+  ```js
+  app.get('/', (req, res) => {
+    res.render('home')
+  });
+  ```
+- Final code in index.js file:
+  ```js
+  const express = require('express');
+  const app = express();
 
+  app.set('view engine', 'ejs');
+
+  app.get('/', (req, res) => {
+    res.render('home');
+  });
+
+  app.listen(3000, () => {
+    console.log('Server listening on port 3000');
+  });
+  ```
+
+**Setting the views directory:**
+- We want to set up the path to views directory in such a way that regardless of where nodemon runs the index.js file, Express will be able to find the views directory
+- We want to join the path to index.js file with the views directory path
+- In index.js file:
+  - Require in the path module: `const path = require('path');`
+  - Use the `app.set()` method to set the 'views' key to the path that joins the index.js file path with the path of views directory
+  - `app.set('views', path.join(__dirname, '/views'));` 
+
+**EJS interpolation syntax:**
+- Tags
+  - `<%` 'Scriptlet' tag, for control-flow, no output
+  - `<%=` Outputs the value into the template (HTML escaped)
+  - `<%#` Comment tag, no execution, no output
+  - `<%%` Outputs a literal '<%'
+  - `%>` Plain ending tag
+- Whatever is inside the `<%= %>` tag will be evaluated and displayed in the template
+- Examples:
+  ```html
+  <h1>The Home Page <%= 4 + 5 + 1 %></h1>
+  <h1>The Home Page <%= 'hello world'.toUpperCase() %></h1>
+  ```
+
+**Passing data to templates:**
+- We can pass information from our route to our template
+- In index.js file:
+  ```js
+  app.get('/rand', (req, res) => {
+    // Generate random number
+    const num = Math.floor(Math.random() * 10) + 1;
+
+    // 1st arg is the random.ejs file
+    // 2nd arg is JS passed in as an object
+    // This object will be passed through to the template
+    res.render('random', { num });
+  });
+- In views/random.ejs file:
+  ```html
+  <h1>Your random number is: <%= num %></h1>
+  ```
+- In the browser:
+  - Visit the URL: `localhost:3000/rand`
+  - A random number will be generated every time you refresh the browser
+  ```
+
+**Conditionals in EJS:**
+- Use the `<% %>` tag to embed Javascript without the result actually being added to the template. So we can add JS logic without having anything rendered as a result of this tag
+- In views/random.ejs file:
+  ```html
+	<body>
+		<h1>Your random number is: <%= num %></h1>
+		<% if(num % 2 === 0) { %>
+		<h2>That is an even number!</h2>
+		<% } else { %>
+		<h2>That is an odd number!</h2>
+		<% } %>
+		<h3>That number is: <%= num%2===0 ? 'EVEN' : 'ODD' %></h3>
+	</body>
+  ```
+
+**Loops in EJS:**
+- Use the `<% %>` tag to loops over iterable objects and use the `<%= %>` tag to display each elements
+- In index.js file:
+  ```js
+  app.get('/cats', (req, res) => {
+    const cats = ['Blue', 'Monty', 'Tom', 'Winston', 'Target'];
+    res.render('cats', { cats });
+  });
+  ```
+- In views/cat.ejs file:
+  ```html
+	<body>
+		<h1>All The Cats</h1>
+		<ul>
+			<% for(let cat of cats) { %>
+			<li><%= cat %></li>
+			<% } %>
+		</ul>
+	</body>
+  ```
+
+**Serving static assets in Express:**
+- The `express.static()` method is a middleware and we pass in an argument of the folder that we want to serve our assets from
+- For example, use the following code to serve images, CSS files, and Javascript files in a directory named public:
+  - `app.use(express.static('public'))`
+- In index.js file:
+  - `app.use(express.static(path.join(__dirname, 'public')));`
+- At the root of the project directory, create a directory called public. In this directory, create a file called app.css
+- In public/app.css file:
+  ```css
+  body {
+    background-color: darkseagreen;
+  }
+  ```
+- In views/cats.ejs file:
+  - Add the CSS stylesheet in the head tag
+  ```html
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All Cats!</title>
+    <link rel="stylesheet" href="/app.css">
+	</head>
+  ```
 
 
 
@@ -2477,3 +2630,13 @@ Search results for: cat
 
 ## RESOURCES
 - Color inspiration: www.coolers.co/palettes/trending
+- Bootstrap website: https://getbootstrap.com/docs/3.3/getting-started/
+
+
+## NPM PACKAGES USED
+- Express framework
+  - Install: `npm i express`
+- Nodemon: auto-restart the server
+  - Install globally: `npm i -g nodemon`
+- EJS: Embedded Javascript templating
+  - Install: `npm i ejs`
