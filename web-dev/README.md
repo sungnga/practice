@@ -2622,6 +2622,28 @@ Search results for: cat
 	</head>
   ```
 
+**Bootstrap + Express:**
+- Duplicate a copy of the templating app project and delete the public directory. We will be using Bootstrap to style our app instead
+- In the root project directory, create a directory called public
+- In public folder, create 2 folders: css and js
+- Bootstrap website: https://getbootstrap.com/docs/3.3/getting-started/
+- Download the Bootstrap minified CSS and Javascript files. Place the minified css file in css folder and place the minified JS file in js folder
+- Go to jQuery website and download the jQuery file. Save the file as jquery.js and place this file in the js folder
+- In views/subreddit.ejs file:
+  - Include the Bootstrap css stylesheet and Bootstrap JS script in the head element
+  - Include the script for jQuery just above the script for Javascript
+    ```html
+    <head>
+      <link rel="stylesheet" href="/css/bootstrap.min.css" />
+      <script src="/js/jquery.js"></script>
+      <script src="/js/bootstrap.min.js"></script>
+    </head>
+    ```
+  - Go to Bootstrap website and copy demo code for a navbar: https://getbootstrap.com/docs/4.5/components/navbar/
+  - Paste the code at the very top of the body tag
+    - Change the name of the nav items to: Random Number, Chickens, Soccer, and Mighty Harvest
+    - Change the href link as well
+
 
 
 
