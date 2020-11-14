@@ -2530,12 +2530,11 @@ Search results for: cat
 - Tags
   - `<%` 'Scriptlet' tag, for control-flow, no output
   - `<%=` Outputs the value into the template (HTML escaped)
-  - `<%#` Comment tag, no execution, no output
-  - `<%%` Outputs a literal '<%'
+  - `<%-` Outputs the unescaped value into the template
   - `%>` Plain ending tag
 - Whatever is inside the `<%= %>` tag will be evaluated and displayed in the template
 - Examples:
-  ```html
+  ```ejs
   <h1>The Home Page <%= 4 + 5 + 1 %></h1>
   <h1>The Home Page <%= 'hello world'.toUpperCase() %></h1>
   ```
@@ -2554,7 +2553,7 @@ Search results for: cat
     res.render('random', { num });
   });
 - In views/random.ejs file:
-  ```html
+  ```ejs
   <h1>Your random number is: <%= num %></h1>
   ```
 - In the browser:
@@ -2565,7 +2564,7 @@ Search results for: cat
 **Conditionals in EJS:**
 - Use the `<% %>` tag to embed Javascript without the result actually being added to the template. So we can add JS logic without having anything rendered as a result of this tag
 - In views/random.ejs file:
-  ```html
+  ```ejs
 	<body>
 		<h1>Your random number is: <%= num %></h1>
 		<% if(num % 2 === 0) { %>
@@ -2587,7 +2586,7 @@ Search results for: cat
   });
   ```
 - In views/cat.ejs file:
-  ```html
+  ```ejs
 	<body>
 		<h1>All The Cats</h1>
 		<ul>
@@ -2643,6 +2642,76 @@ Search results for: cat
   - Paste the code at the very top of the body tag
     - Change the name of the nav items to: Random Number, Chickens, Soccer, and Mighty Harvest
     - Change the href link as well
+
+**ESJ and creating partials:**
+- Partials is a way to include sub-templates inside other templates
+- This is useful when we have some code or some features of a webpage we're duplicating. For example, we want to include the navbar on every page
+- **To create the head partial:**
+  - In the views directory, create a folder called partials. In partials folder, create a file called head.ejs
+  - In head.ejs file:
+    ```html
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>My Site</title>
+        <link rel="stylesheet" href="/css/bootstrap.min.css" />
+        <script src="/js/jquery.js"></script>
+        <script src="/js/bootstrap.min.js"></script>
+      </head>
+    ```  
+- To include the head partial in subreddit.ejs, random.ejs, cats.ejs, notfound.ejs, and home.ejs files:
+  - Remove the existing html tag and head tag and leave the body tag
+  - Replace it with this code instead: `<%- include('partials/head') %>`
+- **To create the navbar partial:**
+  - In the views/partials directory, create a file called navbar.ejs
+  - In navbar.ejs file:
+    - Copy all the code inside the nav element to this file
+    ```html
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">Express App</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/"
+              >Home <span class="sr-only">(current)</span></a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/rand">Random Number</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/r/chickens">Chickens</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/r/soccer">Soccer</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/r/mightyharvest">Mighty Harvest</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    ```
+- To include the navbar partial in subreddit.ejs, random.ejs, cats.ejs, notfound.ejs, and home.ejs files:
+  - Include this code at the very top of the body tag: `<%- include('partials/navbar') %>`
+
+
+
+
+
 
 
 
