@@ -2721,24 +2721,46 @@ Search results for: cat
 **GET vs. POST requests:**
 - **GET**
   - Used to retrieve information
-  - Data is sent via query string
+  - Data is sent via query string: `req.query`
   - Information is plainly visible in the URL!
   - Limited amount of data can be sent
 - **POST**
   - Used to post data to the server
   - Used to write/create/update
-  - Data is sent via request body, not a query string!
+  - Data is sent via request body, not a query string!: `req.body`
   - Can send any sort of data (JSON!)
 
-****
+**Parsing the request body in POST requests:**
+- We can send data in different formats such as text, json, javascript, html, etc.
+- They have to parsed differently. We need to tell Express explicitly how it should parse the incoming request bodies
+- The `req.body` contains key-value pairs of data submitted in the request body. By default, it is `undefined`
+- We need to tell Express to parse form-encoded information from the request body. Express has a built-in middleware that's going to parse the request body as url-encoded data
+  - `app.use(express.urlencoded({ extended: true }))`
+  - Use `console.log(req.body)` to see the parsed request body
+- Express also has a built-in middleware function that parses incoming requests with JSON payloads
+  - `app.use(express.json())`
+- In index.js file:
+  ```js
+  const express = require('express');
+  const app = express();
 
+  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json());
 
+  app.get('/tacos', (req, res) => {
+    res.send('GET /tacos response');
+  });
 
+  app.post('/tacos', (req, res) => {
+    console.log(req.body);
+    const { meat, qty } = req.body;
+    res.send(`Ok, here are your ${qty} ${meat}`);
+  });
 
-
-
-
-
+  app.listen(3000, () => {
+    console.log('Server listening on port 3000!');
+  });
+  ```
 
 
 
