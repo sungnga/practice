@@ -2709,6 +2709,37 @@ Search results for: cat
   - Include this code at the very top of the body tag: `<%- include('partials/navbar') %>`
 
 
+## S34: DEFINING RESTFUL ROUTES
+#### TOPICS:
+- GET vs. POST requests
+- Handling POST requests in Express
+- Parsing request body
+- Forms + Express
+- Method override
+- RESTful routing
+
+**GET vs. POST requests:**
+- **GET**
+  - Used to retrieve information
+  - Data is sent via query string
+  - Information is plainly visible in the URL!
+  - Limited amount of data can be sent
+- **POST**
+  - Used to post data to the server
+  - Used to write/create/update
+  - Data is sent via request body, not a query string!
+  - Can send any sort of data (JSON!)
+
+****
+
+
+
+
+
+
+
+
+
 
 
 
