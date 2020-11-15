@@ -2732,7 +2732,7 @@ Search results for: cat
 
 **Parsing the request body in POST requests:**
 - We can send data in different formats such as text, json, javascript, html, etc.
-- They have to parsed differently. We need to tell Express explicitly how it should parse the incoming request bodies
+- They have to be parsed differently. We need to tell Express explicitly how it should parse the incoming request bodies
 - The `req.body` contains key-value pairs of data submitted in the request body. By default, it is `undefined`
 - We need to tell Express to parse form-encoded information from the request body. Express has a built-in middleware that's going to parse the request body as url-encoded data
   - `app.use(express.urlencoded({ extended: true }))`
@@ -2762,9 +2762,18 @@ Search results for: cat
   });
   ```
 
+**Intro to REST:**
+- Stands for Representational State Transfer
+- It's a set of guidelines for how a client and server should communicate and perform CRUD operation on a given resource
+- A RESTful system complies with these rules of REST
+- The main idea of REST is treating data on the server-side as resources then can be CRUDed
+- The most common way of approaching REST is in formatting the URLs and HTTP verbs in your applications to expose full CRUD operations over HTTP
 
-
-
+**The HTTP verbs:**
+- GET - to retrieve data/information from the server
+- POST - to create and send data to the server
+- PATCH - to update data on the server
+- DELETE - to delete data on the server
 
 
 
