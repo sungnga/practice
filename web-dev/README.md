@@ -2775,8 +2775,10 @@ Search results for: cat
 - PATCH - to update data on the server
 - DELETE - to delete data on the server
 
-
-
+**Express redirect:**
+- The `res.redirect([optionalStatusCode,] 'path')` redirects to the URL derived from the specified path. By default, the status code is 302
+- For example, redirect users to all comments after they submitted a comment: `res.redirect('/comments')`
+- When redirect, Express actually makes another request to the path specified in the redirect() method
 
 
 
