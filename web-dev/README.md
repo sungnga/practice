@@ -2795,3 +2795,7 @@ Search results for: cat
   - Install globally: `npm i -g nodemon`
 - EJS: Embedded Javascript templating
   - Install: `npm i ejs`
+- uuid
+  - Install: `npm i uuid`
+  - Import: `const { v4: uuidv4} = require('uuid')`
+  - Use: `uuidv4()`

@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const path = require('path');
+const { v4: uuidv4} = require('uuid')
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -9,22 +10,22 @@ app.set('view engine', 'ejs');
 
 const comments = [
 	{
-		id: 1,
+		id: uuidv4(),
 		username: 'Todd',
 		comment: 'lol that is so funny!'
 	},
 	{
-		id: 2,
+		id: uuidv4(),
 		username: 'Skylar',
 		comment: 'I like to go birdwatching'
 	},
 	{
-		id: 3,
+		id: uuidv4(),
 		username: 'Skateboy',
 		comment: 'Plz delete your account, Todd'
 	},
 	{
-		id: 4,
+		id: uuidv4(),
 		username: 'onlysayswoof',
 		comment: 'woof woof'
 	}
@@ -42,13 +43,13 @@ app.get('/comments/new', (req, res) => {
 // This route takes the data from the form and sends it to the server
 app.post('/comments', (req, res) => {
 	const { username, comment } = req.body;
-	comments.push({ username, comment });
+	comments.push({ username, comment, id: uuidv4() });
 	res.redirect('/comments');
 });
 
 app.get('/comments/:id', (req, res) => {
 	const { id } = req.params;
-	const comment = comments.find((c) => c.id === parseInt(id));
+	const comment = comments.find((c) => c.id === id);
 	res.render('comments/show', { comment });
 });
 
