@@ -2780,6 +2780,11 @@ Search results for: cat
 - For example, redirect users to all comments after they submitted a comment: `res.redirect('/comments')`
 - When redirect, Express actually makes another request to the path specified in the redirect() method
 
+**Update method: patch and put:**
+- Patch - The PATCH method is used to apply partial modifications to a resource
+- Put - The PUT method replaces all current representations of the target resource with the request payload
+- After an update is completed, we usually want to redirect instead of sending something
+
 
 
 
