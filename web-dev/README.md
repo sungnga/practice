@@ -2785,6 +2785,50 @@ Search results for: cat
 - Put - The PUT method replaces all current representations of the target resource with the request payload
 - After an update is completed, we usually want to redirect instead of sending something
 
+**Express method override:**
+- The big problem is HTML forms in our browser can only sent GET or POST requests. They can't send a PUT, PATCH, or DELETE requests
+- The method-override package is a middleware that lets us use HTTP verbs such as PUT or DELETE in places where the client (form as an example) doesn't support it
+- Install: `npm i method-override`
+- Import the method in index.js file: `const methodOverride = require('method-override')`
+- To use a query string value to override the method, specify the query string key as the string argument to the `methodOverride` function
+- In index.js file:
+  ```js
+  const app = express();
+  const methodOverride = require('method-override');
+
+  app.use(methodOverride('_method'));
+
+  // Setup a form to edit a comment
+  app.get('/comments/:id/edit', (req, res) => {
+    const { id } = req.params;
+    const comment = comments.find((c) => c.id === id);
+    res.render('comments/edit', { comment });
+  });
+
+  // Update a comment
+  app.patch('/comments/:id', (req, res) => {
+    const { id } = req.params;
+    const newCommentText = req.body.comment;
+    const foundComment = comments.find((c) => c.id === id);
+    foundComment.comment = newCommentText;
+    res.redirect('/comments');
+  });
+  ```
+- In edit.ejs file:
+  ```html
+  <form method="POST" action="/comments/<%= comment.id %>?_method=PATCH">
+    <textarea name="comment" id="" cols="30" rows="10">
+      <%= comment.comment %> 
+    </textarea>
+    <button>Save</button>
+  </form>
+  ```
+
+
+
+
+
+
 
 
 
@@ -2804,3 +2848,6 @@ Search results for: cat
   - Install: `npm i uuid`
   - Import: `const { v4: uuidv4} = require('uuid')`
   - Use: `uuidv4()`
+- Express method-override
+  - Install: `npm i method-override`
+  - Import: `const methodOverride = require('method-override');`
