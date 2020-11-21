@@ -2867,10 +2867,64 @@ Search results for: cat
 - To quit: `ctrl c`
 - To list all the database: `show dbs`
 - To create a database: `use nameOfDatabase`
+- To access a database, but if it doesn't find it, it will create it: `use nameOfDatabase`
+- To see collections: `show collections`
+- To see database: `db`
+- To insert a document in a collection: `db.collection.insert()`
+- To see documents in a collection: `db.collection.find()`
 
+**What is BSON?**
+- Stands for "Binary JSON". BSON is a more compact version of JSON
+- Reasons why JSON is less idea for usage inside of a database
+  - JSON is a text-based format, and text parsing is very slow
+  - JSON's readable format is far from space-efficient, another database concern
+  - JSON only supports a limited number of basic data types
+- We can write regular JSON, but Mongo is going to store it as binary. This takes up space in memory
 
-
-
+**MongoDB CRUD operations:**
+- Source: https://docs.mongodb.com/manual/crud/
+- You can have many collections in a single database. Each item inside a collection is called a document
+- **Inserting documents:**
+  - First step is to create a collection. If the collection does not currently exist, insert operations will create the collection
+  - Insert methods: db.collection.insert(), db.collection.insertOne(), db.collection.insertMany()
+  - To insert a document into a collection: `db.collection.insert()`
+  - `db.dogs.insert([{name: "Wyatt", breed: "Golden", age: 13, catFriendly: false}, {name: "Tonya", breed: "Chihuahua", age: 17, catFriendly: true}])`
+  - To see collections: `show collections`
+  - To see documents in a collection: `db.collection.find()`
+    - This will return all the documents in the collection
+    - It returns: `{ "_id" : ObjectId("5fb88a145166718599efbc7d"), "name" : "Wyatt", "breed" : "Golden", "age" : 13, "catFriendly" : false }
+    { "_id" : ObjectId("5fb88a145166718599efbc7e"), "name" : "Tonya", "breed" : "Chihuahua", "age" : 17, "catFriendly" : true }`
+  - When inserting/creating a document, the `_id` field is automatically created for us if it's not provided
+  - The `_id` is a primary key. It's a unique reference for each individual document in a collection
+- **Finding documents:**
+  - The `db.collection.find()` method will return all the documents in a collection
+  - We can query the collection and return only what we're looking for by passing in a query argument
+  - `db.dogs.find({breed: "Golden"})`
+- **Updating documents:**
+  - When updating a document, we first find the document and then specify what we want to update
+  - Update methods:
+    - `db.collection.updateOne(<filter>, <update>, <options>)`
+    - `db.collection.updateMany(<filter>, <update>, <options>)`
+    - `db.collection.replaceOne(<filter>, <update>, <options>)`
+  - The `$set` operator replaces the value of a field with the specified value
+  - The `$set` operator expression has the following form:
+    - `{ $set: { <field1>: <value1>, ... } }`  
+  - To specify a `<field>` in an embedded document or in an array, use the dot notation
+  - `db.dogs.updateOne({name: "Charlie"}, {$set: {age: 4, breed: "Lab"}})`
+  - When updating a document using the `$set` operator, if a field is not found, it will set a new field with the value
+- **Deleting documents:**
+  - Delete methods:
+    - `db.collection.deleteOne()`
+    - `db.collection.deleteMany()`
+  - `db.cats.deleteOne({name: 'Blue Steele'})`  
+  - To delete the entire collection: `db.collection.deleteMany({})`
+- **Additional Mongo operators:**
+  - Use the dot syntax to access nested properties
+    - `db.dogs.find({'personality.childFriendly': true})`
+  - Query selectors: comparison and logical
+    - https://docs.mongodb.com/manual/reference/operator/query-comparison/
+  - Comparison: $eq, $gt, $gte, $in, $lt, $lte, $ne, $nin
+    - `db.inventory.find({qty: {$gt: 20}})`
 
 
 
