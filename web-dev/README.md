@@ -2927,13 +2927,49 @@ Search results for: cat
     - `db.inventory.find({qty: {$gt: 20}})`
 
 
+## S37: CONNECTING TO MONGO WITH MONGOOSE
+#### TOPICS:
+- The role of ORM/ODM's
+- Connecting Mongoose to Mongo
+- Defining a model
+- Mongoose CRUD
+- Schema constraints
+- Model instance and static methods
+- Mongoose middleware
+- Mongoose virtuals
 
+**What is Mongoose?**
+- Doc: https://mongoosejs.com/
+- Mongoose is an ODM, Object Document/Data Mapper
+- ODMs like Mongoose map documents coming from a database into usable Javascript objects
+- ORMs, Object Relation Mapper map SQL database to another programming language
+- Mongoose is a driver that connects Mongo with Node.js
+- Mongoose provides ways for us to model out our application data and define a schema
+- It offers easy ways to validate data and build complex queries from the comfort of JS
 
-
-
-
-
-
+**Connecting Mongoose to Mongo:**
+- Doc: https://mongoosejs.com/
+- A Mongoose is an NPM package that we can use to connect to MongoDB
+- Install: `npm i mongoose`
+- Make sure MongoDB is running in the background first before connecting Mongoose to Mongo
+  - Run: `brew services start mongodb-community@4.4`
+- In index.js file:
+  ```js
+  const mongoose = require('mongoose');
+  mongoose
+    .connect('mongodb://localhost:27017/movieApp', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    })
+    .then(() => {
+      console.log('CONNECTION OPEN!');
+    })
+    .catch((err) => {
+      console.log('OH NO ERROR!');
+      console.log(err);
+    });
+  ```
+- Then run: `node index.js`
 
 
 
@@ -2961,3 +2997,8 @@ Search results for: cat
 - Express method-override
   - Install: `npm i method-override`
   - Import: `const methodOverride = require('method-override');`
+- Mongoose
+  - Install: `npm i mongoose`
+  - Import in index.js file: `const mongoose = require('mongoose');`
+  - Make sure MongoDB is running in the background first before connecting Mongoose to Mongo
+    - Run: `brew services start mongodb-community@4.4`
