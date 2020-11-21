@@ -2824,6 +2824,7 @@ Search results for: cat
   </form>
   ```
 
+
 ## S36: MONGODB DATABASE
 #### TOPICS:
 - Installation
@@ -2892,8 +2893,6 @@ Search results for: cat
   - To see collections: `show collections`
   - To see documents in a collection: `db.collection.find()`
     - This will return all the documents in the collection
-    - It returns: `{ "_id" : ObjectId("5fb88a145166718599efbc7d"), "name" : "Wyatt", "breed" : "Golden", "age" : 13, "catFriendly" : false }
-    { "_id" : ObjectId("5fb88a145166718599efbc7e"), "name" : "Tonya", "breed" : "Chihuahua", "age" : 17, "catFriendly" : true }`
   - When inserting/creating a document, the `_id` field is automatically created for us if it's not provided
   - The `_id` is a primary key. It's a unique reference for each individual document in a collection
 - **Finding documents:**
@@ -2970,6 +2969,62 @@ Search results for: cat
     });
   ```
 - Then run: `node index.js`
+
+**Creating Mongoose model:**
+- Doc: https://mongoosejs.com/docs/api/model.html
+- The whole point of using Mongoose is to have an easier way to interact with the MongoDB from Javascript
+- Models are JS classes that we make, with the assistant of Mongoose, that represent information in a mongoDB. Specifically, they represent information in some collection
+- Mongoose gives us a whole bunch of methods that we can use on a Model to interact with this Model's database
+- For every collection that we'll be working with in a MongoDB, we need to define a Model for each one in JS file
+- **Defining a schema:**
+  - Everything in Mongoose starts with a Schema
+  - Each schema maps to a MongoDB collection and defines the shape of the documents within that collection
+  - A schema is a mapping of different collection keys from Mongo to different types in JS. For example, the title key should be a String type or the age key should be a Number type
+  - Permitted SchemaTypes are: String, Number, Date, Buffer, Boolean, Mixed, ObjectId, Array, Decimal128, Map 
+  - Defining a schema has nothing to do with the database. This is just on the JS side of the equation
+  - To define a schema: `new mongoose.Schema()`
+  - Example:
+    ```js
+    const movieSchema = new mongoose.Schema({
+      title: String,
+      year, Number,
+      score: Number,
+      rating: String
+    })
+    ```
+- **Creating a Model:**
+  - Now we take that schema and tell Mongoose that we want to make a Model using that schema
+  - A model is a class with which we construct documents
+  - To make a Model: `const modelName = mongoose.model('modelName', nameOfSchema)`
+  - Note that the first letter of the model name is in uppercase, just like the name of a JS class
+  - Example:
+    ```js
+    const Movie = mongoose.model('Movie', movieSchema);
+    ```
+  - `const Movie` is a JS class
+- **Creating an instance of a Model class:**
+  - To create an instance: `new modelName()`
+  - Example:
+    ```js
+    const amedeus = new Movie({
+      title: 'Amadeus',
+      year: 1986,
+      score: 9.2,
+      rating: 'R'
+    });
+    ```
+  - This creates a Javascript object, but it's not saved to the database
+- **Saving an instance to MongoDB:**
+  - Note that creating an instance/object of a Model class does not save/add the instance to the database. This just creates a JS object
+  - We need to call the .save() method on the instance to save it to MongoDB
+
+
+
+
+
+
+
+
 
 
 
