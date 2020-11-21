@@ -2824,6 +2824,62 @@ Search results for: cat
   </form>
   ```
 
+## S36: MONGODB DATABASE
+#### TOPICS:
+- Installation
+- The Mongo shell
+- Mongo inserts
+- Mongo finding/querying
+- Mongo updates
+- Mongo deletions
+- Database basics
+- SQL vs. noSQL
+
+**What is Mongo and why use it?**
+- Mongo is a document database, which we can use to store and retrieve complex data from
+- It is commonly used in combination with Node and Express (MEAN and MERN stacks)
+- It's easy to get started with (though it can be tricky to truly master)
+- It plays particularly well with Javascript
+- Its popularity also means there is a strong community of developers using Mongo
+
+**SQL vs. noSQL:**
+- **SQL databases**
+  - Structured Query Language databases are relational databases
+  - We pre-define a schema of tables before we insert anything. It conforms to a pattern
+  - MySQL, Postgres, SQLite, Oracle, Microsoft SQL Server
+- **noSQL databases** 
+  - noSQL databases do not use SQL
+  - There are many types of no-sql databases, including document, key-value, and graph stores
+  - MongoDB, Couch DB, Neo4j, Cassandra, Redis
+
+**Installation:**
+- Mongo install site: https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/
+- Install Homebrew: https://brew.sh/#install
+- Installing MongoDB 4.4 Community Edition
+  - Step 1: `brew tap mongodb/brew`
+  - Step 2: `brew install mongodb-community@4.4`
+- To run MongoDB as a macOS service: `brew services start mongodb-community@4.4`
+- To stop: `brew services stop mongodb-community@4.4`
+- To verify that MongoDB is running: `brew services list`
+
+**The Mongo shell:**
+- To get into the shell, type in the terminal: `mongo`
+- To quit: `ctrl c`
+- To list all the database: `show dbs`
+- To create a database: `use nameOfDatabase`
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
