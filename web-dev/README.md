@@ -2987,7 +2987,7 @@ Search results for: cat
     ```js
     const movieSchema = new mongoose.Schema({
       title: String,
-      year, Number,
+      year: Number,
       score: Number,
       rating: String
     })
@@ -3006,7 +3006,7 @@ Search results for: cat
   - To create an instance: `new modelName()`
   - Example:
     ```js
-    const amedeus = new Movie({
+    const amadeus = new Movie({
       title: 'Amadeus',
       year: 1986,
       score: 9.2,
@@ -3018,9 +3018,16 @@ Search results for: cat
   - Note that creating an instance/object of a Model class does not save/add the instance to the database. This just creates a JS object
   - We need to call the .save() method on the instance to save it to MongoDB
 
-
-
-
+**Mongoose middleware:**
+- Middleware (also called pre and post hooks) are functions which are passed control during execution of asynchronous functions. Middleware is specified on the schema level and is useful for writing plugins
+- **Types of middleware:**
+  - Mongoose has 4 types of middleware: 
+    - document middleware
+    - model middleware
+    - aggregate middleware
+    - query middleware
+  - In document middleware functions, `this` refers to the document
+  - In query middleware functions, `this` refers to the query
 
 
 
