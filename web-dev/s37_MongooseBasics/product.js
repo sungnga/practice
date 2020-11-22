@@ -41,6 +41,26 @@ const productSchema = new mongoose.Schema({
 
 });
 
+// productSchema.methods.greet = function () {
+//     console.log("HELLLO!!! HI!! HOWDY!!! ")
+//     console.log(`- from ${this.name}`)
+// }
+
+productSchema.methods.toggleOnSale = function () {
+    this.onSale = !this.onSale;
+    return this.save();
+}
+
+
+productSchema.methods.addCategory = function (newCat) {
+    this.categories.push(newCat);
+    return this.save();
+}
+
+productSchema.statics.fireSale = function () {
+    return this.updateMany({}, { onSale: true, price: 0 })
+}
+
 
 const Product = mongoose.model('Product', productSchema);
 
@@ -53,6 +73,14 @@ const findProduct = async () => {
     await foundProduct.addCategory('Outdoors')
     console.log(foundProduct)
 }
+
+// Product.fireSale().then(res => console.log(res))
+
+// findProduct();
+
+
+
+
 
 
 
