@@ -3078,6 +3078,125 @@ Search results for: cat
   });
   ```
 
+**Creating our Product model:**
+- Create a folder called models and inside this folder, create a file called product.js
+- In product.js file:
+  - We will modify the schema as we build the app
+  ```js
+  const mongoose = require('mongoose');
+
+  const productSchema = new mongoose.Schema({
+    name: {
+      type: String,
+      required: true
+    },
+    price: {
+      type: Number,
+      required: true,
+      min: 0
+    },
+    category: {
+      type: String,
+      lowercase: true,
+      enum: ['fruit', 'vegetable', 'dairy']
+    }
+  });
+
+  const Product = mongoose.model('Product', productSchema);
+
+  module.exports = Product;
+  ```
+- In index.js file:
+  - Import the Product model: `const Product = require('./models/product');`
+  - Create a new database called farmStand in MongoDB
+    ```js
+    mongoose
+      .connect('mongodb://localhost:27017/farmStand', {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+      })
+    ```
+- Next, create a seeds file to give some initial data to our database. It's a good idea and it's common practice when building an application to have some data in the database separate from the web app, just for development purposes
+- At the root of product directory, create a file called seeds.js
+- In seeds.js file:
+  - Use `Model.insertMany()` to insert multiple documents at once
+  - Note that when using `Model.insertMany()`, if anything does not pass validation, then nothing will be inserted. It's all or nothing
+  ```js
+  const mongoose = require('mongoose');
+
+  const Product = require('./models/product');
+
+  mongoose
+    .connect('mongodb://localhost:27017/farmStand', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    })
+    .then(() => {
+      console.log('MONGO CONNECTION OPEN!');
+    })
+    .catch((err) => {
+      console.log('OH NO MONGO CONNECTION ERROR!');
+      console.log(err);
+    });
+
+  // const p = new Product({
+  // 	name: 'Ruby Grapefruit',
+  // 	price: 1.99,
+  // 	category: 'fruit'
+  // });
+
+  // p.save()
+  // 	.then((p) => {
+  // 		console.log(p);
+  // 	})
+  // 	.catch((e) => {
+  // 		console.log(e);
+  // 	});
+
+  const seedProducts = [
+    {
+      name: 'Fairy Eggplant',
+      price: 1.0,
+      category: 'vegetable'
+    },
+    {
+      name: 'Organic Goddess Melon',
+      price: 4.99,
+      category: 'fruit'
+    },
+    {
+      name: 'Organic Mini Seedless Watermelon',
+      price: 3.99,
+      category: 'fruit'
+    },
+    {
+      name: 'Organic Celery',
+      price: 1.5,
+      category: 'vegetable'
+    },
+    {
+      name: 'Chocolate Whole Milk',
+      price: 2.69,
+      category: 'dairy'
+    }
+  ];
+
+  Product.insertMany(seedProducts)
+    .then((res) => console.log(res))
+    .catch((e) => console.log(e));
+  ```
+- Run the seeds.js file to save the data to the database/MongoDB: `node seeds.js`
+- Check to see if the data is in MongoDB
+  - Make sure Mongod is running in the background: `brew services start mongodb-community@4.4`
+  - To get into Mongo shell, type in the terminal: `mongo`
+  - To show the list of dbs, type: `show dbs` 
+  - To get into farmStand db: `use farmStand`
+  - To show the collections in farmStand db: `show collections` 
+  - To see documents in a collection: `db.collectionName.find()`
+
+
+
+
 
 
 
