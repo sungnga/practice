@@ -3256,8 +3256,46 @@ Search results for: cat
   </ul>
   ```
 
+**Create two routes to create a new product:**
+- We need a form and we need a route to submit the form to. So we need two routes. Use the GET method to serve the form and use the POST method to submit the form and create a new product
+- We're not doing any validation or error handling at the moment
+- In index.js file:
+  - We need to tell Express to parse form-encoded information from the request body. Express has a built-in middleware that's going to parse the request body as url-encoded data
+    - `app.use(express.urlencoded({ extended: true }))`
+  - After the product has been submitted, redirect user to the product detail page
+  ```js
+  app.use(express.urlencoded({ extended: true }));
 
+  app.get('/products/new', (req, res) => {
+    res.render('products/new');
+  });
 
+  app.post('/products', async (req, res) => {
+    const newProduct = new Product(req.body)
+    await newProduct.save()
+    res.redirect(`/products/${newProduct._id}`)
+  });
+  ```
+- In views/products folder, create a file called new.ejs
+- In new.ejs file:
+  ```html
+  <body>
+    <h1>Add A Product</h1>
+    <form action="/products" method="POST">
+      <label for="name">Product Name</label>
+      <input type="text" name="name" id="name" placeholder="product name">
+      <label for="price">Price (Unit)</label>
+      <input type="number" name="price" id="price" placeholder="product price">
+      <label for="category">Select Category</label>
+      <select name="category" id="category">
+        <option value="fruit">fruit</option>
+        <option value="vegetable">vegetable</option>
+        <option value="dairy">dairy</option>
+      </select>
+      <button>Add Product</button>
+    </form>
+  </body>
+  ```
 
 
 
