@@ -3300,7 +3300,7 @@ Search results for: cat
 **Create two routes to update products:**
 - We need to create two routes to update a product. One is to serve the edit form and the other is to update the product in the database
 - Use the GET method to get the product from the database by its id, and this is an async operation. Use the PUT method to update the product in DB and this is also an async operation
-- The HTML browser form cannot make a PUT request. We need to install the method-override npm package and tell Express to use it and then we can set our own query string parameter to base the method override on
+- The HTML form cannot make a PUT request. We need to install the method-override npm package and tell Express to use it and then we can set our own query string parameter to base the method override on
 - Install: `npm i method-override`
 - In index.js file:
   - Import method-override: `const methodOverride = require('method-override')`
@@ -3361,6 +3361,53 @@ Search results for: cat
 - In detail.ejs file:
   - Add a link that takes you to the edit product page
   `<a href="/products/<%= product._id %>/edit">Edit Product</a>`
+
+**Fix category selector functionality:**
+- To avoid having to manually create a category option every time we add more categories, we can create a categories array and loop over the array to display them in the category selector instead 
+- In index.js file:
+  - Create an array of categories
+  - Pass the categories array to the new product and edit product routes
+  ```js
+  const categories = ['fruit', 'vegetable', 'dairy'];
+
+  app.get('/products/new', (req, res) => {
+    res.render('products/new', { categories });
+  });
+
+  app.get('/products/:id/edit', async (req, res) => {
+    const { id } = req.params;
+    const product = await Product.findById(id);
+    res.render('products/edit', { product, categories });
+  });
+  ```
+- In new.ejs file:
+  - Loop over the categories array and display each category as an option
+  ```html
+  <select name="category" id="category">
+    <% for(let category of categories) { %>
+    <option value="<%= category %>"><%= category %></option>
+    <% } %>
+  </select>
+  ```
+- In edit.ejs file:
+  - When editing a product, we want to pre-populate the current category in the form
+  - Loop over the categories array. If the product category matches the category in the categories array, add the selected property 
+  ```html
+  <select name="category" id="category">
+    <% for(let category of categories) { %> 
+      <option value="<%= category %>" <%= product.category === category ? 'selected' : '' %>><%= category %></option>
+    <% } %> 
+  </select>
+  ```
+
+
+
+
+
+
+
+
+
 
 
 
