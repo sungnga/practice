@@ -3194,6 +3194,33 @@ Search results for: cat
   - To show the collections in farmStand db: `show collections` 
   - To see documents in a collection: `db.collectionName.find()`
 
+**Create a route to show products index:**
+- In index.js file:
+  - Make sure that the Product model is imported
+  ```js
+  app.get('/products', async (req, res) => {
+    const products = await Product.find({});
+    res.render('products/index', { products });
+  });
+  ```
+- In views directory, create a products folder. In this folder, create a file called index.ejs
+- In views/products/index.ejs file:
+  - Render a view for products index
+  - Loop over products array and display each product in a list
+  ```html
+  <ul>
+    <% for(let product of products) { %>
+    <li><%= product.name %></li>
+    <% } %>
+  </ul>
+  ```
+
+
+
+
+
+
+
 
 
 
