@@ -3194,7 +3194,7 @@ Search results for: cat
   - To show the collections in farmStand db: `show collections` 
   - To see documents in a collection: `db.collectionName.find()`
 
-**Create a route to show products index:**
+**Create a route to products index page:**
 - In index.js file:
   - Make sure that the Product model is imported
   ```js
@@ -3215,7 +3215,46 @@ Search results for: cat
   </ul>
   ```
 
-
+**Create a route to product detail page:**
+- In index.js file:
+  ```js
+  app.get('/products/:id', async (req, res) => {
+    const { id } = req.params;
+    const product = await Product.findById(id);
+    res.render('products/detail', { product });
+  });
+  ```
+- In views/products folder, create a file called detail.ejs
+- In detail.ejs file:
+  - Show the product name, price and category
+  - Add a link that takes you back to product index page
+  ```html
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title><%= product.name %></title>
+    </head>
+    <body>
+      <h1><%= product.name %></h1>
+      <ul>
+        <li>Price: $<%= product.price %></li>
+        <li>Category: <%= product.category %></li>
+      </ul>
+      <a href="/products">All Products</a>
+    </body>
+  </html>
+  ```
+- In index.ejs file:
+  - Make each product as a link that takes you to the product detail page
+  ```html
+  <ul>
+    <% for(let product of products) { %>
+    <li><a href="/products/<%= product._id %>"><%= product.name %></a></li>
+    <% } %>
+  </ul>
+  ```
 
 
 
