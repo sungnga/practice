@@ -3420,9 +3420,51 @@ Search results for: cat
   });
   ```
 
-
-
-
+**Filtering by category:**
+- In detail.ejs file:
+  - In the product detail page, make the product category as a link that will take the user to a page of products with that category
+  - We're querying by category. Set the query category to product category
+  ```html
+  <li>
+    Category:
+    <a href="/products?category=<%= product.category %>"
+      ><%= product.category %></a
+    >
+  </li>
+  ```
+- In index.js file:
+  - Look in req.query and destructure category. This will give us the value for category
+  - If there is a category query, find products based on that category in DB. This is an async operation. Then render the list of products
+  - If there isn't, find all products in DB. Then render the list of products
+  ```js
+  app.get('/products', async (req, res) => {
+    const { category } = req.query;
+    if (category) {
+      const products = await Product.find({ category });
+      res.render('products/index', { products, category });
+    } else {
+      const products = await Product.find({});
+      res.render('products/index', { products, category: 'All' });
+    }
+  });
+  ```
+- In index.ejs file:
+  - Display the name of the category in the page header
+  - If category is not equal to All, display the "All Products" link. We only want to display this link that takes them to All Products page when the user is currently in products filter-by-category page
+  ```html
+	<body>
+		<h1><%= category %> Products!</h1>
+		<ul>
+			<% for(let product of products) { %>
+			<li><a href="/products/<%= product._id %>"><%= product.name %></a></li>
+			<% } %>
+		</ul>
+		<a href="/products/new">New Product</a>
+		<% if(category !== 'All') { %>
+		<a href="/products">All Products</a>
+		<% } %>
+	</body>
+  ```
 
 
 
