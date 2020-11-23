@@ -3297,8 +3297,70 @@ Search results for: cat
   </body>
   ```
 
+**Create two routes to update products:**
+- We need to create two routes to update a product. One is to serve the edit form and the other is to update the product in the database
+- Use the GET method to get the product from the database by its id, and this is an async operation. Use the PUT method to update the product in DB and this is also an async operation
+- The HTML browser form cannot make a PUT request. We need to install the method-override npm package and tell Express to use it and then we can set our own query string parameter to base the method override on
+- Install: `npm i method-override`
+- In index.js file:
+  - Import method-override: `const methodOverride = require('method-override')`
+  ```js
+  const methodOverride = require('method-override');
 
+  app.use(methodOverride('_method'));
 
+  app.get('/products/:id/edit', async (req, res) => {
+    const { id } = req.params;
+    const product = await Product.findById(id);
+    res.render('products/edit', { product });
+  });
+
+  app.put('/products/:id', async (req, res) => {
+    const { id } = req.params;
+    const product = await Product.findByIdAndUpdate(id, req.body, {
+      runValidators: true,
+      new: true
+    });
+    console.log(req.body);
+    res.redirect(`/products/${product._id}`);
+  });
+  ```
+- In views/products folder, create a file called edit.ejs
+- In edit.ejs file:
+  - The form is similar to the create product form, but need to add value property and override the POST method to PUT method
+  - Add the value property for each input field
+  - Add a cancel button that takes you back to the product detail page
+  ```html
+  <form action="/products/<%= product._id %>?_method=PUT" method="POST">
+    <label for="name">Product Name</label>
+    <input
+      type="text"
+      name="name"
+      id="name"
+      placeholder="product name"
+      value="<%= product.name %>"
+    />
+    <label for="price">Price (Unit)</label>
+    <input
+      type="number"
+      name="price"
+      id="price"
+      placeholder="product price"
+      value="<%= product.price %>"
+    />
+    <label for="category">Select Category</label>
+    <select name="category" id="category">
+      <option value="fruit">fruit</option>
+      <option value="vegetable">vegetable</option>
+      <option value="dairy">dairy</option>
+    </select>
+    <button>Add Product</button>
+  </form>
+  <a href="/products/<%= product._id %> ">Cancel</a>
+  ```
+- In detail.ejs file:
+  - Add a link that takes you to the edit product page
+  `<a href="/products/<%= product._id %>/edit">Edit Product</a>`
 
 
 
