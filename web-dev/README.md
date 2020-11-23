@@ -3692,8 +3692,63 @@ Search results for: cat
   <a href="/campgrounds">All Campgrounds</a>
   ```
 
+**7. Campground Edit and Update Functionality**
+- We cannot make a PUT request from an HTML form in the browser. But we can fake it by sending a POST request and override the method with a PUT method
+- We need to install the method-override npm package and tell Express to use it and then we can set our own query string parameter to base the method override on
+- Install: `npm i method-override`
+- In app.js file:
+  - Import method-override: `const methodOverride = require('method-override');`
+  ```js
+  app.use(methodOverride('_method'));
 
+  app.get('/campgrounds/:id/edit', async (req, res) => {
+    const campground = await Campground.findById(req.params.id);
+    res.render('campgrounds/edit', { campground });
+  });
 
+  app.put('/campgrounds/:id', async (req, res) => {
+    // res.send('It works!')
+    const { id } = req.params;
+    const campground = await Campground.findByIdAndUpdate(
+      id,
+      { ...req.body.campground },
+      { new: true }
+    );
+    res.redirect(`/campgrounds/${campground._id}`);
+  });  
+  ```
+- In views/campgrounds folder, create a file called edit.ejs
+- In edit.ejs file:
+  - In the title and location input fields, set the value properties to campground title and location. This will pre-populate the initial values in the fields
+  - Use method-override query string and set it to PUT request
+  - Add a link that takes you back to the campground detail page
+  ```html
+  <form action="/campgrounds/<%= campground._id %>?_method=PUT" method="POST">
+    <div>
+      <label for="title">Title</label>
+      <input
+        type="text"
+        name="campground[title]"
+        id="title"
+        value="<%= campground.title %>"
+      />
+    </div>
+    <div>
+      <label for="location">Location</label>
+      <input
+        type="text"
+        name="campground[location]"
+        id="location"
+        value="<%= campground.location %>"
+      />
+    </div>
+    <button>Update Campground</button>
+  </form>
+  <a href="/campgrounds/<%= campground._id %> ">Back to Campground</a>
+  ```
+- In show.ejs file:
+  - Add a campground edit link that takes you to the campground edit page
+  - `<a href="/campgrounds/<%= campground._id %>/edit">Edit</a>`
 
 
 
