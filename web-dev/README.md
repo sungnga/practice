@@ -3750,8 +3750,33 @@ Search results for: cat
   - Add a campground edit link that takes you to the campground edit page
   - `<a href="/campgrounds/<%= campground._id %>/edit">Edit</a>`
 
+**8. Create a Route for Campground Delete**
+- In app.js file:
+  ```js
+  app.delete('/campground/:id', async (req, res) => {
+    const { id } = req.params;
+    await Campground.findByIdAndDelete(id);
+    res.redirect('/campgrounds');
+  });
+  ```
+- In show.ejs file:
+  - Create a form that has a 'Delete' button in it that makes a POST request, but we'll use method-override to send a DELETE request
+  ```html
+  <form action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST">
+    <button>Delete</button>
+  </form>
+  ```
 
 
+
+
+
+
+
+
+
+
+  
 
 
 
