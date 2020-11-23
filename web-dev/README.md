@@ -3599,10 +3599,34 @@ Search results for: cat
   ```
 - Now, whenever we need to seed our database, we can call this seed index.js file. This file does the following:
   - Uses Mongoose to make a connection to MongoDB
-  - It creates 50 random campsites and saves them to the database
-  - Closes the connection once it's done
+  - It deletes everything in campgrounds database
+  - Then it creates 50 random campsites and saves them to the database
+  - Closes the connection to DB once it's done
 - Execute the file in the terminal: `node seeds/index.js`
 
+**4. Create a route for Campground index**
+- In app.js file:
+  - Get all campgrounds in DB and save them in campgrounds variable
+  - Render campgrounds page and pass in the campgrounds
+  ```js
+  app.get('/campgrounds', async (req, res) => {
+    const campgrounds = await Campground.find({});
+    res.render('campgrounds/index', { campgrounds });
+  });
+  ```
+- In views/campgrounds folder, create a file called index.ejs
+- In index.ejs file:
+  - Loop through the list of campgrounds and display the campground title
+  ```html
+  <body>
+    <h1>All Campgrounds</h1>
+    <ul>
+      <% for(let campground of campgrounds) { %>
+        <li><%= campground.title %></li>
+      <% } %>  
+    </ul>
+  </body>
+  ```
 
 
 
