@@ -3467,6 +3467,46 @@ Search results for: cat
   ```
 
 
+## S39: YELPCAMP PROJECT: CAMPGROUNDS CRUD
+
+**1. Creating the Basic Express App**
+- Create a project directory called YelpCamp
+- Create a package.json file: `npm init -y`
+- Install Express, Mongoose, EJS: `npm i express mongoose ejs`
+- At the root of the directory, create a file called app.js
+- In app.js file:
+  ```js
+  const express = require('express');
+  const path = require('path');
+
+  const app = express();
+
+  app.set('view engine', 'ejs');
+  app.set('views', path.join(__dirname, 'views'));
+
+  app.get('/', (req, res) => {
+    res.render('home');
+  });
+
+  app.listen(3000, () => {
+    console.log('Listening on port 3000');
+  });
+  ```
+- Create a folder called views and in it, create a file called home.ejs
+- In home.ejs file:
+  ```html
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Home</title>
+    </head>
+    <body>
+      <h1>Welcome to Yelp Camp!</h1>
+    </body>
+  </html>
+  ```
 
 
 
