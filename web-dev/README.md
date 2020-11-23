@@ -3628,6 +3628,34 @@ Search results for: cat
   </body>
   ```
 
+**5. Create Campground show route**
+- In app.js file:
+  - Create a campground show route using GET method
+  - Find the campground in DB based on its id and save it to campground variable
+  - Pass the campground to the render method
+  ```js
+  app.get('/campgrounds/:id', async (req, res) => {
+    const campground = await Campground.findById(req.params.id);
+    res.render('campgrounds/show', { campground });
+  });
+  ```
+- In views/campgrounds/index.ejs file:
+  - Make each campground as a link that will take you to the campground detail page
+  ```html
+  <ul>
+    <% for(let campground of campgrounds) { %>
+      <li><a href="/campgrounds/<%= campground._id %>"><%= campground.title %></a></li>
+    <% } %>  
+  </ul>
+  ```
+- In views/campgrounds/show.ejs file:
+  - Display the campground title and location
+  ```html
+  <body>
+    <h1><%= campground.title %></h1>
+    <h2><%= campground.location %></h2>
+  </body>
+  ```
 
 
 
