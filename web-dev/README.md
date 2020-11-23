@@ -3555,6 +3555,69 @@ Search results for: cat
   - To show the collections: `show collections`. campgrounds should be listed
   - To view documents: `db.campgrounds.find()` 
 
+**3. Seeding Campgrounds Database**
+- Create a folder called seeds. In it, create 3 files:
+  - cities.js
+  - seedHelpers.js
+  - index.js
+- In index.js file:
+  ```js
+  const mongoose = require('mongoose');
+  const cities = require('./cities');
+  const { places, descriptors } = require('./seedHelpers');
+  const Campground = require('../models/campground');
+
+  mongoose.connect('mongodb://localhost:27017/yelp-camp', {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true
+  });
+
+  const db = mongoose.connection;
+  db.on('error', console.error.bind(console, 'connection error:'));
+  db.once('open', () => {
+    console.log('Database connected');
+  });
+
+  const sample = (array) => array[Math.floor(Math.random() * array.length)];
+
+  const seedDB = async () => {
+    await Campground.deleteMany({});
+    for (let i = 0; i < 50; i++) {
+      const random1000 = Math.floor(Math.random() * 1000);
+      const camp = new Campground({
+        location: `${cities[random1000].city}, ${cities[random1000].state}`,
+        title: `${sample(descriptors)} ${sample(places)}`
+      });
+      await camp.save();
+    }
+  };
+
+  seedDB().then(() => {
+    mongoose.connection.close();
+  });
+  ```
+- Now, whenever we need to seed our database, we can call this seed index.js file. This file does the following:
+  - Uses Mongoose to make a connection to MongoDB
+  - It creates 50 random campsites and saves them to the database
+  - Closes the connection once it's done
+- Execute the file in the terminal: `node seeds/index.js`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
