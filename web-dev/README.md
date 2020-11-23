@@ -3508,9 +3508,52 @@ Search results for: cat
   </html>
   ```
 
+**2. Campground Model Basics**
+- Create a models folder and in it, create a model file called campground.js
+- In campground.js file:
+  ```js
+  const mongoose = require('mongoose');
+  const Schema = mongoose.Schema;
 
+  const CampgroundSchema = new Schema({
+    title: String,
+    price: String,
+    description: String,
+    location: String
+  });
 
+  module.exports = mongoose.model('Campground', CampgroundSchema);
+  ```
+- In app.js file:
+  - Import Mongoose: `const mongoose = require('mongoose');`
+  - Import Campground model: `const Campground = require('./models/campground');`
+  - Connecting Mongoose to MongoDB
+  - Create a route for makecampground using GET method
+  ```js
+  mongoose.connect('mongodb://localhost:27017/yelp-camp', {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true
+  });
 
+  const db = mongoose.connection;
+  db.on('error', console.error.bind(console, 'connection error:'));
+  db.once('open', () => {
+    console.log('Database connected');
+  });
+
+  app.get('/makecampground', async (req, res) => {
+    const camp = new Campground({ title: 'My Backyard', description: 'Cheap camping!' });
+    await camp.save();
+    res.send(camp)
+  });
+  ```
+- Check to see if our database is successfully connected to our Express app. Go to Mongo shell and see if a document is created in MongoDB
+  - cd in project directory and type in the terminal: `mongo`
+  - yelp-camp should be listed in the database: `show dbs`
+  - To get into yelp-camp DB: `use yelp-camp`
+  - To show the collections: `show collections`. campgrounds should be listed
+  - To view documents: `db.campgrounds.find()` 
 
 
 
