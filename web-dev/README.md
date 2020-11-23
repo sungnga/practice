@@ -3300,7 +3300,8 @@ Search results for: cat
 **Create two routes to update products:**
 - We need to create two routes to update a product. One is to serve the edit form and the other is to update the product in the database
 - Use the GET method to get the product from the database by its id, and this is an async operation. Use the PUT method to update the product in DB and this is also an async operation
-- The HTML form cannot make a PUT request. We need to install the method-override npm package and tell Express to use it and then we can set our own query string parameter to base the method override on
+- We cannot make a PUT request from an HTML form in the browser. But we can fake it by sending a POST request and override the method with a PUT method
+- We need to install the method-override npm package and tell Express to use it and then we can set our own query string parameter to base the method override on
 - Install: `npm i method-override`
 - In index.js file:
   - Import method-override: `const methodOverride = require('method-override')`
@@ -3400,9 +3401,24 @@ Search results for: cat
   </select>
   ```
 
-
-
-
+**Create a route to delete a product:**
+- We cannot make a DELETE request from an HTML form in the browser, but we can fake it by sending a POST request and add on a method-override query string
+- In detail.ejs file:
+  - Create a form and add on the method-override query string and set it to DELETE
+  - Inside this form has a delete button
+  ```html
+  <form action="/products/<%= product._id %>?_method=DELETE" method="post">
+    <button>Delete</button>
+  </form>
+  ```
+- In index.js file:
+  ```js
+  app.delete('/products/:id', async (req, res) => {
+    const { id } = req.params;
+    const deletedProduct = await Product.findByIdAndDelete(id);
+    res.redirect('/products');
+  });
+  ```
 
 
 
