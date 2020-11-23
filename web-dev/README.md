@@ -3604,7 +3604,7 @@ Search results for: cat
   - Closes the connection to DB once it's done
 - Execute the file in the terminal: `node seeds/index.js`
 
-**4. Create a route for Campground index**
+**4. Create a Route for Campground Index**
 - In app.js file:
   - Get all campgrounds in DB and save them in campgrounds variable
   - Render campgrounds page and pass in the campgrounds
@@ -3628,7 +3628,7 @@ Search results for: cat
   </body>
   ```
 
-**5. Create Campground show route**
+**5. Create Campground Show Route**
 - In app.js file:
   - Create a campground show route using GET method
   - Find the campground in DB based on its id and save it to campground variable
@@ -3657,9 +3657,40 @@ Search results for: cat
   </body>
   ```
 
+**6. Create Two Routes for Campground New and Create**
+- In app.js file:
+  - We need to tell Express to parse the request form body, else it'll be undefined
+    - `app.use(express.urlencoded({ extended: true }));`
+  ```js
+  app.use(express.urlencoded({ extended: true }));
 
+  app.get('/campgrounds/new', (req, res) => {
+    res.render('campgrounds/new');
+  });
 
-
+  app.post('/campgrounds', async (req, res) => {
+    // res.send(req.body)
+    const campground = new Campground(req.body.campground);
+    await campground.save();
+    res.redirect(`/campgrounds/${campground._id}`);
+  });
+  ```
+- In views/campgrounds folder, create a file called new.ejs file:
+- In new.ejs file:
+  ```html
+  <form action="/campgrounds" method="post">
+    <div>
+      <label for="title">Title</label>
+      <input type="text" name="campground[title]" id="title" />
+    </div>
+    <div>
+      <label for="location">Location</label>
+      <input type="text" name="campground[location]" id="location" />
+    </div>
+    <button>Add Campground</button>
+  </form>
+  <a href="/campgrounds">All Campgrounds</a>
+  ```
 
 
 
