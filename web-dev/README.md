@@ -3517,7 +3517,7 @@ Search results for: cat
 
   const CampgroundSchema = new Schema({
     title: String,
-    price: String,
+    price: Number,
     description: String,
     location: String
   });
@@ -3826,10 +3826,54 @@ Search results for: cat
   ```
 
 
+## S41: YELPCAMP: ADDING BASIC STYLES
+
+**1. A New EJS Tool for Layouts - ejs-mate:**
+- ejs-mate layout allows us to define some boilerplate where we can have code that we insert in between some content. We can inject whatever content we want dynamically into the boilerplate
+- We can also inject partials into the boilerplate
+- ejs-mate is one of many engines that are used to run and parse ejs
+- Install ejs-mate: `npm i ejs-mate`
+- In app.js file:
+  - Import ejs-mate: `const ejsMate = require('ejs-mate');`
+  - We want to tell Express to use this engine instead of the default one that it uses 
+    - `app.engine('ejs', ejsMate);`
+- In views directory, create a folder called layouts. In it, create a file called boilerplate.ejs
+- In boilerplate.ejs file:
+  - At `<%- body %>` is where the content is injected
+  ```html
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>BOILERPLATE!!</title>
+    </head>
+    <body>
+      <%- body %>
+    </body>
+  </html>
+  ```
+- In views/campgrounds/index.js, edit.ejs, new.ejs, show.ejs files:
+  - For each view file, delete all the html doctype structure and leave only the page content
+  - Then at the top of each file, call the layout() method and pass in the path to the boilerplate.ejs file
+  - Example for index.ejs file
+    ```html
+    <% layout('layouts/boilerplate') %>
+    <h1>All Campgrounds</h1>
+    <div>
+      <a href="/campgrounds/new">Add Campground</a>
+    </div>
+    <ul>
+      <% for(let campground of campgrounds) { %>
+      <li>
+        <a href="/campgrounds/<%= campground._id %>"><%= campground.title %></a>
+      </li>
+      <% } %>
+    </ul>
+    ```
 
 
-
-
+ 
 
 
 
@@ -3862,3 +3906,5 @@ Search results for: cat
     - Run: `brew services start mongodb-community@4.4`
 - Morgan
   - Install: `npm i morgan`
+- ejs-mate
+  - Install: `npm i ejs-mate`
