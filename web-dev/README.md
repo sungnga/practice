@@ -4058,6 +4058,33 @@ Search results for: cat
   </div>
   ```
 
+**8. Styling Edit Form**
+- In views/campgrounds/edit.ejs file:
+  - Start out with copying everything from the new form
+  - For each input field, add the value property. This will pre-populate the initial values
+  - For the textarea description, we don't use the value property. Instead, inject the campground.description between the opening and closing textarea tag
+  ```html
+  <div class="mb-3">
+    <label class="form-label" for="description">Description</label>
+    <textarea
+      class="form-control"
+      type="text"
+      name="campground[description]"
+      id="description"
+    >
+    <%= campground.description %>
+    </textarea>
+  </div>
+  ```
+
+
+
+
+
+
+
+
+
 
 
 
