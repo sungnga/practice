@@ -4077,7 +4077,35 @@ Search results for: cat
   </div>
   ```
 
-
+**9. Styling Show Page**
+- In views/campgrounds/show.ejs file:
+  - We'll use Bootstrap card component and grid to display campground details
+  - Find the card example on Bootstrap we want to use and copy the code as the starting point
+  ```html
+  <% layout('layouts/boilerplate') %>
+  <div class="row">
+    <div class="col-6 offset-3">
+      <div class="card mb-3">
+        <img src="<%= campground.image %>" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title"><%= campground.title %></h5>
+          <p class="card-text"><%= campground.description %></p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item text-muted"><%= campground.location %></li>
+          <li class="list-group-item">$<%= campground.price %>/night</li>
+        </ul>
+        <div class="card-body">
+          <a class="card-link btn btn-info" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
+          <form class="d-inline" action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST">
+            <button class="btn btn-danger">Delete</button>
+          </form>
+        </div>
+        <div class="card-footer text-muted">2 days ago</div>
+      </div>
+    </div>
+  </div>
+  ```
 
 
 
