@@ -3872,8 +3872,44 @@ Search results for: cat
     </ul>
     ```
 
+**2. Add Bootstrap5 Boilerplate**
+- Website: https://v5.getbootstrap.com/
+- In boilerplate.ejs file:
+  - Paste the CSS stylesheet CDN in the `<head>` tag
+  - Paste the Bootstrap Javascript script at the bottom of `<body>` tag
+  - Wrap the dynamic content in a main tag with a class of container
+  ```html
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>BOILERPLATE!!</title>
 
- 
+      <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-CuOF+2SnTUfTwSZjCXf01h7uYhfOBuxIhGKPbfEJ3+FqH/s6cIFN9bGr1HmAg4fQ"
+        crossorigin="anonymous"
+      />
+    </head>
+    <body>
+      <main class="container">
+        <%- body %>
+      </main>
+      <script
+        src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"
+      ></script>
+      <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha3/dist/js/bootstrap.min.js"
+        integrity="sha384-t6I8D5dJmMXjCsRLhSzCltuhNZg6P10kE0m0nAncLUjH6GeYLhRU1zfLoW3QNQDF"
+        crossorigin="anonymous"
+      ></script>
+    </body>
+  </html>
+  ```
 
 
 
@@ -3908,3 +3944,6 @@ Search results for: cat
   - Install: `npm i morgan`
 - ejs-mate
   - Install: `npm i ejs-mate`
+- Bootstrap5
+  - Website: https://v5.getbootstrap.com/
+  
