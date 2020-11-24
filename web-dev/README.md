@@ -3767,6 +3767,63 @@ Search results for: cat
   </form>
   ```
 
+## S40: MIDDLEWARE: THE KEY TO EXPRESS
+#### TOPICS:
+- The concept of middleware
+- Defining custom middleware
+- Morgan logging
+
+**Intro to Express middleware:**
+- Express middleware are functions that run during the request/response lifecycle
+- Request -> middleware -> response
+- **Middleware:**
+  - Middleware are just functions that run at some point during the request and response lifecycle
+  - Each middleware has access to the request object (req), the response object (res), and the next middleware function in the application's request-response cycle
+  - The next middleware function is commonly denoted by named `next`
+  - Middleware can end the HTTP request by sending back a response with methods like res.send()
+  - OR middleware can be chained together, one after another by calling next()
+- Middleware functions can perform the following tasks:
+  - Execute any code
+  - Make changes to the request and the response objects
+  - End the request-response cycle
+  - Call the next middleware function in the stack
+
+**Using Morgan - logger middleware:**
+- Morgan is a middleware that logs information about HTTP requests to our terminal. Use this to help us figure out what request just came in for debugging
+- Install: `npm i morgan`
+- Import in index.js file: `const morgan = require('morgan')`
+- Also install and import Express
+- Use: `app.use(morgan('dev'))`
+
+**Defining our own middleware:**
+- Middleware function signature:
+  ```js
+  function(req, res, next) {
+    // do something
+    next()
+  }
+  ```
+  - The 3rd parameter `next` is a callback function
+  - By executing `next()`, we are calling whatever the next matching middleware or route handler is
+- We can use a middleware function to add a property to the request object
+  ```js
+  const requestTime = function (req, res, next) {
+    req.requestTime = Date.now();
+    next();
+  };
+  ```
+ 
+**app.use()**
+- `app.use(optionalPath, callback, optionalCallback)`
+- `app.use()` mounts the specified middleware function or functions at the specified path; the middleware function is executed when the base of the requested path matches `optionalPath`
+- `app.use()` is a way to get some code to run on every single request. Whatever function you put in `app.use()` will be called for every single request
+- However, we can pass in a string for a path to match as a first argument in `app.use()`. The function only runs when the path of incoming request matches the specified path. This is useful when we want to run a middleware for a specific route path
+  ```js
+  app.use('/dogs', (req, res, next) => {
+    console.log('I love dogs!');
+    next();
+  });
+  ```
 
 
 
@@ -3776,13 +3833,8 @@ Search results for: cat
 
 
 
-  
 
-
-
-
-
-
+ 
 
 ## RESOURCES
 - Color inspiration: www.coolers.co/palettes/trending
@@ -3808,3 +3860,5 @@ Search results for: cat
   - Import in index.js file: `const mongoose = require('mongoose');`
   - Make sure MongoDB is running in the background first before connecting Mongoose to Mongo
     - Run: `brew services start mongodb-community@4.4`
+- Morgan
+  - Install: `npm i morgan`
