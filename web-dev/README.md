@@ -3961,8 +3961,39 @@ Search results for: cat
   - Set the view height to 100
   `<body class="d-flex flex-column vh-100">`
 
-
-
+**5. Adding Images to Campground model**
+- Unsplash website: https://source.unsplash.com/
+- We will use images from Unsplash website
+- We need to re-seed our database to include image, description and price properties
+- In seeds/index.js file:
+  - We'll randomly generate the price for each campground
+  - We'll use lorem ipsem text for description for now
+  - Set the image property to a Unsplash image collection
+  ```js
+  const seedDB = async () => {
+    await Campground.deleteMany({});
+    for (let i = 0; i < 50; i++) {
+      const random1000 = Math.floor(Math.random() * 1000);
+      const price = Math.floor(Math.random() * 20) + 10
+      const camp = new Campground({
+        location: `${cities[random1000].city}, ${cities[random1000].state}`,
+        title: `${sample(descriptors)} ${sample(places)}`,
+        image: 'https://source.unsplash.com/collection/483251',
+        description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem sequi minus, eaque quas soluta quisquam quasi fugit repudiandae nostrum neque eveniet suscipit delectus voluptatibus, veritatis odio. Aspernatur dolore totam sapiente?',
+        price
+      });
+      await camp.save();
+    }
+  };
+  ```
+- In the terminal, run: `node seeds/index.js`
+- Display the image, description and price in campground detail page
+- In views/campgrounds/show.ejs file:
+  ```html
+  <img src="<%= campground.image %>" alt="">
+  <p><%= campground.description %></p>
+  <p>$<%= campground.price %>/night</p>
+  ```
 
 
 
