@@ -3945,8 +3945,21 @@ Search results for: cat
   - At the top of the `<body>` tag, include the navbar partial by calling the include() method and pass in the path to navbar.ejs file
   - `<%- include('../partials/navbar') %>`
 
-
-
+**4. Add Footer Partial**
+- In views/partials folder, create a file called footer.ejs
+- In footer.ejs file:
+  - Set margin-top to auto `mt-auto`. This will push the footer to the bottom of the page when the view height is set to 100 `vh-100`
+  ```html
+  <footer class="footer bg-dark py-3 mt-auto">
+    <div class="container">
+      <span class="text-muted">&copy; YelpCamp 2020</span>
+    </div>
+  </footer>
+  ```
+- In boilerplate.ejs file:
+  - Add Bootstrap flex box class to the body tag
+  - Set the view height to 100
+  `<body class="d-flex flex-column vh-100">`
 
 
 
