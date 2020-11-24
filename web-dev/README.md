@@ -3911,6 +3911,54 @@ Search results for: cat
   </html>
   ```
 
+**3. Add Bootstrap Navbar Partial to Boilerplate**
+- In views directory, create a folder called partials. In it, create a file called navbar.ejs
+- In navbar.ejs file:
+  - Go to Bootstrap website and copy a navbar example. Then modify the content
+  ```html
+  <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">YelpCamp</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-link" href="/">Home</a>
+          <a class="nav-link" href="/campgrounds">Campgrounds</a>
+          <a class="nav-link" href="/campgrounds/new">New Campground</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+  ```
+- Now, include the navbar partial in the boilerplate file
+- In boilerplate.ejs file:
+  - At the top of the `<body>` tag, include the navbar partial by calling the include() method and pass in the path to navbar.ejs file
+  - `<%- include('../partials/navbar') %>`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
