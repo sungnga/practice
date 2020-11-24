@@ -3517,6 +3517,7 @@ Search results for: cat
 
   const CampgroundSchema = new Schema({
     title: String,
+    image: String,
     price: Number,
     description: String,
     location: String
@@ -3968,7 +3969,7 @@ Search results for: cat
 - In seeds/index.js file:
   - We'll randomly generate the price for each campground
   - We'll use lorem ipsem text for description for now
-  - Set the image property to a Unsplash image collection
+  - Set the image property to an Unsplash image collection
   ```js
   const seedDB = async () => {
     await Campground.deleteMany({});
@@ -3995,7 +3996,32 @@ Search results for: cat
   <p>$<%= campground.price %>/night</p>
   ```
 
-
+**6. Styling Campgrounds Index**
+- We'll use Bootstrap card component and grid to display each campground in campgrounds index page
+- In views/campgrounds/index.ejs file:
+  ```html
+  <% for(let campground of campgrounds) { %>
+  <div class="card mb-3">
+    <div class="row">
+      <div class="col-md-4">
+        <img class="img-fluid" alt="" src="<%= campground.image %>" />
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title"><%= campground.title %></h5>
+          <p class="card-text"><%= campground.description %></p>
+          <p class="card-text">
+            <small class="text-muted"><%= campground.location %> </small>
+          </p>
+          <a class="btn btn-primary" href="/campgrounds/<%= campground._id %>"
+            >View <%= campground.title %></a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+  <% } %>
+  ```
 
 
 
