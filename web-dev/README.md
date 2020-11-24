@@ -4023,6 +4023,40 @@ Search results for: cat
   <% } %>
   ```
 
+**7. Styling the New Form**
+- In views/campgrounds/new.ejs file:
+  - Include input fields for title, location, image url, campground price, and description
+  ```html
+  <% layout('layouts/boilerplate') %>
+  <div class="row">
+    <h1 class="text-center">New Campground</h1>
+    <div class="col-6 offset-3">
+      <form action="/campgrounds" method="post">
+        ...
+        <div class="mb-3">
+          <label class="form-label" for="price">Campground Price</label>
+          <div class="input-group">
+            <span class="input-group-text" id="price-label">$</span>
+            <input
+              type="text"
+              class="form-control"
+              id="price"
+              placeholder="0.00"
+              name="campground[price]"
+              aria-label="price"
+              aria-describedby="price-label"
+            />
+          </div>
+        </div>
+        ...
+        <div class="mb-3">
+          <button class="btn btn-success">Add Campground</button>
+        </div>
+      </form>
+      <a href="/campgrounds">All Campgrounds</a>
+    </div>
+  </div>
+  ```
 
 
 
