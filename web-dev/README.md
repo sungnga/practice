@@ -4283,7 +4283,28 @@ Search results for: cat
   ```
 - Now any input fields that's marked with `required` will turn red if nothing is entered
 
+**2. Basic Error Handler**
+- In app.js file:
+  - At the very bottom and just before the app.listen(), set up a very basic error handler middleware
+  - Use the try-catch block to handle any errors in the post method route when a request is made to submit a new campground
+  ```js
+  app.post('/campgrounds', async (req, res, next) => {
+    // res.send(req.body)
+    try {
+      const campground = new Campground(req.body.campground);
+      await campground.save();
+      res.redirect(`/campgrounds/${campground._id}`);
+    } catch (e) {
+      // Error passed to the next error handler middleware
+      next(e);
+    }
+  });
 
+  // Error handler middleware
+  app.use((err, req, res, next) => {
+    res.send('Oh boy, something went wrong!');
+  });
+  ```
 
 
 
