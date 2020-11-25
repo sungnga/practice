@@ -4244,6 +4244,50 @@ Search results for: cat
   ```
 
 
+## S43: YELPCAMP: ERRORS AND VALIDATING DATA
+
+**1. Client-Side Form Validations**
+- Bootstrap5 form validation: https://v5.getbootstrap.com/docs/5.0/forms/validation/
+- In views/campgrounds/new.ejs and edit.ejs file:
+  - Add `novalidate` and `class="validated-form"` to the form element
+    - `<form action="/campgrounds/<%= campground._id %>?_method=PUT" method="POST" novalidate class="validated-form">`
+  - In each input field for new and edit form, add the `required` property
+- In views/layouts/boilerplate.ejs file:
+  - Go to Bootstrap5 website and copy the form validation Javascript script and paste at the bottom of the body tag
+  ```html
+  <script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+      'use strict';
+
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      const forms = document.querySelectorAll('.validated-form');
+
+      // Loop over them and prevent submission
+      Array.from(forms).forEach(function (form) {
+        form.addEventListener(
+          'submit',
+          function (event) {
+            if (!form.checkValidity()) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+
+            form.classList.add('was-validated');
+          },
+          false
+        );
+      });
+    })();
+  </script>
+  ```
+- Now any input fields that's marked with `required` will turn red if nothing is entered
+
+
+
+
+
+
 
 
 
