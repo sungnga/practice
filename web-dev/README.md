@@ -4355,8 +4355,24 @@ Search results for: cat
     );
     ```
 
+**4. More Errors**
+- Lets use our ExpressError class to handle 404 statusCode
+- In app.js file:
+  - Import the ExpressError class: `const ExpressError = require('./utils/ExpressError');`
+  ```js
+  // If nothing matches in the route, this runs
+  app.all('*', (req, res, next) => {
+    next(new ExpressError('Page Not Found!!', 404));
+  });
 
-
+  // Error handler middleware
+  app.use((err, req, res, next) => {
+    // Destructure properties coming from ExpressError class
+    // Also assign default values to the properties
+    const { statusCode = 500, message = 'Something went wrong' } = err;
+    res.status(statusCode).send(message);
+  });
+  ```
 
 
 
