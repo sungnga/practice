@@ -4401,12 +4401,43 @@ Search results for: cat
   });
   ```
 
-
-
-
-
 **6. JOI Schema Validation**
-**7. JOI Validation Middleware**
+- JOI is a Javascript validator tool. This allows us to validate form on the server-side
+- Install: `npm i joi`
+- In app.js file:
+  - Import JOI: `const Joi = require('joi');`
+  - Validating form when making a post request of a new campground
+  ```js
+  app.post(
+    '/campgrounds',
+    catchAsync(async (req, res, next) => {
+      // res.send(req.body)
+      // if (!req.body.campground) {
+      // 	throw new ExpressError('Invalid campground data', 400);
+      // }
+        
+      const campgroundSchema = Joi.object({
+        campground: Joi.object({
+          title: Joi.string().required(),
+          price: Joi.number().required().min(0),
+          image: Joi.string().required(),
+          location: Joi.string().required(),
+          description: Joi.string().required()
+        }).required()
+      });
+      const { error } = campgroundSchema.validate(req.body);
+      if (error) {
+        const msg = error.details.map((el) => el.message).join(',');
+        throw new ExpressError(msg, 400);
+      }
+      console.log(result);
+      const campground = new Campground(req.body.campground);
+      await campground.save();
+      res.redirect(`/campgrounds/${campground._id}`);
+    })
+  );
+  ```
+
 
 
 
@@ -4452,4 +4483,5 @@ Search results for: cat
   - Install: `npm i ejs-mate`
 - Bootstrap5
   - Website: https://v5.getbootstrap.com/
-  
+- JOI - a JS validator tool
+  - Install: `npm i joi`
