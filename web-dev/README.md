@@ -4374,12 +4374,39 @@ Search results for: cat
   });
   ```
 
+**5. Defining Error Template**
+- In views directory, create a file called error.ejs
+- In error.ejs file:
+  ```html
+  <% layout('layouts/boilerplate') %>
+  <div class="row">
+    <div class="col-6 offset-3">
+      <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading"><%= err.message %></h4>
+        <p><%= err.stack %></p>
+      </div>
+    </div>
+  </div>
+  ```
+- If there's an error, we can render the error.ejs template instead of sending the error
+- In app.js file:
+  ```js
+  app.use((err, req, res, next) => {
+    // Destructure properties coming from ExpressError class
+    // Also assign default values to the properties
+    const { statusCode = 500 } = err;
+    if (!err.message) err.message = 'Oh no, something went wrong!'
+    // Here, we're passing the entire err to the error.ejs template
+    res.status(statusCode).render('error', {err});
+  });
+  ```
 
 
 
 
 
-
+**6. JOI Schema Validation**
+**7. JOI Validation Middleware**
 
 
 

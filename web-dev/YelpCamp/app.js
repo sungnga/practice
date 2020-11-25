@@ -105,8 +105,10 @@ app.all('*', (req, res, next) => {
 app.use((err, req, res, next) => {
 	// Destructure properties coming from ExpressError class
 	// Also assign default values to the properties
-	const { statusCode = 500, message = 'Something went wrong' } = err;
-	res.status(statusCode).send(message);
+	const { statusCode = 500 } = err;
+	if (!err.message) err.message = 'Oh no, something went wrong!';
+	// Here, we're passing the entire err to the error.ejs template
+	res.status(statusCode).render('error', { err });
 });
 
 app.listen(3000, () => {
