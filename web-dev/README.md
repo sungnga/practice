@@ -4306,6 +4306,60 @@ Search results for: cat
   });
   ```
 
+**3. Defining ExpressError Class and Async Wrapper Utils**
+- At the root of project directory, create a folder called utils. In it, create a file called ExpressError.js. This is a custom error handler class
+- In ExpressError.js file:
+  ```js
+  class ExpressError extends Error {
+    constructor(message, statusCode) {
+      super();
+      this.message = message;
+      this.statusCode = statusCode;
+    }
+  }
+
+  module.exports = ExpressError;
+  ```
+- In utils folder, create an async wrapper file called catchAsync.js
+- In catchAsync.js file:
+  - This utility function catches any errors from an async function
+  - This function takes a function as an argument
+  - It returns a new function
+  - This new function executes the function being passed in and chains the .catch() method to it to catch the error
+  - If an error occurs, next() will be called with the error passed into it
+  - This in turn, passes the error to the next error handler middleware to handle the error
+  ```js
+  module.exports = (func) => {
+    return (req, res, next) => {
+      func(req, res, next).catch(next);
+    };
+  };
+  ```
+- In app.js file:
+  - Import the async wrapper: `const catchAsync = require('./utils/catchAsync');`
+  - To use the async wrapper function on one of the async functions
+    - No need to use the try-catch block anymore
+    - If an error occurs, the wrapper function will catch the error and pass the error to the next error handler middleware
+    ```js
+    app.put(
+      '/campgrounds/:id',
+      catchAsync(async (req, res) => {
+        const { id } = req.params;
+        const campground = await Campground.findByIdAndUpdate(
+          id,
+          { ...req.body.campground },
+          { new: true }
+        );
+        res.redirect(`/campgrounds/${campground._id}`);
+      })
+    );
+    ```
+
+
+
+
+
+
 
 
 
