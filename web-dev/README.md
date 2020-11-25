@@ -4108,6 +4108,143 @@ Search results for: cat
   ```
 
 
+## S42: HANDLING ERRORS IN EXPRESS APPS
+#### TOPICS:
+- Defining custom error handlers
+- Handling async errors
+- Defining custom error class
+- Express' built-in error handler
+- Working with Mongoose errors
+
+**Defining custom error handlers:**
+- Express error handling guide: http://expressjs.com/en/guide/error-handling.html
+- Define error-handling middleware functions in the same way as other middleware functions, except error-handling functions have four arguments instead of three: `(err, req, res, next)` 
+- If we define a function with this signature, it will be treated as error-handling middleware
+  ```js
+  app.use(function (err, req, res, next) {
+    console.error(err.stack)
+    res.status(500).send('Something broke!')
+  })
+  ```
+- We define error-handling middleware last, after other app.use() and routes calls
+- Notice that when **not** calling “next” in an error-handling function, you are responsible for writing (and ending) the response. Otherwise those requests will “hang” and will not be eligible for garbage collection
+  - When err passed in next, this will trigger the next error handler
+  - When nothing is passed in to next, it's going to call the next regular middleware
+  ```js
+  // Error-handling middleware
+  app.use((err, req, res, next) => {
+    console.log('*********************************')
+    console.log('*************ERROR***************')
+    console.log('*********************************')
+    // console.log(err)
+    // This is passing the error to the next error handler
+    next(err)
+  })
+  ```
+
+**Our custom error class:**
+- Define our own error class in AppError.js file:
+  ```js
+  class AppError extends Error {
+    constructor(message, status) {
+      super();
+      this.message = message;
+      this.status = status;
+    }
+  }
+
+  module.exports = AppError;
+  ```
+- Import and use the error class in index.js file:
+  - Import: `const AppError = require('./AppError')`
+  ```js
+  app.get('/admin', (req, res) => {
+    throw new AppError('You are not an Admin!', 403)
+  })
+  ```
+
+**Handling async errors:**
+- Errors that occur in synchronous code inside route handlers and middleware require no extra work. If synchronous code throws an error, then Express will catch and process it
+  ```js
+  app.get('/', function (req, res) {
+    throw new Error('BROKEN') // Express will catch this on its own.
+  })
+  ```
+- **Option 1: passing error to next()**
+  - For errors returned from asynchronous functions invoked by route handlers and middleware, you must pass them to the next() function, where Express will catch and process them
+  ```js
+  app.get('/products/:id', async (req, res, next) => {
+    const { id } = req.params;
+    const product = await Product.findById(id);
+    if (!product) {
+      // return will end any code after from executing
+      // Pass the error to the next error handler middleware
+      return next(new AppError('Product Not Found', 404));
+    }
+    res.render('products/detail', { product });
+  });
+
+  // Error handler middleware
+  // This handles error passed from next()
+  app.use((err, req, res, next) => {
+    const { status = 500, message = 'Something went wrong' } = err;
+    res.status(status).send(message);
+  });
+  ```
+- **Option 2: use the try-catch block**
+  - The try-catch block will catch any errors that we don't throw ourselves
+  - Wrap the async function in a try-catch block
+  ```js
+  app.get('/products/:id', async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const product = await Product.findById(id);
+      if (!product) {
+        // Throw our own error
+        throw new AppError('Product Not Found', 404);
+      }
+      res.render('products/detail', { product });
+    } catch (e) {
+      // Will catch any errors we didn't throw
+      next(e);
+    }
+  });
+
+  // Error handler middleware
+  // This handles error passed from next()
+  app.use((err, req, res, next) => {
+    const { status = 500, message = 'Something went wrong' } = err;
+    res.status(status).send(message);
+  });
+  ```
+
+**Defining an async error utility function:**
+  ```js
+  // async utility function
+  // This function takes a function as an argument
+  // It returns a new function
+  // This new function is simply executes the function passed in to wrapAsync()
+  // and chains on a .catch() to catch the error
+  // If there's an error, it calls next()
+  function wrapAsync(fn) {
+    return function (req, res, next) {
+      fn(req, res, next).catch(e => next(e))
+    }
+  }
+
+  // wrap the async function in the utility function
+  app.get('/products/:id', wrapAsync(async (req, res, next) => {
+      const { id } = req.params;
+      const product = await Product.findById(id);
+      if (!product) {
+        throw new AppError('Product Not Found', 404);
+      }
+      res.render('products/detail', { product });
+  }));
+  ```
+
+
+
 
 
 
