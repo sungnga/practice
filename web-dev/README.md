@@ -4403,6 +4403,7 @@ Search results for: cat
 
 **6. JOI Schema Validation**
 - JOI is a Javascript validator tool. This allows us to validate form on the server-side
+- Note that when we're defining a validation schema, it's not Mongoose schema
 - Install: `npm i joi`
 - In app.js file:
   - Import JOI: `const Joi = require('joi');`
@@ -4438,8 +4439,53 @@ Search results for: cat
   );
   ```
 
+**7. JOI Validation Middleware**
+- We can create a validation middleware that we can pass to different route handlers that requires validation before Mongoose takes the data 
+- Define a validation schema in a separete file. At the root of the project directory, create a file called schemas.js We will eventually have more schemas in this file
+- In schemas.js file:
+  ```js
+  const Joi = require('joi');
 
+  module.exports.campgroundSchema = Joi.object({
+    campground: Joi.object({
+      title: Joi.string().required(),
+      price: Joi.number().required().min(0),
+      image: Joi.string().required(),
+      location: Joi.string().required(),
+      description: Joi.string().required()
+    }).required()
+  });
+  ```
+- In app.js file:
+  - Import campgroundSchema: `const { campgroundSchema } = require('./schemas.js');`
+  - Use the validateCampground middleware in the route handler when it needs validation
+  - Pass in the middleware as a 2nd argument in the route handler
+  ```js
+  const { campgroundSchema } = require('./schemas.js');
 
+  // Define validation middleware
+  const validateCampground = (req, res, next) => {
+    const { error } = campgroundSchema.validate(req.body);
+    if (error) {
+      const msg = error.details.map((el) => el.message).join(',');
+      throw new ExpressError(msg, 400);
+    } else {
+      next()
+    }
+  }
+
+  app.post(
+	'/campgrounds',
+	validateCampground,
+  catchAsync(async (req, res, next) => { ... })
+  );
+
+  app.put(
+	'/campgrounds/:id',
+	validateCampground,
+  catchAsync(async (req, res) => { ... })
+  )
+  ```
 
 
 
