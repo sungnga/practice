@@ -4499,7 +4499,15 @@ Search results for: cat
 
 **One to few relationship:**
 - Embed the data directly in the document
+  ```js
+  name: 'Tommy Cash',
+  savedAddresses: [
+    { street: '234 7th st', city: 'Kirkland', country: 'USA' },
+    { street: 'Ravala 5', city: 'Tallin', country: 'Estonia' }
+  ]
+  ```
 - In models/user.js file:
+  - Start with importing Mongoose and the structure of connecting to Mongoose
   ```js
   // Set id to false if you don't want Mongoose to auto-generate one
   const userSchema = new mongoose.Schema({
@@ -4557,6 +4565,81 @@ Search results for: cat
 - Check the database using Mongo shell
   - Make sure Mongod is running in the background: `brew services start mongodb-community@4.4`
   
+**One to many relationship:**
+- We don't directly embed information in the parent document. Instead, we just store or embed a reference that's defined somewhere else. We usually do this using an object id
+- One option is to store our data separately, but then store references to document ID's somewhere inside the parent:
+  ```js
+  {
+    farmName: 'Full Belly Farms',
+    location: 'Guinda, CA',
+    produce: [
+      ObjectID('2819781267781'),
+      ObjectID('1415281867672'),
+      ObjectID('8131977121283'),
+    ]
+  }
+  ```
+- In models/farm.js file:
+  - Start with importing Mongoose and the structure of connecting to Mongoose
+  ```js
+  const productSchema = new mongoose.Schema({
+    name: String,
+    price: Number,
+    season: {
+      type: String,
+      enum: ['Spring', 'Summer', 'Fall', 'Winter']
+    }
+  });
+
+  const farmSchema = new mongoose.Schema({
+    name: String,
+    city: String,
+    products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }]
+  });
+
+  const Product = mongoose.model('Product', productSchema);
+  const Farm = mongoose.model('Farm', farmSchema);
+
+  // Product.insertMany([
+  // 	{ name: 'Goddess Melon', price: 5.99, season: 'Summer' },
+  // 	{ name: 'Sugar Baby Watermelon', price: 4.99, season: 'Summer' },
+  // 	{ name: 'Napa Cabbage', price: 2.99, season: 'Spring' }
+  // ]);
+
+  // const makeFarm = async () => {
+  // 	const farm = new Farm({
+  // 		name: 'Full Belly Farms',
+  // 		city: 'Guinda, CA'
+  // 	});
+  // 	const melon = await Product.findOne({ name: 'Goddess Melon' });
+  // 	farm.products.push(melon);
+  // 	await farm.save();
+  // 	console.log(farm);
+  // };
+  // makeFarm();
+
+  const addProduct = async () => {
+    const farm = await Farm.findOne({ name: 'Full Belly Farms' });
+    const watermelon = await Product.findOne({ name: 'Sugar Baby Watermelon' });
+    farm.products.push(watermelon);
+    await farm.save();
+    console.log(farm);
+  };
+  addProduct();
+  ```
+- What's being stored in the database for products is an array of ObjectId's, not the actual products
+  ```
+  { "_id" : ObjectId("5fbf603a96cd7be382880035"), "products" : [ ObjectId("5fbf5cb68e1de2e0fabc38a4"), ObjectId("5fbf5cb68e1de2e0fabc38a5") ], "name" : "Full Belly Farms", "city" : "Guinda, CA", "__v" : 1 }
+  ```
+
+
+
+
+
+
+
+
+
 
 
 
