@@ -4488,7 +4488,75 @@ Search results for: cat
   ```
 
 
+## S44: DATA RELATIONSHIPS WITH MONGO
+#### TOPICS:
+- One to few
+- One to many
+- One to Bajillions
+- Populate
+- Mongo schema design
+- SQL relationships overview
 
+**One to few relationship:**
+- Embed the data directly in the document
+- In models/user.js file:
+  ```js
+  // Set id to false if you don't want Mongoose to auto-generate one
+  const userSchema = new mongoose.Schema({
+    first: String,
+    last: String,
+    addresses: [
+      {
+        _id: { id: false },
+        street: String,
+        city: String,
+        state: String,
+        country: String
+      }
+    ]
+  });
+
+  const User = mongoose.model('User', userSchema);
+
+  // Create a new user from the User model
+  // Then use push method to push an address to the new user
+  // Call .save() to save the new user to DB
+  // Don't forget to invoke the makeUser function
+  const makeUser = async () => {
+    const u = new User({
+      first: 'Harry',
+      last: 'Potter'
+    });
+    u.addresses.push({
+      street: '123 Sesame St.',
+      city: 'New York',
+      state: 'NY',
+      country: 'USA'
+    });
+    const res = await u.save();
+    console.log(res);
+  };
+
+  // Add another address to a user
+  const addAddress = async (id) => {
+    const user = await User.findById(id);
+    user.addresses.push({
+      street: '555 Folsom St.',
+      city: 'San Francisco',
+      state: 'CA',
+      country: 'USA'
+    });
+    const res = await user.save();
+    console.log(res);
+  };
+
+  // makeUser();
+  addAddress('5fbf2bad11bf1dd6e8202c9f');
+  ```
+- Execute the file to add user to DB. cd into models directory and run: `node user.js`
+- Check the database using Mongo shell
+  - Make sure Mongod is running in the background: `brew services start mongodb-community@4.4`
+  
 
 
 
