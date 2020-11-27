@@ -4634,7 +4634,7 @@ Search results for: cat
 
 **Mongoose populate:**
 - Populate is a method that we can chain on to when querying a model
-- Certain models may only store the references of the child documents from another model. To retrieve the details of those documents and populate them in the parent model, we chain on the .populate() method 
+- Certain models may only store references to the child documents of other models. To retrieve the details of those documents and populate them in the parent model, we chain on the .populate() method 
 - In models/farm.js file:
   - First, we want to query the Farm model using the .findOne() method to find a farm by its name
   - If it exists, it will return the info of the farm
@@ -4654,7 +4654,55 @@ Search results for: cat
   .then(farm => console.log(farm))
   ```
 
+**One to bajillions relationship:**
+- With thousands or more documents, it's more efficient to store a reference to the parent on the child document
+  ```js
+  {
+    tweetText: 'lol I just crashed my car because I was tweeting',
+    tags: ['stupid', 'moron', 'yolo'],
+    user: ObjectId('6395769482')
+  }
+  ```
+- In models/tweet.js file:
+  ```js
+  const mongoose = require('mongoose');
+  const { Schema } = mongoose;
 
+  const userSchema = new Schema({
+    username: String,
+    age: Number
+  });
+
+  const tweetSchema = new Schema({
+    text: String,
+    likes: Number,
+    user: { type: Schema.Types.ObjectId, ref: 'User' }
+  });
+
+  const User = mongoose.model('User', userSchema);
+  const Tweet = mongoose.model('Tweet', tweetSchema);
+
+  const makeTweets = async () => {
+    // const u = new User({ username: 'chickenfan99', age: 66 });
+    // const tweet1 = new Tweet({ text: 'omg I love my chicken!', likes: 2 });
+    // tweet1.user = u;
+    // u.save();
+    // tweet1.save();
+
+    const user = await User.findOne({ username: 'chickenfan99' });
+    const tweet2 = new Tweet({ text: 'bock bock bock', like: 888 });
+    tweet2.user = user;
+    tweet2.save();
+  };
+  // makeTweets();
+
+  // If you only want a specific property and not the entire info of a document, pass in the property name as the next argument
+  const findTweet = async () => {
+    const t = await Tweet.find({}).populate('user', 'username');
+    console.log(t);
+  };
+  findTweet();
+  ```
 
 
 
