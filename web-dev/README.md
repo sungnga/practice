@@ -4606,16 +4606,16 @@ Search results for: cat
   // 	{ name: 'Napa Cabbage', price: 2.99, season: 'Spring' }
   // ]);
 
-  // const makeFarm = async () => {
-  // 	const farm = new Farm({
-  // 		name: 'Full Belly Farms',
-  // 		city: 'Guinda, CA'
-  // 	});
-  // 	const melon = await Product.findOne({ name: 'Goddess Melon' });
-  // 	farm.products.push(melon);
-  // 	await farm.save();
-  // 	console.log(farm);
-  // };
+  const makeFarm = async () => {
+    const farm = new Farm({
+      name: 'Full Belly Farms',
+      city: 'Guinda, CA'
+    });
+    const melon = await Product.findOne({ name: 'Goddess Melon' });
+    farm.products.push(melon);
+    await farm.save();
+    console.log(farm);
+  };
   // makeFarm();
 
   const addProduct = async () => {
@@ -4632,7 +4632,27 @@ Search results for: cat
   { "_id" : ObjectId("5fbf603a96cd7be382880035"), "products" : [ ObjectId("5fbf5cb68e1de2e0fabc38a4"), ObjectId("5fbf5cb68e1de2e0fabc38a5") ], "name" : "Full Belly Farms", "city" : "Guinda, CA", "__v" : 1 }
   ```
 
+**Mongoose populate:**
+- Populate is a method that we can chain on to when querying a model
+- Certain models may only store the references of the child documents from another model. To retrieve the details of those documents and populate them in the parent model, we chain on the .populate() method 
+- In models/farm.js file:
+  - First, we want to query the Farm model using the .findOne() method to find a farm by its name
+  - If it exists, it will return the info of the farm
+  - However, the products property, it will return an array of object ids. They are reference to products in the Product model
+  - To get and display the details of those products, chain on the .populate() method and pass in the property/ies you want to populate the data
+  - `products` is the property we want to populate
+  - In the model schema, make sure to set the `ref` property to the name of the model you want Mongoose to find the reference  
+  ```js
+  const farmSchema = new mongoose.Schema({
+    name: String,
+    city: String,
+    products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }]
+  });
 
+  Farm.findOne({ name: 'Full Belly Farms' })
+  .populate('products')
+  .then(farm => console.log(farm))
+  ```
 
 
 

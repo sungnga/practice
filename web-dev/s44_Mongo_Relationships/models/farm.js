@@ -37,16 +37,16 @@ const Farm = mongoose.model('Farm', farmSchema);
 // 	{ name: 'Napa Cabbage', price: 2.99, season: 'Spring' }
 // ]);
 
-// const makeFarm = async () => {
-// 	const farm = new Farm({
-// 		name: 'Full Belly Farms',
-// 		city: 'Guinda, CA'
-// 	});
-// 	const melon = await Product.findOne({ name: 'Goddess Melon' });
-// 	farm.products.push(melon);
-// 	await farm.save();
-// 	console.log(farm);
-// };
+const makeFarm = async () => {
+	const farm = new Farm({
+		name: 'Full Belly Farms',
+		city: 'Guinda, CA'
+	});
+	const melon = await Product.findOne({ name: 'Goddess Melon' });
+	farm.products.push(melon);
+	await farm.save();
+	console.log(farm);
+};
 // makeFarm();
 
 const addProduct = async () => {
@@ -56,4 +56,14 @@ const addProduct = async () => {
 	await farm.save();
 	console.log(farm);
 };
-addProduct();
+// addProduct();
+
+// First, we want to call the .findOne() method on Farm model to find a farm by its name
+// If it exists, it will return the info of the farm
+// However, the products property, it will return an array of object ids. They are reference to products in the Product model
+// To get and display the details of those products, chain on the .populate() method and pass in the property/ies you want to populate the data
+// products is the property we want to populate 
+Farm.findOne({ name: 'Full Belly Farms' })
+  .populate('products')
+  .then(farm => console.log(farm))
+
