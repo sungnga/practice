@@ -4704,13 +4704,15 @@ Search results for: cat
   findTweet();
   ```
 
-
-
-
-
-
-
-
+**Mongo schema design:**
+- Blog post on schema design: https://www.mongodb.com/blog/post/6-rules-of-thumb-for-mongodb-schema-design-part-3
+- Here are some “rules of thumb” to guide you through these indenumberable (but not infinite) choices
+  - **One:** favor embedding unless there is a compelling reason not to
+  - **Two:** needing to access an object on its own is a compelling reason not to embed it
+  - **Three:** Arrays should not grow without bound. If there are more than a couple of hundred documents on the “many” side, don’t embed them; if there are more than a few thousand documents on the “many” side, don’t use an array of ObjectID references. High-cardinality arrays are a compelling reason not to embed 
+  - **Four:** Don’t be afraid of application-level joins: if you index correctly and use the projection specifier (as shown in part 2) then application-level joins are barely more expensive than server-side joins in a relational database
+  - **Five:** Consider the write/read ratio when denormalizing. A field that will mostly be read and only seldom updated is a good candidate for denormalization: if you denormalize a field that is updated frequently then the extra work of finding and updating all the instances is likely to overwhelm the savings that you get from denormalizing
+  - **Six:** As always with MongoDB, how you model your data depends – entirely – on your particular application’s data access patterns. You want to structure your data to match the ways that your application queries and updates it
 
 
 
