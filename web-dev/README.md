@@ -4812,14 +4812,22 @@ Search results for: cat
   - index.ejs - renders farms index page
   - new.ejs - renders the add a farm form
 
+**3. Farms show page**
+- In index.js file:
+  - Create a get route handler takes the user to a farm details page
+  ```js
+  app.get('/farms/:id', async (req, res) => {
+    const farm = await Farm.findById(req.params.id);
+    res.render('farms/show', { farm });
+  });
+  ```
+- In views/farms folder, create a templating file called show.ejs
+  - Render the farm's city and email
+  - Create an anchor link that takes user back to farms index page
+- In views/farms/index.ejs file:
+  - Make the farm list as a link that takes user to the farm details page
+  - `<li><a href="/farms/<%= farm._id %>"><%= farm.name %></a></li>`
 
-
-
-
-**Farms show page**
-**Creating products for a farm**
-**Finishing touches**
-**Deletion Mongoose middleware**
 
 
 
