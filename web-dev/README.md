@@ -4920,9 +4920,35 @@ Search results for: cat
   ```
 
 
+## S46: YELPCAMP: ADDING THE REVIEWS MODEL
 
+**1. Defining the Review Model**
+- In models folder, create a file called review.js
+- In review.js file:
+  ```js
+  const mongoose = require('mongoose');
+  const { model } = require('./campground');
+  const Schema = mongoose.Schema;
 
+  const reviewSchema = new Schema({
+    body: String,
+    rating: Number
+  });
 
+  model.exports = mongoose.model('Review', reviewSchema);
+  ```
+- In models/campground.js file:
+  - A campground may have many reviews. So we're going to embed reviews in the Campground model
+  - In campgroundSchema, set the reviews property to an array of objectId's
+    - Set the ref property to the Review model
+  ```js
+	reviews: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: 'Review'
+		}
+	]
+  ```
 
 
 
