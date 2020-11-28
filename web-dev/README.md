@@ -4786,12 +4786,40 @@ Search results for: cat
   module.exports = Product;
   ```
 
+**2. Creating new farms**
+- In index.js file:
+  - Import the Farm model: `const Farm = require('./models/farm');`
+  - Create a get route handler that retrieves all the farms in the database
+  - Create a get route handler that serves the create new farm form
+  - Create a post route handler that saves the new farm data to the database and then redirect user to farms index page
+  ```js
+  app.get('/farms', async (req, res) => {
+    const farms = await Farm.find({});
+    res.render('farms/index', { farms });
+  });
+
+  app.get('/farms/new', (req, res) => {
+    res.render('farms/new');
+  });
+
+  app.post('/farms', async (req, res) => {
+    const farm = new Farm(req.body);
+    await farm.save();
+    res.redirect('/farms');
+  });
+  ```
+- In views directory, create a folder called farms. In it, generate two templatings
+  - index.ejs - renders farms index page
+  - new.ejs - renders the add a farm form
 
 
 
 
 
-
+**Farms show page**
+**Creating products for a farm**
+**Finishing touches**
+**Deletion Mongoose middleware**
 
 
 

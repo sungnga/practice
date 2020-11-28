@@ -6,9 +6,10 @@ const methodOverride = require('method-override');
 
 const AppError = require('./AppError');
 const Product = require('./models/product');
+const Farm = require('./models/farm');
 
 mongoose
-	.connect('mongodb://localhost:27017/farmStand', {
+	.connect('mongodb://localhost:27017/farmStand2', {
 		useNewUrlParser: true,
 		useUnifiedTopology: true
 	})
@@ -26,6 +27,23 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
+// FARM ROUTES
+app.get('/farms', async (req, res) => {
+	const farms = await Farm.find({});
+	res.render('farms/index', { farms });
+});
+
+app.get('/farms/new', (req, res) => {
+	res.render('farms/new');
+});
+
+app.post('/farms', async (req, res) => {
+	const farm = new Farm(req.body);
+	await farm.save();
+	res.redirect('/farms');
+});
+
+// PRODUCT ROUTES
 const categories = ['fruit', 'vegetable', 'dairy'];
 
 // async utility function
