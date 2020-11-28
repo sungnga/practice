@@ -4715,6 +4715,96 @@ Search results for: cat
   - **Six:** As always with MongoDB, how you model your data depends – entirely – on your particular application’s data access patterns. You want to structure your data to match the ways that your application queries and updates it
 
 
+## S45: MONGO RELATIONSHIPS WITH EXPRESS
+#### TOPICS:
+- Deleting with Mongo middleware
+- Defining our Farm and Product models
+- Creating farms
+- Farms show page
+
+**1. Defining our Farm and Product models**
+- First setup the project by duplicating the S38_Mongoose_Express project
+- In this project, we're going to setup a two-way relationship where the Farm model will have embed products objectId references and the Product model will have embed farm objectId reference
+- When we visit a farm page, we want to be able to see a list of products
+- When we visit a product page, we want to see a list of farms that carry that product
+- In models folder, create a file called farm.js
+- In farm.js file:
+  - Define the Farm model
+  ```js
+  const mongoose = require('mongoose');
+  const { Schema } = mongoose;
+
+  const farmSchema = new Schema({
+    name: {
+      type: String,
+      required: [true, 'Farm must have a name!']
+    },
+    city: {
+      type: String
+    },
+    email: {
+      type: String,
+      required: [true, 'Email required']
+    },
+    products: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Product'
+      }
+    ]
+  });
+  ```
+- In products.js file:
+  - Define the Product model
+  ```js
+  const mongoose = require('mongoose');
+  const { Schema } = mongoose;
+
+  const productSchema = new Schema({
+    name: {
+      type: String,
+      required: true
+    },
+    price: {
+      type: Number,
+      required: true,
+      min: 0
+    },
+    category: {
+      type: String,
+      lowercase: true,
+      enum: ['fruit', 'vegetable', 'dairy']
+    },
+    farm: {
+      type: Schema.Types.ObjectId,
+      ref: 'Farm'
+    }
+  });
+
+  const Product = mongoose.model('Product', productSchema);
+
+  module.exports = Product;
+  ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
