@@ -48,6 +48,31 @@ app.post('/farms', async (req, res) => {
 	res.redirect('/farms');
 });
 
+// Serves a new product form for a particular farm
+app.get('/farms/:id/products/new', (req, res) => {
+	const { id } = req.params;
+	res.render('products/new', { categories, id });
+});
+
+app.post('/farms/:id/products', async (req, res) => {
+	// res.send(req.body)
+	const { id } = req.params;
+	// Find the farm in the database based on farm id
+	const farm = await Farm.findById(id);
+	const { name, price, category } = req.body;
+	// Create a new product based on the data we get from req.body
+	const product = new Product({ name, price, category });
+	// Push the new product to farm.products array
+	farm.products.push(product);
+	// Going the other way, add the farm to the new product.farm property
+	product.farm = farm;
+	// Save farm to the database. This farm now has a new product
+	await farm.save();
+	// Save the new product to the database
+	await product.save();
+	res.send(farm);
+});
+
 // PRODUCT ROUTES
 const categories = ['fruit', 'vegetable', 'dairy'];
 

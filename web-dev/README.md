@@ -4828,6 +4828,60 @@ Search results for: cat
   - Make the farm list as a link that takes user to the farm details page
   - `<li><a href="/farms/<%= farm._id %>"><%= farm.name %></a></li>`
 
+**4. Creating products for a farm**
+- We want to create a product for a particular farm. To do this, on the show farm page, we add a link that says Add New Product. So user has to go to the farm page first and then be able to add a product through the farm
+- This way, the route to add a product will include the farm id in it
+- In index.js file:
+  - Create a get route handler to serve a create new product form for a farm
+  - Create a post route handler that 
+    - finds the farm by its id in the database
+    - creates a new product based on the data from req.body
+    - pushes the new product to the farm.products property
+    - adds the farm to the new product.farm property
+    - saves the farm and new product to the database
+  ```js
+  app.get('/farms/:id/products/new', (req, res) => {
+    const { id } = req.params;
+    res.render('products/new', { categories, id });
+  });
+
+  app.post('/farms/:id/products', async (req, res) => {
+    // res.send(req.body)
+    const { id } = req.params;
+    // Find the farm in the database based on farm id
+    const farm = await Farm.findById(id);
+    const { name, price, category } = req.body;
+    // Create a new product based on the data we get from req.body
+    const product = new Product({ name, price, category });
+    // Push the new product to farm.products array
+    farm.products.push(product);
+    // Going the other way, add the farm to the new product.farm property
+    product.farm = farm;
+    // Save farm to the database. This farm now has a new product
+    await farm.save();
+    // Save the new product to the database
+    await product.save();
+    res.send(farm);
+  });
+  ```
+- In views/farms/new.ejs file:
+  - Modify the path from '/farms' to '/farms/products'
+  ```html
+  <form action="/farms/products" method="POST">
+  ```
+- In views/products/new.ejs file:
+  - Modify the path from '/products' to '/farms/<%= id %>/products'
+  ```html
+  <form action="/farms/<%= id %>/products" method="POST">
+  ```
+- In MongoDB:
+  - In the products collection, the farm property should embed with farm objectId's
+  - In the farms collection, the products property should embed with product objectId's
+
+
+
+
+
 
 
 
