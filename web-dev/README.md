@@ -4864,11 +4864,6 @@ Search results for: cat
     res.send(farm);
   });
   ```
-- In views/farms/new.ejs file:
-  - Modify the path from '/farms' to '/farms/products'
-  ```html
-  <form action="/farms/products" method="POST">
-  ```
 - In views/products/new.ejs file:
   - Modify the path from '/products' to '/farms/<%= id %>/products'
   ```html
@@ -4886,10 +4881,43 @@ Search results for: cat
 - In the farm show page, views/farms/show.ejs, render the list of products for this farm
 - In the product show page, views/products/detail.ejs, render the list of farm names for this product. Then make each farm name as anchor link that takes you back to the farm show page
 
-
-
-
-
+**6. Deletion Mongoose middleware**
+- If we delete a farm, all the associated references, the products, to be deleted as well
+- Mongoose middleware are entirely distinct from Express middleware. They have nothing to do with one another
+- In Mongoose middleware, there's a difference between document middleware and query middleware
+- `findOneAndDelete` is a query middleware
+- In models/farm.js file:
+  - Import the Product model: `const Product = require('./product')`
+  - Setup a Mongoose query middleware to find and delete a farm
+  - Call the .post() method on farmSchema
+    - The 1st arg it takes is the name of the query middleware, findOneAndDelete
+    - The 2nd arg is an async calback function. The data that's returned from the query is a farm. We can delete the associated products in this callback
+      - In this callback, first check to see if there's products in farm.products array
+      - If there is, call the .deleteMany() method to delete them all
+  ```js
+  farmSchema.post('findOneAndDelete', async function (farm) {
+    if (farm.products.length) {
+      const res = await Product.deleteMany({ _id: { $in: farm.products } });
+      // console.log(res)
+    }
+  });
+  ```
+- In index.js file:
+  - Create a delete route to delete a farm
+  ```js
+  app.delete('/farms/:id', async (req, res) => {
+    const deletedFarm = await Farm.findByIdAndDelete(req.params.id);
+    res.redirect('/farms');
+  });
+  ```
+- In show page for a farm, views/farms/show.ejs file:
+  - Create a form that has a delete button in it
+  - Set the method-override query string to DELETE to override the browser POST method
+  ```html
+  <form action="/farms/<%= farm._id %>?_method=DELETE" method="POST">
+    <button>Delete</button>
+  </form>
+  ```
 
 
 
