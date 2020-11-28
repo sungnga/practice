@@ -4878,7 +4878,13 @@ Search results for: cat
   - In the products collection, the farm property should embed with farm objectId's
   - In the farms collection, the products property should embed with product objectId's
 
-
+**5. Finishing touches**
+- In the new product form page, views/products/new.ejs, render a text to display the name of the farm that this new product is going to be created for
+- In index.js file: 
+  - Populate the products on the show farm page
+  - Populate the farm names on the show product page
+- In the farm show page, views/farms/show.ejs, render the list of products for this farm
+- In the product show page, views/products/detail.ejs, render the list of farm names for this product. Then make each farm name as anchor link that takes you back to the farm show page
 
 
 
