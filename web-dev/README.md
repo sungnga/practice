@@ -5067,7 +5067,30 @@ Search results for: cat
   - Use the card component to style the reviews
   - Use a 2-column grid where Leave a Review section is on the right hand side
 
-
+**7. Deleting Reviews**
+- In app.js file:
+  - Create a delete route handler to delete a review from DB based on reviewId
+  - Use the `$pull` operator to pull the reviewId from reviews property
+  ```js
+  app.delete(
+    '/campgrounds/:id/reviews/:reviewId',
+    catchAsync(async (req, res) => {
+      const { id, reviewId } = req.params;
+      await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+      await Review.findByIdAndDelete(reviewId);
+      res.redirect(`/campgrounds/${id}`);
+    })
+  );
+  ```
+- In views/campgrounds/show.ejs file:
+  - At the bottom of each review, add a delete form that has a Delete button in it
+    - Use the query string to set method-override to DELETE
+    - Set the regular method to POST
+  ```html
+  <form action="/campgrounds/<%= campground._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
+    <button class="btn btn-sm btn-danger">Delete</button>
+  </form>
+  ```
 
 
 
