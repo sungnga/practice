@@ -4981,6 +4981,32 @@ Search results for: cat
   </form>
   ```
 
+**3. Creating Reviews for Campground**
+- Create a review for a campground
+- In app.js file:
+  - Create a post route handler adds a new review to a campground, saves both the campground and review to the database, and then redirects user to the campground show page
+  ```js
+  app.post(
+    '/campgrounds/:id/reviews',
+    catchAsync(async (req, res) => {
+      const campground = await Campground.findById(req.params.id);
+      const review = new Review(req.body.review);
+      campground.reviews.push(review);
+      await review.save();
+      await campground.save();
+      res.redirect(`/campgrounds/${campground._id}`);
+    })
+  );
+  ```
+- In views/campgrounds/show.ejs file:
+  - Add the request path and the POST method in the form element
+  - `<form action="/campgrounds/<%= campground._id %>/reviews" method="POST" class="mb-3">`
+
+
+
+
+
+
 
 
 
