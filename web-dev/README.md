@@ -5019,6 +5019,51 @@ Search results for: cat
   <% } %>
   ```
 
+**5. Validating Reviews**
+- In schemas.js file:
+  - Create a validation schema for Review model using Joi
+  ```js
+  module.exports.reviewSchema = Joi.object({
+    review: Joi.object({
+      rating: Joi.number().required().min(1).max(5),
+      body: Joi.string().required()
+    }).required()
+  })
+  ```
+- In app.js file:
+  - Import the reviewSchema: `const { campgroundSchema, reviewSchema } = require('./schemas.js');`
+  - Create a validate middleware for Review
+  - Then pass in the middleware to the post route handler for reviews as 2nd arg
+  ```js
+  // Validate middleware for Review
+  const validateReview = (req, res, next) => {
+    const { error } = reviewSchema.validate(req.body);
+    if (error) {
+      const msg = error.details.map((el) => el.message).join(',');
+      throw new ExpressError(msg, 400);
+    } else {
+      next();
+    }
+  };
+
+  // Pass in the middleware as 2nd argument
+  app.post('/campgrounds/:id/reviews', validateReview, catchAsync(async (req, res) => { ... }));
+  ```
+- Add form valiation on the client-side using Bootstrap5
+- In views/campgrounds/show.ejs file:
+  - Add `required` property to Review <textarea> tag
+  - In the Review form element, add `novalidate` property and `validated-form` class
+  ```html
+		<form
+			action="/campgrounds/<%= campground._id %>/reviews"
+			method="POST"
+			class="mb-3 validated-form"
+			novalidate
+		>
+  ``` 
+
+
+
 
 
 
