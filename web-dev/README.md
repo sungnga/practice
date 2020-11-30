@@ -5062,8 +5062,10 @@ Search results for: cat
 		>
   ``` 
 
-
-
+**6. Styling Reviews**
+- In views/campgrounds/show.ejs file:
+  - Use the card component to style the reviews
+  - Use a 2-column grid where Leave a Review section is on the right hand side
 
 
 
