@@ -5002,7 +5002,22 @@ Search results for: cat
   - Add the request path and the POST method in the form element
   - `<form action="/campgrounds/<%= campground._id %>/reviews" method="POST" class="mb-3">`
 
-
+**4. Displaying Reviews on Campground Show Page**
+- Before displaying the reviews, we first need to populate the reviews of a campground
+- Then we can loop over the reviews array to display the reviews at the bottom of campground show page
+- In app.js file:
+  - Chain on the .populate() method and pass in the name of the property that we want to populate
+  - `const campground = await Campground.findById(req.params.id).populate('reviews');`
+- In views/campgrounds/show.ejs file:
+  - We're just going to display the rating and review in <p> tags for now
+  ```html
+  <% for(let review of campground.reviews) { %>
+  <div class="mb-3">
+    <p>Rating:<%= review.rating %></p>
+    <p>Review:<%= review.body %></p>
+  </div>
+  <% } %>
+  ```
 
 
 
