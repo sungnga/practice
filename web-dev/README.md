@@ -5092,6 +5092,24 @@ Search results for: cat
   </form>
   ```
 
+**8. Campground Delete Middleware**
+- To delete a campground and its associated reviews, we're going to use the Mongoose `findOneAndDelete` query middleware. This middleware will try to find the campground and we can pass that campground to an async callback function to delete its associated reviews
+- Note that this `findOneAndDelete` query middleware only triggers because in the delete route handler to delete campground, we called the `findByIdAndDelete` method on Campground model. A different method would not trigger this middleware
+- In models/campground.js file:
+  - Import Review model: `const Review = require('./review');`
+  - This query middleware first tries to find and delete a document, then passes in the deleted doc to the async callback function
+  - We call the deleteMany method on to delete all reviews in the Review model whose id is in the deleted doc reviews array
+  ```js
+  CampgroundSchema.post('findOneAndDelete', async function (doc) {
+    if (doc) {
+      await Review.deleteMany({
+        _id: {
+          $in: doc.reviews
+        }
+      });
+    }
+  });
+  ```
 
 
 
