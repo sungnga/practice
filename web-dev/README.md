@@ -5112,6 +5112,66 @@ Search results for: cat
   ```
 
 
+## S47: EXPRESS ROUTER AND COOKIES
+#### TOPICS:
+- Express router basics
+- Understanding cookies
+- Cookie parser
+- Signed cookies
+- HMAC signing
+
+**Express Router Basics:**
+- Express Router: https://expressjs.com/en/api.html#express.router
+- Creates a new router object. A `router` object is an isolated instance of middleware and routes. You can think of it as a "mini-application," capable only of performing middleware and routing functions. Every Express application has a built-in app router
+- The top-level `express` object has a `Router()` method that creates a new router object
+- Once you've created a router object, you can add middleware and HTTP method routes (such as get, put, post, and so on) to it just like an application 
+- `const router = express.Router([options])`
+  - The optional `options` parameter specifies the behavior of the router
+- **Creating routes with Express.Router():**
+  - In routes/shelters.js file:
+    ```js
+    const express = require('express');
+    const router = express.Router();
+
+    router.get('/', (req, res) => {
+      res.send('ALL SHELTERS');
+    });
+
+    router.post('/', (req, res) => {
+      res.send('CREATING SHELTERS');
+    });
+
+    router.get('/:id', (req, res) => {
+      res.send('VIEWING ONE SHELTER');
+    });
+
+    router.get('/:id/edit', (req, res) => {
+      res.send('EDITING ONE SHELTER');
+    });
+
+    module.exports = router;
+    ```
+- **Using the routes:**
+  - In index.js file:
+    - Import the shelter routes
+    - Call the app.use() to use the routes
+      - The 1st arg is the path that specifies the prefix of all of the routes that we've predefined in the router that we pass in as 2nd arg
+        - For example, if our shelter routes all starts with 'shelters', in our 1st arg path we can specify '/shelters'
+        - The advantage of this is we can change the route in one central place, although it's not often that we do this
+      - 2nd arg the name of the router. For example, shelterRoutes
+    ```js
+    const express = require('express');
+    const app = express();
+    const shelterRoutes = require('./routes/shelters');
+
+    app.use('/shelters', shelterRoutes);
+
+    app.listen(3000, () => {
+      console.log('Serving app on port 3000');
+    });
+    ```
+
+
 
 
 
