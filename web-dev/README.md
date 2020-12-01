@@ -5127,51 +5127,86 @@ Search results for: cat
 - Once you've created a router object, you can add middleware and HTTP method routes (such as get, put, post, and so on) to it just like an application 
 - `const router = express.Router([options])`
   - The optional `options` parameter specifies the behavior of the router
-- **Creating routes with Express.Router():**
-  - In routes/shelters.js file:
-    ```js
-    const express = require('express');
-    const router = express.Router();
+- **Creating routes with Express.Router():** In routes/shelters.js file:
+  - Import Express
+  - Create the router object by calling express.Router()
+  - Add on specific routes on the router object
+  - Export the router object
+  ```js
+  const express = require('express');
+  const router = express.Router();
 
-    router.get('/', (req, res) => {
-      res.send('ALL SHELTERS');
-    });
+  router.get('/', (req, res) => {
+    res.send('ALL SHELTERS');
+  });
 
-    router.post('/', (req, res) => {
-      res.send('CREATING SHELTERS');
-    });
+  router.post('/', (req, res) => {
+    res.send('CREATING SHELTERS');
+  });
 
-    router.get('/:id', (req, res) => {
-      res.send('VIEWING ONE SHELTER');
-    });
+  router.get('/:id', (req, res) => {
+    res.send('VIEWING ONE SHELTER');
+  });
 
-    router.get('/:id/edit', (req, res) => {
-      res.send('EDITING ONE SHELTER');
-    });
+  router.get('/:id/edit', (req, res) => {
+    res.send('EDITING ONE SHELTER');
+  });
 
-    module.exports = router;
-    ```
-- **Using the routes:**
-  - In index.js file:
-    - Import the shelter routes
-    - Call the app.use() to use the routes
-      - The 1st arg is the path that specifies the prefix of all of the routes that we've predefined in the router that we pass in as 2nd arg
-        - For example, if our shelter routes all starts with 'shelters', in our 1st arg path we can specify '/shelters'
-        - The advantage of this is we can change the route in one central place, although it's not often that we do this
-      - 2nd arg the name of the router. For example, shelterRoutes
-    ```js
-    const express = require('express');
-    const app = express();
-    const shelterRoutes = require('./routes/shelters');
+  module.exports = router;
+  ```
+- **Using the routes:** In index.js file:
+  - Import the shelter routes
+  - Call the app.use() to use the routes
+    - The 1st arg is the path that specifies the prefix of all of the routes that we've predefined in the router that we pass in as 2nd arg
+      - For example, if our shelter routes all starts with 'shelters', in our 1st arg path we can specify '/shelters'
+      - The advantage of this is we can change the route in one central place, although it's not often that we change our route
+    - 2nd arg the name of the router. For example, shelterRoutes
+  ```js
+  const express = require('express');
+  const app = express();
+  const shelterRoutes = require('./routes/shelters');
 
-    app.use('/shelters', shelterRoutes);
+  app.use('/shelters', shelterRoutes);
 
-    app.listen(3000, () => {
-      console.log('Serving app on port 3000');
-    });
-    ```
+  app.listen(3000, () => {
+    console.log('Serving app on port 3000');
+  });
+  ```
 
+**Express Router and Middleware:**
+- With Express router (the router object), just as we can add on specific routees (get, post, put, delete), we also can add in our own middleware
+- This is useful when we wawnt to apply a middleware to a chunk of our application, but not the entire application. For example, only admin users can have access to certain features of the app
+- **Defining routes and middleware:** In routes/admin.js file:
+  - We can define our own middleware and then pass it in to router.use(). This middleware will only apply to the routes defined in this file
+  - Even when we import this adminRoutes to index.js file, the middleware will not apply to other routes
+  ```js
+  const express = require('express');
+  const router = express.Router();
 
+  router.use((req, res, next) => {
+    if (req.query.isAdmin) {
+      next();
+    }
+    res.send('SORRY NOT AN ADMIN!');
+  });
+
+  router.get('/topsecret', (req, res) => {
+    res.send('THIS IS TOP SECRET');
+  });
+  router.get('/deleteeverything', (req, res) => {
+    res.send('OK DELETED IT ALL!');
+  });
+
+  module.exports = router;
+  ```
+- **Using the routes:** In index.js file:
+  ```js
+  const adminRoutes = require('./routes/admin');
+
+  app.use('/admin', adminRoutes);
+  ```
+- **Test in the browser:**
+  - Type in URL: `http://localhost:3000/admin/deleteeverything?isAdmin=true`
 
 
 
