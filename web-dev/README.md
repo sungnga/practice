@@ -5208,6 +5208,38 @@ Search results for: cat
 - **Test in the browser:**
   - Type in URL: `http://localhost:3000/admin/deleteeverything?isAdmin=true`
 
+**Introducing Cookies:**
+- Cookies are little bits of information that are stored in a user's browser when using a particular website
+- Once a cookie is set, a user's browser will send the cookie on every subsequent request to the site
+- Cookies allow us to make HTTP stateful
+- Uses:
+  - Session management - keep track user login state, shopping cart
+  - Personalization - used to remember info about the user in order to show relevant content to that user over time
+  - Tracking - used to track users' web browsing habits
+
+**Sending Cookies:**
+- Document: http://expressjs.com/en/5x/api.html#res.cookie
+- `res.cookie(name, value [, options])`
+- Sets cookie `name` to `value`. The `value` parameter may be a string or object converted to JSON
+- The `options` parameter is an object that can be the following properties
+  - domain, encode, expires, httpOnly, maxAge, path, priority, secure, signed, sameSite
+- Example:
+  ```js
+  app.get('/setname', (req, res) => {
+    res.cookie('name', 'stevie chicks')
+    res.cookie('animal', 'harlequin shrimp')
+    res.send('OK SENT YOU A COOKIE!!')
+  })
+  ```
+- To see the cookies sent to a website in the browser:
+  - Go to dev tools -> Application tab -> cookies
+  - Should see the Name and Value of each cookie
+
+
+
+
+
+
 
 
 
