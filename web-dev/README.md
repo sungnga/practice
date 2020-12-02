@@ -5352,9 +5352,39 @@ Search results for: cat
   });
   ```
 
+**Intro to Flash:**
+- The flash is a special area of the session used for storing messages. Messages are written to the flash and cleared after being displayed to the user
+- The flash is typically used in combination with redirects, ensuring that the message is available to the next page that is to be rendered
+- We're going to use a package called connect-flash
+- Install: `npm i connect-flash`
+- In index.js file:
+  - Import flash: `const flash = require('connect-flash');`
+  - Make sure express-session is imported and setup
+  - Execute flash middleware: `app.use(flash());`
+  - With flash middleware in place, all requests will have a `req.flash()` function that can be used for flash messages
+  - Pass in the flash key and value in req.flash()
+  - Than call req.redirect()
+  - Wherever the redirect page is is where we want to retrieve the flash message by calling req.flash() and pass in the key
+  ```js
+  const flash = require('connect-flash');
 
+  // Execute flash middleware
+  app.use(flash());
 
+  app.get('/farms', async (req, res) => {
+    const farms = await farms.find({});
+    // Get an array of flash messages by passing the key to req.flash()
+    res.render('farms/index', { farms, messages: req.flash('success') });
+  });
 
+  app.post('/farms', async (req, res) => {
+    const farm = new farm(req.body);
+    await farm.save();
+    // Set a flash message by passing the key, followed by the value, to req.
+    req.flash('success', 'Successfully made a new farm!');
+    res.redirect('/farms');
+  });
+  ```
 
 
 
@@ -5400,3 +5430,5 @@ Search results for: cat
   - Install: `npm i cookie-parser`
 - express-session
   - Install: `npm i express-session`
+- connect-flash
+  - Install: `npm i connect-flash`
