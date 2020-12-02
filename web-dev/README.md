@@ -5235,9 +5235,23 @@ Search results for: cat
   - Go to dev tools -> Application tab -> cookies
   - Should see the Name and Value of each cookie
 
+**Cookie Parser Middleware:**
+- We're going to use cookie-parser package to parse our cookies
+- Install: `npm i cookie-parser`
+- In index.js file:
+  - Import cookie-parser
+  - Execute cookieParser
+  - Cookies are stored in `req.cookies`
+  ```js
+  const cookieParser = require('cookie-parser');
+  // Execute cookieParser
+  app.use(cookieParser());
 
-
-
+  app.get('/greet', (req, res) => {
+    const { name = 'No-name' } = req.cookies;
+    res.send(`Hey there, ${name}`);
+  });
+  ```
 
 
 
@@ -5279,3 +5293,5 @@ Search results for: cat
   - Website: https://v5.getbootstrap.com/
 - JOI - a JS validator tool
   - Install: `npm i joi`
+- cookie-parser
+  - Install: `npm i cookie-parser`
