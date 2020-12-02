@@ -5253,7 +5253,36 @@ Search results for: cat
   });
   ```
 
+**Signing Cookies:**
+- The idea of signing something in programming refers to digital signature or cryptographic signature. The idea is not to encrypt or hide informatin, instead it is to be able to verify its integrity hasn't changed
+- In cookieParser, optionally we may enable signed cookie support by passing a `secret` string, which assigns `req.secret` so it may be used by other middleware
+  - `cookieParser('secret')`
+  - Note that this `secret` string is usually stored in an enviromental variable and not be exposed
+- To tell cookieParser to send cookie as signed cookie, specify signed to true
+  - `res.cookie(name, value, { signed: true })`
+- To access regular cookies
+  - `req.cookies`
+- To access signed cookies
+  - `req.signedCookies`
+- Example:
+  ```js
+  const cookieParser = require('cookie-parser');
+  // This string is going to be used by cookieParse to sign a cookie
+  app.use(cookieParser('thisismysecret'));
 
+  app.get('/getsignedcookie', (req, res) => {
+    // Specify signed set to true
+    res.cookie('fruit', 'grape', { signed: true });
+    res.send('OK SIGNED YOUR FRUIT COOKIE!');
+  })
+
+  // To access regular cookies and signed cookies
+  app.get('/verifyfruit', (req, res) => {
+    console.log(req.cookies);
+    console.log(req.signedCookies);
+    res.send(req.cookies);
+  });
+  ```
 
 
 
