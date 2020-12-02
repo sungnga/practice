@@ -5244,7 +5244,7 @@ Search results for: cat
   - Cookies are stored in `req.cookies`
   ```js
   const cookieParser = require('cookie-parser');
-  // Execute cookieParser
+  // Execute cookieParser middleware
   app.use(cookieParser());
 
   app.get('/greet', (req, res) => {
@@ -5283,6 +5283,80 @@ Search results for: cat
     res.send(req.cookies);
   });
   ```
+
+
+## S48: EXPRESS SESSION AND FLASH
+## TOPICS:
+- Conceptual overview of session
+- Setting up Express session
+- Integrating flash messages
+
+**Introduction to Sessions:**
+- Cookies are stored in the web browser and sessions are stored on the server
+- There's a limit and size of data that can be stored in the browser
+- It's not very practical (or secure) to store a lot of data client-side using cookies. This is where sessions come in!
+- Sessions are a server-side data store that we use to make HTTP stateful. Instead of storing data using cookies, we store the data on the server-side and then send the browser a cookie that can be used to retrieve the data
+
+**Express Session Middleware:**
+- express-session middleware is a package we can use to implement sessions in Express app
+- Install: `npm i express-session`
+- By default, the session is stored in `memoryStore` and it's for development purposes, not for production. For production, it's best to use another party's session store, such as Redis or Mongo. We will do this when we deploy our app
+- In index.js file:
+  - Import express-session middleware: `const session = require('express-session');`
+  - Instantiate the middleware inside app.use()
+  - There are a whole bunch of different options we can pass in
+  - But for now, all we need to pass in to the middleware when we instantiate it is a secret. The value of the secret is a string
+    - `app.use(session({ secret: 'thisisasecret' }))`
+  - At any time on our request, incoming request object (req), we will now have a session property available: `req.session`
+  - In this `req.session`, we can add anything we want to it
+  - Remember that the cookie in the browser does not contain any information in the session. The session can contain so much more information and does not send any of the data to be stored as a cookie
+  - The only thing that it sends to the browser is a session id. That session id then is sent on every subsequent request
+  - express-session will take the session id package and the cookie and search the session store with the matching id. If there's a match, then the session info is available
+  ```js
+  const express = require('express');
+  const app = express();
+  const session = require('express-session');
+
+  const sessionOptions = {
+    secret: 'thisisnotagoodsecret',
+    resave: false,
+    saveUninitialized: false
+  };
+  // Instantiate session and pass in options
+  app.use(session(sessionOptions));
+
+  // Adding count to session
+  app.get('/viewcount', (req, res) => {
+    if (req.session.count) {
+      req.session.count += 1;
+    } else {
+      req.session.count = 1;
+    }
+    res.send(`You have viewed this page ${req.session.count} times`);
+  });
+
+  // Adding username to session
+  app.get('/register', (req, res) => {
+    const { username = 'Anonymous' } = req.query;
+    req.session.username = username;
+    res.redirect('/greet');
+  });
+
+  app.get('/greet', (req, res) => {
+    const { username } = req.session;
+    res.send(`Welcome back, ${username}`);
+  });
+
+  app.listen(3000, () => {
+    console.log('Serving app on port 3000');
+  });
+  ```
+
+
+
+
+
+
 
 
 
@@ -5324,3 +5398,5 @@ Search results for: cat
   - Install: `npm i joi`
 - cookie-parser
   - Install: `npm i cookie-parser`
+- express-session
+  - Install: `npm i express-session`
