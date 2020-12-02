@@ -5386,7 +5386,17 @@ Search results for: cat
   });
   ```
 
-
+**Res.locals and Flash:**
+- Another option is to set the flash messages on res.locals and it will be available to any templates that is rendered
+- Write a middleware that adds flash messages to res.locals
+  ```js
+  app.use((req, res, next) => {
+    res.locals.messages = req.flash('success');
+    next();
+  })
+  ```
+- In a templete file:
+  - `<%= messages %>`
 
 
 
