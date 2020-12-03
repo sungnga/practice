@@ -5424,7 +5424,41 @@ Search results for: cat
   - One thing we need to do when creating the router object from express.Router() is we need to set mergeParams option to true. We don't have access to a campground id at the moment in our review routes file
     - `const router = express.Router({ mergeParams: true });`
 
+**3. Serving Static Assets:**
+- At the root of project directory, create a folder called public. In it, create two new folders: javascripts and stylesheets
+- In public/javascripts/validateForms.js file:
+  - From the boilerplate.ejs file, cut and paste the validate form function into this file
+  ```js
+  // Example starter JavaScript for disabling form submissions if there are invalid fields
+  (function () {
+    'use strict';
 
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    const forms = document.querySelectorAll('.validated-form');
+
+    // Loop over them and prevent submission
+    Array.from(forms).forEach(function (form) {
+      form.addEventListener(
+        'submit',
+        function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+
+          form.classList.add('was-validated');
+        },
+        false
+      );
+    });
+  })();
+  ```
+- In views/layouts/boilerplate.ejs file:
+  - Include the validateForms.js file in a script tag
+  - `<script src="/javascripts/validateForms.js"></script>`
+- In app.js file:
+  - We need to tell Express to serve our public directory
+  - `app.use(express.static(path.join(__dirname, 'public')));`
 
 
 
@@ -5432,6 +5466,16 @@ Search results for: cat
 
 
  
+
+
+
+
+
+
+
+
+
+
 
 ## RESOURCES
 - Color inspiration: www.coolers.co/palettes/trending
