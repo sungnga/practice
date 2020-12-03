@@ -5417,6 +5417,14 @@ Search results for: cat
   - Use the campgrounds routes
     - `app.use('/campgrounds', campgrounds);`
 
+**2. Breaking Out Review Routes:**
+- In routes folder, create a file called reviews.js
+- In reviews.js file:
+  - Very similar process to breaking out campground routes
+  - One thing we need to do when creating the router object from express.Router() is we need to set mergeParams option to true. We don't have access to a campground id at the moment in our review routes file
+    - `const router = express.Router({ mergeParams: true });`
+
+
 
 
 
