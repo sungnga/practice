@@ -5530,7 +5530,7 @@ Search results for: cat
 - We'll style our success flash partial using Bootstrap5 and display the flash partial at the top of the page
 - In views/partials folder, create a file called flash.ejs
 - In flash.ejs file:
-  - Style the success partial using Bootstrap5 alert
+  - Render the success flash message and style the message using Bootstrap5
   - Add conditional to only display when success key exists and it's not empty
   ```html
   <% if(success && success.length) { %>
@@ -5591,11 +5591,53 @@ Search results for: cat
 		res.redirect(`/campgrounds/${id}`);
     ```
   
-
+**7. Flash Errors Partial:**
+-  In app.js file:
+  - Add an error flash key to flash middleware
+  ```js
+  app.use((req, res, next) => {
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
+    next();
+  });
+  ```
+- In views/partials/flash.ejs file:
+  - Render the error flash message and style the message using Bootstrap5
+  - Add conditional to only display when error key exists and it's not empty
+  ```html
+  <% if(error && error.length) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <%= error %>
+      <button
+        type="button"
+        class="btn-close"
+        data-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+  <% } %>
+  ```
+- In routes/campgrounds.js file:
+  - Show a flash error message when a campground has been deleted and later a user tries to access the campground page. Then redirect to campgrounds index page
+  - Do the same thing when trying to edit a campground that doesn't exist
+  ```js
+  router.get(
+    '/:id',
+    catchAsync(async (req, res) => {
+      const campground = await Campground.findById(req.params.id).populate(
+        'reviews'
+      );
+      if (!campground) {
+        req.flash('error', 'Cannot find that campground!');
+        return res.redirect('/campgrounds');
+      }
+      res.render('campgrounds/show', { campground });
+    })
+  );
+  ```
 
 
  
-
 
 
 
