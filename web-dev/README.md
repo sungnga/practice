@@ -5526,14 +5526,72 @@ Search results for: cat
   - Render the success flash key
   - `<%= success %>`
 
-
-
-
-
-
-
 **6. Flash Success Partial:**
-**7. Flash Errors Partial:**
+- We'll style our success flash partial using Bootstrap5 and display the flash partial at the top of the page
+- In views/partials folder, create a file called flash.ejs
+- In flash.ejs file:
+  - Style the success partial using Bootstrap5 alert
+  - Add conditional to only display when success key exists and it's not empty
+  ```html
+  <% if(success && success.length) { %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <%= success %>
+      <button
+        type="button"
+        class="btn-close"
+        data-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+  <% } %>
+  ```
+- In boilerplate.ejs file:
+  - Include the flash partial just above the body
+  ```html
+  <main class="container my-5">
+    <%- include('../partials/flash') %> 
+    <%- body %>
+  </main>
+  ```
+- If successfully updated or deleted a campground, display a success flash message
+- In routes/campgrounds.js file:
+  - In the update route handler to update a campground, use req.flash() to create a success flash message when a user successfully updated a campground
+    ```js
+    router.put(
+      '/:id',
+      validateCampground,
+      catchAsync(async (req, res) => {
+        // res.send('It works!')
+        const { id } = req.params;
+        const campground = await Campground.findByIdAndUpdate(
+          id,
+          { ...req.body.campground },
+          { new: true }
+        );
+        req.flash('success', 'Successfully updated campground!');
+        res.redirect(`/campgrounds/${campground._id}`);
+      })
+    );
+    ```
+  - In the delete route handler to delete a campground, use req.flash() to create a success flash message when a user successfully deleted a campground
+    ```js
+		req.flash('success', 'Successfully deleted campground');
+		res.redirect('/campgrounds');
+    ```
+- If successfully created or deleted a review, display a success flash message
+- In routes/reviews.js file:
+  - In the put route handler to create a review, use req.flash() to create a success flash message when a user successfully created a review
+    ```js
+    req.flash('success', 'Created new review!');
+    res.redirect(`/campgrounds/${campground._id}`);
+    ```
+  - In the delete route handler to delete a review, use req.flash() to create a success flash message when a user successfully deleted a review
+    ```js
+		req.flash('success', 'Successfully deleted review');
+		res.redirect(`/campgrounds/${id}`);
+    ```
+  
+
 
 
  
