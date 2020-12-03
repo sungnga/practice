@@ -5399,6 +5399,27 @@ Search results for: cat
   - `<%= messages %>`
 
 
+## S49: YELPCAMP: RESTRUCTURING AND FLASH
+**1. Breaking Out Campground Routes:**
+- At the root of project directory, create a folder called routes. In it, create a file called campgrounds.js
+- In campgrounds.js file:
+  - Import Express
+  - Create a router object from express.Router()
+  - Import campgroundSchema and Campground model
+  - Import catchAsync and ExpressError utility functions
+  - Then cut and paste all the route handlers for campgrounds to this file
+    - replace `app.get()` with `router.get()`, etc
+  - Cut and paste the validate middleware for Campground
+  - Lastly, export the router
+- In app.js file:
+  - Import the campgrounds routes
+    - `const campgrounds = require('./routes/campgrounds');`
+  - Use the campgrounds routes
+    - `app.use('/campgrounds', campgrounds);`
+
+
+
+
 
 
 
