@@ -5460,6 +5460,30 @@ Search results for: cat
   - We need to tell Express to serve our public directory
   - `app.use(express.static(path.join(__dirname, 'public')));`
 
+**4. Configuring Session:**
+- Install express-session: `npm i express-session`
+- In app.js file:
+  - Import express-session
+  - Execute and use the session in the app by calling app.use()
+  - Define session config and then pass it in to session when executing
+    - Set expiration date for the cookie. This way, the user won't be logged in forever, for example. Date.now() is formated in millisecond
+    - Set httpOnly on the cookie for extra security
+    - We will eventually move the secret to an env variable
+  ```js
+  const session = require('express-session');
+
+  const sessionConfig = {
+    secret: 'thisshouldbeabettersecret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      httpOnly: true,
+      expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+      maxAge: 1000 * 60 * 60 * 24 * 7
+    }
+  };
+  app.use(session(sessionConfig));
+  ``` 
 
 
 
