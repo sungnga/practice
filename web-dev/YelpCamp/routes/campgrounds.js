@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router()
+const router = express.Router();
 
 const { campgroundSchema } = require('../schemas.js');
 const Campground = require('../models/campground');
@@ -37,9 +37,9 @@ router.post(
 		// if (!req.body.campground) {
 		// 	throw new ExpressError('Invalid campground data', 400);
 		// }
-
 		const campground = new Campground(req.body.campground);
 		await campground.save();
+		req.flash('success', 'Successfully made a new campground!');
 		res.redirect(`/campgrounds/${campground._id}`);
 	})
 );
@@ -86,4 +86,4 @@ router.delete(
 	})
 );
 
-module.exports = router
+module.exports = router;

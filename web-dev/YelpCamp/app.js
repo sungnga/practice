@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
 const methodOverride = require('method-override');
 const session = require('express-session');
+const flash = require('connect-flash');
 
 const Campground = require('./models/campground');
 const Review = require('./models/review');
@@ -48,6 +49,13 @@ const sessionConfig = {
 	}
 };
 app.use(session(sessionConfig));
+app.use(flash());
+
+// Flash middleware
+app.use((req, res, next) => {
+	res.locals.success = req.flash('success');
+	next();
+});
 
 // Use campgrounds routes
 app.use('/campgrounds', campgrounds);

@@ -5485,8 +5485,55 @@ Search results for: cat
   app.use(session(sessionConfig));
   ``` 
 
+**5. Setting Up Flash:**
+- Install connect-flash: `npm i connect-flash`
+- Flash a message when a user successfully created a new campground
+- In app.js file:
+  - Import connect-flash
+  - Use flash in app.use()
+  - Define a flash middleware using res.locals. This way all of our templates will automatically have access to flash messages and we don't have to pass them to our templates
+  ```js
+  const flash = require('connect-flash');
+
+  app.use(flash());
+
+  // Flash middleware
+  app.use((req, res, next) => {
+    res.locals.success = req.flash('success');
+    next();
+  });
+  ```
+- In routes/campgrounds.js file:
+  - To use flash, call req.flash() and pass in key and value
+  - Call res.redirect() right after flash, because this is where the flash message will be rendered
+  ```js
+  router.post(
+    '/',
+    validateCampground,
+    catchAsync(async (req, res, next) => {
+      // res.send(req.body)
+      // if (!req.body.campground) {
+      // 	throw new ExpressError('Invalid campground data', 400);
+      // }
+      const campground = new Campground(req.body.campground);
+      await campground.save();
+      req.flash('success', 'Successfully made a new campground!');
+      res.redirect(`/campgrounds/${campground._id}`);
+    })
+  );
+  ```
+- In boilerplate.ejs file:
+  - Render the success flash key
+  - `<%= success %>`
 
 
+
+
+
+
+
+**6. Flash Success Partial:**
+**7. Flash Errors Partial:**
 
 
  
