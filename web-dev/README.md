@@ -5637,7 +5637,82 @@ Search results for: cat
   ```
 
 
- 
+## S50: AUTHENTICATION FROM "SCRATCH"
+#### TOPICS:
+- Authentication vs. authorization
+- How to (not) store passwords
+- Working with bcrypt
+- Auth demo
+- Understanding hashing functions
+- Password salts
+
+**Authentication Vs. Authorization**
+- Authentication is the process of verifying who a particular user is
+- We typically authenticate with a username/password combo, but we can also use security questions, facial recognition, etc.
+- Authorization is verifying what a specific user has access to
+- Generally, we authorize after a user has been authenticated. "Now that we know who you are, here is what you are allowed to do and NOT allowed to do"
+
+**How to (not) Store Passwords**
+- Rule #1: never store passwords
+  - Never store a password in text and as it is in database
+- The solution: Hashing
+  - Rather than storing a password in the database, we run the password through a hashing function first and then store the result in the database
+  - Hashing functions are functions that map input data of some arbitrary size to fixed-size output values
+
+**Cryptographic Hashing Functions**
+1. One-way function which is infeasible to invert
+2. Small change in input yields large change in the output
+3. Deterministic - same input yields same output
+4. Unlikely to find 2 outputs with same value
+5. Password Hash Functions are deliberately SLOW
+
+**Password Salts**
+- A salt is a random value added to the password before we hash it
+- It helps ensure unique hashes and mitigate common attacks
+
+**Intro to Bcrypt**
+- bcrypt.js package is written entirely in Javascript, so it will run on node.js and also works in the browser
+- bcrypt package is built on top of C++ and is made for node.js. It doesn't work in the browser. We will be using this package
+- Install: `npm i bcrypt`
+- The recommended number for saltRounds is 12. The higher the number, the longer it takes to generate the salt
+- Example:
+  - Import: `const bcrypt = require('bcrypt');`
+  - Call bcrypt.genSalt() to generate the salt. Pass in the saltRounds
+  - Call bcrypt.hash() to generate the hash. Pass in the password and the salt
+  - It's asynchronous operation, so we need to await it
+  - Use bcrypt.compare() to compare the text password with the hashed password
+  ```js
+  const bcrypt = require('bcrypt');
+
+  // Technique 1: generate the salt and hash separately
+  const hashPassword = async (pw) => {
+    const salt = await bcrypt.genSalt(12);
+    const hash = await bcrypt.hash(pw, salt);
+    console.log(salt);
+    console.log(hash);
+  };
+
+  // Technique 2: generate the salt and the hash
+  const hashPassword = async (pw) => {
+    const hash = await bcrypt.hash(pw, 12);
+    console.log(hash);
+  };
+
+  const login = async (pw, hashedPw) => {
+    const result = await bcrypt.compare(pw, hashedPw);
+    if (result) {
+      console.log('LOGGED YOU IN! SUCCESSFUL MATCH!');
+    } else {
+      console.log('INCORRECT!');
+    }
+  };
+
+  // hashPassword('monkey');
+  login('monkey', '$2b$12$EDvRJnvxuGAyU1cXFGhz9uPwSnGjY4u89dvgJvQ6BhThFiQy3.csG');
+  ```
+
+
+
 
 
 
