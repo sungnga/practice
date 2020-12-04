@@ -5758,7 +5758,34 @@ Search results for: cat
 - In views/register.ejs file:
   - In the form element, set action property to `/register` path and set method to `POST`
 
+**Auth Demo: Login**
+- In index.js file:
+  - Create a get route handler to serve the login form
+    - Call res.render() to render the login.ejs template
+  - Create a post route handler to login a user
+    - Find the user in the database using User.findOne()
+    - Then call bcrypt.compare() to compare the text password the user typed in the login form and the user hashed password from the database
+  ```js
+  app.get('/login', (req, res) => {
+    res.render('login');
+  });
 
+  app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+    const user = await User.findOne({ username });
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (validPassword) {
+      res.send('YAY WELCOME!');
+    } else {
+      res.send('TRY AGAIN');
+    }
+  });
+  ```
+- In views/login.ejs file:
+  - Copy and paste the register form as a starter code
+  - Change the header text to Login
+  - Change the action path to `/login`
+  - Change the button text to Login
 
 
 
@@ -5809,3 +5836,5 @@ Search results for: cat
   - Install: `npm i express-session`
 - connect-flash
   - Install: `npm i connect-flash`
+- bcrypt
+  - Install: `npm i bcrypt`
