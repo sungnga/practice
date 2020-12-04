@@ -5819,11 +5819,32 @@ Search results for: cat
   });
   ```
 
-
-
 **Auth Demo: Logout**
-**Auth Demo: Require Login Middleware**
-**Auth Demo: Refactoring to Model Methods**
+- To log someone out, we just need to get rid of the user id in the session by setting it to null. Do this in a post route handler
+- In index.js file:
+  - Create a post route handler for logout
+    - Set the user id in session to null
+    - Then redirect user to login page
+    - Another option to logout a user is use `req.session.destroy()`
+  ```js
+  app.post('/logout', (req, res) => {
+    req.session.user_id = null;
+    // req.session.destroy();
+    res.redirect('/login');
+  });
+  ```
+- In views/secret.ejs file:
+  - Render a form that has a Signout button in it
+  - Set the form path to `/logout` and the method to POST
+  ```html
+  <form action="/logout" method="POST">
+    <button>Sign Out</button>
+  </form>
+  ```
+
+
+
+
 
 
 
