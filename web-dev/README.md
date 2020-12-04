@@ -5887,7 +5887,31 @@ Search results for: cat
   ```
 
 
+## S51: YELPCAMP: ADDING IN AUTHENTICATION
+**1. Intro to Passport**
+- Passport is a tool that helps add authentication in Node.js application
+- It also comes with different stategies, different ways or services to log somone in, such as Facebook, Google, Twitter, github login
+- With Passport, it's easy to add in other stategies for users to log into our application in the future
+- We're going to begin with local login
+- Install passport: `npm i passport passport-local passport-local-mongoose`
 
+
+
+
+
+
+
+
+**2. Creating Our User Model**
+- In models folder, create a User model file called user.js
+- In user.js file:
+**3. Register Form**
+**4. Register Route Logic**
+**5. isLoggedIn Middleware**
+**6. Adding Logout**
+**7. currentUser Helper**
+**8. Fixing Register Route**
+**9. ReturnTo Behavior**
 
 
 
@@ -5939,3 +5963,5 @@ Search results for: cat
   - Install: `npm i connect-flash`
 - bcrypt
   - Install: `npm i bcrypt`
+- passport
+  - Install: `npm i passport passport-local passport-local-mongoose`
