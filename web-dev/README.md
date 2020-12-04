@@ -5864,13 +5864,32 @@ Search results for: cat
   });
   ```
 
-
-
-
-
-
-
 **Auth Demo: Refactoring to Model Methods**
+- In models/user.js file:
+  - Move the functionality where we look for a user in the database and check whether they've entered a valid password to the User model method
+  - Also, hash the password before saving to the database
+  ```js
+  userSchema.statics.findAndValidate = async function (username, password) {
+    const foundUser = await this.findOne({ username });
+    const isValid = await bcrypt.compare(password, foundUser.password);
+    return isValid ? foundUser : false;
+  };
+
+  // Hash the password before saving to the database
+  // Has the password only if it's been modified
+  userSchema.pre('save', async function (next) {
+    // If the password hasn't been changed, call next()
+    if (!this.isModified('password')) return next();
+    // If the password has been modified, hash the password
+    this.password = await bcrypt.hash(this.password, 12);
+    next();
+  });
+  ```
+
+
+
+
+
 
 
 
