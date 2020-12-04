@@ -5972,6 +5972,41 @@ Search results for: cat
     });
     ```
 
+**4. Register Form**
+- In routes folder, create a file called users.js. This file handles all the routes for user
+- In users.js file:
+  - Create a get route handler that serves the register form
+    - Call res.render() to render the register.ejs template
+  - Create a post route handler to handle the register form request
+  ```js
+  const express = require('express');
+  const router = express.Router();
+  const User = require('../models/user');
+
+  router.get('/register', (req, res) => {
+    res.render('users/register');
+  });
+
+  router.post('/register', async (req, res) => {
+    res.send(req.body);
+  });
+
+  module.exports = router;
+  ```
+- In views folder, create another folder called users. In it, create a file called register.ejs
+- In register.ejs file:
+  - Include the boilerpate template
+  - Render a register form that has a username, email, and password input fields, and a submit button
+  - Add browser form validation by adding a class of validated-form and set novalidate on the form element
+- In app.js file:
+  - Import the user routes
+  - Tell app to use the userRoutes
+  ```js
+  const userRoutes = require('./models/user');
+
+  app.use('/', userRoutes);
+  ```
+
 
 
 
