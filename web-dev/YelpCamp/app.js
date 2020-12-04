@@ -5,9 +5,12 @@ const ejsMate = require('ejs-mate');
 const methodOverride = require('method-override');
 const session = require('express-session');
 const flash = require('connect-flash');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
 
 const Campground = require('./models/campground');
 const Review = require('./models/review');
+const User = require('./models/user');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
 const { campgroundSchema, reviewSchema } = require('./schemas.js');
@@ -51,6 +54,13 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 app.use(flash());
 
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 // Flash middleware
 app.use((req, res, next) => {
 	res.locals.success = req.flash('success');
@@ -61,6 +71,15 @@ app.use((req, res, next) => {
 // Use campgrounds routes
 app.use('/campgrounds', campgrounds);
 app.use('/campgrounds/:id/reviews', reviews);
+
+app.get('/fakeUser', async (req, res) => {
+	const user = new User({ email: 'colt@example.com', username: 'colt' });
+	// 1st arg is the user object
+	// 2nd arg is the password
+	// Passport hashes the password, creates the salt, and stores the salt & hash on the new user
+	const newUser = await User.register(user, 'chicken');
+	res.send(newUser);
+});
 
 app.get('/', (req, res) => {
 	res.render('home');

@@ -5923,20 +5923,58 @@ Search results for: cat
   module.exports = mongoose.model('User', userSchema);
   ```
 
+**3. Configuring Passport**
+- Now we're going to configure our app, the app.js file, to use Passport
+- In app.js file
+  - Import passport and passport-local
+  - Import User model
+  - Tell our app to use `passport.initialize()`
+  - Tell our app to use `passport.session()`
+    - This is a middleware that we need to use if we want persistent login sessions
+    - Also, make sure to use `session()` before `passport.session()`
+  - Next step is to tell Passport to use the LocalStrategy. And this LocalStrategy, the authentication method is located on our User model call `authenticate()`
+    - `authenticate()` is a static method coming from passport-local-mongoose. It generates a function that is used in Passport's LocalStrategy
+    - `passport.use(new LocalStrategy(User.authenticate()));`
+  - Tell Passport to serialize a user by calling `serializeUser()` on passport
+    - `serializeUser()` is a static method that generates a function that is used by Passport to serialize users into the session
+    - `passport.serializeUser(User.serializeUser());`
+  - Tell Passport to deserialize a user, get a user out of the session, by calling `deserializeUser()` method
+    - `passport.deserializeUser(User.deserializeUser());`
+    ```js
+    const passport = require('passport');
+    const LocalStrategy = require('passport-local');
+    const User = require('./models/user');
+
+    app.use(session(sessionConfig));
+
+    app.use(passport.initialize());
+    app.use(passport.session());
+    passport.use(new LocalStrategy(User.authenticate()));
+
+    passport.serializeUser(User.serializeUser());
+    passport.deserializeUser(User.deserializeUser());
+    ```
+  - Next, let's register a new user using a helper method called `register(user, password, cb)`
+    - This is a static method provided by passport-local-mongoose to register a new user instance with a given password and checks if username is unique
+    - Call this method on the User model: `User.register()`
+      - Pass in the user object as 1st arg
+      - Pass in a password as 2nd arg
+    - This is an async operation, so we need to await it
+    - Store the registered user in a variable
+    ```js
+    app.get('/fakeUser', async (req, res) => {
+      const user = new User({ email: 'andrew@example.com', username: 'andrew' });
+      // 1st arg is the user object
+      // 2nd arg is the password
+      // Passport hashes the password, creates the salt, and stores the salt & hash on the new user
+      const newUser = await User.register(user, 'chicken');
+      res.send(newUser);
+    });
+    ```
 
 
 
 
-
-
-
-**3. Register Form**
-**4. Register Route Logic**
-**5. isLoggedIn Middleware**
-**6. Adding Logout**
-**7. currentUser Helper**
-**8. Fixing Register Route**
-**9. ReturnTo Behavior**
 
 
 
