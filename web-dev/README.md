@@ -5842,6 +5842,35 @@ Search results for: cat
   </form>
   ```
 
+**Auth Demo: Require Login Middleware**
+- We're going to write a simple middleware that verifies if somebody is logged in or not. Because often times, we want to protect multiple endpoints
+- We simply pass in this middleware as a 2nd argument to any route handlers we want to protect
+- In index.js file:
+  - Write a middleware function that checks if the user id exists in the session
+    - If it doesn't exist, they're not logged in user. Redirect to login page
+    - If it exist, they're logged in user. Call next()
+  - Use this middleware anywhere that requires user to be logged in. Pass in this middleware as 2nd arg
+  ```js
+  const requireLogin = (req, res, next) => {
+    if (!req.session.user_id) {
+      return res.redirect('/login');
+    }
+    next();
+  };
+
+  // Using the middleware in a route
+  app.get('/secret', requireLogin, (req, res) => {
+    res.render('secret');
+  });
+  ```
+
+
+
+
+
+
+
+**Auth Demo: Refactoring to Model Methods**
 
 
 
