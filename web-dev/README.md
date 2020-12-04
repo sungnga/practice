@@ -5730,6 +5730,38 @@ Search results for: cat
 - In views/register.ejs file:
   - Render a form with username and password input fields and a Sign Up button
 
+**Auth Demo: Registering**
+- In index.js file:
+  - Import mongoose and bcrypt
+  - Connect mongoose to mongoDB database. Name the database authDemo
+  - Create a post route handler to create a new user. This is an async function
+    - Destructure username and password from req.body
+    - Hash the password using bcrypt.hash() and save the hashed password to hash variable
+    - Instantiate a new user from User model
+      - Set the username to username from req.body
+      - Set the password to hash
+    - Save the new user to the database using user.save() method. This is an async operation, so we need to await it
+    - When finished, redirect user to home page using res.redirect()
+    ```js
+    app.post('/register', async (req, res) => {
+      // res.send(req.body)
+      const { username, password } = req.body;
+      const hash = await bcrypt.hash(password, 12);
+      const user = new User({
+        username,
+        password: hash
+      });
+      await user.save();
+      res.redirect('/');
+    });
+    ```
+- In views/register.ejs file:
+  - In the form element, set action property to `/register` path and set method to `POST`
+
+
+
+
+
 
 
 
