@@ -5787,11 +5787,43 @@ Search results for: cat
   - Change the action path to `/login`
   - Change the button text to Login
 
+**Auth Demo: Staying Logged In with Session**
+- Install express-session: `npm i express-session`
+- In index.js file:
+  - Import express-session
+  - Execute the session inside app.use(). Specify the secret option
+  - If the user is successfuly logged in, we will store the user id in the session. And then redirect them to '/secret' page
+    - If they're not successfully logged in, redirect them to login page
+  - If a user successfully registered as a new user, we will store the user id to the session asl well. Then redirect them to '/secret' page
+  - Once a user is successfully logged in or registered, their user id is stored in the session. Only these users have access to the '/secret' page
+  ```js
+  app.use(session({ secret: 'notagoodsecret' }));
+
+  app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+    const user = await User.findOne({ username });
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (validPassword) {
+      req.session.user_id = user._id;
+      res.redirect('/secret');
+    } else {
+      res.redirect('/login');
+    }
+  });
+
+  app.get('/secret', (req, res) => {
+    if (!req.session.user_id) {
+      res.redirect('/login');
+    }
+    res.send('THIS IS SECRET! YOU CANNOT SEE ME UNLESS YOU ARE LOGGED IN!');
+  });
+  ```
 
 
 
-
-
+**Auth Demo: Logout**
+**Auth Demo: Require Login Middleware**
+**Auth Demo: Refactoring to Model Methods**
 
 
 
