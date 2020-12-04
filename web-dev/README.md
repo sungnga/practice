@@ -5895,16 +5895,41 @@ Search results for: cat
 - We're going to begin with local login
 - Install passport: `npm i passport passport-local passport-local-mongoose`
 
-
-
-
-
-
-
-
 **2. Creating Our User Model**
 - In models folder, create a User model file called user.js
 - In user.js file:
+  - Import Mongoose and passport-local-mongoose
+  - Define the userSchema
+  - Use userSchema.plugin() and pass in passportLocalMongoose
+    - This will add username and password fields to our userSchema
+    - Passport-Local Mongoose will add a username, hash and salt field to store the username, the hashed password and the salt value
+  - Instantiate a User model and export it
+  ```js
+  const mongoose = require('mongoose');
+  const Schema = mongoose.Schema;
+  const passportLocalMongoose = require('passport-local-mongoose');
+
+  const userSchema = new Schema({
+    email: {
+      type: String,
+      required: true,
+      unique: true
+    }
+  });
+
+  // This will add username and password fields to our userSchema
+  userSchema.plugin(passportLocalMongoose);
+
+  module.exports = mongoose.model('User', userSchema);
+  ```
+
+
+
+
+
+
+
+
 **3. Register Form**
 **4. Register Route Logic**
 **5. isLoggedIn Middleware**
