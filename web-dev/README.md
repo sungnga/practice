@@ -5711,8 +5711,24 @@ Search results for: cat
   login('monkey', '$2b$12$EDvRJnvxuGAyU1cXFGhz9uPwSnGjY4u89dvgJvQ6BhThFiQy3.csG');
   ```
 
-
-
+**Auth Demo: Setup**
+- Install: `npm i express mongoose ejs bcrypt`
+- In models/user.js file:
+  - Import mongoose
+  - Define userSchema
+    - Define username and password
+    - Set both to string type and set required to true
+  - Instantiate a User model and export it
+- In index.js file:
+  - Import Express
+  - Instantiate an app object from express
+  - Call app.listen() for server to listen on port 3000
+  - Import User model
+  - Set the view engine to ejs and set views to views directory
+  - Create a get route handler for path '/register'. This route serves the register form
+    - Call res.render() and render the register.ejs template
+- In views/register.ejs file:
+  - Render a form with username and password input fields and a Sign Up button
 
 
 
