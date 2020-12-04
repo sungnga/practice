@@ -6007,6 +6007,43 @@ Search results for: cat
   app.use('/', userRoutes);
   ```
 
+**5. Register Route Logic**
+- To register a user, we first create a basic user instance from the User model with just the username and email, but not the password. To register a new user, we call the register() method on the User model and pass in the basic user object and the password as arguments
+- In routes/users.js file:
+  - Import catchAsync utility function
+  - Register a user in a try/catch block
+    - If there's an error, we want to flash an error message and redirect user to register page
+    - If success, flash a success massage and redirect user to campgrounds page
+  - First create a user object from User model
+    - Provide the email and username, but not the password
+    - Save that to a user variable
+  - Then call the register() method on the User model to register the user
+    - Pass in the user object and the password as arguments
+    - This is an async operation, so we need to await it
+    - Save it to a registeredUser variable
+  ```js
+  const catchAsync = require('../utils/catchAsync');
+
+  router.post(
+    '/register',
+    catchAsync(async (req, res) => {
+      // res.send(req.body);
+      try {
+        const { email, username, password } = req.body;
+        const user = new User({ email, username });
+        const registeredUser = await User.register(user, password);
+      } catch (e) {
+        req.flash('error', e.message);
+        res.redirect('/register');
+      }
+      console.log(registeredUser);
+      req.flash('success', 'Welcome to Yelp Camp!');
+      res.redirect('/campgrounds');
+    })
+  );
+  ```
+
+
 
 
 
