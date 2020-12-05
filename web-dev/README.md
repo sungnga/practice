@@ -6043,8 +6043,38 @@ Search results for: cat
   );
   ```
 
+**6. Login Routes**
+- For logging a user, we can use `passport-authenticate()` middleware provided by Passport. We just need to specify the login strategy and options to handle failures
+- In routes/users.js file:
+  - Create a get route handler that serves the login form
+    - Call res.render() and render the login.ejs template
+  - Create a post route handler that handles the login user functionality
+    - As 2nd arg, use the `passport.authenticate()` middleware
+      - 1st arg is specify the login strategy. In our case, it's local login
+      - 2nd arg is specify options as object. If login fails we want to flash an error message and redirect user back to login page
+    - If they've made it pass the middleware, that means they're authenticated and we can flash a success message and redirect user to campgrounds index page
+  ```js
+  router.get('/login', (req, res) => {
+    res.render('users/login');
+  });
 
-
+  router.post(
+    '/login',
+    passport.authenticate('local', {
+      failureFlash: true,
+      failureRedirect: '/login'
+    }),
+    (req, res) => {
+      req.flash('success', 'Welcome back!');
+      res.redirect('/campgrounds');
+    }
+  );
+  ```
+- In views/users folder, create a file called login.ejs file
+- In login.ejs file:
+  - This login form is very similar to the register.ejs form. Copy and paste as a starter code
+  - For login, we only need username and password input fields
+  - Change the form path to `/login` and it's a POST method
 
 
 
