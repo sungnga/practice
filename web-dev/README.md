@@ -6046,6 +6046,7 @@ Search results for: cat
 **6. Login Routes**
 - For logging a user, we can use `passport-authenticate()` middleware provided by Passport. We just need to specify the login strategy and options to handle failures
 - In routes/users.js file:
+  - Import passport: `const passport = require('passport');`
   - Create a get route handler that serves the login form
     - Call res.render() and render the login.ejs template
   - Create a post route handler that handles the login user functionality
@@ -6076,7 +6077,25 @@ Search results for: cat
   - For login, we only need username and password input fields
   - Change the form path to `/login` and it's a POST method
 
-
+**7. isLoggedIn Middleware**
+- To keep track of whether a user is authenticated or is logged in or not, we can use a middleware provided by Passport called `isAuthenticated()`. This middleware is automatically added to the request object (req)
+- We can write our own middleware that we can use anywhere in our application that requires a user to be authenticated before accessing certain features
+- At the root of project, create a file called middleware.js
+- In middleware.js file:
+  - Write an isLoggedIn middleware that checks if the user is authenticated or not
+    - If not, redirect user to login page
+    - If authenticated, call next()
+  ```js
+  module.exports.isLoggedIn = (req, res, next) => {
+    if (!req.isAuthenticated()) {
+      req.flash('error', 'You must be signed in');
+      return res.redirect('/login');
+    }
+    next();
+  };
+  ```
+- We can use this middleware when a user tries to create a new campground, edit a campground, and delete a campground. A user must be authenticated/signed in
+  - To use the middleware, just pass in the name of the middleware as 2nd argument in the request route
 
 
 
