@@ -6097,8 +6097,28 @@ Search results for: cat
 - We can use this middleware when a user tries to create a new campground, edit a campground, and delete a campground. A user must be authenticated/signed in
   - To use the middleware, just pass in the name of the middleware as 2nd argument in the request route
 
-
-
+**8. Adding Logout**
+- Passport added two methods automatically to the request object (req) called `login()` and `logout()`. After calling it, we can redirect user to somewhere else
+- In routes/users.js file:
+  - Create a get route handler to logout a user using the req.logout() method
+  - Add a success flash message when a user successfully logged out
+  - Then redirect them to campgrounds index page
+  ```js
+  router.get('/logout', (req, res) => {
+    req.logout();
+    req.flash('success', 'Goodbye!');
+    res.redirect('/campgrounds');
+  });
+  ```
+- In views/partials/navbar.ejs file:
+  - Add nav links for Login, Sign Up, and Logout in the navbar
+  ```html
+  <div class="navbar-nav ml-auto">
+    <a class="nav-link" href="/login">Login</a>
+    <a class="nav-link" href="/register">Sign Up</a>
+    <a class="nav-link" href="/logout">Logout</a>
+  </div>
+  ```
 
 
 
