@@ -6120,6 +6120,42 @@ Search results for: cat
   </div>
   ```
 
+**9. currentUser Helper**
+- In the navebar, when a user is already logged in, we don't want to display the Sign Up or Login links. When a user is logged in, display the Logout link 
+- Passport has automatically added a property called `user` to the request object (req). Passport is going to deserialize the user data in the session and fill in `req.user` with that data
+- When calling `req.user`, we have access to the user in the session
+  - When there's no user in the session, `req.user` is set to undefined
+  - If there's a user, it contains the user id, name, and email
+- In app.js file:
+  - We want our all of our templates to have access to the current user, so we want to set `req.user` globally, just like we did with success and error flash messages
+  ```js
+  app.use((req, res, next) => {
+    res.locals.currentUser = req.user;
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
+    next();
+  });
+  ```
+- In navbar.ejs file:
+  - Write a condition that checks if there's a currentUser in the session
+  ```html
+  <div class="navbar-nav ml-auto">
+    <% if(!currentUser) { %>
+    <a class="nav-link" href="/login">Login</a>
+    <a class="nav-link" href="/register">Sign Up</a>
+    <% } else { %>
+    <a class="nav-link" href="/logout">Logout</a>
+    <% } %>
+  </div>
+  ```
+
+
+
+
+
+
+
+
 
 
 
