@@ -6264,17 +6264,29 @@ Search results for: cat
   <% } %>
   ```
 
-
-
-
-
-
-
-
 **3. Campground Permissions**
-**4. Authorization Middleware**
-**5. Reviews Permissions**
-**6. More Reviews Authorization**
+- If a user is not the author of the campground, they don't have permission to edit or delete the campground. Even though we hide the Edit/Delete buttons, we still need to add the functionality to protect the routes, in case someone uses other methods to edit/delete the campground
+- In routes/campgrounds.js file:
+  - Write a middleware
+  - Use this middleware in campground edit route, edit form route, and delete route
+    - Pass in the middleware as the 3rd argument
+  ```js
+  const isAuthor = async (req, res, next) => {
+    const { id } = req.params;
+    const campground = await Campground.findById(id);
+    if (!campground.author.equals(req.user._id)) {
+      req.flash('error', 'You do not have permission to edit this campground!');
+      return res.redirect(`/campgrounds/${id}`);
+    }
+    next();
+  };
+  ```
+
+
+
+
+
+
 
 
 

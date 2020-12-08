@@ -18,6 +18,17 @@ const validateCampground = (req, res, next) => {
 	}
 };
 
+// Middleware that checks if campground author matches the currentUser in the session
+const isAuthor = async (req, res, next) => {
+	const { id } = req.params;
+	const campground = await Campground.findById(id);
+	if (!campground.author.equals(req.user._id)) {
+		req.flash('error', 'You do not have permission to do this!');
+		return res.redirect(`/campgrounds/${id}`);
+	}
+	next();
+};
+
 router.get(
 	'/',
 	catchAsync(async (req, res) => {
@@ -65,6 +76,7 @@ router.get(
 router.get(
 	'/:id/edit',
 	isLoggedIn,
+	isAuthor,
 	catchAsync(async (req, res) => {
 		const campground = await Campground.findById(req.params.id);
 		if (!campground) {
@@ -78,6 +90,7 @@ router.get(
 router.put(
 	'/:id',
 	isLoggedIn,
+	isAuthor,
 	validateCampground,
 	catchAsync(async (req, res) => {
 		// res.send('It works!')
@@ -95,6 +108,7 @@ router.put(
 router.delete(
 	'/:id',
 	isLoggedIn,
+	isAuthor,
 	catchAsync(async (req, res) => {
 		const { id } = req.params;
 		await Campground.findByIdAndDelete(id);
