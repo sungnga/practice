@@ -6402,6 +6402,43 @@ Search results for: cat
   - In the delete route handler, pass in the isLoggedIn middleware as 2nd arg, and isReviewAuthor middleware as 3rd arg
 
 
+## S52: YELPCAMP: CONTROLLERS AND STAR RATINGS
+**1. Refactoring to Campgrounds Controller**
+- Our route handlers for campgrounds, reviews, and users are getting very long. We want to break out our code even further by separating the controllers into its own file and folder. And we can import and use them in our routes. A controller is the function that get passed in as the last argument in the route handler. We can name these controllers so we know what they do
+- The term controller comes from MVC: Model View Controller
+  - We've set up the models directory to store the models
+  - We've set up the views directory to store the templates/layouts for each model
+  - Now we will set up the controllers directory to store the main logic
+- At the root project directory, create a folder called controllers. In it, create a file called campgrounds.js
+- In campgrounds.js file:
+  - Import the Campground model
+  - Create campgrounds controller for each campground route
+    - Simply cut and paste the function from each route handler in routes/campgrounds.js file
+    - Name each controller function
+  - Don't forget to export each method
+  ```js
+  const Campground = require('../models/campground');
+
+  module.exports.index = async (req, res) => {
+    const campgrounds = await Campground.find({});
+    res.render('campgrounds/index', { campgrounds });
+  };
+  // The rest of the controller functions here
+  ```
+- In routes/campgrounds.js file:
+  - Import the campgrounds controller
+  - This campgrounds controller is an object that contains a whole bunch of methods on it
+  - Pass in the controller method in each route handler using this syntax, `campgrounds.methodName`
+  ```js
+  const campgrounds = require('../controllers/campgrounds');
+
+  router.get('/', catchAsync(campgrounds.index));
+  router.get('/new', isLoggedIn, campgrounds.renderNewForm);
+  //the rest of the campground routes here
+  ```
+
+
+
 
 
 
