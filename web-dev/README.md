@@ -6428,7 +6428,7 @@ Search results for: cat
 - In routes/campgrounds.js file:
   - Import the campgrounds controller
   - This campgrounds controller is an object that contains a whole bunch of methods on it
-  - Pass in the controller method in each route handler using this syntax, `campgrounds.methodName`
+  - Pass in the controller method in each route handler as the last argument using this syntax, `campgrounds.methodName`
   ```js
   const campgrounds = require('../controllers/campgrounds');
 
@@ -6436,6 +6436,20 @@ Search results for: cat
   router.get('/new', isLoggedIn, campgrounds.renderNewForm);
   //the rest of the campground routes here
   ```
+
+**2. Adding Reviews and Users Controllers**
+- In controllers folder, create 2 files called reviews.js and users.js
+- In reviews.js and users.js files:
+  - Follow the same process as refactoring campgrounds controller
+  - Don't forget to export each controller method
+- In routes/reviews.js file:
+  - Import the reviews controller: `const reviews = require('../controllers/reviews');`
+  - Follow the same process as using the campgrounds controllers
+    - Pass in the controller method in each route handler as the last argument using this syntax, `reviews.methodName`
+- In routes/users.js file:
+  - Import the users controller: `const users = require('../controllers/users');`
+  - Follow the same process as using the campgrounds controllers
+    - Pass in the controller method in each route handler as the last argument using this syntax, `users.methodName`
 
 
 
