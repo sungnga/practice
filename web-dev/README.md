@@ -6282,10 +6282,28 @@ Search results for: cat
   };
   ```
 
+**4. Refactoring Authorization Middleware**
+- Lets move the middleware in routes/campgrounds.js and routes/reviews.js into middleware.js file
+- In middleware.js file:
+  - Import the following:
+    ```js
+    const ExpressError = require('./utils/ExpressError');
+    const { campgroundSchema, reviewSchema } = require('./schemas.js');
+    const Campground = require('./models/campground');
+    ```
+  - Cut and paste the validateCampground and isAuthor middleware from campground routes
+  - Cut and past the validateReview middleware from review routes
+  - Make sure to export them
+- In routes/campgrounds.js file:
+  - Import validateCampground and isAuthor middleware
+  - `const { isLoggedIn, validateCampground, isAuthor } = require('../middleware');`
+- In routes/reviews.js file:
+  - Import the validateReview middleware
+  - `const { validateReview } = require('../middleware');`
 
 
-
-
+**5. Reviews Permissions**
+**6. More Reviews Authorization**
 
 
 
