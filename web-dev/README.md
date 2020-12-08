@@ -6241,8 +6241,40 @@ Search results for: cat
   - In the post route handler to create a new campground, assign the campground author to the user id found in the session. Do this right before saving the campground to the database
   - `campground.author = req.user._id;`
 
+**2. Showing and Hiding Edit/Delete**
+- If a user visits a campground show page and that user is not the author of that campground, we want to hide the Edit/Delete button. To do this, we first want to check if there's a currentUser and then check to see if the currentUser id matches with the campground author
+- If no user is logged in, currentUser is set to undefined. And doing currentUser._id will break everything. That is why we need to check if currentUser exists as well
+- In views/campgrounds/show.ejs file:
+  ```html
+  <% if(currentUser && campground.author.equals(currentUser._id)) { %>
+    <div class="card-body">
+      <a
+        class="card-link btn btn-info"
+        href="/campgrounds/<%= campground._id %>/edit"
+        >Edit</a
+      >
+      <form
+        class="d-inline"
+        action="/campgrounds/<%= campground._id %>?_method=DELETE"
+        method="POST"
+      >
+        <button class="btn btn-danger">Delete</button>
+      </form>
+    </div>
+  <% } %>
+  ```
 
 
+
+
+
+
+
+
+**3. Campground Permissions**
+**4. Authorization Middleware**
+**5. Reviews Permissions**
+**6. More Reviews Authorization**
 
 
 
