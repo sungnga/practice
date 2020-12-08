@@ -6204,6 +6204,49 @@ Search results for: cat
   ```
 
 
+## S52: YELPCAMP: BASIC AUTHORIZATION
+**1. Adding an Author to Campground**
+- When a user creates a campground, we want to associate the user id, found in req.user, with the campground. We also want to display the campground author's username on the campground show page
+- In models/campground.js file:
+  - Add author property to the campgroundSchema
+  ```js
+	author: {
+		type: Schema.Types.ObjectId,
+		ref: 'User'
+	}
+  ```
+- Next, we want to have access to the author information in the show campground page. To do that, we need to populate the author key in the campground route handler
+- In routes/campgrounds.js file:
+  - In route handler to find and show a campground, chain on the .populate() method and pass in the author key
+  ```js
+  router.get(
+    '/:id',
+    catchAsync(async (req, res) => {
+      const campground = await Campground.findById(req.params.id)
+        .populate('reviews')
+        .populate('author');
+        // console.log(campground)
+      if (!campground) {
+        req.flash('error', 'Cannot find that campground!');
+        return res.redirect('/campgrounds');
+      }
+      res.render('campgrounds/show', { campground });
+    })
+  );
+  ```
+- In views/campgrounds/show.ejs file:
+  - Display the author's username in the show campground template
+  - `<li class="list-group-item text-muted">Submitted by <%= campground.author.username %></li>`
+- In routes/campgrounds.js file:
+  - In the post route handler to create a new campground, assign the campground author to the user id found in the session. Do this right before saving the campground to the database
+  - `campground.author = req.user._id;`
+
+
+
+
+
+
+
 
 
 
