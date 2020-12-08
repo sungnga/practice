@@ -6451,9 +6451,60 @@ Search results for: cat
   - Follow the same process as using the campgrounds controllers
     - Pass in the controller method in each route handler as the last argument using this syntax, `users.methodName`
 
+**3. A Fancy Way to Restructure Routes**
+- Another way to shorten our route handlers is to group routes that have the same path using the .route() method on the router object
+  - In the .route() method, specify the path
+  - Then chain on the various http incoming request methods. Leave off the pathname
+- In routes/campgrounds.js file:
+  - Group all the routes that has the path of `'/'`
+  - Group all the routes that has the path of `'/:id'`
+  ```js
+  router
+    .route('/')
+    .get(catchAsync(campgrounds.index))
+    .post(
+      isLoggedIn,
+      validateCampground,
+      catchAsync(campgrounds.createCampground)
+    );
+  
+  router
+    .route('/:id')
+    .get(catchAsync(campgrounds.showCampground))
+    .put(
+      isLoggedIn,
+      isAuthor,
+      validateCampground,
+      catchAsync(campgrounds.updateCampground)
+    )
+    .delete(isLoggedIn, isAuthor, catchAsync(campgrounds.deleteCampground));
+  ```
+- In routes/users.js file:
+  - Group all the routes that has the path of `'/register'`
+  - Group all the routes that has the path of `'/login'`
+  ```js
+  router
+    .route('/register')
+    .get(users.renderRegister)
+    .post(catchAsync(users.register));
+
+  router
+    .route('/login')
+    .get(users.renderLogin)
+    .post(
+      passport.authenticate('local', {
+        failureFlash: true,
+        failureRedirect: '/login'
+      }),
+      users.login
+    );
+  ```
 
 
 
+
+**4. Displaying Star Ratings**
+**5. Star Rating Form**
 
 
 
