@@ -6500,11 +6500,24 @@ Search results for: cat
     );
   ```
 
-
-
-
 **4. Displaying Star Ratings**
-**5. Star Rating Form**
+- Starability website: https://github.com/LunarLogic/starability
+- In public/stylesheets folder, create a file called stars.css
+  - Paste in the basic star rating css code
+  - https://github.com/LunarLogic/starability/blob/master/starability-css/starability-basic.css
+- In views/campgrounds/show.ejs file:
+  - Link the stars.css stylesheet
+  - Use the star rating on each review card
+  ```html
+  <link rel="stylesheet" href="/stylesheets/stars.css">
+
+  <h5 class="card-title"><%= review.author.username %></h5>
+  <p class="starability-result" data-rating="<%= review.rating %>">
+    Rated: <%= review.rating %> stars
+  </p>
+  ```
+
+
 
 
 
@@ -6556,3 +6569,5 @@ Search results for: cat
   - Install: `npm i bcrypt`
 - passport
   - Install: `npm i passport passport-local passport-local-mongoose`
+- Starability
+  - Website: https://github.com/LunarLogic/starability
