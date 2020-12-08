@@ -6338,8 +6338,68 @@ Search results for: cat
   );
   ```
 
+**6. More Reviews Authorization**
+- In the reviews section in a campground show page, we want to display the review author's username for each review. To do this, we need to populate the author key of the review key of the Campground model
+- In routes/campgrounds.js file:
+  - When calling .populate() method to populate the reviews, pass in an object instead of the reviews string
+    - specify the path to be reviews key
+    - then specify the populate again and set the path to author key. So it's a nested populate. We're populating the author within the reviews array
+  ```js
+  router.get(
+    '/:id',
+    catchAsync(async (req, res) => {
+      const campground = await Campground.findById(req.params.id)
+        .populate({
+          path: 'reviews',
+          populate: {
+            path: 'author'
+          }
+        })
+        .populate('author');
+      // console.log(campground)
+      if (!campground) {
+        req.flash('error', 'Cannot find that campground!');
+        return res.redirect('/campgrounds');
+      }
+      res.render('campgrounds/show', { campground });
+    })
+  );
+  ```
+- In views/campgrounds/show.ejs file:
+  - Display the review author's username for each review
+  - We only want to show the Delete button for a review if the currentUser is the author of the review. We don't want them to delete a review if they are not the author
+    - Check if currentUser exists and if review author matches the currentUser id
+  ```html
+  <h6 class="card-subtitle mb-2 text-muted">
+    By <%= review.author.username %>
+  </h6>
 
-
+  <% if(currentUser && review.author.equals(currentUser._id)) { %>
+    <form
+      action="/campgrounds/<%= campground._id %>/reviews/<%= review._id %>?_method=DELETE"
+      method="POST"
+    >
+      <button class="btn btn-sm btn-danger">Delete</button>
+    </form>
+  <% } %>
+  ```
+- Next, in order to delete a review, you must be a logged in user and the author of the review
+- In middleware.js file:
+  - Write a isReviewAuthor middleware that checks if the review author matches the currentUser id in the session
+  ```js
+  module.exports.isReviewAuthor = async (req, res, next) => {
+    const { id, reviewId } = req.params;
+    const review = await Review.findById(reviewId);
+    if (!review.author.equals(req.user._id)) {
+      req.flash('error', 'You do not have permission to do this!');
+      return res.redirect(`/campgrounds/${id}`);
+    }
+    next();
+  };
+  ```
+- In routes/reviews.js file:
+  - Import isLoggedIn and isReviewAuthor middleware
+  - In the delete route handler, pass in the isLoggedIn middleware as 2nd arg, and isReviewAuthor middleware as 3rd arg
 
 
 
