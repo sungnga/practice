@@ -6301,9 +6301,47 @@ Search results for: cat
   - Import the validateReview middleware
   - `const { validateReview } = require('../middleware');`
 
-
 **5. Reviews Permissions**
-**6. More Reviews Authorization**
+- In models/review.js file
+  - Add an author property to the reviewSchema
+  ```js
+	author: {
+		type: Schema.Types.ObjectId,
+		ref: 'User'
+	}
+  ```
+- A user must be a login user to be able to see the review form and create a review
+- In views/campgrounds/show.ejs file:
+  - Wrap the review form in an if statement if the user is currentUser
+- We also want to protect the route in case someone attempts to create a review in other methods. Use the isLoggedIn middleware in the route handler. After a review is created, we want to associate the review author to the current user id
+- In routes/reviews.js file:
+  - Import isLoggedIn middleware
+  - Use the middleware in the post route handler by passing it in as 2nd argument
+  - After a review is successfully created, assign the review author to the current user id
+  ```js
+  const { validateReview, isLoggedIn } = require('../middleware');
+
+  router.post(
+    '/',
+    isLoggedIn,
+    validateReview,
+    catchAsync(async (req, res) => {
+      const campground = await Campground.findById(req.params.id);
+      const review = new Review(req.body.review);
+      review.author = req.user._id;
+      campground.reviews.push(review);
+      await review.save();
+      await campground.save();
+      req.flash('success', 'Created new review!');
+      res.redirect(`/campgrounds/${campground._id}`);
+    })
+  );
+  ```
+
+
+
+
+
 
 
 
