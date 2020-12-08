@@ -6166,10 +6166,42 @@ Search results for: cat
   });
   ```
 
-
-
-
-
+**11. returnTo Behavior: req.originalURL**
+- When a user attempts to access a page that requires user authentication, but they're not authenticated, so we ask them to log in. We want to remember or keep track of the page the user wanted to visit so that they've logged in, it will direct them to that page
+- What we want to do is find this URL and create a state for it in the session. Once the user is logged in and directed to this page, we can clear this URL from the session
+- There's a `originalUrl` property that's automatically added to the request object (req): `req.originalUrl`
+- In middleware.js file:
+  - In isLoggedIn middleware, store the original URL, `req.originalUrl`, in the session. Call the session returnTo
+  ```js
+  module.exports.isLoggedIn = (req, res, next) => {
+    // console.log('REQ.USER...', req.user)
+    if (!req.isAuthenticated()) {
+      req.session.returnTo = req.originalUrl;
+      req.flash('error', 'You must be signed in');
+      return res.redirect('/login');
+    }
+    next();
+  };
+  ```
+- In routes/users.js file:
+  - In the route handler for login, after the user is authenticated, we can redirect user to the originalUrl/returnTo stored in the session
+  - If there isn't a returnTo, redirect to campgrounds index page
+  - After redirect, we want to delete the returnTo in the session
+  ```js
+  router.post(
+    '/login',
+    passport.authenticate('local', {
+      failureFlash: true,
+      failureRedirect: '/login'
+    }),
+    (req, res) => {
+      req.flash('success', 'Welcome back!');
+      const redirectUrl = req.session.returnTo || '/campgrounds';
+      delete req.session.returnTo;
+      res.redirect(redirectUrl);
+    }
+  );
+  ```
 
 
 
