@@ -6149,8 +6149,22 @@ Search results for: cat
   </div>
   ```
 
-
-
+**10. Fixing Register Route**
+- After someone has registered an account, it's a bad experience for them to have to login again to use our application. We want to log them in once they're registered
+- Passport added a `login()` function on the request object(req) that can be used to establish a login session
+- When the login operation completes, `user` will be assigned to `req.user`
+- Note: `passport.authenticate()` middleware invokes `req.login()` automatically. This function is primarily used when users sign up, during which `req.login()` can be invoked to automatically log in the newly registered user
+- Syntax: `req.login(user, callback)`
+- In routes/users.js file:
+  - In route handler to register a new user, after a registeredUser is created, call `req.login()` function to login the registeredUser
+  ```js
+  const registeredUser = await User.register(user, password);
+  req.login(registeredUser, (err) => {
+    if (err) return next(err);
+    req.flash('success', 'Welcome to Yelp Camp!');
+    res.redirect('/campgrounds');
+  });
+  ```
 
 
 
