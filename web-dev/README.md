@@ -6517,7 +6517,26 @@ Search results for: cat
   </p>
   ```
 
-
+**5. Star Rating Form**
+- Starability website has a demo code for star rating form. Use it as a starter code
+- In views/campgrounds/show.ejs file:
+  - Change the input fields name property to review[rating]
+  - Set the star rating default value to 1, if the user submits the review without giving star rating
+  ```html
+  <fieldset class="starability-basic">
+    <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
+    <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+    <label for="first-rate1" title="Terrible">1 star</label>
+    <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+    <label for="first-rate2" title="Not good">2 stars</label>
+    <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+    <label for="first-rate3" title="Average">3 stars</label>
+    <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+    <label for="first-rate4" title="Very good">4 stars</label>
+    <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+    <label for="first-rate5" title="Amazing">5 stars</label>
+  </fieldset>
+  ```
 
 
 
