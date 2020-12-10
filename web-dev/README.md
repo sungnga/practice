@@ -6716,6 +6716,35 @@ Search results for: cat
   <% } %> 
   ```
 
+**7. Displaying Images In A Carousel**
+- Bootstrap doc: https://getbootstrap.com/docs/5.0/components/carousel/
+- In views/campgrounds/show.ejs file:
+  - Loop through campground.images and display images in a carousel
+  - Use Bootstrap Carousel component to implement this functionality
+  - Add previous and next controls buttons if there are more than one campground image
+  ```html
+  <div id="campgroundCarousel" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+      <% campground.images.forEach((img, i) => { %> 
+        <div class="carousel-item <%= i === 0 ? 'active' : ''%>">
+          <img src="<%= img.url %>" class="d-block w-100" alt="">
+        </div>
+      <% }) %> 
+    </div>
+    <% if(campground.images.length > 1) { %> 
+      <a class="carousel-control-prev" href="#campgroundCarousel" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#campgroundCarousel" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </a>
+    <% } %> 
+  </div>
+  ```
+
+
 
 
 
