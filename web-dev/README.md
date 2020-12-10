@@ -6539,6 +6539,64 @@ Search results for: cat
   ```
 
 
+## S54: YELPCAMP: IMAGE UPLOAD
+**1. Intro to Image Upload Process**
+- A regular HTML form is not going to be able to send files to our server
+- We need to store our images somewhere and we typically don't store images in Mongo
+- We will be using Cloudinary, a media storage service, to store our images
+- The process we'll take to upload an image is:
+  - Set up our form so that we can accept files
+  - Submit the form and it'll hit our server at one of our routes
+  - Take the submitted image and store it in Cloudinary
+  - Cloudinary will send back a URL to where the image is stored
+  - Take the URL and store it in Mongo database
+  
+**2. The Multer Middleware**
+- If we want an HTML input element to accept file type, we need to set the `enctype` of the form submission to the value `multipart/form-data`
+- Multer is a node.js middleware for handling `multipart/form-data`, which is primarily used for uploading files
+- NOTE: Multer will not process any form which is not multipart(`multipart/form-data`)
+- Install: `npm i multer`
+- In views/campgrounds/new.ejs file:
+  - In the form element, add the `enctype` property
+  - Add an input element for a file
+  ```html
+    <form enctype="multipart/form-data">
+      <div class="mb-3">
+				<input type="file" name="image">
+			</div>
+    </form>
+  ```
+- In routes/campgrounds.js file:
+  - Import multer
+  - Initialize multer by executing multer and pass in a configuration object. Save it to `upload` variable. `upload` is multer middleware we can use in our routes
+  - In the post route handler for campground, pass in upload middleware as 1st argument
+    - If uploading one image, call .single() method on upload
+      - Pass in the name of the field of form data. In our case, 'image' is the value of name of our input field
+      - After the form is submitted and the file has been uploaded, `req.file` contains the information about the uploaded file. The file info is an object
+    - If uploading more than one images, call .array() on upload
+      - In the input element, add multiple property: `<input type="file" name="image" multiple>`
+      - The uploaded files information can be found in `req.files`. The files info is stored in an array of objects
+  ```js
+  const multer = require('multer');
+  const upload = multer({ dest: 'uploads/' });
+
+  router
+    .route('/')
+    .post(upload.array('image'), (req, res) => {
+      console.log(req.body, req.files);
+    });
+  ```
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6590,3 +6648,5 @@ Search results for: cat
   - Install: `npm i passport passport-local passport-local-mongoose`
 - Starability
   - Website: https://github.com/LunarLogic/starability
+- Multer
+  - Install: `npm i multer`
