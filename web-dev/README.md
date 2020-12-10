@@ -6613,7 +6613,7 @@ Search results for: cat
   ```
 
 **5. Uploading to Cloudinary Basics**
-- Doc: 
+- Doc: https://www.npmjs.com/package/multer-storage-cloudinary
 - Install: `npm i cloudinary multer-storage-cloudinary`
 - At the root of project directory, create a folder called cloudinary. In this folder, create a file called index.js
 - In index.js file:
@@ -6644,17 +6644,17 @@ Search results for: cat
   const { storage } = require('../cloudinary');
   const upload = multer({ storage });
   ```
-- In `req.file`, where the file info is stored, the path property should be set to the URL where the file is stored in cloudinary storage
-  - Post request route to create a campground
+- In `req.file`, where the file info is stored, the path property should be set to the URL where the file is stored in cloudinary storage. This is a nice integration between multer and cloudinary using the multer-storage-cloudinary package
+  - Post request route to create a campground using multer middleware and we can see the upload file info in `req.file`
     ```js
     router
       .route('/')
       .post(upload.single('image'), (req, res) => {
         console.log(req.body, req.file);
       });
-  ```
-  - Example of file info from `req.file`
     ```
+  - Example of file info from `req.file`
+    ```js
     {
       fieldname: 'image',
       originalname: 'node_5.jpeg',
@@ -6665,6 +6665,60 @@ Search results for: cat
       filename: 'YelpCamp/apcxqisy1glaxjnmld5d'
     }
     ```
+
+**6. Storing Uploaded Image Links In Mongo**
+- Let's store the path and filename properties of an upload file on our Campground model in MongoDB and display the images on our campground show page
+- In file objects found in `req.files`, we can make use of the `path` property to display the stored photos in cloudinary onto our campground page. We can also make use of the `filename` property when, for example, a user wants to delete the image from campground page 
+- Update the images property of campground schema
+- In models/campground.js file:
+  - Update the images property in CampgroundSchema
+    - Make it an array of file objects
+    - Each file object stores a url and a filename. Both are of string type
+  ```js
+	images: [
+		{
+			url: String,
+			filename: String
+		}
+	]
+  ```
+- In the campgrounds post route handler, use the upload middleware and enable multiple files upload
+- In routes/campgrounds.js file:
+  - In post route handler for campgrounds, pass in the upload (multer) middleware as a 2nd argument
+  - Call the .array() method on upload and specify 'image' as an argument. We're telling multer to look for file in the form with the field name of image
+  - Also, calling .array() method instead of .single() method will enable users to upload multiple images
+   ```js
+  router
+    .route('/')
+    .post(
+      isLoggedIn,
+      upload.array('image'),
+      validateCampground,
+      catchAsync(campgrounds.createCampground)
+    );
+  ```
+- In the create new campground controller, set the path and filename properties from `req.files` on the images property of campground instance
+- In controllers/campgrounds.js file:
+  - In createCampground controller:
+    - We now have access to `req.files` object which contains file data
+    - When creating a campground, we want to loop over the files array in `req.files` and store the path and filename properties in our campground instance under images
+    ```js
+    campground.images = req.files.map((f) => ({
+      url: f.path,
+      filename: f.filename
+    }));
+    ```
+- Loop over the campround images array and display the images on campground show page
+- In views/camprounds/show.ejs file:
+  ```html
+  <% for(let img of campground.images) { %> 
+    <img src="<%= img.url %>" class="card-img-top mb-1" alt="..." />
+  <% } %> 
+  ```
+
+
+
+
 
 
 
@@ -6719,5 +6773,6 @@ Search results for: cat
 - dotenv
   - Install dotenv: `npm i dotenv`
 - Cloudinary and multer-storage-cloudinary
-  - Doc: 
+  - Doc: https://www.npmjs.com/package/multer-storage-cloudinary
   - Install: `npm i cloudinary multer-storage-cloudinary`
+  - Import in cloudinary/index.js file
