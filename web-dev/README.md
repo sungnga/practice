@@ -6744,7 +6744,11 @@ Search results for: cat
   </div>
   ```
 
-
+**8. Fixing Our Seeds**
+- Let's fix our seeds campground data to include images from cloudinary
+- In seeds/index.js file, add the images property and set the array to cloudinary urls
+- In views/campgrounds/index.ejs file, set the campground thumbnail image from one of the images in campground.images
+- In the terminal, run: `node seeds/index.js`. This will wipeout our database and seed with the updated data
 
 
 
