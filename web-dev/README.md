@@ -6550,9 +6550,10 @@ Search results for: cat
   - Take the submitted image and store it in Cloudinary
   - Cloudinary will send back a URL to where the image is stored
   - Take the URL and store it in Mongo database
-  
+
 **2. The Multer Middleware**
 - If we want an HTML input element to accept file type, we need to set the `enctype` of the form submission to the value `multipart/form-data`
+- Multer doc: https://github.com/expressjs/multer
 - Multer is a node.js middleware for handling `multipart/form-data`, which is primarily used for uploading files
 - NOTE: Multer will not process any form which is not multipart(`multipart/form-data`)
 - Install: `npm i multer`
@@ -6587,11 +6588,29 @@ Search results for: cat
     });
   ```
 
+**3. Cloudinary Registration**
+- Website: https://cloudinary.com/
+- Sign up for an account
+- On the dashboard page, we'll see our account details
 
-
-
-
-
+**4. Environment Variables with dotenv**
+- We never want to directly embedding any API credentials or secret keys inside our application. Instead, we store them in an .env file. We don't share this file with others and it stays on our local machine and it is hidden away
+- Install dotenv: `npm i dotenv`
+- At the root of the project directory, create a file called .env
+- In .env file:
+  ```JS
+  CLOUDINARY_CLOUD_NAME=
+  CLOUDINARY_KEY=
+  CLOUDINARY_SECRET=
+  ```
+- In app.js file:
+  - Add the following code at the very top of the file
+  - If we're running in development mode, require in dotenv package. This will take the variables that are defined in the .env file and add them into process.env in the node app
+  ```js
+  if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+  }
+  ```
 
 
 
@@ -6649,4 +6668,8 @@ Search results for: cat
 - Starability
   - Website: https://github.com/LunarLogic/starability
 - Multer
+  - Multer doc: https://github.com/expressjs/multer
   - Install: `npm i multer`
+- dotenv
+  - Install dotenv: `npm i dotenv`
+  
