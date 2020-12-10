@@ -6612,13 +6612,59 @@ Search results for: cat
   }
   ```
 
+**5. Uploading to Cloudinary Basics**
+- Doc: 
+- Install: `npm i cloudinary multer-storage-cloudinary`
+- At the root of project directory, create a folder called cloudinary. In this folder, create a file called index.js
+- In index.js file:
+  ```js
+  const cloudinary = require('cloudinary').v2;
+  const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINDARY_KEY,
+    api_secret: process.env.CLOUDINARY_SECRET
+  });
 
+  const storage = new CloudinaryStorage({
+    cloudinary,
+    params: {
+      folder: 'YelpCamp',
+      allowedFormats: ['jpeg', 'png', 'jpg']
+    }
+  });
 
-
-
-
-
+  module.exports = { cloudinary, storage };
+  ```
+- In campgrounds.js file:
+  - Import storage from cloudinary
+  - Inside the multer configure object, pass in storage. This tells multer middleware to store the uploaded files in cloudinary storage
+  ```js
+  const { storage } = require('../cloudinary');
+  const upload = multer({ storage });
+  ```
+- In `req.file`, where the file info is stored, the path property should be set to the URL where the file is stored in cloudinary storage
+  - Post request route to create a campground
+    ```js
+    router
+      .route('/')
+      .post(upload.single('image'), (req, res) => {
+        console.log(req.body, req.file);
+      });
+  ```
+  - Example of file info from `req.file`
+    ```
+    {
+      fieldname: 'image',
+      originalname: 'node_5.jpeg',
+      encoding: '7bit',
+      mimetype: 'image/jpeg',
+      path: 'https://res.cloudinary.com/sungnga/image/upload/v1607586594/YelpCamp/apcxqisy1glaxjnmld5d.jpg',
+      size: 8554,
+      filename: 'YelpCamp/apcxqisy1glaxjnmld5d'
+    }
+    ```
 
 
 
@@ -6672,4 +6718,6 @@ Search results for: cat
   - Install: `npm i multer`
 - dotenv
   - Install dotenv: `npm i dotenv`
-  
+- Cloudinary and multer-storage-cloudinary
+  - Doc: 
+  - Install: `npm i cloudinary multer-storage-cloudinary`
