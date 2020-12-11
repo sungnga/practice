@@ -6750,6 +6750,45 @@ Search results for: cat
 - In views/campgrounds/index.ejs file, set the campground thumbnail image from one of the images in campground.images
 - In the terminal, run: `node seeds/index.js`. This will wipeout our database and seed with the updated data
 
+**9. Adding Upload to Edit Page**
+- In views/campgrounds/edit.ejs file:
+  - Set the edit form to accept multipart/form-data: `enctype="multipart/form-data"`
+  - Add a file input field and enable multiple file upload
+  - `<input type="file" name="image" id="image" multiple>`
+- In routes/campgrounds.js file:
+  - In the put route handler to updata campground:
+    - add upload multer middleware as a 3rd argument
+    - call .array() method on upload to set up files array
+    - pass in 'image' input field name to .array() method to tell multer to look for files in input field form of name 'image'
+    - `upload.array('image')`
+- In controllers/campgrounds.js file:
+  - In updateCampground controller:
+    - Loop over the image files in `req.files` and set the file path and filename to url and filename properties. Save it to imgs variable
+    - Push this imgs array to campground.images array
+    - Save the campground to Mongo database
+    ```js
+    module.exports.updateCampground = async (req, res) => {
+      const { id } = req.params;
+      const campground = await Campground.findByIdAndUpdate(
+        id,
+        { ...req.body.campground },
+        { new: true }
+      );
+      const imgs = req.files.map((f) => ({
+        url: f.path,
+        filename: f.filename
+      }));
+      campground.images.push(...imgs);
+      await campground.save();
+      req.flash('success', 'Successfully updated campground!');
+      res.redirect(`/campgrounds/${campground._id}`);
+    };
+    ```
+
+
+
+
+
 
 
 
