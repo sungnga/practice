@@ -6797,6 +6797,44 @@ Search results for: cat
   </div>
   ```
 
+**11. Deleting Images Form**
+- In the edit cammpground form, we want to display all the uploaded images and add a delete checkbox next to each so that user can select images they wish to delete
+- In views/campgrounds/edit.ejs file:
+  - Iterate over campground.images array and render the images. Use forEach loop so that we have access to the array index
+  - Add a checkbox input field
+    - set the value to img.filename. This is the filename in stored Cloudinary
+    - set the name property to be an empty deleteImages array
+  - Any checkbox that was checked, its value is added to deleteImages array and we have access to the values of this array in `req.body` when we parse the body
+  ```html
+  <div class="mb-3">
+    <% campground.images.forEach((img, i) => { %>
+    <img src="<%= img.url %> " class="img-thumbnail" alt="" />
+    <div class="form-check-inline">
+      <input
+        type="checkbox"
+        name="deleteImages[]"
+        value="<%= img.filename %>"
+        id="image-<%= i %>"
+      />
+    </div>
+    <label for="image-<%= i %>">Delete?</label>
+    <% }) %>
+  </div>
+  ```
+- In schemas.js file:
+  - We need to update our form validation campgroundSchema to include deleteImages
+  ```js
+  module.exports.campgroundSchema = Joi.object({
+    campground: Joi.object({
+      title: Joi.string().required(),
+      price: Joi.number().required().min(0),
+      // image: Joi.string().required(),
+      location: Joi.string().required(),
+      description: Joi.string().required()
+    }).required(),
+    deleteImages: Joi.array()
+  });
+  ```
 
 
 

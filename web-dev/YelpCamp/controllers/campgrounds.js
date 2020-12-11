@@ -57,6 +57,7 @@ module.exports.renderEditForm = async (req, res) => {
 module.exports.updateCampground = async (req, res) => {
 	// res.send('It works!')
 	const { id } = req.params;
+	console.log(req.body)
 	const campground = await Campground.findByIdAndUpdate(
 		id,
 		{ ...req.body.campground },
