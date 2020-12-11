@@ -6836,6 +6836,41 @@ Search results for: cat
   });
   ```
 
+**12. Deleting Images Backend (from Mongo & Cloudinary)**
+- So in our update campground route handler, we have access to deleteImages array (which contains the delete filenames) in `req.body` object. We can use this to delete images from Mongo database and Cloudinary storage
+- The complicated thing is we have a deleteImages array and we have images array in the database. We don't want to remove the entire images array in the database. We only want to remove images that have matching filenames in the deleteImages array
+- In controllers/campgrounds.js file:
+  - In updateCampground controller:
+    - If there's anything in req.body.deleteImages array,
+      - use .updateOne() method on the campground instance
+      - we're going to use the `$pull` operator to pull filename elements out of the images array
+      - use the `$in` operator where the filename is in req.body.deleteImages array
+      ```js
+      if (req.body.deleteImages) {
+        await campground.updateOne({
+          $pull: { images: { filename: { $in: req.body.deleteImages } } }
+        });
+        console.log(campground);
+      }
+      ```
+  - Next thing we want to do is delete images in Cloudinary storage
+    - Import cloudinary that was exported from cloudinary/index.js
+    - If there's anything in req.body.deleteImages array and before updating the campground in Mongo database,
+      - loop over the req.body.deleteImages array and call cloudinary.uploader.delete() method and pass in the filename
+      - this is an async opertation, so use await keyword in front of it
+      ```js
+      const { cloudinary } = require('../cloudinary');
+
+      if (req.body.deleteImages) {
+        for (let filename of req.body.deleteImages) {
+          await cloudinary.uploader.destroy(filename);
+        }
+        await campground.updateOne({
+          $pull: { images: { filename: { $in: req.body.deleteImages } } }
+        });
+      }
+      ```
+
 
 
 
