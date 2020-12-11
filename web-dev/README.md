@@ -6785,7 +6785,17 @@ Search results for: cat
     };
     ```
 
-
+**10. Customizing File Input Field**
+- Bootstrap doc: https://getbootstrap.com/docs/5.0/forms/form-control/
+- Let's style the file input field using Bootstrap5
+- In views/campgrounds/new.ejs and edit.ejs files:
+  - Move the file input field as the last field in the form
+  ```html
+  <div class="mb-3">
+    <label for="image" class="form-label">Upload Images</label>
+    <input class="form-control" name="image" type="file" id="image" multiple>
+  </div>
+  ```
 
 
 
