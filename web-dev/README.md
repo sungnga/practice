@@ -6908,6 +6908,52 @@ Search results for: cat
   ```
 
 
+## S55: YELPCAMP: ADDING MAPS
+**1. Registering For Mapbox**
+- Mapbox website: https://www.mapbox.com/
+- Sign up for an account
+- Once logged in, click on Tokens at the top menu
+- Copy the default public token
+- In .env file, save the token in an environment variable:
+  - MAPBOX_TOKEN=
+
+**2. Geocoding Our Locations**
+- Mapbox geocoding: https://github.com/mapbox/mapbox-sdk-js/blob/main/docs/services.md#geocoding
+- Install: `npm i @mapbox/mapbox-sdk`
+- We're going to use mapbox geocoding API service to get the latitude and longitude for a place. Specifically, we want to use forwardGeocode
+- In controllers/campgrounds.js file:
+  - Import mapbox-sdk geocoding service
+  - Next, we need to pass in our token when we instantiate a new mapbox geocoding instance. Save the new instance in a `geocoder` variable
+  - And now `geocoder` contains the two methods we want: forwardGeocode and reverseGeocode
+  - In createCampground controller:
+    - Call the .forwardGeocode() method on geocoder. Then chain on the .send() method after
+    - Pass in, as an object, the query and limit properties. Query is set to the name of the place, which we store in `req.body.campground.location`
+    - `geoData.body.features[0].geometry.coordinates` will give us `[long,lat]` of the place
+  ```js
+  const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+  const mapboxToken = process.env.MAPBOX_TOKEN;
+  const geocoder = mbxGeocoding({ accessToken: mapboxToken });
+
+  module.exports.createCampground = async (req, res, next) => {
+    const geoData = await geocoder
+      .forwardGeocode({
+        query: req.body.campground.location,
+        limit: 1
+      })
+      .send();
+    // This will return [long,lat]
+    res.send(geoData.body.features[0].geometry.coordinates);
+  };
+  ```
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6967,3 +7013,6 @@ Search results for: cat
   - Doc: https://www.npmjs.com/package/multer-storage-cloudinary
   - Install: `npm i cloudinary multer-storage-cloudinary`
   - Import in cloudinary/index.js file
+- mapbox-sdk
+  - Mapbox geocoding: https://github.com/mapbox/mapbox-sdk-js/blob/main/docs/services.md#geocoding
+  - Install: `npm i @mapbox/mapbox-sdk`
