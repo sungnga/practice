@@ -6871,6 +6871,42 @@ Search results for: cat
       }
       ```
 
+**13. Adding a Thumbnail Virtual Property**
+- When users upload images to our application, they can be very large-size files. And making request to display them on our page will take time. Instead, we're going to use Cloudinary transformation API to request a modified version, a small thumbnail version of the images 
+- In Cloudinary URL, we can specify certain parameters of the image we want to get back
+- For example, if we want to request an image that is 100px wide, we simply add `w_100` as a parameter to the URL
+  - Original: https://res.cloudinary.com/sungnga/image/upload/v1607650818/YelpCamp/ggpykgwvqxmk1ehnbl37.jpg
+  - Modified: https://res.cloudinary.com/sungnga/image/upload/w_100/v1607650818/YelpCamp/ggpykgwvqxmk1ehnbl37.jpg
+- Currently we're storing the original URL in our MongoDB and we don't need to change this. What we can do in Mongo is we can set up a virtual property on our Campground model. We can set this up in the CampgroundSchema
+- In models/campground.js file:
+  - Note that we can only add virtual properties to a schema. We can't add a virtual property to our images array
+  - So what we can do is first create a schema for our image. Then we can call .virtual() method on the image schema
+  ```js
+  const ImageSchema = new Schema({
+    url: String,
+    filename: String
+  });
+
+  ImageSchema.virtual('thumbnail').get(function () {
+    // 'this' refers to individual image
+    return this.url.replace('/upload', '/upload/w_150');
+  });
+
+  const CampgroundSchema = new Schema({
+	title: String,
+  images: [ImageSchema],
+  //rest of the code...
+  })
+  ```
+- Now we want to load these thumbnail-version of the images in campground edit page
+- In views/campgrounds/edit.ejs file:
+  - While we loop through campground.images array, we now have access to img.thumbnail property
+  ```html
+  <% campground.images.forEach((img, i) => { %>
+    <img src="<%= img.thumbnail %> " class="img-thumbnail" alt="" />
+  <% }) %>
+  ```
+
 
 
 
