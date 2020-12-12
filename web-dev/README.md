@@ -6929,6 +6929,7 @@ Search results for: cat
     - Call the .forwardGeocode() method on geocoder. Then chain on the .send() method after
     - Pass in, as an object, the query and limit properties. Query is set to the name of the place, which we store in `req.body.campground.location`
     - `geoData.body.features[0].geometry.coordinates` will give us `[long,lat]` of the place
+    - `geoData.body.features` is an array of objects and since we set the limit property to 1, there's only one element in this array. We can access the element using the bracket notation on the array: `features[0]`
   ```js
   const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
   const mapboxToken = process.env.MAPBOX_TOKEN;
@@ -6946,11 +6947,63 @@ Search results for: cat
   };
   ```
 
-
-
-
-
-
+**3. Working with GeoJSON**
+- Next thing we want to do is take the coordinate point (long & lat) from mapbox api and store it in our Campground model and our database
+- When we make a request to mapbox to get geocode, what we get back from mapbox in the `geometry` property is an example of what's called a geoJSON 
+  - `geoData.body.features[0].geometry`
+- GeoJSON follows a very particular format or pattern. This is a standard
+  - `{ "type": "Point", "coordinates": [long,lat] }`
+- And we want to store this geoJSON in our Campground model
+- Mongoose schema has a way for us to define this geoJSON (a point) in our model schema
+  ```js
+  geometry: {
+    type: {
+      type: String,
+      enum: ['Point'],  // 'geometry.type' must be 'Point'
+      required: true
+    },
+    coordinates: {
+      type: [Number],
+      required: true
+    }
+  }
+  ```
+- In models/campground.js file:
+  - Update the CampgroundSchema by defining the geometry property
+  ```js
+  const CampgroundSchema = new Schema({
+    title: String,
+    images: [ImageSchema],
+    geometry: {
+      type: {
+        type: String,
+        enum: ['Point'], // 'geometry.type' must be 'Point'
+        required: true
+      },
+      coordinates: {
+        type: [Number],
+        required: true
+      }
+    },
+    price: Number,
+    description: String,
+    location: String,
+    author: {
+      type: Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    reviews: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Review'
+      }
+    ]
+  });
+  ```
+- Now, let's store the campground geometry in campground database when we create a new campground
+- In controllers/campgrounds.js file:
+  - In createCampground controller, save the geoJSON we get back from mapbox api to campground.geometry
+  - `campground.geometry = geoData.body.features[0].geometry;`
 
 
 
