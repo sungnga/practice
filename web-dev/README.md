@@ -7017,6 +7017,7 @@ Search results for: cat
     ```
 - In public/javascripts folder, create a file called showPageMap.js
   - For now, copy the sample code from the Mapbox GL doc to display a map on a page. We just want to be able to display a map on campground show page 
+  - Set the container property to 'map'. The id of the div tag for displaying the map is also set to 'map'
     ```js
     mapboxgl.accessToken = mapToken;
     const map = new mapboxgl.Map({
@@ -7037,14 +7038,41 @@ Search results for: cat
   - Display the map just above the carousel div tag
     - `<div id='map' class='mb-3' style='width: 400px; height: 300px;'></div>`
 
+**5. Centering the Map On A Campground**
+- Let's display the correct location of campground on the map and add a marker onto the map
+- To create a map marker:
+  - Create a new mapbox GL marker instance by calling `new mapboxgl.Marker()`
+  - Then call .setLngLat() method on the instance and pass in the array of lng/lat coordinate
+  - Then call .addTo() method and pass in map. This will add the marker to the div tag with the id of 'map'
+  ```js
+  new mapboxgl.Marker()
+    .setLngLat([-74.5, 40])
+    .addTo(map)
+  ```
+- If we want to access our campground object on the client-side in showPageMap.js file so we can do stuff to it, we need to create a campground variable in a script in show.ejs file for Javascript to run first before we have access to campground object in showPageMap.js file. Since the campground object is a Javascript object, we want to stringify camgpround by calling `JSON.stringify()` method
+- In views/campgrounds/show.ejs file:
+  ```html
+  <script>
+    const mapToken = '<%- process.env.MAPBOX_TOKEN %>'
+    const campground = <%- JSON.stringify(campground) %>
+  </script>
+  <script src="/javascripts/showPageMap.js"></script>
+  ```
+- In public/javascripts/showPageMap.js file:
+  - Now that we have acess to the campground object in json format, we can pass in the coordinate point of our campground location to the mapbox GL map and marker instances
+  - The campground long/lat array is stored in `campground.geometry.coordinates`
+  ```js
+  mapboxgl.accessToken = mapToken;
+  const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+    center: campground.geometry.coordinates, // starting position [lng, lat]
+    zoom: 11 // starting zoom
+  });
 
-
-
-
-
-
-
-
+  // Add a marker
+  new mapboxgl.Marker().setLngLat(campground.geometry.coordinates).addTo(map);
+  ```
 
 
 
