@@ -7005,6 +7005,46 @@ Search results for: cat
   - In createCampground controller, save the geoJSON we get back from mapbox api to campground.geometry
   - `campground.geometry = geoData.body.features[0].geometry;`
 
+**4. Displaying a Map Using Mapbox GL JS Library**
+- Let's display a map on campground show page using Mapbox GS JS library
+- Mapbox GL docs: https://docs.mapbox.com/mapbox-gl-js/api/
+- In boilerplate.ejs file:
+  - Load these scripts in the head element
+  - For our purpose, loading these scripts here is sufficient. If we're building a larger app, we might not want to load these scripts on every single page
+    ```html
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.css' rel='stylesheet' />
+    ```
+- In public/javascripts folder, create a file called showPageMap.js
+  - For now, copy the sample code from the Mapbox GL doc to display a map on a page. We just want to be able to display a map on campground show page 
+    ```js
+    mapboxgl.accessToken = mapToken;
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+      center: [-74.5, 40], // starting position [lng, lat]
+      zoom: 9 // starting zoom
+    });
+    ```
+- In views/campgrounds/show.ejs:
+  - At the very bottom of the file, add a script that extracts the mapbox token from process.env. Then right below this script, add a another script that executes the showPageMap.js file
+    ```html
+    <script>
+      const mapToken = '<%- process.env.MAPBOX_TOKEN %>'
+    </script>
+    <script src="/javascripts/showPageMap.js"></script>
+    ```
+  - Display the map just above the carousel div tag
+    - `<div id='map' class='mb-3' style='width: 400px; height: 300px;'></div>`
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7069,3 +7109,4 @@ Search results for: cat
 - mapbox-sdk
   - Mapbox geocoding: https://github.com/mapbox/mapbox-sdk-js/blob/main/docs/services.md#geocoding
   - Install: `npm i @mapbox/mapbox-sdk`
+  - Import in controllers/campgrounds.js file
