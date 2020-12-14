@@ -7035,8 +7035,8 @@ Search results for: cat
     </script>
     <script src="/javascripts/showPageMap.js"></script>
     ```
-  - Display the map just above the carousel div tag
-    - `<div id='map' class='mb-3' style='width: 400px; height: 300px;'></div>`
+  - Display the map as the first item in the 2nd column of the page
+    - `<div id='map' class='mb-3' style='width: 100%; height: 300px;'></div>`
 
 **5. Centering the Map On A Campground**
 - Let's display the correct location of campground on the map and add a marker onto the map
@@ -7073,6 +7073,36 @@ Search results for: cat
   // Add a marker
   new mapboxgl.Marker().setLngLat(campground.geometry.coordinates).addTo(map);
   ```
+
+**6. Fixing Our Seeds Bug**
+- When creating a new campground, if a user doesn't upload a campground image, our app breaks because it's looping through campground.images and looking for a URL
+- In views/campgrounds/index.ejs file:
+  - Write an if statement that checks if there's an image in campground.images array
+    - If there is, set the image src to the campground image url
+    - If there isn't, set the image src to the default image
+    ```html
+		<div class="col-md-4">
+			<% if(campground.images.length) { %>
+				<img class="img-fluid" alt="" src="<%= campground.images[0].url %>" />
+			<% } else { %>
+				<img class="img-fluid" alt="" src="https://res.cloudinary.com/sungnga/image/upload/v1607882509/YelpCamp/kenhpqttubmdf300fmgr.jpg" />
+			<% } %> 
+		</div>
+    ```
+- Currently, none of our seeds have the geometry property. So if we update any of the seeds campground, our code breaks
+- In seeds/index.js file:
+  - Add a geometry property and hard-code in the coordinate point
+  - `geometry: { type: 'Point', coordinates: [-122.3301, 47.6038] }`
+- Now, reseed the database. Run in the terminal: `node seeds/index.js`
+
+
+
+
+
+
+
+
+
 
 
 
