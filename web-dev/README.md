@@ -7125,6 +7125,26 @@ Search results for: cat
   ```
 
 
+## S56: YELPCAMP: FANCY CLUSTER MAP
+**1. Adding Earthquake Cluster Map to Campground Index Page**
+- Mapbox cluster example: https://docs.mapbox.com/mapbox-gl-js/example/cluster/
+- In public/javascripts/clusterMap.js file:
+  - Start out with the example code from Mapbox doc of the cluster map
+  - Set the mapboxgl.accessToken to our .env mapbox token variable 
+- In views/campgrounds/index.ejs file:
+  - At the top of the file, add a div tag and specify the dimension so the cluster map will live here
+  - At the bottom of the file, 
+    - add a script tag to access our .env mapbox token
+    - add a another script tag to run the clusterMap.js file
+    ```html
+    <div id="map" style="width: 100%; height: 500px;"></div>
+
+    <script>
+      const mapToken = '<%- process.env.MAPBOX_TOKEN %>';
+    </script>
+    <script src="/javascripts/clusterMap.js"></script>
+    ```
+
 
 
 
