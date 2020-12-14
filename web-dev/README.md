@@ -7095,8 +7095,34 @@ Search results for: cat
   - `geometry: { type: 'Point', coordinates: [-122.3301, 47.6038] }`
 - Now, reseed the database. Run in the terminal: `node seeds/index.js`
 
-
-
+**7. Customizing Map Popup**
+- Mapbox marker popup docs: https://docs.mapbox.com/mapbox-gl-js/api/markers/#popup
+- In public/javascripts/showPageMap.js file:
+  - In the mapbox marker instance:
+    - call .setPopup() method to set the popup
+    - In this .setPopup() method, create a new popup instance by calling the `new mapboxgl.Popup()` method
+    ```js
+    new mapboxgl.Marker()
+      .setLngLat(campground.geometry.coordinates)
+      .setPopup(
+        new mapboxgl.Popup({ offset: 25 }).setHTML(
+          `<h5>${campground.title}</h5><p>${campground.location}</p>`
+        )
+      )
+      .addTo(map);
+    ```
+- Let's update the map when the user updates the campground location
+- In controllers/camgrounds.js file:
+  - Add this code to the updateCampground controller to update campground.geometry property
+  ```js
+	const geoData = await geocoder
+		.forwardGeocode({
+			query: req.body.campground.location,
+			limit: 1
+		})
+    .send();
+  campground.geometry = geoData.body.features[0].geometry;
+  ```
 
 
 
