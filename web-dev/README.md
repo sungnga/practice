@@ -7249,6 +7249,17 @@ Search results for: cat
   - Set the body element to take up 100vh
   - Set max-width of the cover-container class to take up 60vw
 
+**2. Additional Home Page Styling**
+- In views/home.ejs file:
+  - Add text to main content
+- In public/stylesheets/home.css file:
+  - In the body tag, add a background-image
+  - Style the nav links, hover state and active state
+  - Add gradient shadow overlay on background image
+  - Style text and button in main content
+
+
+
 
 
 
