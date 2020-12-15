@@ -7175,7 +7175,13 @@ Search results for: cat
 - In public/javascripts/clusterMap.js file:
   - Change the value of source property to campgrounds instead
 
-
+**5. Changing Cluster Size and Color**
+- First, let's increase the number of campgrounds in our data set to at least 300 campgrounds in seeds/index.js file. Then reseed our database by running `node seeds/index.js` in the terminal
+- In public/javascripts/clusterMap.js file:
+  - Change the map style theme from dark to light
+  - Change the cluster size tiers to a much smaller number
+  - Can change color and the radius size of cluster for each tier
+  - Do this inside the `map.addLayer()` method of id clusters
 
 
 
