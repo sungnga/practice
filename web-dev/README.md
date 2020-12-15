@@ -7235,6 +7235,20 @@ Search results for: cat
   ```
 
 
+## S57: YELPCAMP: STYLES CLEAN UP
+**1. Styling Home Page**
+- In views directory, create a file called home.ejs
+- In home.ejs file:
+  - Import Bootstrap JS scripts and min css stylesheet
+  - Link the home.css stylesheet
+  - Create a navbar at the top that has a YelpCamp logo, links to home, campgrounds, login, sign up, and logout
+  - Add content in main section
+  - Add a full-bleed image background
+  - Add a simple footer element that has copyright year
+- In public/stylesheets folder, create a file called home.css
+  - Set the body element to take up 100vh
+  - Set max-width of the cover-container class to take up 60vw
+
 
 
 
