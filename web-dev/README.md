@@ -7146,7 +7146,7 @@ Search results for: cat
     ```
 
 **2. Reseeding Our Database (again) With City's Long/Lat**
-- Let's update our seeds campground once more. This time we don't want to hard-code in the longitude and latitude of campground city. Instead, we going to set the longitude and latitude coordinates of the random city we chose for the campground
+- Let's update our seeds campground once more. This time we don't want to hard-code one coordinate point for all of our campground cities. Instead, we going to set the longitude and latitude coordinates for each random city we chose for our campground
 - In seeds/index.js file:
   - Update the geometry property to be the long/lat of the random city
   ```js
@@ -7160,7 +7160,16 @@ Search results for: cat
   ```
 - Reseed our database again. Run in the terminal: `node seeds/index.js`
 
-
+**3. Basic Clustering Campgrounds**
+- Now that we have more cities in our database, let's try to plug them into our cluster map
+- Since we're displaying the cluster map on campgound index page (index.ejs) and our cluster map logic is in clusterMap.js file, we need to create a campgrounds variable in a script tag in index.ejs file so that our javascript in clusterMap.js has access to the campgrounds array in the database
+- In views/campgrounds/index.ejs file:
+  - Create a campgrounds variable in a script tag
+  - The campgrounds array must be in an object inside of `features` property
+  - `const campgrounds = {features: <%- JSON.stringify(campgrounds) %>}`
+- In public/javascripts/clusterMap.js file:
+  - We want to set the data to our campgrounds database
+  - In the `map.on('load', )` method, set the data property to campgrounds
 
 
 
