@@ -7145,6 +7145,21 @@ Search results for: cat
     <script src="/javascripts/clusterMap.js"></script>
     ```
 
+**2. Reseeding Our Database (again) With City's Long/Lat**
+- Let's update our seeds campground once more. This time we don't want to hard-code in the longitude and latitude of campground city. Instead, we going to set the longitude and latitude coordinates of the random city we chose for the campground
+- In seeds/index.js file:
+  - Update the geometry property to be the long/lat of the random city
+  ```js
+  geometry: {
+    type: 'Point',
+    coordinates: [
+      cities[random1000].longitude,
+      cities[random1000].latitude,
+    ]
+  }
+  ```
+- Reseed our database again. Run in the terminal: `node seeds/index.js`
+
 
 
 
