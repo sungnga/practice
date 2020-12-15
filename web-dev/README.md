@@ -7183,6 +7183,64 @@ Search results for: cat
   - Can change color and the radius size of cluster for each tier
   - Do this inside the `map.addLayer()` method of id clusters
 
+**6. Adding Custom Popups On Cluster Map**
+- When clicking on a campground site on the cluster map, we want to display a popup of the campground title and description and a link that takes user to the campground show page
+- So we need the cammpground's title, descript, and id to make the popup. The way mapbox is set up is it's looking for a 'properties' propperty in the features array object that contains a site information. `geometry` and `properties` are two properties as part of GeoJSON format. Right now we don't have 'properties' property on our features array object. What we can do is create a virtual property of 'properties' in our Mongoose CampgroundSchema. This way when we access the campgrounds on the client-side, the virtual property will come along that contains the predefined campground information we need for the campground popup markup
+- A virtual property doesn't store in our database and we don't need it to be. A virtual property contains information we can use on the client-side
+- In models/campground.js file:
+  - Create a `properties.popUpMarkup` virtual property on the CampgroundSchema
+  - This virtual property contains the popup markup template to dynamically display a campground info
+    ```js
+    CampgroundSchema.virtual('properties.popUpMarkup').get(function () {
+      // 'this' refers to individual campground
+      return `
+      <strong><a href="/campgrounds/${this._id}">${this.title}</a></strong>
+      <p>${this.description.substring(0, 25)}...</p>
+      `;
+    });
+    ```
+  - A thing to note is, by default, Mongoose does not include virtuals when converting a document to JSON. When we stringify our campgrounds, but our virtual property is not included. To work around this issue, we need to set the `toJson` schema option to `{ virtuals: true }` and pass this option to CampgroundSchema as a 2nd argument
+    ```js
+    const opts = { toJSON: { virtuals: true } };
+
+    const CampgroundSchema = new Schema(
+      {
+        //initialize campground schema pattern here
+      },
+      opts
+    );
+    ```
+- Now in clusterMap.js file, we have access to the campgrounds `properties.popUpMarkup` property
+- In public/javascripts/clusterMap.js file:
+  - The campground popUpMarkup can be found in `e.features[0].properties.popUpMarkup`
+  - We can destructure `popUpMarkup` and pass it in to the .setHTML() method when creating a popup instance
+  ```js
+	map.on('click', 'unclustered-point', function (e) {
+		// console.log(e.features[0].properties.popUpMarkup)
+		const { popUpMarkup } = e.features[0].properties;
+		const coordinates = e.features[0].geometry.coordinates.slice();
+
+		// Ensure that if the map is zoomed out such that
+		// multiple copies of the feature are visible, the
+		// popup appears over the copy being pointed to.
+		while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+			coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+		}
+
+    new mapboxgl.Popup()
+      .setLngLat(coordinates)
+      .setHTML(popUpMarkup)
+      .addTo(map);
+	});
+  ```
+
+
+
+
+
+
+
+
 
 
 
