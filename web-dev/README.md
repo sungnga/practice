@@ -7171,6 +7171,9 @@ Search results for: cat
   - We want to set the data to our campgrounds database
   - In the `map.on('load', )` method, set the data property to campgrounds
 
+**4. Tweaking Clustering Code**
+- In public/javascripts/clusterMap.js file:
+  - Change the value of source property to campgrounds instead
 
 
 
