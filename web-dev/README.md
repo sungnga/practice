@@ -7495,6 +7495,41 @@ Search results for: cat
     mongoose.connect(dbUrl, { ... })
     ```
 
+**2. Using Mongo for Our Session Store**
+- Connect-mongo package: https://www.npmjs.com/package/connect-mongo
+- Install: `npm i connect-mongo`
+- In production, we're going to use Mongo to store our sessions. There's a tool to help us do this called connect-mongo
+- In app.js file:
+  - Import connect-mongo
+  - And then executing it immediately by passsing in session. Save it to a MongoStore variable
+  - Now, by default, our session is stored in memory store. Instead, if we want our session information to be stored in Mongo
+  - Create a new session store instance using `new MongoStore()`. This store is an object
+  - Configure the store by passing in a config object
+    - Since we're testing out this feature in our app, set the url property to localhost db for now
+  - Call store.on() method to check for errors in session store
+  - Then pass in the store instance to sessionConfig
+    ```js
+    const session = require('express-session');
+    const MongoStore = require('connect-mongo')(session);
+
+    const store = new MongoDBStore({
+      url: 'mongodb://localhost:27017/yelp-camp', //using local db for now
+      secret: 'thisshouldbeabettersecret',
+      touchAfter: 24 * 3600 //time period in seconds
+    });
+
+    store.on('error', function (e) {
+      console.log('SESSION STORE ERROR', e);
+    });
+    const sessionConfig = { store, ... };
+    ```
+- **Testing out Mongo session store:**
+  - Login to our app
+  - Go into Mongo shell. In terminal, run: `mongo`
+  - To use yelp-camp db: `use yelp-camp`
+  - To show collections: `show collections`. sessions should be listed in collections
+  - To see sessions: `db.sessions.find()`
+
 
 
 
@@ -7569,3 +7604,5 @@ Search results for: cat
 - helmet: security with HTTP headers
   - Install: `npm i helmet`
   - Use it in app.js file
+- connect-mongo: session store
+  - Install: `npm i connect-mongo`
