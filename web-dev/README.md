@@ -7403,11 +7403,55 @@ Search results for: cat
 - To run the application in production mode:
   - In app.js file, comment out process.env and just include `require('dotenv').config();`
   - Run in the terminal: `NODE_ENV=production node app.js`
-- Now when there's an error, the error stack will not display to the the user
+- Now when there's an error, the error stack will not display to the the user outside of develpment
 
+**6. Using Helmet**
+- Helmet docs: https://helmetjs.github.io/
+- Helmet is a package that provides Express.js security with HTTP headers. It comes with 11 middleware that's changing and manipulating the header
+- Install: `npm i helmet`
+- In app.js file:
+  - Import helmet
+  - Use helmet in app. This will enable all of the 11 middleware
+  - Note that one of helmet's middleware called `contentSecurityPolicy` will break our application. Let's disable it for now
+  ```js
+  const helmet = require('helmet');
+  app.use(helmet({ contentSecurityPolicy: false }));
+  ```
 
-
-
+**7. Content Security Policy**
+- MDN CSP docs: https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP
+- Content Security Policy (CSP) is an added layer of security that helps to detect and mitigate certain types of attacks, including Cross Site Scripting (XSS) and data injection attacks. These attacks are used for everything from data theft to site defacement to distribution of malware
+- To enable CSP, you need to configure your web server to return the Content-Security-Policy HTTP header
+- `helmet.contentSecurityPolicy(options)` sets the `Content-Security-Policy` header which helps mitigate cross-site scripting attacks, among other things
+- In app.js file:
+  - Define arrays of directives (CDNs, fonts, packages, etc) used in our application
+  - Specify them as options in `helmet.contentSecurityPolicy()` middleware
+  ```js
+  const scriptSrcUrls = [ ... ];
+  const styleSrcUrls = [ ... ];
+  const connectSrcUrls = [ ... ];
+  const fontSrcUrls = [ ... ]; co
+  app.use(
+    helmet.contentSecurityPolicy({
+      directives: {
+        defaultSrc: [],
+        connectSrc: ["'self'", ...connectSrcUrls],
+        scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+        styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+        workerSrc: ["'self'", 'blob:'],
+        objectSrc: [],
+        imgSrc: [
+          "'self'",
+          'blob:',
+          'data:',
+          `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/`,
+          'https://images.unsplash.com/'
+        ],
+        fontSrc: ["'self'", ...fontSrcUrls]
+      }
+    })
+  );
+  ```
 
 
 
@@ -7478,3 +7522,6 @@ Search results for: cat
 - sanitize-html
   - Install: `npm i sanitize-html`
   - Import in schemas.js file
+- helmet: security with HTTP headers
+  - Install: `npm i helmet`
+  - Use it in app.js file
