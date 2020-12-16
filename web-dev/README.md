@@ -7268,6 +7268,20 @@ Search results for: cat
 - Add an image at the top of the register form
 - Make the form responsive using grid
 
+**5. Removing Inline Map Styles**
+- In public/stylesheets/app.css file:
+  - Define the width and height for cluster map in campgrounds index page here
+  - Define the width and height for regular regular map in campground show page here
+- Include the app.css stylesheet in boilerplate.ejs file
+  - `<link rel="stylesheet" href="/stylesheets/app.css">`
+- In views/campgrounds/index.ejs file:
+  - In the div tag for cluster map, remove the inline style of width and height and make sure it has the id of cluster-map
+  - `<div id="cluster-map"></div>`
+- In public/javascripts/clusterMap.js file:
+  - In the mapbox Map instance, set the container property to 'cluster-map'
+- In views/campgrounds/show.ejs file:
+  - In the div tag for map, remove the inline style of width and height and make sure it has the id of map
+  - `<div id="map" class="mb-3"></div>`
 
 
 
