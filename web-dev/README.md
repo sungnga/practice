@@ -7320,6 +7320,73 @@ Search results for: cat
   app.use(mongoSanitize());
   ```
 
+**2. Cross Site Scripting (XSS)**
+- Cross-site scription (XSS) is a type of security vulnerability typically found in web applications. XSS attacks enable attackers to inject client-side scripts into web pages viewed by other users
+- For example, a lot of users have their cookies available in their browser under `document.cookie`. This document can be injected into a URL, send this URL as a link to people, and when they click on it, it can send their cookie to some server. Or if a script is injected into the URL and a user clicks on it, that script will execute
+
+**3. Sanitizing HTML With JOI**
+- Next thing we want to do is sanitize our input fields, to make sure users cannot include any html elements, especially script elements, when they create or update a campground
+- We're using JOI to validate our forms and unfortanately it does not come with a validation for escaping html
+- A similar tool to JOI is called express-validator and it offers sanitization. However, we're going to write our own version of sanitization (escaping html) to build on top of JOI
+- JOI allows us to create extensions. These extensions allow us to define our own methods that JOI will use in its validations
+- sanitize-html doc: https://www.npmjs.com/package/sanitize-html
+- Install: `npm i sanitize-html`
+- In schemas.js file:
+  - Import sanitize-html
+  - Define an extension on `joi.string()` called escapeHTML
+  - This extension calls JOI's validation function and this function uses sanitize-html package to sanitize the value (the html inputs) it receives
+  - Specify that we don't allow anything in the allowed tags and attributes options
+  - To tell JOI to use the extension: `const Joi = BaseJoi.extend(extension);`
+  - Then call the .escapeHTML() method on any input fields that requires html escaping
+  ```js
+  const BaseJoi = require('joi');
+  const sanitizeHtml = require('sanitize-html');
+
+  const extension = (joi) => ({
+    type: 'string',
+    base: joi.string(),
+    messages: {
+      'string.escapeHTML': '{{#label}} must not include HTML!'
+    },
+    rules: {
+      escapeHTML: {
+        validate(value, helpers) {
+          const clean = sanitizeHtml(value, {
+            allowedTags: [],
+            allowedAttributes: {}
+          });
+          if (clean !== value)
+            return helpers.error('string.escapeHTML', { value });
+          return clean;
+        }
+      }
+    }
+  });
+
+  const Joi = BaseJoi.extend(extension);
+
+  module.exports.campgroundSchema = Joi.object({
+    campground: Joi.object({
+      title: Joi.string().required().escapeHTML(),
+      price: Joi.number().required().min(0),
+      // image: Joi.string().required(),
+      location: Joi.string().required().escapeHTML(),
+      description: Joi.string().required().escapeHTML()
+    }).required(),
+    deleteImages: Joi.array()
+  });
+
+  module.exports.reviewSchema = Joi.object({
+    review: Joi.object({
+      rating: Joi.number().required().min(1).max(5),
+      body: Joi.string().required().escapeHTML()
+    }).required()
+  });
+  ```
+
+
+
+
 
 
 
@@ -7389,3 +7456,6 @@ Search results for: cat
 - Express mongo sanitize
   - Install: `npm i express-mongo-sanitize`
   - Import in app.js file
+- sanitize-html
+  - Install: `npm i sanitize-html`
+  - Import in schemas.js file
