@@ -3492,6 +3492,7 @@ Search results for: cat
     console.log('Listening on port 3000');
   });
   ```
+- To start up the Express app server, in the terminal: `nodemon app.js`
 - Create a folder called views and in it, create a file called home.ejs
 - In home.ejs file:
   ```html
@@ -7388,6 +7389,21 @@ Search results for: cat
 - Another thing we can do is to configure cookie so that it can only be changed or configured over secured connection, over https. When working on localhost, the connection is not secured, but we want to set this over secured https when we deploy our app
 - Another thing we can do is change the default name of our session. Right now it's set to `connect.sid`, but we can specify a session name to overwrite the default name in sessionConfig in app.js file. Somebody can write a script and look for this session name and steal the session information
   - `const sessionConfig = { name: 'session', ... }`
+
+**5. Hiding Development Errors From Users**
+- When deploying our app in production, we don't want to be giving our user development errors
+- In views/error.ejs file:
+  - Write an if statement to check in process.env what the mode is set to
+  - If it's not in production mode, display the error stack
+    ```html
+    <% if (process.env.NODE_ENV !== "production") { %>
+      <p><%= err.stack %></p>
+    <% } %>
+    ```
+- To run the application in production mode:
+  - In app.js file, comment out process.env and just include `require('dotenv').config();`
+  - Run in the terminal: `NODE_ENV=production node app.js`
+- Now when there's an error, the error stack will not display to the the user
 
 
 
