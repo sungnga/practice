@@ -7263,6 +7263,12 @@ Search results for: cat
 - Use flexbox to align items
 - Add an image at the top of the login form
 
+**4. Styling Register Form**
+- Styling register form is very similar to login form
+- Add an image at the top of the register form
+- Make the form responsive using grid
+
+
 
 
 
