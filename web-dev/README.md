@@ -7454,6 +7454,50 @@ Search results for: cat
   ```
 
 
+## S59: YELPCAMP: DEPLOYING TO HEROKU
+**1. Setting Up MongoDB Atlas**
+- MongoDB website: https://www.mongodb.com/cloud
+- Right now our app Mongo database is in localhost on our local machine: `mongoose.connect('mongodb://localhost:27017/yelp-camp', { ... })`
+- When we deploy our application, it's running on a server somewhere. In this case, it's on Heroku server. We're going to setup our production database, which is not going to be a local instance of Mongo at all. We will be using MongoDB Atlas, a Mongo's database cloud service
+- The Mongo Atlas database is just like the Mongo database we use on our local machine
+- Follow these 4 steps to create a Mongo Atlas cloud database:
+- **Create a project and build a cluster:**
+  - Sign up for MongoDB Atlas account
+  - On the main dashboard, create a new project. Call it YelpCamp
+  - Click on the Build A Cluster button and select the free tier
+- **Create a database user:**
+  - On the left menu, select Database Access
+  - Click on Add New Database User
+  - Provide a username and password. 
+  - Call this user: new-use-1. Auto-gen password is fine. Copy this password
+- **Whitelisting an IP address:**
+  - On the left menu, select Network Access
+  - Click on Add IP Address
+  - Then select the ADD CURRENT IP ADDRESS button and click Confirm
+- **Connect to your cluster:**
+  - On the left menu, select Clusters
+  - Make sure the correct project name shows up and click on Connect Cluster
+  - Then choose the connection method: Connect your application
+  - On the next screen, copy the URL. Our application needs to connect to this URL
+- In .env file:
+  - Save this URL to an env variable
+  - In this URL, replace the password with the password generated for new-user-1 and replace dbname with YelpCamp
+  - `DB_URL=`
+- **To see database collections:**  
+  - On the left menu, select Clusters
+  - Click on Collections
+- Now we have two databases, one on our local machine and another on MongoDB Atlas. We can switch between the two in app.js file:
+  - Running localhost db: 
+    - `mongoose.connect('mongodb://localhost:27017/yelp-camp', { ... })`
+  - Running Mongo Atlas db:
+    ```js
+    const dbUrl = process.env.DB_URL;
+    mongoose.connect(dbUrl, { ... })
+    ```
+
+
+
+
 
 
 
