@@ -7530,6 +7530,13 @@ Search results for: cat
   - To show collections: `show collections`. sessions should be listed in collections
   - To see sessions: `db.sessions.find()`
 
+**3. Heroku Setup**
+- Heroku website: https://www.heroku.com/
+- Sign up for Heroku account
+- Install heroku CLI and Git
+- Login to heroku using CLI. In project directory, run: `heroku login`. It will redirect you to heroku website to login. In the terminal it should say that you've successfully logged in
+
+
 
 
 
