@@ -7283,8 +7283,13 @@ Search results for: cat
   - In the div tag for map, remove the inline style of width and height and make sure it has the id of map
   - `<div id="map" class="mb-3"></div>`
 
-
-
+**6. Adding Map Navigation Controls**
+- Mapbox navigation controls docs: https://docs.mapbox.com/mapbox-gl-js/example/navigation/
+- In public/javascripts/clusterMap.js and showPageMap.js files:
+  - Add navigation controls to cluster map on campgrounds index page
+  - Add navigation controls to regular map on campground show page
+  - By default, it's set to the upper right corner
+  - `map.addControl(new mapboxgl.NavigationControl())`
 
 
 
