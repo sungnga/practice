@@ -13,6 +13,7 @@ const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
 
 const Campground = require('./models/campground');
 const Review = require('./models/review');
@@ -48,6 +49,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(mongoSanitize());
+app.use(helmet({ contentSecurityPolicy: false }));
 
 const sessionConfig = {
 	name: 'session',
