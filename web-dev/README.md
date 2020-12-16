@@ -7292,6 +7292,33 @@ Search results for: cat
   - `map.addControl(new mapboxgl.NavigationControl())`
 
 
+## S58: YELPCAMP: COMMON SECURITY ISSUES
+**1. Mongo Injection**
+- SQL injection is a code injection technique used to attack data-driven application, in which malicious SQL statements are inserted into an entry field execution
+- It uses part of some user's input to form the query. For example, a user uses a search field and you can inject your own query after the search query
+- There's a package that we can use that prevents users from making dynamic queries. It removes any prohibited characters such as `$` sign or period from `req.body`, `req.query`, or `req.params`. It can then either:
+  - completely remove these keys and associated data from the object, or
+  - replace the prohibited characters with another allowed character
+    ```js
+    const mongoSanitize = require('express-mongo-sanitize');
+    
+    // To remove data, use:
+    app.use(mongoSanitize());
+
+    // Or, to replace prohibited characters with _, use:
+    app.use(mongoSanitize({
+      replaceWith: '_'
+    }))
+    ```
+- Express mongo sanitize: https://www.npmjs.com/package/express-mongo-sanitize
+- Install: `npm i express-mongo-sanitize`
+- In app.js file:
+  - Import express mongo sanitize
+  ```js
+  const mongoSanitize = require('express-mongo-sanitize');
+
+  app.use(mongoSanitize());
+  ```
 
 
 
@@ -7359,3 +7386,6 @@ Search results for: cat
   - Mapbox geocoding: https://github.com/mapbox/mapbox-sdk-js/blob/main/docs/services.md#geocoding
   - Install: `npm i @mapbox/mapbox-sdk`
   - Import in controllers/campgrounds.js file
+- Express mongo sanitize
+  - Install: `npm i express-mongo-sanitize`
+  - Import in app.js file
