@@ -7258,6 +7258,10 @@ Search results for: cat
   - Add gradient shadow overlay on background image
   - Style text and button in main content
 
+**3. Styling Login Form**
+- Use Bootstrap card component and grid to style login form
+- Use flexbox to align items
+- Add an image at the top of the login form
 
 
 
