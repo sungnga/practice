@@ -7384,7 +7384,10 @@ Search results for: cat
   });
   ```
 
-
+**4. Minor Changes to Session/Cookies**
+- Another thing we can do is to configure cookie so that it can only be changed or configured over secured connection, over https. When working on localhost, the connection is not secured, but we want to set this over secured https when we deploy our app
+- Another thing we can do is change the default name of our session. Right now it's set to `connect.sid`, but we can specify a session name to overwrite the default name in sessionConfig in app.js file. Somebody can write a script and look for this session name and steal the session information
+  - `const sessionConfig = { name: 'session', ... }`
 
 
 
