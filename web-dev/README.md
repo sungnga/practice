@@ -7536,6 +7536,7 @@ Search results for: cat
 - Install heroku CLI and Git
 - Login to heroku using CLI. In project directory, run: `heroku login`
 - It will redirect you to heroku website to login. In the terminal it should say that you've successfully logged in
+- Create Heroku app. At the root of project directory, run: `heroku create ngala-yelpcamp`
 
 **4. Clean Up Our App for Production Deployment**
 - Let's make some changes to our app
@@ -7552,6 +7553,21 @@ Search results for: cat
     "start": "node app.js"
   }
   ```
+
+**5. Configuring Heroku Env Variables and IP Address:**
+- We need to set our env variables in Heroku
+- Go to Heroku dashboard and select the ngala-yelpcamp app that was just created
+- Go to Settings and go to Config Vars section
+  - There should be key/value fields we can enter our env variables
+  - Use the env variables we defined in .env file and set them here
+- Last thing we need to do is create another whitelist IP address in MongoDB Atlas for Heroku to use
+- In MongoDB project dashboard:
+  - On the left menu, select Network Access
+  - Click on Add IP Address
+  - This time select the ALLOW ACCESS FROM ANYWHERE button and click Confirm
+
+
+
 
 
 
