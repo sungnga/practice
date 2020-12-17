@@ -29,7 +29,16 @@ const userRoutes = require('./routes/users');
 const MongoDBStore = require('connect-mongo')(session);
 
 const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp';
-mongoose.connect(dbUrl, {
+// Connecting to MongoDB Atlas cloud database 
+// mongoose.connect(dbUrl, {
+// 	useNewUrlParser: true,
+// 	useCreateIndex: true,
+// 	useUnifiedTopology: true,
+// 	useFindAndModify: false
+// });
+
+// Connecting to MongoDB on localhost
+mongoose.connect('mongodb://localhost:27017/yelp-camp', {
 	useNewUrlParser: true,
 	useCreateIndex: true,
 	useUnifiedTopology: true,
@@ -55,6 +64,7 @@ app.use(mongoSanitize());
 
 const secret = process.env.SECRET || 'thisshouldbeabettersecret';
 
+// Session is stored on MongoDB Atlas
 const store = new MongoDBStore({
 	url: dbUrl,
 	secret,

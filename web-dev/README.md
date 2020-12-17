@@ -7576,23 +7576,32 @@ Search results for: cat
 - Push to heroku, run: `git push heroku master`
 - To restart heroku app, run: `heroku restart`
 
-#### Working with different Git remotes
+### Working with different Git remotes
 - https://git.heroku.com/ngala-yelpcamp.git
 - https://github.com/sungnga/practice.git
 - Listing your existing remotes: `git remote -v`
-- Adding remote repos with shortname: `git remote add <shortname> <url>`
+- Adding remote repo with shortname: `git remote add <shortname> <url>`
 - Pushing to your remotes: `git push <remote> <branch>`
   - To github: `git push origin master`
   - To Heroku: `git push heroku master`
 - Renaming a remote: `git remote rename <oldname> <newname>`
 - Removing a remote: `git remote remove <remote>`
 
-#### Running YelpCamp app in development mode
+### Commit changes to Heroku repo
+- Make sure there's a heroku remote: `git remote -v`
+- Git add, git commit with a message, and push to `git push heroku master`
+
+### Running YelpCamp app in development mode
 - In the terminal, run: `nodemon app.js`
 
-
-
-
+### YelpCamp websites
+- Heroku: https://ngala-yelpcamp.herokuapp.com/
+- Localhost: http://localhost:3000/home
+- Images are stored on Cloudinary storage
+- Local Mongo database can be accessed via Mongo shell
+  - In project root directory, run: `mongo`
+  - In mongo shell, run: `show dbs`, `use yelp-camp`, `show collections`, `db.campgrounds.find()`
+- Cloud database is stored on MongoBD Atlas. Project name is YelpCamp
 
 
 
