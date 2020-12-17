@@ -7530,11 +7530,32 @@ Search results for: cat
   - To show collections: `show collections`. sessions should be listed in collections
   - To see sessions: `db.sessions.find()`
 
-**3. Heroku Setup**
+**3. Heroku Setup and Install Heroku CLI:**
 - Heroku website: https://www.heroku.com/
 - Sign up for Heroku account
 - Install heroku CLI and Git
-- Login to heroku using CLI. In project directory, run: `heroku login`. It will redirect you to heroku website to login. In the terminal it should say that you've successfully logged in
+- Login to heroku using CLI. In project directory, run: `heroku login`
+- It will redirect you to heroku website to login. In the terminal it should say that you've successfully logged in
+
+**4. Clean Up Our App for Production Deployment**
+- Let's make some changes to our app
+- In app.js file:
+  - Set our database to be localhost Mongo or Mongo Atlas
+  - Set the session store and sessionConfig's secret property to an env variable
+  - Set port for Heroku to use or set it to port 3000 for local development
+- Next thing is we need to tell Heroku how to run our app
+- In package.json file:
+  - Add a start script
+  ```js
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  }
+  ```
+
+
+
+
 
 
 
