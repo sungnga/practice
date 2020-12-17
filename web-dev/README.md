@@ -7537,6 +7537,7 @@ Search results for: cat
 - Login to heroku using CLI. In project directory, run: `heroku login`
 - It will redirect you to heroku website to login. In the terminal it should say that you've successfully logged in
 - Create Heroku app. At the root of project directory, run: `heroku create ngala-yelpcamp`
+- Link to YelpCamp app: https://ngala-yelpcamp.herokuapp.com/
 
 **4. Clean Up Our App for Production Deployment**
 - Let's make some changes to our app
@@ -7575,11 +7576,19 @@ Search results for: cat
 - Push to heroku, run: `git push heroku master`
 - To restart heroku app, run: `heroku restart`
 
+#### Working with different Git remotes
+- https://git.heroku.com/ngala-yelpcamp.git
+- https://github.com/sungnga/practice.git
+- Listing your existing remotes: `git remote -v`
+- Adding remote repos with shortname: `git remote add <shortname> <url>`
+- Pushing to your remotes: `git push <remote> <branch>`
+  - To github: `git push origin master`
+  - To Heroku: `git push heroku master`
+- Renaming a remote: `git remote rename <oldname> <newname>`
+- Removing a remote: `git remote remove <remote>`
 
-
-
-
-
+#### Running YelpCamp app in development mode
+- In the terminal, run: `nodemon app.js`
 
 
 
