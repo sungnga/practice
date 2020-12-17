@@ -7566,8 +7566,14 @@ Search results for: cat
   - Click on Add IP Address
   - This time select the ALLOW ACCESS FROM ANYWHERE button and click Confirm
 
-
-
+**6. Pushing to Heroku**
+- At the root of project directory, create a file called .gitignore
+  - Add node_modules and .env as a list in this file
+  - Git will ignore files/folders on this list
+- Add all files to Git. In the terminal, run: `git add .`
+- To commit, run: `git commit -m "Initial commit"`
+- Push to heroku, run: `git push heroku master`
+- To restart heroku app, run: `heroku restart`
 
 
 
