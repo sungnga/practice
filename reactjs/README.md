@@ -60,7 +60,7 @@
     ```
 
 ### BOOTSTRAP
-- Inatall: `npm install bootstrap`
+- Install: `npm install bootstrap`
 - Install: `npm install jquery popper.js`
 - Import in index.js file:
     - The Javascript file for Bootstrap: `import 'bootstrap';`
@@ -108,7 +108,7 @@
 - Include the `--watch` flag to the command above to watch for changes in the app.js file in src folder
 - You can see the changes render in the browser automatically when you have babel and live server running in the background
 
-**To install the node_modules folder to have access to the dependcies:**
+**To install the node_modules folder to have access to the dependencies:**
 - Run: `npm install`
 
 ### JSX IN COUNTER EXAMPLE
@@ -161,10 +161,10 @@ function getLocation(location) {
 //  - IF A JSX EXPRESSION IS RESOLVED TO UNDEFINED, NOTHING IS GOING TO SHOW UP
 //  - If {getLocation(user.location)} is undefined. Meaning there's no location found, the location property won't even render
 //  - A ternary operator is AN EXPRESSION and not a statement
-//  - We can add conditional expressions like tenery operator into JSX
+//  - We can add conditional expressions like tenary operator into JSX
 // Logical && operator:
 //  - true && 'some age' //returns "some age"
-//  - fales && 'some age' //returns false (which JSX will ignore)
+//  - false && 'some age' //returns false (which JSX will ignore)
 //  - If what's on the left of && is true, what's on the right will be used. If false, age property will get ignored by JSX
 const templateTwo = (
     <div>
@@ -325,7 +325,7 @@ render()
     ```
 
 ### COMPONENT PROPS: 
-- Component props allows components to comnunicate with one another
+- Component props allows components to communicate with one another
 - To do that, we pass data in when we initialize/define the instance of a component. for example: `<Header />`
 - That data is known as props
 - Props gets passed down from parent component to child component. One-way street
@@ -421,7 +421,7 @@ render()
 // Setup Counter component
 // Render JSX with a title and 3 buttons
 // Create 3 methods: handleAddOne, handleMinusOne, handleReset
-// Wireup onClick & bind in the the constructor
+// Wire up onClick & bind in the the constructor
 
 // WORKING WITH STATES
 // 1. Initialize the state in constructor function
@@ -512,7 +512,7 @@ ReactDOM.render(<Counter />, document.querySelector('#app'))
 // Since a component renders JSX, it can render other components
 // This allows us to nest components inside another by referencing it
 // COMPONENT PROPS: 
-//  - Component props allows components to comnunicate with one another
+//  - Component props allows components to communicate with one another
 //  - To do that, we pass data in when we initialize/define the instance of a component. for example: <Header />
 //  - That data is known as props
 //  - Props gets passed down from parent component to child component. One-way street
@@ -676,7 +676,7 @@ class AddOption extends React.Component {
         const error = this.props.handleAddOption(option)
         
         // Update state to error with the error value
-        // Then don't foreget to render this error state in JSX
+        // Then don't forget to render this error state in JSX
         this.setState(() => {
             return { error }
         })
@@ -949,7 +949,7 @@ ReactDOM.render(<IndecisionApp />, document.querySelector('#app'))
 - it's going to be more scalable
 - that means we'll be taking our components and breaking that out into its own file
 - we'll be able to grab our third party dependencies that we installed w/ npm or yarn that live in the node modules directory
-- we'll be able to manage our dependencies and package.json so we can intall our dependencies, uninstall them, and upgrade done with ease by running a few commands
+- we'll be able to manage our dependencies and package.json so we can install our dependencies, uninstall them, and upgrade done with ease by running a few commands
 - we're in a new world where we have a ton of client side javascript: we have our code we wrote, we have 3rd-party javascript that we want to have access. That's why tools like webpack are becoming popular
 - when we run webpack, we're going to end up with a single file in the public folder called bundle.js
 - this is the one file that we're actually be loading ing via a script tag
@@ -1347,8 +1347,8 @@ const routes = (
  - `Link` and `NavLink` have a "`to`" attribute to specify the path of the link route
  - `<Link to="/">Go home</Link>`
  - The nice thing about `Link` is that we're using client-side routing as oppose to server-side routing
- - This means that it's not going through the full page refresh. Intead, Javascript just swaps things out on the fly. It makes a new call to `ReactDOM.render()` to render the new page
- - Use `Link` whenever we want to take advantage of client-side routing instead of using an anhcor tag
+ - This means that it's not going through the full page refresh. Instead, Javascript just swaps things out on the fly. It makes a new call to `ReactDOM.render()` to render the new page
+ - Use `Link` whenever we want to take advantage of client-side routing instead of using an anchor tag
  - Use `NavLink` for navigation. This way, we can call out that specific link that we're on
  - `<NavLink to="/" activeClassName="is-active" exact={true}>Dashboard</NavLink>`
 
@@ -1380,7 +1380,7 @@ const routes = (
 - Redux is a state container, which is exactly what our class-based components are
 - We create a redux store and it's just an object like this.state was an object inside our components
 - With Redux Store, we're able to read data off of the store and change the data in the store
-- The nice thing is that the individiual components they're going to be able to determine how they want to do those things
+- The nice thing is that the individual components they're going to be able to determine how they want to do those things
 - Now the other components inside the app they're also going to need to be able to work with the store in one way or another, either reading or writing data
 - This way the components aren't communicating between each other so much as the individual components are communicating with the store
 - This creates components that are very reusable
@@ -1408,7 +1408,7 @@ const store = createStore((state = { count: 0 }) => {
 ### ACTIONS
 - Actions are our way of communicating with the store
 - We can change the Redux store values using actions
-- An action is nothing more than an object that gets sents to the store
+- An action is nothing more than an object that gets sent to the store
 - And this object describes the type of action we'd like to take
 - Example of actions could be: increment, decrement, reset, etc
 - This is going to allow us to change the store over time by dispatching various actions
@@ -1417,7 +1417,7 @@ const store = createStore((state = { count: 0 }) => {
 **To define an action object:**
 - Define an object: with curly braces
 - Define the action type property and set the value as the name of action
-- Write the action type name all in caps and separatewords with underscore. This is by convention
+- Write the action type name all in caps and separate words with underscore. This is by convention
 ```javascript
 {
     type: 'INCREMENT'
@@ -1434,15 +1434,15 @@ store.dispatch({
 
 **To use the action inside the store:**
  - The createStore function expects a function to be the 1st arg
- - This function gets called everytime a .dispatch() is made to the store
+ - This function gets called every time a .dispatch() is made to the store
  - Based on the action type, we can make meaningful changes to the state
  ```javascript
  // 1st arg: the current state. With default state value
  // 2nd arg: the action type that gets passed in
 const store = createStore((state = { count: 0 }, action) => {
     // To handle the dispatch action, we're using a switch statement
-    // We're switching what we do based off of a particular value. In this case, it's the actiondata type value
-    // Inside the curly braces we can define the various cases we want to handle. In our case, wewant to handle the action type
+    // We're switching what we do based off of a particular value. In this case, it's the action data type value
+    // Inside the curly braces we can define the various cases we want to handle. In our case, we want to handle the action type
     switch (action.type) {
         // Case when action.type is equal to 'INCREMENT'
         // After the colon, we provide what we want to do
@@ -1512,7 +1512,7 @@ store.dispatch(incrementCount({incrementBy: 5}))
     - the output is only determined by the input. What it returns, it is only determined by the things that get passed in
     - it doesn't use anything else from outside of the function scope and it doesn't change anything outside of the function scope either
     - we don't want to change variables outside of the reducer's scope
-    - and we don't want to rely on values from variables outise of the reducer's scope
+    - and we don't want to rely on values from variables outside of the reducer's scope
     - we just want to use the input the state and the action to return the new state value
 2. Never change state or action
     - mutating the state directly is going to have undesired effects
@@ -1729,7 +1729,7 @@ export default ConnectedExpenseList;
 
 
 # FIREBASE 101
-- Documenation: firebase.google.com -> reference tab
+- Documentation: firebase.google.com -> reference tab
 
 ### Create a Firebase Project:
 - On firebase website dashboard, click create a project
@@ -1889,7 +1889,7 @@ database.ref('expenses')
 - On project dashboard page in Firebase website, click the Authentication tab
 Select the Sign-in method tab and enable Google authentication
 
-### SETUP AUTHENTICAION FUNCTIONALITY:
+### SETUP AUTHENTICATION FUNCTIONALITY:
 - Resource: firebase.google.com/docs/ -> reference tab -> firebase.auth
 - In firebase.js file: create an instance of a Provider
 - A Provider is a way to provide authentication. We will use a Google provider
@@ -2164,9 +2164,8 @@ return (dispatch, getState) => {
 # REACT HOOKS AND CONTEXT
 
 ### USING CREATE REACT APP
-- Create-react-app application is designed to get us up and running with a barebones react app quickly
-- Install globally: `npm i -g create-react-app`
-- To creat a React project: `create-react-app <nameOfProject>`
+- Create-react-app application is designed to get us up and running with a barebone react app quickly
+- To create a React project: `npx create-react-app <projectName> --use-npm`
 - It will generate a few things:
   - create a new directory
   - generate all the boilerplate files 
@@ -2177,7 +2176,7 @@ return (dispatch, getState) => {
 
 ### REACT HOOK
 - A hook is nothing more than a function
-- React hook is a function that lets you tap into react features, like state or lifecylce methods
+- React hook is a function that lets you tap into react features, like state or lifecycle methods
 - React ships with its own set of hooks we can use as building blocks and we can also create our own hooks, ie our own functions to customize behavior further
 - So no longer are they called stateless functional component, they're now just called FUNCTIONAL COMPONENTS because it is possible to use state inside of them
 useState is a hook function that we can call to allow us to use state inside a component
@@ -2212,7 +2211,7 @@ const [count, setCount] = useState(0)
   - when you are using useState and you update the state, it completely replaces what was there before as opposed to how state worked in the past with objects where the data was merged. This makes things less error prone and it allows us to break up our big state objects into individual values
 
 **useEffect hook:**
-- useEffect allows us to do something in functional components that we previously we not able to do: lifecycle methods in clase-based components
+- useEffect allows us to do something in functional components that we previously we not able to do: lifecycle methods in class-based components
 - Import: `import {useEffect} from 'react'`
 - useEffect is something we call and we pass to it a function. And this function is similar to a combination of componentDidMount and componentDidUpdate
 - It's going to run once right away and it's going to run after changes to your component state or props
@@ -2225,7 +2224,7 @@ useEffect(() => {
 }, [count])
 ```
 - What we've done using useEffect is we've allowed us to synchronize our props and our state with whatever we want to
-- In this case, we are using it to sychronize the count state with the document title 
+- In this case, we are using it to synchronize the count state with the document title 
 
 **3 ways to use useEffect:**
 1. If we don't pass in a dependency array as 2nd arg to useEffect, the function (1st arg) runs if anything changes at all
@@ -2237,7 +2236,7 @@ useEffect(() => {
     - This means the function (1st arg) runs once when the component first mounts, but never runs on updates
     - `useEffect(() => {...}, [])`
 - We can call useEffect multiple times for each specific feature, each with their own set of dependencies
-- In general, it's a good idea to provide the 2nd arg, because we should be explicity about what our effect depends on
+- In general, it's a good idea to provide the 2nd arg, because we should be explicit about what our effect depends on
 
 ```javascript
 const App = (props) => {
@@ -2322,7 +2321,7 @@ dispatch({
 
 **Context API and useContext Hook:**
 - Context provides a way to pass data through the component tree without having to pass props down manually at every level
-- In a typical React application, data is psssed top-down (parent to child) via props, but this can be cumbersome for certain types of props (e.g. locale preference, UI theme) that are required by many components within an application
+- In a typical React application, data is passed top-down (parent to child) via props, but this can be cumbersome for certain types of props (e.g. locale preference, UI theme) that are required by many components within an application
 - Context provides a way to share values like these btwn components w/out having to explicitly pass a prop through every level of the tree
 
 **1. To create a context (object):**
