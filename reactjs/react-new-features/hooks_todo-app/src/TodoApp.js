@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import AppBar from '@material-ui/core/AppBar';
@@ -10,14 +10,10 @@ import TodoForm from './TodoForm';
 import useTodoState from './hooks/useTodoState';
 
 function TodoApp() {
-	const initialTodos = JSON.parse(window.localStorage.getItem('todos') || '[]');
+	const initialTodos = [{ id: 1, task: 'Pet a monkey', completed: false }];
 	const { todos, addTodo, removeTodo, toggleTodo, updateTodo } = useTodoState(
 		initialTodos
 	);
-
-	useEffect(() => {
-		localStorage.setItem('todos', JSON.stringify(todos));
-	}, [todos]);
 
 	return (
 		<Paper
@@ -50,3 +46,7 @@ function TodoApp() {
 }
 
 export default TodoApp;
+
+// NOTES:
+// To clear window.localStage, in the devTools console, run: `localStorage.clear()`
+// To see todos items in localStorage, run: `localStorage.getItem('todos')`
