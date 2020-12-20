@@ -12,7 +12,7 @@ import EditTodoForm from './EditTodoForm';
 function Todo({ task, completed, removeTodo, id, toggleTodo, updateTodo }) {
 	const [isEditing, toggle] = useToggleState(false);
 	return (
-		<ListItem>
+		<ListItem style={{height: '64px'}}>
 			{isEditing ? (
 				<EditTodoForm
 					id={id}
