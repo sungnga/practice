@@ -32,3 +32,11 @@ export class ThemeProvider extends Component {
 // One provider can be connected to many consumers
 // Providers can be nested to override values deeper within the tree
 // All consumers that are descendants of a Provider will re-render whenever the Provider's `value` prop changes
+
+// TO CONSUME THE CONTEXT:
+// Go to any of the consuming component, set the contextType to the name of the context object
+//   import ThemeContext context object. Then set the contextType
+//   static contextType = ThemeContext;
+// The `value` prop can be accessed using this.context
+//   const { isDarkMode } = this.context
+// Now the state/dataset stored in the context Provider can be used anywhere in the component that subscribes to it
