@@ -1,9 +1,15 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Navbar from './Navbar';
+import Form from './Form';
 
 class App extends Component {
 	render() {
-		return <Navbar />;
+		return (
+			<Fragment>
+				<Navbar />
+				<Form />
+			</Fragment>
+		);
 	}
 }
 
