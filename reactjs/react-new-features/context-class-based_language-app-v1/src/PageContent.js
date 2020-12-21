@@ -4,6 +4,7 @@ import { ThemeContext } from './contexts/ThemeContext';
 class PageContent extends Component {
 	static contextType = ThemeContext;
 	render() {
+		// console.log(this.context)
 		const { isDarkMode } = this.context;
 		const styles = {
 			backgroundColor: isDarkMode ? 'black' : 'white',
