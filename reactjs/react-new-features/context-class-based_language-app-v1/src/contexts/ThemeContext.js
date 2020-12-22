@@ -1,11 +1,11 @@
 import React, { Component, createContext } from 'react';
 
 // Creating a context object. Save it to a variable
-// Every context object comes with a provider and consumer
+// Every context object comes with a Provider and a Consumer
 export const ThemeContext = createContext();
 
 // Define a Provider component
-// The Provider contains the state that components subscribed to this Provider can consume
+// The Provider contains the state that other components can subscribe to have access to this state and any context changes
 export class ThemeProvider extends Component {
 	constructor(props) {
 		super(props);
@@ -18,8 +18,7 @@ export class ThemeProvider extends Component {
 	}
 
 	render() {
-		// Anything inside the Provider wrapper will have access to the value prop
-		// and subscribe to changes of this context Provider
+		// Any components inside the Provider wrapper will have access to the value prop and subscribe to context changes
 		return (
 			<ThemeContext.Provider
 				value={{ ...this.state, toggleTheme: this.toggleTheme }}
@@ -46,3 +45,5 @@ export class ThemeProvider extends Component {
 // The `value` prop can be accessed using this.context
 //   const { isDarkMode } = this.context
 // Now the state/dataset stored in the context Provider can be used anywhere in the component that subscribes to it
+// Another way to consume a context is by using MyContext.Consumer
+// Look in Navbar.js and LanguageContext.js files to see how this used
