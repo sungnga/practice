@@ -8,6 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import TodoList from './TodoList';
 import TodoForm from './TodoForm';
 import useTodoState from './hooks/useTodoState';
+import { TodosProvider } from './contexts/TodosContext';
 
 function TodoApp() {
 	const initialTodos = [{ id: 1, task: 'Pet a monkey', completed: false }];
@@ -32,13 +33,15 @@ function TodoApp() {
 			</AppBar>
 			<Grid container justify='center' style={{ marginTop: '1rem' }}>
 				<Grid item xs={11} md={8} lg={4}>
-					<TodoForm addTodo={addTodo} />
-					<TodoList
-						removeTodo={removeTodo}
-						todos={todos}
-						toggleTodo={toggleTodo}
-						updateTodo={updateTodo}
-					/>
+					<TodosProvider>
+						<TodoForm addTodo={addTodo} />
+						<TodoList
+							removeTodo={removeTodo}
+							todos={todos}
+							toggleTodo={toggleTodo}
+							updateTodo={updateTodo}
+						/>
+					</TodosProvider>
 				</Grid>
 			</Grid>
 		</Paper>
