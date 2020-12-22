@@ -1,10 +1,13 @@
-import React from "react"
-import TodoApp from './TodoApp'
+import React, { Fragment } from 'react';
+import TodoApp from './TodoApp';
+// import Counter from './counterExample';
 
 function App() {
-  return (
-    <TodoApp />
-  );
+	return (
+		<Fragment>
+			<TodoApp />
+		</Fragment>
+	);
 }
 
 export default App;
