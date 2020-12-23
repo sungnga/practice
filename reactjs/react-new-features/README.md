@@ -1,4 +1,4 @@
-## NOTES: REACT HOOKS AND CONTEXT
+## NOTES: React Hooks, Context API, Reducers, Next.js 
 
 ### USING CREATE REACT APP
 - Create-react-app application is designed to get us up and running with a bare bone react app quickly
@@ -219,3 +219,28 @@ Being able to call useEffect multiple time with different dependencies allows us
   export default memo(MyComponent);
   ```
 - In computing, **memoization** or memoisation is an optimization technique used primarily to speed up computer programs by storing the results of expensive function calls and returning the cached result when the same inputs occurs again
+
+
+### NEXT.JS
+
+**Setting up a Next.js project:**
+- Create a project directory. Then cd into it
+- Create a package.json file. Run: `npm init -y`
+- Install react, react-dom, and next packages: `npm i react react-dom next`
+- In package.json file:
+  - Lets specify some scripts for next
+  - `npm run dev` will start development mode (Use this when building the app)
+  - `npm run build` will build the app for production
+  - `npm run start` will start the server
+  ```js
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
+  }
+  ```
+- At the root of the project, create a directory called pages. It's important that this directory exists, because next.js is going to look for this folder
+- In pages directory, create a file called index.js. This is the standard starting page and it's considered the home page of the application
+- In pages/index.js file:
+  - Write a functional component and export default it
+  - Can name the component anything you like, but what's important to next.js is the name of the file, index.js
