@@ -7,7 +7,8 @@ import Todo from './Todo';
 import { TodosContext } from './contexts/TodosContext';
 
 function TodoList() {
-	const { todos } = useContext(TodosContext);
+	// Note: we're not destructuring todos as an object
+	const todos = useContext(TodosContext);
 
 	if (todos.length)
 		return (
