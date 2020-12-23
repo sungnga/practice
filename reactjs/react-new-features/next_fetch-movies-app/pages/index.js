@@ -1,7 +1,11 @@
-const Index = () => (
-  <div>
-    <h1>Our index page!!</h1>
-  </div>
-)
+import Link from 'next/link';
+import Navbar from '../components/Navbar';
 
-export default Index
+const Index = () => (
+	<div>
+		<Navbar />
+		<h1>Our index page!!</h1>
+	</div>
+);
+
+export default Index;
