@@ -1,5 +1,6 @@
-import React, { createContext, useReducer } from 'react';
+import React, { createContext } from 'react';
 import todoReducer from '../reducers/todoReducer';
+import {useLocalStorageReducer} from '../hooks/useLocalStorageReducer'
 
 const defaultTodos = [
 	{ id: 1, task: 'Mow the lawn', completed: false },
@@ -16,7 +17,11 @@ export const TodosContext = createContext();
 export const DispatchContext = createContext();
 
 export function TodosProvider(props) {
-	const [todos, dispatch] = useReducer(todoReducer, defaultTodos);
+	// Sync up data in localStorage using custom hook
+	// 1st arg is the key
+	// 2nd arg is the default todos array
+	// 3rd arg is a reducer, which is the returned state from the todoReducer
+	const [todos, dispatch] = useLocalStorageReducer("todos", defaultTodos, todoReducer);
 
 	// All child components have access to both TodosContext and DispatchContext Providers
 	// To prevent unnecessary re-rendering, pass in todos and dispatch to value not as a new object, but as is
