@@ -1,3 +1,20 @@
+# NOTES
+
+### React.memo
+- `React.memo` is a higher order component. It's similar to `React.PureComponent` but for function components instead of classes
+- If your function component renders the same result given the same props, you can wrap it in a call to `React.memo` for a performance boost in some cases by memoizing the result. This means that React will skip rendering the component, and reuse the last rendered result
+  ```js
+  import React, { memo } from "react";
+  function MyComponent(props) {
+    //render using props
+  };
+  export default memo(MyComponent);
+  ```
+  ```
+- In computing, **memoization** or memoisation is an optimization technique used primarily to speed up computer programs by storing the results of expensive function calls and returning the cached result when the same inputs occurs again
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, memo } from 'react';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -45,4 +45,6 @@ function Todo({ task, completed, id }) {
 	);
 }
 
-export default Todo;
+// memo is a higher order component that functions like PureComponent
+// It will only re-render if there are new props
+export default memo(Todo);
