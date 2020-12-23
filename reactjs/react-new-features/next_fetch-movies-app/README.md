@@ -45,3 +45,45 @@
 	</div>
   ```
 
+**Overriding the default _app.js:**
+- Next.js docs: https://nextjs.org/docs/advanced-features/custom-app
+- Next.js uses the `App` component to initialize pages. You can override it and control the page initialization. Which allows you to do things like:
+  - Persisting layout between page changes
+  - Keeping state when navigating pages
+  - Custom error handling using componentDidCatch
+  - Inject additional data into pages
+  - Add global CSS
+- Lets say if we want to add some functionality that is consistent or common between all of our pages such as a navbar or a footer, we need to override the default `App`
+- **To override the existing default _app.js in .next folder:**
+  - In pages folder, create an _app.js file
+  - Paste in the following code
+  - Then import and render any components before or after the `<Component />` to persist throughout the app 
+  - The example here is adding a Navbar component to every page
+  ```js
+  import App, { Container } from 'next/app';
+  import Navbar from '../components/Navbar';
+
+  function MyApp({ Component, pageProps }) {
+    return (
+      <Container>
+        <Navbar />
+        <Component {...pageProps} />
+      </Container>
+    );
+  }
+
+  // Only uncomment this method if you have blocking data requirements for
+  // every single page in your application. This disables the ability to
+  // perform automatic static optimization, causing every page in your app to
+  // be server-side rendered.
+  //
+  MyApp.getInitialProps = async (appContext) => {
+    // calls page's `getInitialProps` and fills `appProps.pageProps`
+    const appProps = await App.getInitialProps(appContext);
+
+    return { ...appProps };
+  };
+
+  export default MyApp;
+  ```
+
