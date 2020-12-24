@@ -28,7 +28,7 @@
 - In each file, write a component and export default it. The name of the component can be anything you want
 
 **Next's Link component:**
-- In a Next.js application, the initial page load is being rendered on the server-side. When a page refreshes or loads for the first time, it makes a request to the server and the webpage is rendered on the server-side and sends back to the browser. However, we don't want to make a request to the server and have the page refreshes every time we want to visit another page or click on a link. We still want a single-page application experience of client-side routing
+- In a Next.js application, the initial page load is being rendered on the server-side. When a page refreshes or loads for the first time, it makes a request to the server and the webpage/HTML is rendered on the server-side and sends back to the browser. However, we don't want to make a request to the server and have the page refreshes every time we want to visit another page or click on a link. We still want a single-page application experience of client-side routing
 - Next.js comes with a Link component that we can use to have the page be rendered on the client-side. This won't send a request to the server
 - Import Link component: `import Link from "next/link";`
   - Use the Link component anywhere to direct users to a different page
@@ -87,3 +87,48 @@
   export default MyApp;
   ```
 
+**The getInitialProps method:**
+- Docs: https://nextjs.org/docs/api-reference/data-fetching/getInitialProps
+- `getInitialProps` enables server-side rendering in a page and allows you to do initial data population, it means sending the page with the data already populated from the server. This is especially useful for SEO
+- NOTE: If using Next.js 9.3 or newer, it's recommended to use `getStaticProps` or `getServerSideProps` instead of `getInitialProps`
+- These new data fetching methods allow you to have a granular choice between static generation and server-side rendering
+- Static generation vs. server-side rendering: https://nextjs.org/docs/basic-features/pages
+- In pages/index.js file:
+  - Using the getInitialProps async method
+  - This method must return an object
+  ```js
+  const Index = () => {
+    return (
+      <div>
+        <h1>Our index page!!</h1>
+      </div>
+    );
+  };
+  Index.getInitialProps = async () => {
+    return {props: console.log('GET INITIAL PROPS 2.0')}
+  } 
+
+  export default Index;
+  ```
+- Example of using the `getServerSideProps` method:
+  ```js
+  function Page({ data }) {
+    // Render data...
+  }
+
+  // This gets called on every request
+  export async function getServerSideProps() {
+    // Fetch data from external API
+    const res = await fetch(`https://.../data`)
+    const data = await res.json()
+
+    // Pass data to the page via props
+    return { props: { data } }
+  }
+
+  export default Page
+  ```
+
+**Two forms of pre-rendering for Next.js:**
+- **Static Generation (Recommended):** The HTML is generated at **build time** and will be reused on each request. To make a page use Static Generation, either export the page component, or export `getStaticProps` (and `getStaticPaths` if necessary). It's great for pages that can be pre-rendered ahead of a user's request. You can also use it with Client-side Rendering to bring in additional data.
+- **Server-side Rendering:** The HTML is generated on **each request**. To make a page use Server-side Rendering, export `getServerSideProps`. Because Server-side Rendering results in slower performance than Static Generation, use this only if absolutely necessary.
