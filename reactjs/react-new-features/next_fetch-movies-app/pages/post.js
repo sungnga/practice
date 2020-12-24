@@ -1,7 +1,11 @@
-const Post = ({ query }) => <h1>You are looking at post #{query.id}</h1>;
+import { useRouter } from 'next/router';
 
-export async function getServerSideProps({ query }) {
-	return { props: { query: query } };
+export default function Post() {
+	const router = useRouter();
+
+	return <h1>You are looking at post #{router.query.id}</h1>;
 }
 
-export default Post;
+// export async function getServerSideProps({ query }) {
+// 	return { props: { query: query } };
+// }

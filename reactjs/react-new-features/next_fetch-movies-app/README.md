@@ -166,6 +166,7 @@
   ```
 
 **Context Object:**
+- Docs: https://nextjs.org/docs/api-reference/data-fetching/getInitialProps
 - `getServerSideProps` receives a single argument called `context`, it's an object with the following properties:
   - `pathname` - Current route. That is the path of the page in `/pages`
   - `query` - Query string section of URL parsed as an object
@@ -200,4 +201,17 @@
   }
 
   export default Post;
+  ```
+
+**useRouter Hook:**
+- Docs: https://nextjs.org/docs/api-reference/next/router
+- Another option to get query strings is to use the `useRouter` hook. We can use this hook to get access to the router object inside any component
+  ```js
+  import { useRouter } from 'next/router';
+
+  export default function Post() {
+    const router = useRouter();
+
+    return <h1>You are looking at post #{router.query.id}</h1>;
+  }
   ```
