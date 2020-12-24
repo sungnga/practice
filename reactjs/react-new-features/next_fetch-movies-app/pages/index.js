@@ -1,5 +1,5 @@
 import axios from 'axios';
-import Link from 'next/link'
+import Link from 'next/link';
 
 // import React, { Component } from 'react';
 // class Index extends Component {
@@ -38,13 +38,17 @@ const Index = ({ posts }) => {
 			<ul>
 				{posts.map((post) => (
 					<li key={post.id}>
-						<Link href={`/post?id=${post.id}`}><a>{post.title}</a></Link>
+						<Link href={`/post?id=${post.id}`}>
+							<a>{post.title}</a>
+						</Link>
 					</li>
 				))}
 			</ul>
 		</div>
 	);
 };
+
+// Fetching posts
 export async function getServerSideProps() {
 	const res = await axios.get('https://jsonplaceholder.typicode.com/posts');
 	const { data } = res;
