@@ -164,3 +164,40 @@
 
   export default Index;
   ```
+
+**Context Object:**
+- `getServerSideProps` receives a single argument called `context`, it's an object with the following properties:
+  - `pathname` - Current route. That is the path of the page in `/pages`
+  - `query` - Query string section of URL parsed as an object
+  - `asPath` - String of the actual path (including the query) shown in the browser
+  - `req` - HTTP request object (server only)
+  - `res` - HTTP response object (server only)
+  - `err` - Error object if any error is encountered during the rendering
+
+**Query strings in Next:**
+- We can add on query parameters to our routes. For example, we can use the query string property of context object to add an id parameter to the route/URL to make a request for a post with that id
+- Since the `getServerSideProps` method receives the context object as an argument, we can call this method and return the query property as an object. We can then pass this query as props to our Post component
+- In the pages/index.js file:
+  - Create a link for each post using Link component to direct to the post page
+  ```js
+  <ul>
+    {posts.map((post) => (
+      <li key={post.id}>
+        <Link href={`/post?id=${post.id}`}><a>{post.title}</a></Link>
+      </li>
+    ))}
+  </ul>
+  ```
+- In pages/post.js file:
+  - Write a getServerSideProps function that returns the query property as an object. This is an async function
+  - This function takes context object as an argument, but we only want the query property. So destructure and just pass in query as an argument
+  - Write a Post component that receives the query object as props. Then render a simple text to display the post id
+  ```js
+  const Post = ({ query }) => <h1>You are looking at post #{query.id}</h1>;
+
+  export async function getServerSideProps({ query }) {
+    return { props: { query: query } };
+  }
+
+  export default Post;
+  ```
