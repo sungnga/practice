@@ -130,5 +130,37 @@
   ```
 
 **Two forms of pre-rendering for Next.js:**
-- **Static Generation (Recommended):** The HTML is generated at **build time** and will be reused on each request. To make a page use Static Generation, either export the page component, or export `getStaticProps` (and `getStaticPaths` if necessary). It's great for pages that can be pre-rendered ahead of a user's request. You can also use it with Client-side Rendering to bring in additional data.
-- **Server-side Rendering:** The HTML is generated on **each request**. To make a page use Server-side Rendering, export `getServerSideProps`. Because Server-side Rendering results in slower performance than Static Generation, use this only if absolutely necessary.
+- **Static Generation (Recommended):** The HTML is generated at **build time** and will be reused on each request. To make a page use Static Generation, either export the page component, or export `getStaticProps` (and `getStaticPaths` if necessary). It's great for pages that can be pre-rendered ahead of a user's request. You can also use it with Client-side Rendering to bring in additional data
+- **Server-side Rendering:** The HTML is generated on **each request**. To make a page use Server-side Rendering, export `getServerSideProps`. Because Server-side Rendering results in slower performance than Static Generation, use this only if absolutely necessary
+
+**Fetching posts with getServerSideProps method:**
+- Install axios: `npm i axios`
+- In pages/index.js file:
+  - The getServerSideProps() is an async function and must return an object
+  - Also the return object must have the `props` as the key
+  - The Index component receives posts as a props
+  - Map over the posts array and display the post titles in a list
+  ```js
+  import axios from 'axios';
+
+  const Index = ({ posts }) => {
+    // console.log(posts)
+    return (
+      <div>
+        <h1>Our index page!!</h1>
+        <ul>
+          {posts.map((post) => (
+            <li key={post.id}>{post.title}</li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
+  export async function getServerSideProps() {
+    const res = await axios.get('https://jsonplaceholder.typicode.com/posts');
+    const { data } = res;
+    return { props: { posts: data } };
+  }
+
+  export default Index;
+  ```
