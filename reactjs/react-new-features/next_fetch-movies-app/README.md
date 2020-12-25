@@ -1,4 +1,4 @@
-### NEXT.JS
+## NOTES ON NEXT.JS
 
 **Setting up a Next.js project:**
 - Create a project directory. Then cd into it
@@ -90,7 +90,7 @@
 **The getInitialProps method:**
 - Docs: https://nextjs.org/docs/api-reference/data-fetching/getInitialProps
 - `getInitialProps` enables server-side rendering in a page and allows you to do initial data population, it means sending the page with the data already populated from the server. This is especially useful for SEO
-- NOTE: If using Next.js 9.3 or newer, it's recommended to use `getStaticProps` or `getServerSideProps` instead of `getInitialProps`
+- NOTE: `getInitialProps` is deprecated. If using Next.js 9.3 or newer, it's recommended to use `getStaticProps` or `getServerSideProps` instead of `getInitialProps`
 - These new data fetching methods allow you to have a granular choice between static generation and server-side rendering
 - Static generation vs. server-side rendering: https://nextjs.org/docs/basic-features/pages
 - In pages/index.js file:
@@ -214,4 +214,89 @@
 
     return <h1>You are looking at post #{router.query.id}</h1>;
   }
+  ```
+
+**Create custom server-side routes with Express:**
+- Install Express: `npm i express`
+- **Setup Express server:**
+  - At the root of the project directory, create a file called expressServer.js that sets up Express with Next.js
+  - In expressServer.js file:
+    - This is just setting up Express with Next.js and not accepting any requests yet
+    ```js
+    const express = require('express');
+    const next = require('next');
+    const dev = process.env.NODE_ENV !== 'production';
+    const app = next({ dev });
+    const handle = app.getRequestHandler();
+
+    app.prepare().then(() => {
+      const server = express();
+
+      server.listen(3000, (err) => {
+        if (err) throw err;
+        console.log('> Now serving on localhost:3000');
+      });
+    });
+    ```
+- **Modify the scripts in package.json file to run the expressServer**
+  ```
+  "scripts": {
+    "dev": "node expressServer.js",
+    "build": "next build",
+    "start": "NODE_ENV=production node expressServer.js"
+  }
+  ```
+  - Run: `npm run dev` to start up the express server
+- **Hand all incoming requests to Next.js**
+  - In expressServer.js file:
+    ```js
+    // For every request that comes in, call the handle() method
+    // and pass in the req and res objects to Next.js
+    // Next.js will handle the requests
+    server.get('/p/:id', (req, res) => {
+      app.render(req, res, '/post', { id: req.params.id });
+    });
+    ```
+- **To add a custom server-side route:**
+  - Define all custom routes just above the code that lets Next.js handles all incoming request
+  - Follow this pattern when creating a custom route
+  - First, define the route definition
+  - Then call app.render() method to pass off the request to Next.js
+  - 3rd arg is the route name defined in pages directory. It's telling Next to render this page for this route request
+  - 4th arg is a query object that we want to provide with the request
+  - In the Post component, we have access to query.id. So we can pass in the id key here
+  - In express, we have access to the req.params object
+  req.params.id is coming from the route definition "/p/:id"
+  - Set the value for the id key to the id from req.params
+  - We can even just pass in the entire req.params object as a 4th arg
+    ```js
+    server.get('/p/:id', (req, res) => {
+      app.render(req, res, '/post', { id: req.params.id });
+    });
+    ```
+- Final code example for defining custom server-side route with Express. In expressServer file:
+  ```js
+  const express = require('express');
+  const next = require('next');
+
+  const dev = process.env.NODE_ENV !== 'production';
+  const app = next({ dev });
+  const handle = app.getRequestHandler();
+
+  app.prepare().then(() => {
+    const server = express();
+
+    server.get('/p/:id', (req, res) => {
+      app.render(req, res, '/post', { id: req.params.id });
+    });
+
+    server.get('*', (req, res) => {
+      return handle(req, res);
+    });
+
+    server.listen(3000, (err) => {
+      if (err) throw err;
+      console.log('> Now serving on localhost:3000');
+    });
+  });
   ```
