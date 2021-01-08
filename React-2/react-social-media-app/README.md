@@ -1,6 +1,7 @@
 # NOTES
 
 ### SETTING UP A REACT PROJECT
+-------------------------------
 - To create a project with create-react-app, run in the terminal: `npx create-react-app react-social-media-app --use-npm`
 - To run the app in development mode: `npm start`
 - Open http://localhost:3000 to view it in the browser
@@ -36,8 +37,8 @@
 
 
 ### REACT HOOKS
-
-**Option 1 in using useContext hook:**
+----------------
+**1st pattern in using useContext hook:**
 - In App.js file:
   - Import CreateContext from React
   - Call `createContext()` to create a context
@@ -113,3 +114,50 @@
 
   export default Post;
   ```
+
+**The Reducer:**
+- A **reducer** is a pure function, a plain JS function. A reducer does not perform any side-effect and it's an synchronous operation. Given a certain input, we always get a predictable output
+- The name of the reducer we give usually depends on the state the reducer is managing. For example, a reducer that manages user state we call it a userReducer
+- Every reducer receives 2 pieces of input:
+  - A **previous state**
+  - An **action**. Action is like an event
+- Based on the input, the reducer returns a new state: **(state, action) -> newState**
+- The **action** is an object and it contains type and payload properties
+  - **Type** property is a string that determines what type of state we want to perform
+    - We get to determine what the type should be
+    - By convention the string is all in uppercase separated by underscores
+    - For example, `LOGIN_USER`
+  - **Payload** property is an object that contains the values/data that's passed along with the action
+- Since a reducer can have many types of conditions, we use a switch statement as compared to using an if statement
+  - The switch statement is according to the action type
+  - The case is the value of action type property
+  - The case returns an **object** which contains the new state and any existing states
+  - There's a default case that returns the previous state
+  ```js
+  const initialState = { user: '' };
+
+  function userReducer(state, action) {
+    switch (action.type) {
+      case 'LOGIN_USER': {
+        return {
+          ...state,
+          user: action.payload.username
+        };
+      }
+      case 'LOGOUT_USER': {
+        return {
+          ...state,
+          user: ''
+        };
+      }
+      default:
+        return state;
+    }
+  }
+
+  const loginAction = { type: 'LOGIN_USER', payload: { username: 'Nga' } };
+  const logoutAction = { type: 'LOGOUT_USER' };
+
+  console.log(userReducer(initialState, logoutAction));
+  ```
+
