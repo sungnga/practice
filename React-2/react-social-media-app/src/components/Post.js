@@ -1,6 +1,10 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useContext } from 'react';
+import { UserContext } from '../App';
 
 function Post({ user, content, image }) {
+	const currentUser = useContext(UserContext);
+	const isCurrentUser = currentUser === user;
+
 	return (
 		<Fragment>
 			{image && (
@@ -11,7 +15,7 @@ function Post({ user, content, image }) {
 				/>
 			)}
 			<p>{content}</p>
-			<div>{user}</div>
+			<div style={{ color: isCurrentUser && 'green' }}>{user}</div>
 		</Fragment>
 	);
 }
