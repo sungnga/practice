@@ -1,8 +1,7 @@
-# NOTES
+# NOTES ON REACT CORE CONCEPTS
 
-### SETTING UP A REACT PROJECT
--------------------------------
-- To create a project with create-react-app, run in the terminal: `npx create-react-app react-social-media-app --use-npm`
+## SETTING UP A REACT PROJECT
+- To create a project with create-react-app, run in the terminal: `npx create-react-app <project-name> --use-npm`
 - To run the app in development mode: `npm start`
 - Open http://localhost:3000 to view it in the browser
 
@@ -36,9 +35,9 @@
   ```
 
 
-### REACT HOOKS
-----------------
-**1st pattern using useContext hook:**
+## ADVANCED REACT HOOKS
+
+### State management using useContext hook:
 - In App.js file:
   - Import CreateContext from React
   - Call `createContext()` to create a context
@@ -115,7 +114,7 @@
   export default Post;
   ```
 
-**The Reducer:**
+### Concept of the Reducer:
 - A **reducer** is a pure function, a plain JS function. A reducer does not perform any side-effect and it's an synchronous operation. Given a certain input, we always get a predictable output
 - The name of the reducer we give usually depends on the state the reducer is managing. For example, a reducer that manages user state we call it a userReducer
 - Every reducer receives 2 pieces of input:
@@ -161,7 +160,7 @@
   console.log(userReducer(initialState, logoutAction));
   ```
 
-**2nd pattern using useContext hook with useReducer hook for state management:**
+### State management using useContext hook with useReducer hook:
 - In App.js file:
   - We can use PostContext to manage our posts state
     - To create a PostContext: `export const PostContext = createContext();`
