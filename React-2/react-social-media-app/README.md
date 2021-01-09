@@ -38,7 +38,7 @@
 
 ### REACT HOOKS
 ----------------
-**1st pattern in using useContext hook:**
+**1st pattern using useContext hook:**
 - In App.js file:
   - Import CreateContext from React
   - Call `createContext()` to create a context
@@ -161,3 +161,113 @@
   console.log(userReducer(initialState, logoutAction));
   ```
 
+**2nd pattern using useContext hook with useReducer hook for state management:**
+- In App.js file:
+  - We can use PostContext to manage our posts state
+    - To create a PostContext: `export const PostContext = createContext();`
+    - When creating a PostContext, we can provide a default value in the form of an object
+      - Set posts property to an empty array. This initializes the posts state as an empty array
+    - Export the PostContext
+  - Import postReducer
+  - Pass in the postReducer to the useReducer() hook as 1st arg
+  - In the App component:
+    - Call useContext() hook and pass in the PostContext to use post context. And what we get back is the initialPostState
+    - Pass this initialPostState to the useReducer() hook as 2nd arg
+    - What we get back from the useReducer() hook is a state and a dispatch function
+    - Wrap the `<PostContext.Provider />` component around any components that want to consume its context. Set the value props to an object that contains the state and dispatch
+    ```js
+    import React, { createContext, useContext } from 'react';
+    import postReducer from './postReducer';
+
+    export const UserContext = createContext();
+    export const PostContext = createContext({
+      posts: []
+    });
+
+    function App() {
+      const initialPostState = useContext(PostContext);
+      // state is an object that contains posts state
+      // dispatch is a function
+      const [state, dispatch] = useReducer(postReducer, initialPostState);
+      const [user, setUser] = useState('Nga');
+
+      return (
+        <PostContext.Provider value={{ state, dispatch }}>
+          <UserContext.Provider value={user}>
+            <Header user={user} setUser={setUser} />
+            <CreatePost user={user} />
+            <PostList posts={state.posts} />
+          </UserContext.Provider>
+        </PostContext.Provider>
+      );  
+    }
+    ```
+- In postReducer.js file:
+  - Write a postReducer function using a switch statement
+  - Then define cases for ADD_POST and DELETE_POST, and a default case
+  ```js
+  function postReducer(state, action) {
+    switch (action.type) {
+      case 'ADD_POST': {
+        const newPost = action.payload.post;
+        return { posts: [newPost, ...state.posts] };
+      }
+      case 'DELETE_POST': {
+        const deletedPostId = action.payload.id;
+        return { posts: state.posts.filter((post) => post.id !== deletedPostId) };
+      }
+      default:
+        return state;
+    }
+  }
+
+  export default postReducer;
+  ```
+- In CreatePost.js file:
+  - The CreatePost component will consume the PostContext
+  - Import PostContext
+  - Call useContext() hook and pass in PostContext as an argument. Then what we get back is the state and dispatch properties. We can destructure the dispatch function from it
+  - In the handleSubmit function:
+    - Call the dispatch function and pass in an object as an argument
+    - In this object, specify the type property to ADD_POST and set the payload property to the post data that we get from the post form
+    ```js
+    import { PostContext } from '../App';
+
+    const { dispatch } = useContext(PostContext);
+
+    function handleSubmit(event) {
+      event.preventDefault();
+      const post = { content, image, user };
+      dispatch({ type: 'ADD_POST', payload: { post } });
+      // handleAddPost(post);
+      // setPosts(prevPosts => ([post, ...prevPosts]));
+      setContent('');
+      // Clear out image input after submit
+      imageInputRef.current.value = '';
+    }
+    ```
+- To delete a post, in Post.js file:
+  - Add a Delete button
+  - Now we only want to show the Delete button to the currentUser who made the post
+    - `{isCurrentUser && <button>Delete</button>}`
+  - Import PostContext from App.js
+  - Then call the useContext() hook and pass in the PostContext. What we get back is a state and dispatch and we can destructure the dispatch function
+  - To delete a post, we want to call the postReducer's dispatch function to dispatch the DELETE_POST action type. The reducer will then update the posts state based on the action type we provide to the dispatch function
+  - Write a handleDeletePost function that calls the dispatch function to delete a post
+    - In the dispatch function, pass in an object that contains the action type of DELETE_POST and a payload of the post id
+  - In the Delete button onClick event handler, call the handleDeletePost function
+  ```js
+  import { PostContext } from '../App';
+
+  function Post({ user, content, image, id }) {
+    const { dispatch } = useContext(PostContext);
+
+    function handleDeletePost() {
+      dispatch({ type: 'DELETE_POST', payload: { id } });
+    }
+
+    return (
+      {isCurrentUser && <button onClick={handleDeletePost}>Delete</button>}
+    )
+  }
+  ```
