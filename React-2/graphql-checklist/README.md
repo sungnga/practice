@@ -19,7 +19,7 @@
   function App() {
     return <h1>App</h1>;
   }
-
+✅
   export default App;
   ```
 - To start the project, run: `npm run start`
@@ -114,4 +114,45 @@
   }
 
   export default App;
+  ```
+
+
+### Add Styles with Tachyons:
+- Tachyons docs: https://tachyons.io
+  - Copy and paste the CDN link into index.html file
+- In App.js file:
+  - Add styles to our checklist app
+  ```js
+	return (
+		<div className='vh-100 code flex flex-column items-center bg-gold white pa3 fl-1'>
+			<h1 className='f2-l'>
+				GraphQL Checklist{' '}
+				<span role='img' aria-label='Checkmark'>
+					✅
+				</span>
+			</h1>
+			{/* Todo Form */}
+			<form className='mb3'>
+				<input
+					className='pa2 f4 b--dashed'
+					type='text'
+					placeholder='Write your todo'
+				/>
+				<button className='pa2 f4 bg-green white' type='submit'>
+					Create
+				</button>
+			</form>
+			{/* Todo List */}
+			<div className='flex flex-column items-center justify-center'>
+				{data.todos.map((todo) => (
+					<p key={todo.id}>
+						<span className='pointer list pa1 f3'>{todo.text}</span>
+						<button className='bg-transparent pointer bn f4'>
+							<span className='red'>&times;</span>
+						</button>
+					</p>
+				))}
+			</div>
+		</div>
+	);
   ```
