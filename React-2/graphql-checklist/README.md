@@ -41,3 +41,28 @@
   });
   ```
 
+
+### CONNECT OUR CLIENT TO REACT
+- We connect Apollo Client to React with the `ApolloProvider` component. The `ApolloProvider` is similar to React's `Context.Provider`. It wraps our React app and places the client on the context, which enables us to access it from anywhere in our component tree
+- In index.js file:
+  - Import ApolloProvider component from @apollo/client
+  - Wrap the ApolloProvider component around the App component
+  - In the ApolloProvider component, pass the client props and set to the client object
+  ```js
+  import React from 'react';
+  import ReactDOM from 'react-dom';
+  import App from './App';
+  import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+
+  const client = new ApolloClient({
+    uri: 'https://ngala-todo-graphql.hasura.app/v1/graphql',
+    cache: new InMemoryCache()
+  });
+
+  ReactDOM.render(
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>,
+    document.getElementById('root')
+  );
+  ```
