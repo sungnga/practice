@@ -24,3 +24,20 @@
   ```
 - To start the project, run: `npm run start`
 - Open http://localhost:3000 to view it in the browser
+
+
+### CONFIGURE APOLLO CLIENT
+- To use Apollo, we need to configure it
+- We need to setup our client by instantiating a new client in index.js file
+- Our client is going to keep track of all of our settings, what endpoint we're going to be making request to, and it's going to create our cache
+- Go to Hasura GraphQL API and copy the GraphQL Endpoint and set to the `uri` property
+- In index.js file:
+  ```js
+  import { ApolloClient, InMemoryCache } from '@apollo/client';
+
+  const client = new ApolloClient({
+    uri: 'https://ngala-todo-graphql.hasura.app/v1/graphql',
+    cache: new InMemoryCache()
+  });
+  ```
+
