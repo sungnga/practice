@@ -270,7 +270,7 @@
   ```
 
 
-## GRAPHQL
+## GRAPHQL, APOLLO CLIENT, REACT HOOKS, AND HASURA
 
 ### HASURA - Real-time GraphQL APIs
 - Website: https://hasura.io/
@@ -282,7 +282,7 @@
 ### APOLLO CLIENT
 - Apollo GraphQL docs: https://www.apollographql.com/docs/react/
 - First we need to create a react app before installing apollo client and graphql
-- Install: `npm install @apollo/client graphql`
+- Install apollo client and graphql: `npm install @apollo/client graphql`
 
 ### Configure Apollo Client:
 - To use Apollo, we need to configure it
@@ -645,6 +645,7 @@
     ```
 
 
+## MATERIAL UI
 
 
 ## RESOURCES
@@ -652,3 +653,4 @@
 - Hasura: https://hasura.io/
 - Tachyons: https://tachyons.io
   - Copy and paste the CDN link into index.html file
+- Material UI docs: https://material-ui.com/

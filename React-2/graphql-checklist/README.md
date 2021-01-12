@@ -1,8 +1,8 @@
-# NOTES ON APOLLO REACT HOOKS
+# NOTES ON APOLLO CLIENT, REACT HOOKS, AND HASURA
 
 ## SETUP PROJECT
 - Create a react project: `npx create-react-app graphql-checklist --use-npm`
-- Install apollo and graphql: `npm install @apollo/client graphql`
+- Install apollo client and graphql: `npm install @apollo/client graphql`
 - In src folder, only have index.js and App.js files
 - Starter code in index.js file:
   ```js
@@ -185,7 +185,7 @@
     }
     ```
   - Then execute the mutation to update the todo based on id
-- **Create an update mutation on client-side React:**
+- **Create an update mutation on client-side React UI:**
   - In App.js file:
     - First, create a variable that holds the update mutation. In our case, call it TOGGLE_TODO
     - Then pass TOGGLE_TODO to useMutation() hook inside App component
@@ -256,7 +256,7 @@
     "text": "Pick up library books"
   }
   ```
-- **Create an insert mutation on client-side React:**
+- **Create an insert mutation on client-side React UI:**
   - When the todo form is submitted, we want to call the addTodo mutation function to add a todo in the database. Then we want to call the getTodos query function to refetch the todos items and display them on the page
   - In App.js file:
     - First, create a variable that holds the insert mutation. In our case, call it ADD_TODO
@@ -339,7 +339,7 @@
     "id": "eef4d14e-f72a-4479-be77-db49a88c7940"
   }
   ```
-- **Create a delete mutation on client-side React:**
+- **Create a delete mutation on client-side React UI:**
   - In App.js file:
     - First, create a variable that holds the delete mutation. In our case, call it DELETE_TODO
     - Then pass DELETE_TODO to useMutation() hook inside App component
