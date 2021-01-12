@@ -317,3 +317,77 @@
       </button>
     </form>
     ```
+
+
+### Delete todos Mutations:
+- In Harsura GraphiQL console:
+  ```js
+  mutation deleteTodo($id: uuid!) {
+    delete_todos(where: {id: {_eq: $id}}) {
+      returning {
+        done
+        id
+        text
+      }
+    }
+  }
+  ```
+- In the Query Variables panel:
+  - Provide the todo id we want to delete
+  ```js
+  {
+    "id": "eef4d14e-f72a-4479-be77-db49a88c7940"
+  }
+  ```
+- **Create a delete mutation on client-side React:**
+  - In App.js file:
+    - First, create a variable that holds the delete mutation. In our case, call it DELETE_TODO
+    - Then pass DELETE_TODO to useMutation() hook inside App component
+    - What we get back from useMutation is an deleteTodo function in an array and we can destructure that
+    - When a user clicks on the X button, execute the handleDeleteTodo function which accepts the todo object as an argument
+    - Write an async handleDeleteTodo function that
+      - accepts the todo id as an argument
+      - executes the deleteTodo mutation function to delete a todo based on id in the database
+      - also pops up a confirm window to confirm that the user wants to delete the todo
+      - the mutation function returns the data object which contains the deleted todo
+    - Lastly, in the deleteTodo mutation function we want to manually update the cache data
+      - first call the readQuery() method on cache to get the previous data object
+      - then use the filter() method on the todos array to filter the todo by id
+      - then call the writeQuery() method on cache to update the todos array data
+    ```js
+    const DELETE_TODO = gql`
+      mutation deleteTodo($id: uuid!) {
+        delete_todos(where: { id: { _eq: $id } }) {
+          returning {
+            done
+            id
+            text
+          }
+        }
+      }
+    `;
+
+    const [deleteTodo] = useMutation(DELETE_TODO);
+
+    async function handleDeleteTodo(todo) {
+      const isConfirmed = window.confirm('Do you want to delete this todo?');
+      if (isConfirmed) {
+        const data = await deleteTodo({
+          variables: { id: todo.id },
+          update: (cache) => {
+            const prevData = cache.readQuery({ query: GET_TODOS });
+            const newTodos = prevData.todos.filter((t) => t.id !== todo.id);
+            cache.writeQuery({ query: GET_TODOS, data: { todos: newTodos } });
+          }
+        });
+        console.log('deleted todo', data);
+      }
+    }
+
+    <button
+      onClick={() => handleDeleteTodo(todo)}
+      className='bg-transparent pointer bn f4'
+    >
+      <span className='red'>&times;</span>
+    </button>
+    ```
