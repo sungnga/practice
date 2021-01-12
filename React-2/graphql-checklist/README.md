@@ -47,7 +47,7 @@
 - In index.js file:
   - Import ApolloProvider component from @apollo/client
   - Wrap the ApolloProvider component around the App component
-  - In the ApolloProvider component, pass the client props and set to the client object
+  - In the ApolloProvider component, pass the client props and set it to the client instance we just created
   ```js
   import React from 'react';
   import ReactDOM from 'react-dom';
