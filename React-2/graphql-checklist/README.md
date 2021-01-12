@@ -124,7 +124,7 @@
   - Add styles to our checklist app
   ```js
 	return (
-		<div className='vh-100 code flex flex-column items-center bg-gold white pa3 fl-1'>
+		<div className='vh-100 code flex flex-column items-center bg-purple white pa3 fl-1'>
 			<h1 className='f2-l'>
 				GraphQL Checklist{' '}
 				<span role='img' aria-label='Checkmark'>
@@ -156,3 +156,79 @@
 		</div>
 	);
   ```
+
+
+### Mutations with useMutation hook:
+- Before executing any query, mutation, or subscription within the React app, it's best to first write it out and execute it within the Hasura GraphQL console
+- **To update todos of done field in Hasura GraphiQL console:**
+  - Use query variables to pass dynamic values to the query or mutation
+  - To accept input values for a query or mutation, next to the name of the mutation add parenthesis and declare the variables
+    - give the name of the query variable prefix with `$`. For example, `$id`
+    - then specify its type and whether it is required or not
+    - in our example, we want to provide the id and the done field to our mutation
+    ```js
+    mutation toggleTodo($id: uuid!, $done: Boolean!) {
+      update_todos(where: {id: {_eq: $id}}, _set: {done: $done}) {
+        returning {
+          text
+          id
+          done
+        }
+      }
+    }
+    ```
+  - In the Query Variables section, provide the values to the query variables in json format
+    ```js
+    {
+      "id": "88f202d8-b37f-4741-a25a-39f620ef2c22",
+      "done": true
+    }
+    ```
+  - Then execute the mutation to update the todo based on id
+- **Create a mutation on client-side React:**
+  - In App.js file:
+    - First, create a variable that holds the mutation. In our case, call it TOGGLE_TODO
+    - Then pass TOGGLE_TODO to useMutation() hook inside App component
+    - What we get back from useMutation is a toggleTodo function in an array and we can destructure that
+    - This toggleTodo function returns a promise since this is an async operation
+    - So when the todo item is clicked, execute the handleToggleTodo function
+    - Write a handleToggleTodo function that 
+      - accepts a todo id and done properties as arguments
+      - executes the toggleTodo function
+      - make handleToggleTodo function an async function because toggleTodo resolves in a promise
+      - Pass in the variables, as an object, to the variables key
+      - what we get back from the data is the todo object which contains the id, text, and done fields
+    - Lastly, in rendering todo list, toggle the todo with a strike when the user double-clicks it
+    ```js
+    const TOGGLE_TODO = gql`
+      mutation toggleTodo($id: uuid!, $done: Boolean!) {
+        update_todos(where: { id: { _eq: $id } }, _set: { done: $done }) {
+          returning {
+            text
+            id
+            done
+          }
+        }
+      }
+    `;
+
+    const [ toggleTodo ] = useMutation(TOGGLE_TODO);
+
+    async function handleToggleTodo(todo) {
+      const data = await toggleTodo({
+        variables: { id: todo.id, done: !todo.done }
+      });
+      console.log(data);
+    }
+
+    {data.todos.map((todo) => (
+      <p onDoubleClick={() => handleToggleTodo(todo)} key={todo.id}>
+        <span className={`pointer list pa1 f3 ${todo.done && 'strike'}`}>
+          {todo.text}
+        </span>
+        <button className='bg-transparent pointer bn f4'>
+          <span className='red'>&times;</span>
+        </button>
+      </p>
+    ))}
+    ```
