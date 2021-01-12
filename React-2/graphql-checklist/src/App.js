@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation, gql } from '@apollo/client';
 
 const GET_TODOS = gql`
@@ -23,15 +23,42 @@ const TOGGLE_TODO = gql`
 	}
 `;
 
+const ADD_TODO = gql`
+	mutation addTodo($text: String!) {
+		insert_todos(objects: { text: $text }) {
+			returning {
+				done
+				id
+				text
+			}
+		}
+	}
+`;
+
 function App() {
+	const [todoText, setTodoText] = useState('');
 	const { data, loading, error } = useQuery(GET_TODOS);
 	const [toggleTodo] = useMutation(TOGGLE_TODO);
+	const [addTodo] = useMutation(ADD_TODO, {
+		onCompleted: () => setTodoText('')
+	});
 
 	async function handleToggleTodo(todo) {
 		const data = await toggleTodo({
 			variables: { id: todo.id, done: !todo.done }
 		});
-		console.log(data);
+		console.log('toggled todo', data);
+	}
+
+	async function handleAddTodo(event) {
+		event.preventDefault();
+		if (!todoText.trim()) return;
+		const data = await addTodo({
+			variables: { text: todoText },
+			refetchQueries: [{ query: GET_TODOS }]
+		});
+		console.log('added todo', data);
+		// setTodoText('')
 	}
 
 	if (loading) return <div>Loading todos...</div>;
@@ -46,11 +73,13 @@ function App() {
 				</span>
 			</h1>
 			{/* Todo Form */}
-			<form className='mb3'>
+			<form onSubmit={handleAddTodo} className='mb3'>
 				<input
 					className='pa2 f4 b--dashed'
 					type='text'
 					placeholder='Write your todo'
+					onChange={(event) => setTodoText(event.target.value)}
+					value={todoText}
 				/>
 				<button className='pa2 f4 bg-green white' type='submit'>
 					Create

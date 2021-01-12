@@ -19,7 +19,7 @@
   function App() {
     return <h1>App</h1>;
   }
-✅
+
   export default App;
   ```
 - To start the project, run: `npm run start`
@@ -177,7 +177,7 @@
       }
     }
     ```
-  - In the Query Variables section, provide the values to the query variables in json format
+  - In the Query Variables panel, provide the values to the query variables in json format
     ```js
     {
       "id": "88f202d8-b37f-4741-a25a-39f620ef2c22",
@@ -185,9 +185,9 @@
     }
     ```
   - Then execute the mutation to update the todo based on id
-- **Create a mutation on client-side React:**
+- **Create an update mutation on client-side React:**
   - In App.js file:
-    - First, create a variable that holds the mutation. In our case, call it TOGGLE_TODO
+    - First, create a variable that holds the update mutation. In our case, call it TOGGLE_TODO
     - Then pass TOGGLE_TODO to useMutation() hook inside App component
     - What we get back from useMutation is a toggleTodo function in an array and we can destructure that
     - This toggleTodo function returns a promise since this is an async operation
@@ -196,7 +196,7 @@
       - accepts a todo id and done properties as arguments
       - executes the toggleTodo function
       - make handleToggleTodo function an async function because toggleTodo resolves in a promise
-      - Pass in the variables, as an object, to the variables key
+      - Pass in, as an object, the values for the id and done fields to the variables key
       - what we get back from the data is the todo object which contains the id, text, and done fields
     - Lastly, in rendering todo list, toggle the todo with a strike when the user double-clicks it
     ```js
@@ -231,4 +231,89 @@
         </button>
       </p>
     ))}
+    ```
+
+
+### Insert todos Mutations:
+- In Hasura GraphiQL console:
+  - For add todo mutation, we need to provide value for text field
+  - To pass in the input value dynamically, we can declare a variable and pass in that
+  - So we can declare the text variable and set it to String type and it's required
+  ```js
+  mutation addTodo($text: String!) {
+    insert_todos(objects: {text: $text}) {
+      returning {
+        done
+        id
+        text
+      }
+    }
+  }
+  ```
+- In the Query Variables panel, provide the values to the query variable in json format
+  ```js
+  {
+    "text": "Pick up library books"
+  }
+  ```
+- **Create an insert mutation on client-side React:**
+  - When the todo form is submitted, we want to call the addTodo mutation function to add a todo in the database. Then we want to call the getTodos query function to refetch the todos items and display them on the page
+  - In App.js file:
+    - First, create a variable that holds the insert mutation. In our case, call it ADD_TODO
+    - Then pass ADD_TODO to useMutation() hook inside App component
+    - What we get back from useMutation is an addTodo function in an array and we can destructure that
+    - Create a todoText state and initialize to an empty string
+    - Upon submitting the todo form, call handleAddTodo function to handle the form
+    - Note that we're storing the input value in todoText state
+    - Write a handleAddTodo function executes the addTodo mutation function
+      - This is an async operation to add a new todo to the database
+      - Pass in, as an object, the value for the text field to the addTodo function
+      - As a 2nd arg, we want to pass in the `refetchQueries` key and we want to query the `GET_TODOS`, because we want to render the new todo onto the page once the insert mutation is completed
+    - Lastly in the useMutation() hook, we want to clear the input form once the mutation is completed
+      - What we get back
+    ```js
+    import React, { useState } from 'react';
+    import { useQuery, useMutation, gql } from '@apollo/client';
+
+    const ADD_TODO = gql`
+      mutation addTodo($text: String!) {
+        insert_todos(objects: { text: $text }) {
+          returning {
+            done
+            id
+            text
+          }
+        }
+      }
+    `;
+
+    const [todoText, setTodoText] = useState('');
+    // Clear form input after mutation
+    const [addTodo] = useMutation(ADD_TODO, {
+      onCompleted: () => setTodoText('')
+    });
+
+    async function handleAddTodo(event) {
+      event.preventDefault();
+      if (!todoText.trim()) return;
+      const data = await addTodo({
+        variables: { text: todoText },
+        refetchQueries: [{ query: GET_TODOS }]
+      });
+      console.log('added todo', data);
+      // setTodoText('')
+    }
+
+    <form onSubmit={handleAddTodo} className='mb3'>
+      <input
+        className='pa2 f4 b--dashed'
+        type='text'
+        placeholder='Write your todo'
+        onChange={(event) => setTodoText(event.target.value)}
+        value={todoText}
+      />
+      <button className='pa2 f4 bg-green white' type='submit'>
+        Create
+      </button>
+    </form>
     ```
