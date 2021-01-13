@@ -98,3 +98,101 @@
     document.getElementById('root')
   );
   ```
+
+### Implement add a song functionality:
+- After a user pasted in a song url and clicks on the Add Song button, a dialog window pops up that allows them to edit the song title, artist, and image thumbnail
+- In AddSong.js file:
+  - Use makeStyles function from material-ui to customize styles
+  ```js
+  import React, { useState } from 'react';
+  import { InputAdornment, TextField, Button, Dialog, DialogTitle, DialogContent DialogActions, makeStyles } from '@material-ui/core';
+  import { AddBoxOutlined, Link } from '@material-ui/icons';
+
+  const useStyles = makeStyles((theme) => ({
+    container: {
+      display: 'flex',
+      alignItems: 'center'
+    },
+    urlInput: {
+      margin: theme.spacing(1)
+    },
+    addSongButton: {
+      margin: theme.spacing(1)
+    },
+    dialog: {
+      textAlign: 'center'
+    },
+    thumbnail: {
+      width: '90%'
+    }
+  }));
+
+  function AddSong() {
+    const classes = useStyles();
+    const [dialog, setDialog] = useState(false);
+
+    function handleCloseDialog() {
+      setDialog(false);
+    }
+
+    return (
+      <div className={classes.container}>
+        <Dialog
+          className={classes.dialog}
+          open={dialog}
+          onClose={handleCloseDialog}
+        >
+          <DialogTitle>Edit Song</DialogTitle>
+          <DialogContent>
+            <img
+              src='https://res.cloudinary.com/sungnga/image/upload/c_scale,w_305/v1609899670/YelpCamp/niunllvag8xki2p6nmry.jpg'
+              alt='Song thumbnail'
+              className={classes.thumbnail}
+            />
+            <TextField margin='dense' name='title' label='Title' fullWidth />
+            <TextField margin='dense' name='artist' label='Artist' fullWidth />
+            <TextField
+              margin='dense'
+              name='thumbnail'
+              label='Thumbnail'
+              fullWidth
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog} color='secondary'>
+              Cancel
+            </Button>
+            <Button variant='outlined' color='primary'>
+              Add Song
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <TextField
+          className={classes.urlInput}
+          placeholder='Add Youtube or Soundcloud Url'
+          fullWidth
+          margin='normal'
+          type='url'
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position='start'>
+                <Link />
+              </InputAdornment>
+            )
+          }}
+        />
+        <Button
+          className={classes.addSongButton}
+          onClick={() => setDialog(true)}
+          variant='contained'
+          color='primary'
+          endIcon={<AddBoxOutlined />}
+        >
+          Add
+        </Button>
+      </div>
+    );
+  }
+
+  export default AddSong;
+  ```
