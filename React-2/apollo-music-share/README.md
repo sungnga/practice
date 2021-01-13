@@ -28,6 +28,15 @@
 
 ## MATERIAL UI
 
+### Building our app UI using Material UI:
+- Our components:
+  - App.js: the parent component that renders our other components and passes down any props or context
+  - AddSong.js: an input form that user can submit a song link from Youtube or Soundcloud. When they click on the Add Song button, a dialog window pops up that allows user to edit song title, artist, and image thumbnail
+  - Header.js: displays the title of our app
+  - SongList.js: renders the song list with song title, artist, and image thumbnail, Play and Save buttons
+  - SongPlayer.js: displays the song title, artist and image thumbnail, song duration slider, and play previous, play next, and play icons
+  - QueuedSongList.js: lists the songs in queue. User can also delete a song from this list
+
 ### Material-ui custom styles and theme:
 - Material-ui comes with a function called `makeStyles` that we can use to add customize styles for individual components. `makeStyles` is going to hold all the style components for a given component element
 - `makeStyles` accepts an object and on it, we can set individual properties
@@ -220,3 +229,23 @@
     )
   }
   ```
+
+
+## INTEGRATING GRAPHQL WITH SUBSCRIPTIONS
+
+### Creating songs database using Hasura GraphQL:
+- Login to Hasura website and create a new project. Give the project a name
+- Go to the DATA tab at the top to create our database:
+  - Name the table: songs
+  - Define the fields in Columns section
+    - id : type of UUID : value of gen_random_uuid()
+    - title : type of Text
+    - artist : type of Text
+    - thumbnail : type of Text
+    - url : type of Text
+    - duration : type of real (real is a float type scalar)
+    - created_at : type of Timestamp : value of now()
+  - Set Primary Key: id
+  - Lastly, click on the Add Table button
+- We can see the `songs` table shows up on the left menu
+- Go to GRAPHIQL tab and we should see our songs schema that we can perform query, mutation, or subscription
