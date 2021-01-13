@@ -196,3 +196,27 @@
 
   export default AddSong;
   ```
+
+### Build the SongList.js, SongPlayer.js, and QueuedSongList.js components
+
+### Apply responsive design using useMediaQuery hook and Hidden component:
+- In app.js file:
+  - At medium or smaller screen-size breakpoint, we want to display the song player fixed at the bottom of the screen. We also want to remove the queued song list
+  - At extra-small breakpoint, we want to remove the header
+  ```js
+  import { Hidden, useMediaQuery } from '@material-ui/core';
+
+  function App() {
+    const greaterThanSm = useMediaQuery((theme) => theme.breakpoints.up('sm'));
+    const greaterThanMd = useMediaQuery((theme) => theme.breakpoints.up('md'));
+
+    return (
+      <Fragment>
+        <Hidden only='xs'>
+          <Header />
+        </Hidden>
+        //The rest of the code...
+      </Fragment>
+    )
+  }
+  ```

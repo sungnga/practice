@@ -1,8 +1,16 @@
-import { Avatar, IconButton, makeStyles, Typography } from '@material-ui/core';
+import {
+	Avatar,
+	IconButton,
+	makeStyles,
+	Typography,
+	useMediaQuery
+} from '@material-ui/core';
 import { Delete } from '@material-ui/icons';
 import React from 'react';
 
 function QueuedSongList() {
+	const greaterThanMd = useMediaQuery((theme) => theme.breakpoints.up('md'));
+
 	const song = {
 		title: 'Overcrest',
 		artist: 'NAND',
@@ -10,14 +18,16 @@ function QueuedSongList() {
 	};
 
 	return (
-		<div style={{ margin: '10px 0' }}>
-			<Typography color='textSecondary' variant='button'>
-				QUEUE (5)
-			</Typography>
-			{Array.from({ length: 5 }, () => song).map((song, i) => (
-				<QueuedSong key={i} song={song} />
-			))}
-		</div>
+		greaterThanMd && (
+			<div style={{ margin: '10px 0' }}>
+				<Typography color='textSecondary' variant='button'>
+					QUEUE (5)
+				</Typography>
+				{Array.from({ length: 5 }, () => song).map((song, i) => (
+					<QueuedSong key={i} song={song} />
+				))}
+			</div>
+		)
 	);
 }
 
