@@ -249,3 +249,43 @@
   - Lastly, click on the Add Table button
 - We can see the `songs` table shows up on the left menu
 - Go to GRAPHIQL tab and we should see our songs schema that we can perform query, mutation, or subscription
+
+### Configure Apollo Client:
+- Install: `npm install @apollo/client graphql`
+- We need to setup our client by instantiating a new client
+- Our client is going to keep track of all of our settings, what endpoint we're going to be making request to, and it's going to create our cache
+- Go to Hasura GraphQL API and copy the GraphQL server's Endpoint/URl and set it to the `uri` property of the constructor's configuration object
+- In src/graphql/client.js file:
+  ```js
+  import { ApolloClient, InMemoryCache } from '@apollo/client';
+
+  // Instantiate a new client
+  const client = new ApolloClient({
+    uri: 'https://ngala-music-share.hasura.app/v1/graphql',
+    cache: new InMemoryCache()
+  });
+
+  export default client;
+  ```
+
+### Connect our client to React:
+- We connect Apollo Client to React with the `ApolloProvider` component. The `ApolloProvider` is similar to React's `Context.Provider`. It wraps our React app and places the client on the context, which enables us to access it from anywhere in our component tree
+- In index.js file:
+  - Import ApolloProvider component from @apollo/client
+  - Import our apollo client
+  - Wrap the ApolloProvider component around the MuiThemeProvider component
+  - In the ApolloProvider component, pass the client props and set it to the client instance we just created  
+  ```js
+  import { ApolloProvider } from '@apollo/client';
+  import client from './graphql/client';
+
+  ReactDOM.render(
+    <ApolloProvider client={client}>
+      <MuiThemeProvider theme={theme}>
+        <CssBaseline />
+        <App />
+      </MuiThemeProvider>
+    </ApolloProvider>,
+    document.getElementById('root')
+  );
+  ```
