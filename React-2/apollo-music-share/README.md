@@ -291,6 +291,7 @@
   ```
 
 ### Performing a getSongs query:
+- We want to fetch songs from the database and display them in song list section in the order of most recent songs first
 - In src/graphql/queries.js file:
   - The songs that get sent back to the client will be in descending order by created_at - most recent songs first
   - The query inside the gql template string was performed in Hasura's GraphiQL console before hand to make sure that we do get the data back
@@ -336,3 +337,51 @@
 
   }
   ```
+
+### Implementing add song functionality:
+- The next step is to dynamically add songs to the song list. We want to be able to provide a song URL in an input form. The AddSong component is going to check to see whether it's valid and the song can be played. The React Player tool is going to help us with this functionality. If the song can be played, the Edit Song dialog window will enable users to edit the song's title, artist name, and thumbnail image
+- Install react-player: `npm i react-player`
+- In src/components/AddSong.js file:
+  - Import SoundcloudPlayer and YoutubePlayer from react-player
+  - Create a url state and initialize it to an empty string
+  - Add an `onChange` event handler to the `<TextField />` component that calls the setUrl function to set the url state to `event.target.value`. We also want to make this a controlled form, so set the value attribute to the url state
+  - Use useEffect hook that's going to run some code when there's a change in the url state
+    - We're going to use the `SoundcloudPlayer.canPlay()` or the `YoutubePlayer.canPlay()`method on the given url to see if it can be played with SoundcloudPlayer or YoutubePlayer
+    - Assign the returned value to isPlayable variable
+    - Then call setPlayable function to set playable state to this returned value
+  - We want to store this value in a piece of state. So create a playable state and by default, set it to be false. This means that, by default, the Add Song button is disabled
+  - If the playable state is equal to false, meaning the given url can't be played, we want to disable the Add Song button
+  ```js
+  import SoundcloudPlayer from 'react-player/lib/players/SoundCloud';
+  import YoutubePlayer from 'react-player/lib/players/YouTube';
+
+  function AddSong() {
+    const [url, setUrl] = useState('');
+    const [playable, setPlayable] = useState(false);
+    
+    useEffect(() => {
+      const isPlayable =
+        SoundcloudPlayer.canPlay(url) || YoutubePlayer.canPlay(url);
+      setPlayable(isPlayable);
+    }, [url]);
+
+    return (
+      <TextField
+        onChange={(event) => setUrl(event.target.value)}
+        value={url}
+      />
+      <Button disabled={!playable}>Add</Button>
+    )
+  }
+  ```
+
+
+
+
+
+
+
+## NPM PACKAGES USED
+- material-ui and material-ui icons: `npm i @material-ui/core @material-ui/icons`
+- apollo-client and graphql: `npm install @apollo/client graphql`
+- react-player: `npm i react-player`
