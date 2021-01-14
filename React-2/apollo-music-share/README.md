@@ -108,7 +108,7 @@
   );
   ```
 
-### Implement add a song functionality:
+### Build AddSong component:
 - After a user pasted in a song url and clicks on the Add Song button, a dialog window pops up that allows them to edit the song title, artist, and image thumbnail
 - In AddSong.js file:
   - Use makeStyles function from material-ui to customize styles
@@ -250,7 +250,7 @@
 - We can see the `songs` table shows up on the left menu
 - Go to GRAPHIQL tab and we should see our songs schema that we can perform query, mutation, or subscription
 
-### Configure Apollo Client:
+### Configuring Apollo Client:
 - Install: `npm install @apollo/client graphql`
 - We need to setup our client by instantiating a new client
 - Our client is going to keep track of all of our settings, what endpoint we're going to be making request to, and it's going to create our cache
@@ -268,7 +268,7 @@
   export default client;
   ```
 
-### Connect our client to React:
+### Connecting our client to React:
 - We connect Apollo Client to React with the `ApolloProvider` component. The `ApolloProvider` is similar to React's `Context.Provider`. It wraps our React app and places the client on the context, which enables us to access it from anywhere in our component tree
 - In index.js file:
   - Import ApolloProvider component from @apollo/client
@@ -288,4 +288,51 @@
     </ApolloProvider>,
     document.getElementById('root')
   );
+  ```
+
+### Performing a getSongs query:
+- In src/graphql/queries.js file:
+  - The songs that get sent back to the client will be in descending order by created_at - most recent songs first
+  - The query inside the gql template string was performed in Hasura's GraphiQL console before hand to make sure that we do get the data back
+  ```js
+  import { gql } from '@apollo/client';
+
+  export const GET_SONGS = gql`
+    query getSongs {
+      songs(order_by: { created_at: desc }) {
+        artist
+        duration
+        id
+        thumbnail
+        title
+        url
+      }
+    }
+  `;
+  ```
+- In SongList.js file:
+  - Import useQuery hook from @apollo/client
+  - Name import the GET_SONGS query
+  - Call useQuery() hook from Apollo Client within our React component to make a request to fetch songs from the database. Pass in GET_SONGS query as an argument because this is the type of query we want to perform
+  - What we get back are the data, loading and error property objects. Destructure them here
+  - If there's an error in GET_SONGS query, display a message that says, Error fetching songs
+  - If we do get songs data back, map over the songs array and use the Song component to render the song list. Pass down the song as props to the Song child component
+  ```js
+  import { useQuery } from '@apollo/client';
+  import { GET_SONGS } from '../graphql/queries';
+
+  function SongList() {
+    const { data, loading, error } = useQuery(GET_SONGS);
+
+    if (error) return <div>Error fetching songs</div>;
+
+    return (
+      <div>
+        {data.songs.map((song) => (
+          <Song key={song.id} song={song} />
+        ))}
+      </div>
+    );
+
+  }
   ```

@@ -1,3 +1,5 @@
+import React from 'react';
+import { useQuery } from '@apollo/client';
 import {
 	Card,
 	CardActions,
@@ -9,17 +11,17 @@ import {
 	Typography
 } from '@material-ui/core';
 import { PlayArrow, Save } from '@material-ui/icons';
-import React from 'react';
+import { GET_SONGS } from '../graphql/queries';
 
 function SongList() {
-	let loading = false;
+	const { data, loading, error } = useQuery(GET_SONGS);
 
-	const song = {
-		title: 'Overcrest',
-		artist: 'NAND',
-		thumbnail:
-			'http://img.youtube.com/vi/--ZtUFsIgMk/0.jpg'
-	};
+	// const song = {
+	// 	title: 'Overcrest',
+	// 	artist: 'NAND',
+	// 	thumbnail:
+	// 		'http://img.youtube.com/vi/--ZtUFsIgMk/0.jpg'
+	// };
 
 	if (loading) {
 		return (
@@ -35,11 +37,12 @@ function SongList() {
 			</div>
 		);
 	}
+	if (error) return <div>Error fetching songs</div>;
 
 	return (
 		<div>
-			{Array.from({ length: 10 }, () => song).map((song, i) => (
-				<Song key={i} song={song} />
+			{data.songs.map((song) => (
+				<Song key={song.id} song={song} />
 			))}
 		</div>
 	);
