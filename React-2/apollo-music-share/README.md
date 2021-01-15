@@ -375,7 +375,151 @@
   }
   ```
 
+### Extracting song data from ReactPlayer to Edit Song dialog:
+- ReactPlayer docs: https://www.npmjs.com/package/react-player
+- **Extracting song data from ReactPlayer component:**
+- The ReactPlayer component can play songs, but we can also use it to extract the song data from it
+- In src/components/AddSong.js file:
+  - Import ReactPlayer component from react-player
+  - We're going to render the ReactPlayer component but it's going to be hidden
+    - It has a url prop and we're going to pass our url state to it
+    - Add the hidden attribute to hide this component
+    - The `onReady` callback is going to be fired and provides all the song data from the url when the ReactPlayer is loaded
+    - We're going to pass that song data to a function called handleEditSong
+  - Write a handleEditSong function
+    - This function receives player property as a parameter
+    - The nested player we want is nested in this player property. So get this player from the player object and assign it to a nestedPlayer variable
+    - Then write an if statement to see if there's a specify method that exists on the player. This helps us determine whether it is from Youtube or Soundcloud
+      - If there's a getVideoData method on the player, call the getYoutubeInfo function to get the song data
+      - If there's a getCurrentSound method on the player, call the getSoundcloudInfo function to get the song data
+    - We need to wait for the song info, so mark the handleEditSong function as an async function
+  - Write a getYoutubeInfo function that returns the song info object
+    - This function receives a player as a parameter
+    - This function calls the getVideoData() method on player to get the song data
+  - Write a getSoundcloudInfo function that returns the song info object
+    - This function receives a player as a parameter
+    - This function calls the getCurrentSound() method on player to get the song data
+    - The getCurrentSound() method is an async function, so it returns a promise
+      - pass in a callback that receives the songData and returns a song info object
+  - Next thing is we need to create a state that keeps track of the song info object
+    - Call this state `song`
+    - The default value is an object that contains the song info properties and they're all initialized with empty strings
+  - Lastly, in the handleEditSong function, call to setSong function to set the songData object to song state. We also want to set the url state (contains the song url the user entered) as property in our song state
+  ```js
+  import ReactPlayer from 'react-player';
 
+  function AddSong() {
+    const [url, setUrl] = useState('');
+    const [song, setSong] = useState({
+      duration: 0,
+      title: '',
+      artist: '',
+      thumbnail: ''
+    });
+
+      async function handleEditSong({ player }) {
+      const nestedPlayer = player.player.player;
+      let songData;
+      // If there's a getVideoData method, we can assume the link is from Youtube
+      // Else if there's a getCurrentSound method, we can assume the link is from Soundcloud
+      if (nestedPlayer.getVideoData) {
+        songData = getYoutubeInfo(nestedPlayer);
+      } else if (nestedPlayer.getCurrentSound) {
+        songData = await getSoundcloudInfo(nestedPlayer);
+      }
+      setSong({ ...songData, url });
+    }
+
+    function getYoutubeInfo(player) {
+      const duration = player.getDuration();
+      // getVideoData method returns an object
+      // destructure the properties from it
+      const { title, video_id, author } = player.getVideoData();
+      const thumbnail = `http://img.youtube.com/vi/${video_id}/0.jpg`;
+      return {
+        duration,
+        title,
+        artist: author,
+        thumbnail
+      };
+    }
+
+    function getSoundcloudInfo(player) {
+      return new Promise((resolve) => {
+        player.getCurrentSound((songData) => {
+          if (songData) {
+            resolve({
+              duration: Number(songData.duration / 1000),
+              title: songData.title,
+              artist: songData.user.username,
+              thumbnail: songData.artwork_url.replace('-large', '-t500x500')
+            });
+          }
+        });
+      });
+    }
+
+    return (
+      <ReactPlayer url={url} hidden onReady={handleEditSong} />
+    )
+  }
+  ```
+- **Displaying song data in Edit Song dialog:**
+- In src/components/AddSong.js file:
+  - In the AddSong component and just above the return, destructure the title, artist, and thumbnail properties from song object. This way we can provide all of the text fields the values that had been provided in song state
+  - In the image element, set the src attribute to thumbnail
+  - Set the value attributes for title, artist, and thumbnail text fields to title, artist, and thumbnail
+  - Now that we're displaying the song info, we want to be able to edit the text fields
+  - For onChange event handler for each of the 3 text fields, call the handleChangeSong method
+  - Write a handleChangeSong function that sets song state of its corresponding name with its corresponding value from event.target that the user provides
+
+  ```js
+	function handleChangeSong(event) {
+		const { name, value } = event.target;
+		setSong((prevSong) => ({
+			...prevSong,
+			[name]: value
+		}));
+  }
+  
+  const { thumbnail, title, artist } = song;
+  return (
+    <DialogContent>
+      <img
+        src={thumbnail}
+        onChange={handleChangeSong}
+        alt='Song thumbnail'
+        className={classes.thumbnail}
+      />
+      <TextField
+        value={title}
+        onChange={handleChangeSong}
+        margin='dense'
+        name='title'
+        label='Title'
+        fullWidth
+      />
+      <TextField
+        value={artist}
+        onChange={handleChangeSong}
+        margin='dense'
+        name='artist'
+        label='Artist'
+        fullWidth
+      />
+      <TextField
+        value={thumbnail}
+        margin='dense'
+        name='thumbnail'
+        label='Thumbnail'
+        fullWidth
+      />
+    </DialogContent>
+  )
+  ```
+
+
+### Performing addSong mutation:
 
 
 
@@ -385,3 +529,4 @@
 - material-ui and material-ui icons: `npm i @material-ui/core @material-ui/icons`
 - apollo-client and graphql: `npm install @apollo/client graphql`
 - react-player: `npm i react-player`
+  - docs: https://www.npmjs.com/package/react-player

@@ -9,11 +9,8 @@ import {
 	DialogActions,
 	makeStyles
 } from '@material-ui/core';
-import {
-	AddBoxOutlined,
-	FormatListNumberedRounded,
-	Link
-} from '@material-ui/icons';
+import { AddBoxOutlined, Link } from '@material-ui/icons';
+import ReactPlayer from 'react-player';
 import SoundcloudPlayer from 'react-player/lib/players/SoundCloud';
 import YoutubePlayer from 'react-player/lib/players/YouTube';
 
@@ -41,6 +38,12 @@ function AddSong() {
 	const [dialog, setDialog] = useState(false);
 	const [url, setUrl] = useState('');
 	const [playable, setPlayable] = useState(false);
+	const [song, setSong] = useState({
+		duration: 0,
+		title: '',
+		artist: '',
+		thumbnail: ''
+	});
 
 	useEffect(() => {
 		const isPlayable =
@@ -48,10 +51,61 @@ function AddSong() {
 		setPlayable(isPlayable);
 	}, [url]);
 
+	function handleChangeSong(event) {
+		const { name, value } = event.target;
+		setSong((prevSong) => ({
+			...prevSong,
+			[name]: value
+		}));
+	}
+
 	function handleCloseDialog() {
 		setDialog(false);
 	}
 
+	async function handleEditSong({ player }) {
+		const nestedPlayer = player.player.player;
+		let songData;
+		// If there's a getVideoData method, we can assume the link is from Youtube
+		// Else if there's a getCurrentSound method, we can assume the link is from Soundcloud
+		if (nestedPlayer.getVideoData) {
+			songData = getYoutubeInfo(nestedPlayer);
+		} else if (nestedPlayer.getCurrentSound) {
+			songData = await getSoundcloudInfo(nestedPlayer);
+		}
+		setSong({ ...songData, url });
+	}
+
+	function getYoutubeInfo(player) {
+		const duration = player.getDuration();
+		// getVideoData method returns an object
+		// destructure the properties from it
+		const { title, video_id, author } = player.getVideoData();
+		const thumbnail = `http://img.youtube.com/vi/${video_id}/0.jpg`;
+		return {
+			duration,
+			title,
+			artist: author,
+			thumbnail
+		};
+	}
+
+	function getSoundcloudInfo(player) {
+		return new Promise((resolve) => {
+			player.getCurrentSound((songData) => {
+				if (songData) {
+					resolve({
+						duration: Number(songData.duration / 1000),
+						title: songData.title,
+						artist: songData.user.username,
+						thumbnail: songData.artwork_url.replace('-large', '-t500x500')
+					});
+				}
+			});
+		});
+	}
+
+	const { thumbnail, title, artist } = song;
 	return (
 		<div className={classes.container}>
 			<Dialog
@@ -62,13 +116,29 @@ function AddSong() {
 				<DialogTitle>Edit Song</DialogTitle>
 				<DialogContent>
 					<img
-						src='https://res.cloudinary.com/sungnga/image/upload/c_scale,w_305/v1609899670/YelpCamp/niunllvag8xki2p6nmry.jpg'
+						src={thumbnail}
+						onChange={handleChangeSong}
 						alt='Song thumbnail'
 						className={classes.thumbnail}
 					/>
-					<TextField margin='dense' name='title' label='Title' fullWidth />
-					<TextField margin='dense' name='artist' label='Artist' fullWidth />
 					<TextField
+						value={title}
+						onChange={handleChangeSong}
+						margin='dense'
+						name='title'
+						label='Title'
+						fullWidth
+					/>
+					<TextField
+						value={artist}
+						onChange={handleChangeSong}
+						margin='dense'
+						name='artist'
+						label='Artist'
+						fullWidth
+					/>
+					<TextField
+						value={thumbnail}
 						margin='dense'
 						name='thumbnail'
 						label='Thumbnail'
@@ -110,6 +180,7 @@ function AddSong() {
 			>
 				Add
 			</Button>
+			<ReactPlayer url={url} hidden onReady={handleEditSong} />
 		</div>
 	);
 }
