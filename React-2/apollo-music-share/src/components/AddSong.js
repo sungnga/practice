@@ -13,6 +13,8 @@ import { AddBoxOutlined, Link } from '@material-ui/icons';
 import ReactPlayer from 'react-player';
 import SoundcloudPlayer from 'react-player/lib/players/SoundCloud';
 import YoutubePlayer from 'react-player/lib/players/YouTube';
+import { useMutation } from '@apollo/client';
+import { ADD_SONG } from '../graphql/mutations';
 
 const useStyles = makeStyles((theme) => ({
 	container: {
@@ -33,17 +35,20 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
+const DEFAULT_SONG = {
+	duration: 0,
+	title: '',
+	artist: '',
+	thumbnail: ''
+};
+
 function AddSong() {
 	const classes = useStyles();
+	const [addSong, { error }] = useMutation(ADD_SONG);
 	const [dialog, setDialog] = useState(false);
 	const [url, setUrl] = useState('');
 	const [playable, setPlayable] = useState(false);
-	const [song, setSong] = useState({
-		duration: 0,
-		title: '',
-		artist: '',
-		thumbnail: ''
-	});
+	const [song, setSong] = useState(DEFAULT_SONG);
 
 	useEffect(() => {
 		const isPlayable =
@@ -76,6 +81,27 @@ function AddSong() {
 		setSong({ ...songData, url });
 	}
 
+	async function handleAddSong() {
+		try {
+			const { title, artist, thumbnail, duration, url } = song;
+			// addSong({ variables: { ...song } });
+			await addSong({
+				variables: {
+					url: url.length > 0 ? url : null,
+					thumbnail: thumbnail.length > 0 ? thumbnail : null,
+					duration: duration > 0 ? duration : null,
+					title: title.length > 0 ? title : null,
+					artist: artist.length > 0 ? artist : null
+				}
+			});
+			handleCloseDialog();
+			setSong(DEFAULT_SONG);
+			setUrl('');
+		} catch (error) {
+			console.error('Error adding song', error);
+		}
+	}
+
 	function getYoutubeInfo(player) {
 		const duration = player.getDuration();
 		// getVideoData method returns an object
@@ -105,7 +131,13 @@ function AddSong() {
 		});
 	}
 
+	function handleError(field) {
+		// Using optional chaining operator
+		return error?.graphQLErrors[0]?.extensions?.path.includes(field);
+	}
+
 	const { thumbnail, title, artist } = song;
+	// console.dir(error);
 	return (
 		<div className={classes.container}>
 			<Dialog
@@ -117,7 +149,6 @@ function AddSong() {
 				<DialogContent>
 					<img
 						src={thumbnail}
-						onChange={handleChangeSong}
 						alt='Song thumbnail'
 						className={classes.thumbnail}
 					/>
@@ -128,6 +159,8 @@ function AddSong() {
 						name='title'
 						label='Title'
 						fullWidth
+						error={handleError('title')}
+						helperText={handleError('title') && 'Fill out field'}
 					/>
 					<TextField
 						value={artist}
@@ -136,20 +169,25 @@ function AddSong() {
 						name='artist'
 						label='Artist'
 						fullWidth
+						error={handleError('artist')}
+						helperText={handleError('artist') && 'Fill out field'}
 					/>
 					<TextField
 						value={thumbnail}
+						onChange={handleChangeSong}
 						margin='dense'
 						name='thumbnail'
 						label='Thumbnail'
 						fullWidth
+						error={handleError('thumbnail')}
+						helperText={handleError('thumbnail') && 'Fill out field'}
 					/>
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={handleCloseDialog} color='secondary'>
 						Cancel
 					</Button>
-					<Button variant='outlined' color='primary'>
+					<Button onClick={handleAddSong} variant='outlined' color='primary'>
 						Add Song
 					</Button>
 				</DialogActions>

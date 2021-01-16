@@ -31,7 +31,7 @@
 ### Building our app UI using Material UI:
 - Our components:
   - App.js: the parent component that renders our other components and passes down any props or context
-  - AddSong.js: an input form that user can submit a song link from Youtube or Soundcloud. When they click on the Add Song button, a dialog window pops up that allows user to edit song title, artist, and image thumbnail
+  - AddSong.js: an input form that user can submit a song link from Youtube or Soundcloud. When they click on the Add button, a dialog window pops up that allows user to edit song title, artist, and image thumbnail
   - Header.js: displays the title of our app
   - SongList.js: renders the song list with song title, artist, and image thumbnail, Play and Save buttons
   - SongPlayer.js: displays the song title, artist and image thumbnail, song duration slider, and play previous, play next, and play icons
@@ -109,7 +109,7 @@
   ```
 
 ### Build AddSong component:
-- After a user pasted in a song url and clicks on the Add Song button, a dialog window pops up that allows them to edit the song title, artist, and image thumbnail
+- After a user pasted in a song url and clicks on the Add button, a dialog window pops up that allows them to edit the song title, artist, and image thumbnail
 - In AddSong.js file:
   - Use makeStyles function from material-ui to customize styles
   ```js
@@ -349,8 +349,8 @@
     - We're going to use the `SoundcloudPlayer.canPlay()` or the `YoutubePlayer.canPlay()`method on the given url to see if it can be played with SoundcloudPlayer or YoutubePlayer
     - Assign the returned value to isPlayable variable
     - Then call setPlayable function to set playable state to this returned value
-  - We want to store this value in a piece of state. So create a playable state and by default, set it to be false. This means that, by default, the Add Song button is disabled
-  - If the playable state is equal to false, meaning the given url can't be played, we want to disable the Add Song button
+  - We want to store this value in a piece of state. So create a playable state and by default, set it to be false. This means that, by default, the Add button is disabled
+  - If the playable state is equal to false, meaning the given url can't be played, we want to disable the Add button
   ```js
   import SoundcloudPlayer from 'react-player/lib/players/SoundCloud';
   import YoutubePlayer from 'react-player/lib/players/YouTube';
@@ -518,10 +518,139 @@
   )
   ```
 
+### Performing an addSong mutation:
+- Before a user can add a song to the database, we want to add some form validation to the Edit Song form to make sure that all text fields are filled out
+- We're going to be using an error from the server to figure out whether the form is valid or not. If one of the fields isn't filled out, we will display a message to the user to fill out the field
+- **Write an ADD_SONG mutation function:**
+- In src/graphql/mutations.js file:
+  - Create an ADD_SONG mutation
+  ```js
+  import { gql } from '@apollo/client';
 
-### Performing addSong mutation:
+  export const ADD_SONG = gql`
+    mutation addSong(
+      $title: String!
+      $artist: String!
+      $thumbnail: String!
+      $duration: Float!
+      $url: String!
+    ) {
+      insert_songs(
+        objects: {
+          title: $title
+          artist: $artist
+          thumbnail: $thumbnail
+          duration: $duration
+          url: $url
+        }
+      ) {
+        affected_rows
+      }
+    }
+  `;
+  ```
+- **Execute the ADD_SONG mutation in React:**
+- In src/components/AddSong.js file:
+  - Import useMutation hook from @apollo/client
+  - Name import the ADD_SONG mutation
+  - Call useMutation() to execute a mutation. So pass in the ADD_SONG as an argument to execute the addSong mutation. What we get back is an addSong function. We can also destructure the error property which contains the error data provided by GraphQL
+  - We want to execute this addSong function when the user clicks on the Add Song button
+  - In the Add Song button element, execute the handleAddSong function for the onClick event handler
+  - Write an async handleAddSong function that executes the addSong function to add the song object to the database
+    - Use a try/catch block to try to execute the addSong function and catch any errors
+    - Since the addSong function returns a promise, we need to await it
+    - Before adding the song to the database, we want to make sure each required property is provided a value. If not, set the property value to null. If provided, set that value
+    - Once a song has been added to the database (addSong function is completed), we want to close the dialog window, clear the song text fields, and clear the url input field
+    - If there's an error, we want to render an error message for that specific field to the user
+      - How it works is we can get the error object coming from GraphQL when calling `useMutation()`
+      - Write a handleError function that's going to accept a field as a parameter. Then check to see if there's any errors in the error object. If there is, return the path, which contains the field name that's causing the error
+      - In each of the TextField element, add the error property to execute the handleError method. The handleError() will accept the name of the text field as an argument
+      - Then use the helpText property to display a message to the user if the error occurs
+  ```js
+  import { useMutation } from '@apollo/client';
+  import { ADD_SONG } from '../graphql/mutations';
 
+  const DEFAULT_SONG = {
+    duration: 0,
+    title: '',
+    artist: '',
+    thumbnail: ''
+  };
 
+  function AddSong() {
+    // The error property contains the error data
+    const [addSong, { error }] = useMutation(ADD_SONG);
+
+    async function handleAddSong() {
+      try {
+        const { title, artist, thumbnail, duration, url } = song;
+        // addSong({ variables: { ...song } });
+        await addSong({
+          variables: {
+            url: url.length > 0 ? url : null,
+            thumbnail: thumbnail.length > 0 ? thumbnail : null,
+            duration: duration > 0 ? duration : null,
+            title: title.length > 0 ? title : null,
+            artist: artist.length > 0 ? artist : null
+          }
+        });
+        handleCloseDialog();
+        setSong(DEFAULT_SONG);
+        setUrl('');
+      } catch (error) {
+        console.error('Error adding song', error);
+      }
+    }
+
+    function handleError(field) {
+      // Using optional chaining operator
+      return error?.graphQLErrors[0]?.extensions?.path.includes(field);
+    }
+
+    return (
+      <DialogContent>
+        <img
+          src={thumbnail}
+          alt='Song thumbnail'
+          className={classes.thumbnail}
+        />
+        <TextField
+          value={title}
+          onChange={handleChangeSong}
+          margin='dense'
+          name='title'
+          label='Title'
+          fullWidth
+          error={handleError('title')}
+          helperText={handleError('title') && 'Fill out field'}
+        />
+        <TextField
+          value={artist}
+          onChange={handleChangeSong}
+          margin='dense'
+          name='artist'
+          label='Artist'
+          fullWidth
+          error={handleError('artist')}
+          helperText={handleError('artist') && 'Fill out field'}
+        />
+        <TextField
+          value={thumbnail}
+          onChange={handleChangeSong}
+          margin='dense'
+          name='thumbnail'
+          label='Thumbnail'
+          fullWidth
+          error={handleError('thumbnail')}
+          helperText={handleError('thumbnail') && 'Fill out field'}
+        />
+      </DialogContent>
+      <Button onClick={handleAddSong} variant='outlined' color='primary'>
+        Add Song
+      </Button>
+    )
+  }
+  ```
 
 
 
