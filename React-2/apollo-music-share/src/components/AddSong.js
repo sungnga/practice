@@ -81,27 +81,6 @@ function AddSong() {
 		setSong({ ...songData, url });
 	}
 
-	async function handleAddSong() {
-		try {
-			const { title, artist, thumbnail, duration, url } = song;
-			// addSong({ variables: { ...song } });
-			await addSong({
-				variables: {
-					url: url.length > 0 ? url : null,
-					thumbnail: thumbnail.length > 0 ? thumbnail : null,
-					duration: duration > 0 ? duration : null,
-					title: title.length > 0 ? title : null,
-					artist: artist.length > 0 ? artist : null
-				}
-			});
-			handleCloseDialog();
-			setSong(DEFAULT_SONG);
-			setUrl('');
-		} catch (error) {
-			console.error('Error adding song', error);
-		}
-	}
-
 	function getYoutubeInfo(player) {
 		const duration = player.getDuration();
 		// getVideoData method returns an object
@@ -129,11 +108,32 @@ function AddSong() {
 				}
 			});
 		});
+  }
+
+	async function handleAddSong() {
+		try {
+			const { title, artist, thumbnail, duration, url } = song;
+			// addSong({ variables: { ...song } });
+			await addSong({
+				variables: {
+					url: url.length > 0 ? url : null,
+					thumbnail: thumbnail.length > 0 ? thumbnail : null,
+					duration: duration > 0 ? duration : null,
+					title: title.length > 0 ? title : null,
+					artist: artist.length > 0 ? artist : null
+				}
+			});
+			handleCloseDialog();
+			setSong(DEFAULT_SONG);
+			setUrl('');
+		} catch (error) {
+			console.error('Error adding song', error);
+		}
 	}
 
 	function handleError(field) {
 		// Using optional chaining operator
-		return error?.graphQLErrors[0]?.extensions?.path.includes(field);
+		return error?.networkError?.extensions?.path.includes(field);
 	}
 
 	const { thumbnail, title, artist } = song;

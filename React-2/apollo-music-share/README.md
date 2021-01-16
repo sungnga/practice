@@ -521,7 +521,7 @@
 ### Performing an addSong mutation:
 - Before a user can add a song to the database, we want to add some form validation to the Edit Song form to make sure that all text fields are filled out
 - We're going to be using an error from the server to figure out whether the form is valid or not. If one of the fields isn't filled out, we will display a message to the user to fill out the field
-- **Write an ADD_SONG mutation function:**
+- **Defining the ADD_SONG mutation:**
 - In src/graphql/mutations.js file:
   - Create an ADD_SONG mutation
   ```js
@@ -562,10 +562,10 @@
     - Before adding the song to the database, we want to make sure each required property is provided a value. If not, set the property value to null. If provided, set that value
     - Once a song has been added to the database (addSong function is completed), we want to close the dialog window, clear the song text fields, and clear the url input field
     - If there's an error, we want to render an error message for that specific field to the user
-      - How it works is we can get the error object coming from GraphQL when calling `useMutation()`
-      - Write a handleError function that's going to accept a field as a parameter. Then check to see if there's any errors in the error object. If there is, return the path, which contains the field name that's causing the error
+      - How it works is we can get the error object coming from GraphQL when calling `useMutation()`. We can destructure this error object so we can use it to handleError
+      - Write a handleError function that's going to accept a field as a parameter. Then check to see if there's an error in the error object. If there is, return the path, which contains the field name that's causing the error. The path lives in the networkError property
       - In each of the TextField element, add the error property to execute the handleError method. The handleError() will accept the name of the text field as an argument
-      - Then use the helpText property to display a message to the user if the error occurs
+      - Then use the helpText property to display a message to the user of what they need to do to fix the error
   ```js
   import { useMutation } from '@apollo/client';
   import { ADD_SONG } from '../graphql/mutations';
@@ -604,7 +604,7 @@
 
     function handleError(field) {
       // Using optional chaining operator
-      return error?.graphQLErrors[0]?.extensions?.path.includes(field);
+      return error?.networkError?.extensions?.path.includes(field);
     }
 
     return (
@@ -652,6 +652,62 @@
   }
   ```
 
+### Adding subscriptions for realtime updates:
+- Apollo websocket docs: https://www.apollographql.com/docs/link/links/ws/
+- Apollo subscriptions docs: https://www.apollographql.com/docs/react/data/subscriptions/#setting-up-the-transport
+- The last step we need to do in ADD_SONG mutation is in order to render the newly added song to the song list in realtime, we need to add subscriptions. So instead of using a GET_SONGS query to list the songs, we want to replace it with a subscription
+- We need to install some packages to help us with this. With Apollo Client v3.0, we only need to install:
+  - `npm i @apollo/client subscriptions-transport-ws`
+- **Reconfigure Apollo Client to include Websocket:**
+  - In src/graphql/client.js file:
+    ```js
+    import { ApolloClient, InMemoryCache } from '@apollo/client';
+    import { WebSocketLink } from '@apollo/client/link/ws';
+
+    const client = new ApolloClient({
+      link: new WebSocketLink({
+        uri: 'wss://ngala-music-share.hasura.app/v1/graphql',
+        options: {
+          reconnect: true
+        }
+      }),
+      cache: new InMemoryCache()
+    });
+
+    export default client;
+    ```
+- **Defining GET_SONGS subscription:**
+  - In src/graphql/subscriptions.js file:
+    - Copy the GET_SONGS query from queries.js file and paste it in this file
+    - Then instead of using the `query` keyword, replace it with `subscription` keyword
+    ```js
+    import { gql } from '@apollo/client';
+
+    export const GET_SONGS = gql`
+      subscription getSongs {
+        songs(order_by: { created_at: desc }) {
+          artist
+          duration
+          id
+          thumbnail
+          title
+          url
+        }
+      }
+    `;
+    ```
+- **Client-side: using GET_SONGS subscription:**
+  - In src/components/SongList.js file:
+    - Import useSubscription hook instead of useQuery hook from @apollo/client
+    - Import GET_SONGS from subscriptions.js file instead of from queries.js file
+    - Then in the SongList component we want to call `useSubscription` instead of `useQuery`
+    ```js
+    import { useSubscription } from '@apollo/client';
+    import { GET_SONGS } from '../graphql/subscriptions';
+
+    const { data, loading, error } = useSubscription(GET_SONGS);
+    ```
+- Now we're subscribed to any new data changes
 
 
 ## NPM PACKAGES USED
@@ -659,3 +715,4 @@
 - apollo-client and graphql: `npm install @apollo/client graphql`
 - react-player: `npm i react-player`
   - docs: https://www.npmjs.com/package/react-player
+- apollo websocket, subscriptions, and cache: `npm i @apollo/client  subscriptions-transport-ws`

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useQuery } from '@apollo/client';
+import { useSubscription } from '@apollo/client';
 import {
 	Card,
 	CardActions,
@@ -11,10 +11,10 @@ import {
 	Typography
 } from '@material-ui/core';
 import { PlayArrow, Save } from '@material-ui/icons';
-import { GET_SONGS } from '../graphql/queries';
+import { GET_SONGS } from '../graphql/subscriptions';
 
 function SongList() {
-	const { data, loading, error } = useQuery(GET_SONGS);
+	const { data, loading, error } = useSubscription(GET_SONGS);
 
 	// const song = {
 	// 	title: 'Overcrest',
@@ -63,8 +63,8 @@ const useStyles = makeStyles((theme) => ({
 	},
 	thumbnail: {
 		objectFit: 'cover',
-		width: 140,
-		height: 140
+		width: 150,
+		height: 150
 	}
 }));
 
