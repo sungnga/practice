@@ -1,6 +1,6 @@
-# NOTES ON MATERIAL-UI
+# NOTES WHILE BUILDING THIS APPLICATION
 
-## SETUP PROJECT
+### Setting up project:
 - Create a react project: `npx create-react-app apollo-music-share --use-npm`
 - Install material-ui and material-ui icons: `npm i @material-ui/core @material-ui/icons`
 - In src folder, only have index.js and App.js files
@@ -26,7 +26,7 @@
 - Open http://localhost:3000 to view it in the browser
 
 
-## MATERIAL UI
+## 1. MATERIAL UI
 
 ### Building our app UI using Material UI:
 - Our components:
@@ -231,7 +231,7 @@
   ```
 
 
-## INTEGRATING GRAPHQL WITH SUBSCRIPTIONS
+## 2. INTEGRATING GRAPHQL WITH SUBSCRIPTIONS
 
 ### Creating songs database using Hasura GraphQL:
 - Login to Hasura website and create a new project. Give the project a name
@@ -708,6 +708,70 @@
     const { data, loading, error } = useSubscription(GET_SONGS);
     ```
 - Now we're subscribed to any new data changes
+
+
+## 3. MANAGING STATE WITH REACT AND APOLLO
+
+### Setting up state management:
+- The next functionality we want to work on is when a user clicks on the play button of a song on song list, we want to transport that song data to the SongPlayer component and use ReactPlayer to actually play the song. We also want to keep the song in the SongPlayer and song playing on SongList in sync with one another. When the song is playing, both should display a pause button indicating to the user that they can pause the song
+- There are a couple of states that we want to keep track of:
+  - the song that we're going to be playing
+  - whether the song is playing or not
+- We'll be using a combination of useReducer and useContext to manage the states across components 
+- **Setup state management using context and reducer:**
+- In src/App.js file:
+  - Import createContext, useContext and useReducer hooks from react
+  - Start out by creating a SongContext using createContext() function. Do this just above and outside of the App component
+    - Pass to this function an object which contains the states we want to manage
+    - Define a song state, which is an object. For now, we can just hard-code the values
+    - Define an isPlaying state, which is a boolean and by default, it is set to false
+    - Name export SongContext
+  - Inside the App component:
+    - Consume the SongContext by using React useContext() hook. Pass in the SongContext as an argument. What we get back is the initialSongState
+    - Then pass this initialSongState as a 2nd argument to the useReducer() hook from react. The 1st argument to pass to the useReducer() is the reducer function. What we get back from useReducer() hook is the `state` and the `dispatch`
+    - Write a songReducer function in reducer.js file and export it
+    - Import songReducer and pass it in to the useReducer() hook as 1st arg
+    - In the return section of the App component, wrap the `<SongContext.Provider />` component around all of the other components. Pass down the `value` props of an object that contains the state and the dispatch
+  ```js
+  import React, { createContext, useContext, useReducer } from 'react';
+  import songReducer from './reducer';
+
+  export const SongContext = createContext({
+    song: {
+      id: '184002f5-6c93-4084-8060-a38630fdd9e2',
+      artist: 'NAND',
+      thumbnail: 'http://img.youtube.com/vi/--ZtUFsIgMk/0.jpg',
+      url: 'https://youtu.be/xeM40-FkRLI',
+      duration: 250
+    },
+    isPlaying: false
+  });
+
+  function App() {
+    // Consuming SongContext
+    const initialSongState = useContext(SongContext);
+    const [state, dispatch] = useReducer(songReducer, initialSongState);
+
+    return (
+      <SongContext.Provider value={{ state, dispatch }}>
+        // components go here
+      </SongContext.Provider>
+    )
+  }
+  ```
+- In src/reducer.js file:
+  ```js
+  function songReducer(state, action) {
+    switch (action.type) {
+      default:
+        return state;
+    }
+  }
+
+  export default songReducer;
+  ```
+
+
 
 
 ## NPM PACKAGES USED
