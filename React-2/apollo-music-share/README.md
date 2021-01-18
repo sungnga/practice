@@ -771,7 +771,7 @@
   export default songReducer;
   ```
 
-### Consuming SongContext:
+### Managing states and consuming SongContext:
 - **Consuming SongContext in SongPlayer component:**
   - In the SongPlayer component, we want to consume the SongContext because we want to render the song title, artist, and thumbnail dynamically
   - In SongPlayer.js file:
@@ -838,9 +838,8 @@
 - **Consuming SongContext in Song component:**
   - Lastly we want to sync up the toggle of the Pause/Play button icons of the individual song in SongList component with the song that is in SongPlayer component
   - For example, if the song in SongPlayer is currently playing, the Pause button is visible. This song in the SongList should also be updated with the Pause button visible, indicating that this song is currently playing
-  - Also, if the user hits the Play button on a given song in SongList and that song doesn't already exist in SongPlayer, we want to set the song in SongPlayer
   - In SongList.js file:
-    - Import SongContext
+    - Import SongContext from App.js
     - In Song component:
       - Call useContext() hook and pass in SongContext as an argument to consume SongContext. What we get back from useContext() is the state object and the dispatch function
       - Create a currentSongPlaying state and initialize it to false
@@ -871,6 +870,35 @@
       );
     }
     ```
+- **Syncing Song Component with SongPlayer component:**
+  - If the user hits the Play button on a given song in SongList and that song doesn't already exist in SongPlayer, we want to set the song in SongPlayer
+  - In SongList.js file and inside Song component:
+    - Write a handleTogglePlay function that
+      - dispatches either a PAUSE_SONG or a PLAY_SONG action type depending on state.isPlaying state
+      - dispatches a SET_SONG action type with the song object payload
+    - In the Pause/Play icon button element, add an onClick event handler that executes the handleTogglePlay function
+    ```js
+    function handleTogglePlay() {
+      dispatch(state.isPlaying ? { type: 'PAUSE_SONG' } : { type: 'PLAY_SONG' });
+      dispatch({ type: 'SET_SONG', payload: { song } });
+    }
+
+    <IconButton onClick={handleTogglePlay} size='small' color='primary'>
+      {currentSongPlaying ? <Pause /> : <PlayArrow />}
+    </IconButton>
+    ```
+  - In reducer.js file:
+    - Write a SET_SONG switch case that sets the state.song object with the song object from payload
+    ```js
+		case 'SET_SONG': {
+			return {
+				...state,
+				// completely replacing the song object with the song from payload
+				song: action.payload.song
+			};
+		}
+    ```
+  - Now when the Play button is clicked in the Song component, the song data will be transferred to the SongPlayer component. We now can also toggle the Pause/Play button in the Song component and it will update the toggle in the SongPlay component and viscera
 
 
 

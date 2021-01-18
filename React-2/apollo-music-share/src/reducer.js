@@ -12,6 +12,13 @@ function songReducer(state, action) {
 				isPlaying: false
 			};
 		}
+		case 'SET_SONG': {
+			return {
+				...state,
+				// completely replacing the song object with the song from payload
+				song: action.payload.song
+			};
+		}
 		default:
 			return state;
 	}

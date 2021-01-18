@@ -83,6 +83,7 @@ function Song({ song }) {
 
 	function handleTogglePlay() {
 		dispatch(state.isPlaying ? { type: 'PAUSE_SONG' } : { type: 'PLAY_SONG' });
+		dispatch({ type: 'SET_SONG', payload: { song } });
 	}
 
 	return (
