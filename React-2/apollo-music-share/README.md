@@ -771,6 +771,106 @@
   export default songReducer;
   ```
 
+### Consuming SongContext:
+- **Consuming SongContext in SongPlayer component:**
+  - In the SongPlayer component, we want to consume the SongContext because we want to render the song title, artist, and thumbnail dynamically
+  - In SongPlayer.js file:
+    - Import useContext hook from react
+    - Name import the SongContext from App component
+    - Call useContext() hook and pass in SongContext as an argument to consume SongContext. What we get back from useContext() is the state object and the dispatch function. We can destructure those
+    - Then instead of using static title, artist, and thumbnail text, use state.song.title to render them dynamically
+    ```js
+    import { useContext } from 'react';
+    import { SongContext } from '../App';
+
+    function SongPlayer() {
+      const { state, dispatch } = useContext(SongContext);
+
+      return (
+        <Typography variant='h5' component='h3'>
+          {state.song.title}
+        </Typography>
+      )
+    }
+    ```
+- **Toggling the isPlaying state in SongPlayer component:**
+  - Next, in the SongPlayer component, we want to be able to toggle between the pause and play song button depending on whether a song is currently playing or not
+  - We want to consume the SongContext because we want to use the isPlaying state
+  - In SongPlayer.js file:
+    - Add an onclick event handler that executes the handleTogglePlay method when the PlayArrow icon is clicked
+    - Write a handleTogglePlay function that dispatches either an action type of PAUSE_SONG or PLAY_SONG depending on the isPlaying state
+    - Then in the render section, write a condition that if isPlaying state is set to true we want to display the `<Pause />` icon. If it's set to false, show the `<PlayArrow />` icon
+    ```js
+    function handleTogglePlay() {
+      dispatch(state.isPlaying ? { type: 'PAUSE_SONG' } : { type: 'PLAY_SONG' });
+    }
+    
+    <IconButton onClick={handleTogglePlay}>
+      {state.isPlaying ? (
+        <Pause className={classes.playIcon} />
+      ) : (
+        <PlayArrow className={classes.playIcon} />
+      )}
+    </IconButton>
+    ```
+  - In reducer.js file:
+    - Write a switch case for PLAY_SONG action. It returns an object that has the existing state using the spread operator and set the isPlaying state to true  
+    ```js
+    function songReducer(state, action) {
+      switch (action.type) {
+        case 'PLAY_SONG': {
+          return {
+            ...state,
+            isPlaying: true
+          };
+        }
+        case 'PAUSE_SONG': {
+          return {
+            ...state,
+            isPlaying: false
+          };
+        }
+        default:
+          return state;
+      }
+    }
+    ```
+- **Consuming SongContext in Song component:**
+  - Lastly we want to sync up the toggle of the Pause/Play button icons of the individual song in SongList component with the song that is in SongPlayer component
+  - For example, if the song in SongPlayer is currently playing, the Pause button is visible. This song in the SongList should also be updated with the Pause button visible, indicating that this song is currently playing
+  - Also, if the user hits the Play button on a given song in SongList and that song doesn't already exist in SongPlayer, we want to set the song in SongPlayer
+  - In SongList.js file:
+    - Import SongContext
+    - In Song component:
+      - Call useContext() hook and pass in SongContext as an argument to consume SongContext. What we get back from useContext() is the state object and the dispatch function
+      - Create a currentSongPlaying state and initialize it to false
+      - To update the toggle buttons of a Song component in SongList to be in sync with the toggle buttons in SongPlayer, we can use the useEffect() hook to keep track of state changes in the Song component by its id, the state.song.id, and state.isPlaying
+      - Inside useEffect():
+        - check to see if state.isPlaying is true AND the song id matches with state.song.id. Assign the result to isSongPlaying variable
+        - if the condition above is true, call setCurrentSongPlaying to set isSongPlaying to CurrentSongPlaying state
+      - Then in the render section, toggle the Pause/Play button icon based on the currentSongPlaying state
+    ```js
+    import React, { useContext, useEffect, useState } from 'react';
+    import { Pause, PlayArrow, Save } from '@material-ui/icons';
+    import { SongContext } from '../App';
+
+    function Song({ song }) {
+      const { id } = song;
+      const { state, dispatch } = useContext(SongContext);
+      const [currentSongPlaying, setCurrentSongPlaying] = useState(false);
+
+      useEffect(() => {
+        const isSongPlaying = state.isPlaying && id === state.song.id;
+        setCurrentSongPlaying(isSongPlaying);
+      }, [id, state.song.id, state.isPlaying]);
+
+      return (
+      <IconButton size='small' color='primary'>
+        {currentSongPlaying ? <Pause /> : <PlayArrow />}
+      </IconButton>
+      );
+    }
+    ```
 
 
 

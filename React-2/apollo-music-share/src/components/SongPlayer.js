@@ -7,8 +7,9 @@ import {
 	Slider,
 	Typography
 } from '@material-ui/core';
-import { PlayArrow, SkipNext, SkipPrevious } from '@material-ui/icons';
-import React, { Fragment } from 'react';
+import { Pause, PlayArrow, SkipNext, SkipPrevious } from '@material-ui/icons';
+import React, { Fragment, useContext } from 'react';
+import { SongContext } from '../App';
 import QueuedSongList from './QueuedSongList';
 
 const useStyles = makeStyles((theme) => ({
@@ -40,7 +41,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function SongPlayer() {
+	const { state, dispatch } = useContext(SongContext);
 	const classes = useStyles();
+
+	function handleTogglePlay() {
+		dispatch(state.isPlaying ? { type: 'PAUSE_SONG' } : { type: 'PLAY_SONG' });
+	}
 
 	return (
 		<Fragment>
@@ -48,18 +54,22 @@ function SongPlayer() {
 				<div className={classes.details}>
 					<CardContent className={classes.content}>
 						<Typography variant='h5' component='h3'>
-							Title
+							{state.song.title}
 						</Typography>
 						<Typography variant='subtitle1' component='p' color='textSecondary'>
-							Artist
+							{state.song.artist}
 						</Typography>
 					</CardContent>
 					<div className={classes.controls}>
 						<IconButton>
 							<SkipPrevious />
 						</IconButton>
-						<IconButton>
-							<PlayArrow className={classes.playIcon} />
+						<IconButton onClick={handleTogglePlay}>
+							{state.isPlaying ? (
+								<Pause className={classes.playIcon} />
+							) : (
+								<PlayArrow className={classes.playIcon} />
+							)}
 						</IconButton>
 						<IconButton>
 							<SkipNext />
@@ -70,10 +80,7 @@ function SongPlayer() {
 					</div>
 					<Slider type='range' min={0} max={1} step={0.01} />
 				</div>
-				<CardMedia
-					className={classes.thumbnail}
-					image='http://img.youtube.com/vi/--ZtUFsIgMk/0.jpg'
-				/>
+				<CardMedia className={classes.thumbnail} image={state.song.thumbnail} />
 			</Card>
 			<QueuedSongList />
 		</Fragment>

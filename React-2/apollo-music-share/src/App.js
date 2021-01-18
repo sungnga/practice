@@ -8,7 +8,8 @@ import songReducer from './reducer';
 
 export const SongContext = createContext({
 	song: {
-		id: '184002f5-6c93-4084-8060-a38630fdd9e2',
+    id: '184002f5-6c93-4084-8060-a38630fdd9e2',
+    title: 'Overcrest',
 		artist: 'NAND',
 		thumbnail: 'http://img.youtube.com/vi/--ZtUFsIgMk/0.jpg',
 		url: 'https://youtu.be/xeM40-FkRLI',
