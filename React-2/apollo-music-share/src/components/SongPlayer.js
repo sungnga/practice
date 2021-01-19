@@ -46,7 +46,6 @@ function SongPlayer() {
 	const { data } = useQuery(GET_QUEUED_SONGS);
 	const { state, dispatch } = useContext(SongContext);
   const classes = useStyles();
-  console.log(data)
 
 	function handleTogglePlay() {
 		dispatch(state.isPlaying ? { type: 'PAUSE_SONG' } : { type: 'PLAY_SONG' });

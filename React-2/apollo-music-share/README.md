@@ -965,7 +965,7 @@
     client.writeQuery({ data });
     ```
 
-### 
+### Making queries locally with Apollo client:
 - **Writing out a query for client:**
   - We write out a query just like we would write a query for a request made over the network
   - In src/graphql/queries.js file:
@@ -987,10 +987,26 @@
       }
     `;
     ```
+  - In src/graphql/client.js file:
+    - Import the GET_QUEUED_SONGS query function
+    - Then in the client.writeQuery() method, pass in a `query` property as an argument and set its value to GET_QUEUED_SONGS
+    ```js
+    // Initialize data
+    const data = {
+      queue: []
+    };
+
+    client.writeQuery({
+      query: GET_QUEUED_SONGS,
+      data
+    });
+    ```
 - **Executing a local query in React:**
   - In src/components/SongPlayer.js file:
     - Name import the GET_QUEUED_SONGS query
-    - Use useQuery() hook to execute the GET_QUEUED_SONGS query. What we get back are the data, loading, and error properties, but we only need to destructure the data
+    - Use useQuery() hook to execute the GET_QUEUED_SONGS query
+      - What we get back are the data, loading, and error properties, but we only need to destructure the data object
+      - The data object contains the queue property, which is an array of queued songs
     - Then pass down the data.queue as queue props to the QueuedSongList child component
     ```js
     import { useQuery } from '@apollo/client';
@@ -1002,6 +1018,7 @@
     ```
   - In src/components/QueuedSongList.js file:
     - Destructure the queue props received from the SongPlayer parent component
+    - For now, console log the `queue` props to see if we've successfully made a query locally (in cache)
 
 
 
