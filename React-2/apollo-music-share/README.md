@@ -898,8 +898,72 @@
 			};
 		}
     ```
-  - Now when the Play button is clicked in the Song component, the song data will be transferred to the SongPlayer component. We now can also toggle the Pause/Play button in the Song component and it will update the toggle in the SongPlay component and viscera
+  - Now when the Play button is clicked in the Song component, the song data is set in the SongPlayer component. We now can also toggle the Pause/Play button in the Song component and it will update the toggle in the SongPlay component and viscera
 
+### Apollo state management system:
+- One downside to working with state management like React reducers is that reducers are pure functions. We can't perform side-effects, we can't interact with the outside world with them. So it's not the best setup when, for example, we want to make an api request
+- Apollo comes with a built-in state management system, one that we can setup in our client. We can use this alongside the hooks api such as useQuery(), useMutation(), and useSubscription
+- The next feature we want to build is to be able to add a song(component) in song list(component) to the queued song list(component)
+- The QueuedSongList isn't going to be stores in the database. Rather, it'll be store in the browser's localStorage. We want to be able to query and mutate the queued song list by getting, adding, and removing songs
+- So we're going to perform queries and mutations locally without making a request to an api
+- **Setting up state management on Apollo client:**
+  - We need to tell Apollo client about the state we want to manage and we do so with a property on Apollo client called `typeDefs`, short for type definition. And this is something we write with `gql`
+  - We need to create a schema to tell Apollo what we're gonna be querying for --the structure of that data and as well as any mutations
+  - In client.js file:
+    - Create an object type called Song. The structure for this type is exactly the same as we described for SongContext
+    - Create an input type called SongInput and define all the fields and its accepted value type
+      - An input type is a collection of inputs that can be used to pass to a GraphQL operation
+    - Create a Query type object and in here we can define the names of our queries and what we want them to return
+      - Our `queue` query is going to return an array of Song type and it's required
+    - Create a Mutation type object
+      - Define the addOrRemoveFromQueue mutation function which is going to accept SongInput as a parameter and it's going to return an array of Song type
+    ```js
+    const client = new ApolloClient({
+      link: new WebSocketLink({
+        uri: 'wss://ngala-music-share.hasura.app/v1/graphql',
+        options: {
+          reconnect: true
+        }
+      }),
+      cache: new InMemoryCache(),
+      typeDefs: gql`
+        type Song {
+          id: uuid!
+          title: String!
+          artist: String!
+          thumbnail: String!
+          duration: Float!
+          url: String!
+        }
+
+        input SongInput {
+          id: uuid!
+          title: String!
+          artist: String!
+          thumbnail: String!
+          duration: Float!
+          url: String!
+        }
+
+        type Query {
+          queue: [Song]!
+        }
+
+        type Mutation {
+          addOrRemoveFromQueue(input: SongInput!): [Song]!
+        }
+      `
+    });
+    ```
+- **Initializing data on client:**
+  - In client.js file:
+    ```js
+    const data = {
+      queue: []
+    };
+
+    client.writeData({ data });
+    ```
 
 
 ## NPM PACKAGES USED
