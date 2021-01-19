@@ -904,7 +904,7 @@
 - One downside to working with state management like React reducers is that reducers are pure functions. We can't perform side-effects, we can't interact with the outside world with them. So it's not the best setup when, for example, we want to make an api request
 - Apollo comes with a built-in state management system, one that we can setup in our client. We can use this alongside the hooks api such as useQuery(), useMutation(), and useSubscription
 - The next feature we want to build is to be able to add a song(component) in song list(component) to the queued song list(component)
-- The QueuedSongList isn't going to be stores in the database. Rather, it'll be store in the browser's localStorage. We want to be able to query and mutate the queued song list by getting, adding, and removing songs
+- The QueuedSongList isn't going to be stored in the database. Rather, it'll be stored in the browser's localStorage. We want to be able to query and mutate the queued song list by getting, adding, and removing songs
 - So we're going to perform queries and mutations locally without making a request to an api
 - **Setting up state management on Apollo client:**
   - We need to tell Apollo client about the state we want to manage and we do so with a property on Apollo client called `typeDefs`, short for type definition. And this is something we write with `gql`
@@ -962,8 +962,47 @@
       queue: []
     };
 
-    client.writeData({ data });
+    client.writeQuery({ data });
     ```
+
+### 
+- **Writing out a query for client:**
+  - We write out a query just like we would write a query for a request made over the network
+  - In src/graphql/queries.js file:
+    - Write a query called GET_QUEUED_SONGS that performs a query operation that returns the song's field values
+    - Add an annotation that tells Apollo that we only want to perform this query on the client
+    ```js
+    import { gql } from '@apollo/client';
+
+    export const GET_QUEUED_SONGS = gql`
+      query getQueuedSongs {
+        queue @client {
+          id
+          duration
+          title
+          artist
+          thumbnail
+          url
+        }
+      }
+    `;
+    ```
+- **Executing a local query in React:**
+  - In src/components/SongPlayer.js file:
+    - Name import the GET_QUEUED_SONGS query
+    - Use useQuery() hook to execute the GET_QUEUED_SONGS query. What we get back are the data, loading, and error properties, but we only need to destructure the data
+    - Then pass down the data.queue as queue props to the QueuedSongList child component
+    ```js
+    import { useQuery } from '@apollo/client';
+    import { GET_QUEUED_SONGS } from '../graphql/queries';
+
+    const { data } = useQuery(GET_QUEUED_SONGS);
+
+    <QueuedSongList queue={data.queue} />
+    ```
+  - In src/components/QueuedSongList.js file:
+    - Destructure the queue props received from the SongPlayer parent component
+
 
 
 ## NPM PACKAGES USED

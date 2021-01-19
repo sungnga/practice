@@ -8,7 +8,8 @@ import {
 import { Delete } from '@material-ui/icons';
 import React from 'react';
 
-function QueuedSongList() {
+function QueuedSongList({ queue }) {
+  console.log({queue})
 	const greaterThanMd = useMediaQuery((theme) => theme.breakpoints.up('md'));
 
 	const song = {
