@@ -1284,6 +1284,38 @@
   }
   ```
 
+### 3. Displaying the song playing in playedSeconds:
+- While the song is playing we want to display the progress of the song in digit form - in hours, minutes, and seconds
+- In src/components/SongPlayer.js file:
+  - The second destructured value that we're getting from `onProgress` callback is what's going to be used for
+  - Create a piece of state called playedSeconds and initialize its value to 0
+  - In `onProgress` callback, set the playedSeconds value to playedSeconds state
+  - Then at where we used to display the hard-coded value for song duration, we can interpolate the playedSeconds state here. However, the value being displayed is not user-friendly to read. We can format the value into 00:00:00 format instead
+  - Write a formatDuration function that formats the playedSeconds value
+  ```js
+  const [playedSeconds, setPlayedSeconds] = useState(0);
+
+	function formatDuration(seconds) {
+		return new Date(seconds * 1000).toISOString().substr(11, 8);
+  }
+  
+  <Typography variant='subtitle1' component='p' color='textSecondary'>
+    {formatDuration(playedSeconds)}
+  </Typography>
+
+  <ReactPlayer
+    ref={reactPlayerRef}
+    onProgress={({ played, playedSeconds }) => {
+      if (!seeking) {
+        setPlayed(played);
+        setPlayedSeconds(playedSeconds);
+      }
+    }}
+    url={state.song.url}
+    playing={state.isPlaying}
+    hidden
+  />
+  ```
 
 
 
