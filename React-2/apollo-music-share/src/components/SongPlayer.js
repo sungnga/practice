@@ -9,7 +9,8 @@ import {
 	Typography
 } from '@material-ui/core';
 import { Pause, PlayArrow, SkipNext, SkipPrevious } from '@material-ui/icons';
-import React, { Fragment, useContext } from 'react';
+import React, { Fragment, useContext, useRef, useState } from 'react';
+import ReactPlayer from 'react-player';
 import { SongContext } from '../App';
 import { GET_QUEUED_SONGS } from '../graphql/queries';
 import QueuedSongList from './QueuedSongList';
@@ -45,10 +46,26 @@ const useStyles = makeStyles((theme) => ({
 function SongPlayer() {
 	const { data } = useQuery(GET_QUEUED_SONGS);
 	const { state, dispatch } = useContext(SongContext);
-  const classes = useStyles();
+	const [played, setPlayed] = useState(0);
+	const [seeking, setSeeking] = useState(false);
+	const reactPlayerRef = useRef();
+	const classes = useStyles();
 
 	function handleTogglePlay() {
 		dispatch(state.isPlaying ? { type: 'PAUSE_SONG' } : { type: 'PLAY_SONG' });
+	}
+
+	function handleProgressChange(event, newValue) {
+		setPlayed(newValue);
+	}
+
+	function handleSeekMouseDown() {
+		setSeeking(true);
+	}
+
+	function handleSeekMouseUp() {
+		setSeeking(false);
+		reactPlayerRef.current.seekTo(played);
 	}
 
 	return (
@@ -81,8 +98,28 @@ function SongPlayer() {
 							00:01:30
 						</Typography>
 					</div>
-					<Slider type='range' min={0} max={1} step={0.01} />
+					<Slider
+						onMouseDown={handleSeekMouseDown}
+						onMouseUp={handleSeekMouseUp}
+						onChange={handleProgressChange}
+						value={played}
+						type='range'
+						min={0}
+						max={1}
+						step={0.01}
+					/>
 				</div>
+				<ReactPlayer
+					ref={reactPlayerRef}
+					onProgress={({ played, playedSeconds }) => {
+						if (!seeking) {
+							setPlayed(played);
+						}
+					}}
+					url={state.song.url}
+					playing={state.isPlaying}
+					hidden
+				/>
 				<CardMedia className={classes.thumbnail} image={state.song.thumbnail} />
 			</Card>
 			<QueuedSongList queue={data.queue} />

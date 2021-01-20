@@ -1180,6 +1180,114 @@
   ```
 
 
+## PLAYING SONGS
+
+### 1. Playing the song in SongPlayer component:
+- **Implementing the play song functionality:**
+  - We want to actually play the song that is loaded in SongPlayer when we hit the Play button
+  - In src/components/SongPlayer.js file:
+    - Import the ReactPlayer component from react-player
+    - Render the ReactPlayer component somewhere at the bottom of the page
+      - Set it to be hidden
+      - Pass in the url props and set it to state.song.url
+      - Pass in the playing props and set it to state.isPlaying
+    ```js
+    import ReactPlayer from 'react-player';
+
+    <ReactPlayer url={state.song.url} playing={state.isPlaying} hidden />
+    ```
+  - The song should now play when we hit the Play button
+
+### 2. Adjusting and moving the position of song slider:
+- **Showing song progress with the song slider:**
+  - The ReactPlayer component has an `onProgress` callback that we can use to show the song progress
+  - The callback gives us 2 values: played and playedSeconds
+    - The played property will give us a value from 0 to 1. We've set the min/max values from 0 to 1 in the `<Slider />` component
+    - We're going to use the `played` value to move our slider along as the song is playing
+  - So we need to create a played state and initialize it to 0
+  - In the onProgress callback, call setPlayed method and pass in played as an argument. This will store the played value in played state
+  - We want the Slider component to be controlled by the played state. Set the value property to played state
+    ```js
+    const [played, setPlayed] = useState(0);
+
+    <Slider value={played} type='range' min={0} max={1} step={0.01} />
+
+    <ReactPlayer
+      onProgress={({ played, playedSeconds }) => {
+        setPlayed(played);
+      }}
+      url={state.song.url}
+      playing={state.isPlaying}
+      hidden
+    />
+    ```
+  - Now when we're playing the song the slider progress moves to the played value that is stored in played state. The slider is controlled by the played state
+- **Seeking with slider position:**
+  - Next we want to be able to move and adjust the slider to any position we want to play the song
+  - On the Slider component, add an onChange event handler that executes the handleProgressChange method
+  - Write a handleProgressChange function that sets played state to the newValue
+  - We need to create another piece of state called seeking when the user moves the slider. Initialize it to false
+  - On the Slider component, add an onMouseDown event handler that executes the handleSeekMouseDown method
+  - Write a handleSeekMouseDown function that sets the seeking state to true
+  - Then on the Slider component, add an onMouseUp event handler that executes the handleSeekMouseUp method
+  - Create a reactPlayerRef using useRef() hook
+  - In the ReactPlayer component, set the `ref` property to reactPlayerRef
+  - Write a handleSeekMouseUp function that
+    - sets seeking state back to false
+    - and sets the current value of reactPlayerRef to played value that's stored in played state
+  - Lastly, in the onProgress callback, we only want to set the played value coming from the callback to played state if seeking state is false. In other words, we don't want to set played state while the user is moving the slider
+  ```js
+  import React, { useRef, useState } from 'react';
+
+  function SongPlayer() {
+    const [played, setPlayed] = useState(0);
+    const [seeking, setSeeking] = useState(false);
+    const reactPlayerRef = useRef();
+
+    function handleProgressChange(event, newValue) {
+      setPlayed(newValue);
+    }
+
+    function handleSeekMouseDown() {
+      setSeeking(true);
+    }
+
+    function handleSeekMouseUp() {
+      setSeeking(false);
+      reactPlayerRef.current.seekTo(played);
+    }
+
+    return (
+      <Slider
+        onMouseDown={handleSeekMouseDown}
+        onMouseUp={handleSeekMouseUp}
+        onChange={handleProgressChange}
+        value={played}
+        type='range'
+        min={0}
+        max={1}
+        step={0.01}
+      />
+
+      <ReactPlayer
+        ref={reactPlayerRef}
+        onProgress={({ played, playedSeconds }) => {
+          if (!seeking) {
+            setPlayed(played);
+          }
+        }}
+        url={state.song.url}
+        playing={state.isPlaying}
+        hidden
+      />
+    )
+  }
+  ```
+
+
+
+
+
 ## NPM PACKAGES USED
 - material-ui and material-ui icons: `npm i @material-ui/core @material-ui/icons`
 - apollo-client and graphql: `npm install @apollo/client graphql`
