@@ -26,9 +26,9 @@
 - Open http://localhost:3000 to view it in the browser
 
 
-## 1. MATERIAL UI
+## MATERIAL UI
 
-### Building our app UI using Material UI:
+### 1. Building our app UI using Material UI:
 - Our components:
   - App.js: the parent component that renders our other components and passes down any props or context
   - AddSong.js: an input form that user can submit a song link from Youtube or Soundcloud. When they click on the Add button, a dialog window pops up that allows user to edit song title, artist, and image thumbnail
@@ -37,7 +37,7 @@
   - SongPlayer.js: displays the song title, artist and image thumbnail, song duration slider, and play previous, play next, and play icons
   - QueuedSongList.js: lists the songs in queue. User can also delete a song from this list
 
-### Material-ui custom styles and theme:
+### 2. Material-ui custom styles and theme:
 - Material-ui comes with a function called `makeStyles` that we can use to add customize styles for individual components. `makeStyles` is going to hold all the style components for a given component element
 - `makeStyles` accepts an object and on it, we can set individual properties
 - So we can write our own custom hook that executes the `makeStyle` function and returns an object. Then we can use this object anywhere in our component to apply the style
@@ -108,7 +108,7 @@
   );
   ```
 
-### Build AddSong component:
+### 3. Build AddSong component:
 - After a user pasted in a song url and clicks on the Add button, a dialog window pops up that allows them to edit the song title, artist, and image thumbnail
 - In AddSong.js file:
   - Use makeStyles function from material-ui to customize styles
@@ -206,9 +206,9 @@
   export default AddSong;
   ```
 
-### Build the SongList.js, SongPlayer.js, and QueuedSongList.js components
+### 4. Build the SongList.js, SongPlayer.js, and QueuedSongList.js components
 
-### Apply responsive design using useMediaQuery hook and Hidden component:
+### 5. Apply responsive design using useMediaQuery hook and Hidden component:
 - In app.js file:
   - At medium or smaller screen-size breakpoint, we want to display the song player fixed at the bottom of the screen. We also want to remove the queued song list
   - At extra-small breakpoint, we want to remove the header
@@ -231,9 +231,9 @@
   ```
 
 
-## 2. INTEGRATING GRAPHQL WITH SUBSCRIPTIONS
+## INTEGRATING GRAPHQL WITH SUBSCRIPTIONS
 
-### Creating songs database using Hasura GraphQL:
+### 1. Creating songs database using Hasura GraphQL:
 - Login to Hasura website and create a new project. Give the project a name
 - Go to the DATA tab at the top to create our database:
   - Name the table: songs
@@ -250,7 +250,7 @@
 - We can see the `songs` table shows up on the left menu
 - Go to GRAPHIQL tab and we should see our songs schema that we can perform query, mutation, or subscription
 
-### Configuring Apollo Client:
+### 2. Configuring Apollo Client:
 - Install: `npm install @apollo/client graphql`
 - We need to setup our client by instantiating a new client
 - Our client is going to keep track of all of our settings, what endpoint we're going to be making request to, and it's going to create our cache
@@ -268,7 +268,7 @@
   export default client;
   ```
 
-### Connecting our client to React:
+### 3. Connecting our client to React:
 - We connect Apollo Client to React with the `ApolloProvider` component. The `ApolloProvider` is similar to React's `Context.Provider`. It wraps our React app and places the client on the context, which enables us to access it from anywhere in our component tree
 - In index.js file:
   - Import ApolloProvider component from @apollo/client
@@ -290,7 +290,7 @@
   );
   ```
 
-### Performing a getSongs query:
+### 4. Performing a getSongs query operation:
 - We want to fetch songs from the database and display them in song list section in the order of most recent songs first
 - In src/graphql/queries.js file:
   - The songs that get sent back to the client will be in descending order by created_at - most recent songs first
@@ -338,7 +338,7 @@
   }
   ```
 
-### Implementing add song functionality:
+### 5. Implementing add song functionality:
 - The next step is to dynamically add songs to the song list. We want to be able to provide a song URL in an input form. The AddSong component is going to check to see whether it's valid and the song can be played. The React Player tool is going to help us with this functionality. If the song can be played, the Edit Song dialog window will enable users to edit the song's title, artist name, and thumbnail image
 - Install react-player: `npm i react-player`
 - In src/components/AddSong.js file:
@@ -375,7 +375,7 @@
   }
   ```
 
-### Extracting song data from ReactPlayer to Edit Song dialog:
+### 5. Extracting song data from ReactPlayer to Edit Song dialog:
 - ReactPlayer docs: https://www.npmjs.com/package/react-player
 - **Extracting song data from ReactPlayer component:**
 - The ReactPlayer component can play songs, but we can also use it to extract the song data from it
@@ -472,7 +472,6 @@
   - Now that we're displaying the song info, we want to be able to edit the text fields
   - For onChange event handler for each of the 3 text fields, call the handleChangeSong method
   - Write a handleChangeSong function that sets song state of its corresponding name with its corresponding value from event.target that the user provides
-
   ```js
 	function handleChangeSong(event) {
 		const { name, value } = event.target;
@@ -518,37 +517,37 @@
   )
   ```
 
-### Performing an addSong mutation:
+### 6. Performing an addSong mutation:
 - Before a user can add a song to the database, we want to add some form validation to the Edit Song form to make sure that all text fields are filled out
 - We're going to be using an error from the server to figure out whether the form is valid or not. If one of the fields isn't filled out, we will display a message to the user to fill out the field
 - **Defining the ADD_SONG mutation:**
-- In src/graphql/mutations.js file:
-  - Create an ADD_SONG mutation
-  ```js
-  import { gql } from '@apollo/client';
+  - In src/graphql/mutations.js file:
+    - Create an ADD_SONG mutation
+    ```js
+    import { gql } from '@apollo/client';
 
-  export const ADD_SONG = gql`
-    mutation addSong(
-      $title: String!
-      $artist: String!
-      $thumbnail: String!
-      $duration: Float!
-      $url: String!
-    ) {
-      insert_songs(
-        objects: {
-          title: $title
-          artist: $artist
-          thumbnail: $thumbnail
-          duration: $duration
-          url: $url
-        }
+    export const ADD_SONG = gql`
+      mutation addSong(
+        $title: String!
+        $artist: String!
+        $thumbnail: String!
+        $duration: Float!
+        $url: String!
       ) {
-        affected_rows
+        insert_songs(
+          objects: {
+            title: $title
+            artist: $artist
+            thumbnail: $thumbnail
+            duration: $duration
+            url: $url
+          }
+        ) {
+          affected_rows
+        }
       }
-    }
-  `;
-  ```
+    `;
+    ```
 - **Execute the ADD_SONG mutation in React:**
 - In src/components/AddSong.js file:
   - Import useMutation hook from @apollo/client
@@ -652,7 +651,7 @@
   }
   ```
 
-### Adding subscriptions for realtime updates:
+### 7. Adding subscriptions for realtime updates:
 - Apollo websocket docs: https://www.apollographql.com/docs/link/links/ws/
 - Apollo subscriptions docs: https://www.apollographql.com/docs/react/data/subscriptions/#setting-up-the-transport
 - The last step we need to do in ADD_SONG mutation is in order to render the newly added song to the song list in realtime, we need to add subscriptions. So instead of using a GET_SONGS query to list the songs, we want to replace it with a subscription
@@ -710,68 +709,68 @@
 - Now we're subscribed to any new data changes
 
 
-## 3. MANAGING STATE WITH REACT AND APOLLO
+## MANAGING STATE WITH REACT AND APOLLO
 
-### Setting up state management:
+### 1. Setting up state management:
 - The next functionality we want to work on is when a user clicks on the play button of a song on song list, we want to transport that song data to the SongPlayer component and use ReactPlayer to actually play the song. We also want to keep the song in the SongPlayer and song playing on SongList in sync with one another. When the song is playing, both should display a pause button indicating to the user that they can pause the song
 - There are a couple of states that we want to keep track of:
   - the song that we're going to be playing
   - whether the song is playing or not
 - We'll be using a combination of useReducer and useContext to manage the states across components 
 - **Setup state management using context and reducer:**
-- In src/App.js file:
-  - Import createContext, useContext and useReducer hooks from react
-  - Start out by creating a SongContext using createContext() function. Do this just above and outside of the App component
-    - Pass to this function an object which contains the states we want to manage
-    - Define a song state, which is an object. For now, we can just hard-code the values
-    - Define an isPlaying state, which is a boolean and by default, it is set to false
-    - Name export SongContext
-  - Inside the App component:
-    - Consume the SongContext by using React useContext() hook. Pass in the SongContext as an argument. What we get back is the initialSongState
-    - Then pass this initialSongState as a 2nd argument to the useReducer() hook from react. The 1st argument to pass to the useReducer() is the reducer function. What we get back from useReducer() hook is the `state` and the `dispatch`
-    - Write a songReducer function in reducer.js file and export it
-    - Import songReducer and pass it in to the useReducer() hook as 1st arg
-    - In the return section of the App component, wrap the `<SongContext.Provider />` component around all of the other components. Pass down the `value` props of an object that contains the state and the dispatch
-  ```js
-  import React, { createContext, useContext, useReducer } from 'react';
-  import songReducer from './reducer';
+  - In src/App.js file:
+    - Import createContext, useContext and useReducer hooks from react
+    - Start out by creating a SongContext using createContext() function. Do this just above and outside of the App component
+      - Pass to this function an object which contains the states we want to manage
+      - Define a song state, which is an object. For now, we can just hard-code the values
+      - Define an isPlaying state, which is a boolean and by default, it is set to false
+      - Name export SongContext
+    - Inside the App component:
+      - Consume the SongContext by using React useContext() hook. Pass in the SongContext as an argument. What we get back is the initialSongState
+      - Then pass this initialSongState as a 2nd argument to the useReducer() hook from react. The 1st argument to pass to the useReducer() is the reducer function. What we get back from useReducer() hook is the `state` and the `dispatch`
+      - Write a songReducer function in reducer.js file and export it
+      - Import songReducer and pass it in to the useReducer() hook as 1st arg
+      - In the return section of the App component, wrap the `<SongContext.Provider />` component around all of the other components. Pass down the `value` props of an object that contains the state and the dispatch
+    ```js
+    import React, { createContext, useContext, useReducer } from 'react';
+    import songReducer from './reducer';
 
-  export const SongContext = createContext({
-    song: {
-      id: '184002f5-6c93-4084-8060-a38630fdd9e2',
-      artist: 'NAND',
-      thumbnail: 'http://img.youtube.com/vi/--ZtUFsIgMk/0.jpg',
-      url: 'https://youtu.be/xeM40-FkRLI',
-      duration: 250
-    },
-    isPlaying: false
-  });
+    export const SongContext = createContext({
+      song: {
+        id: '184002f5-6c93-4084-8060-a38630fdd9e2',
+        artist: 'NAND',
+        thumbnail: 'http://img.youtube.com/vi/--ZtUFsIgMk/0.jpg',
+        url: 'https://youtu.be/xeM40-FkRLI',
+        duration: 250
+      },
+      isPlaying: false
+    });
 
-  function App() {
-    // Consuming SongContext
-    const initialSongState = useContext(SongContext);
-    const [state, dispatch] = useReducer(songReducer, initialSongState);
+    function App() {
+      // Consuming SongContext
+      const initialSongState = useContext(SongContext);
+      const [state, dispatch] = useReducer(songReducer, initialSongState);
 
-    return (
-      <SongContext.Provider value={{ state, dispatch }}>
-        // components go here
-      </SongContext.Provider>
-    )
-  }
-  ```
-- In src/reducer.js file:
-  ```js
-  function songReducer(state, action) {
-    switch (action.type) {
-      default:
-        return state;
+      return (
+        <SongContext.Provider value={{ state, dispatch }}>
+          // components go here
+        </SongContext.Provider>
+      )
     }
-  }
+    ```
+  - In src/reducer.js file:
+    ```js
+    function songReducer(state, action) {
+      switch (action.type) {
+        default:
+          return state;
+      }
+    }
 
-  export default songReducer;
-  ```
+    export default songReducer;
+    ```
 
-### Managing states and consuming SongContext:
+### 2. Managing states and consuming SongContext:
 - **Consuming SongContext in SongPlayer component:**
   - In the SongPlayer component, we want to consume the SongContext because we want to render the song title, artist, and thumbnail dynamically
   - In SongPlayer.js file:
@@ -900,7 +899,7 @@
     ```
   - Now when the Play button is clicked in the Song component, the song data is set in the SongPlayer component. We now can also toggle the Pause/Play button in the Song component and it will update the toggle in the SongPlay component and viscera
 
-### Apollo state management system:
+### 3. Apollo state management system:
 - One downside to working with state management like React reducers is that reducers are pure functions. We can't perform side-effects, we can't interact with the outside world with them. So it's not the best setup when, for example, we want to make an api request
 - Apollo comes with a built-in state management system, one that we can setup in our client. We can use this alongside the hooks api such as useQuery(), useMutation(), and useSubscription
 - The next feature we want to build is to be able to add a song(component) in song list(component) to the queued song list(component)
@@ -965,7 +964,7 @@
     client.writeQuery({ data });
     ```
 
-### Making queries locally with Apollo client:
+### 4. Making queries locally with Apollo client:
 - **Writing out a query for client:**
   - We write out a query just like we would write a query for a request made over the network
   - In src/graphql/queries.js file:
@@ -1019,6 +1018,138 @@
   - In src/components/QueuedSongList.js file:
     - Destructure the queue props received from the SongPlayer parent component
     - For now, console log the `queue` props to see if we've successfully made a query locally (in cache)
+
+### 5. Performing add or remove mutation with resolvers:
+- When the Save button is clicked on an individual song in SongList, the song will be added to the QueuedSongList provided that it doesn't already exist in the queued list. If it already does, the Save button, when clicked, will remove the song from the QueuedSongList
+- All of this update happens in local database in cache. And we perform the add or remove mutation operation with resolvers
+- **Writing out a mutation for client:**
+  - In src/graphql/mutations.js file:
+    - Write a mutation called ADD_OR_REMOVE_FROM_QUEUE that performs a mutation operation in local database
+    ```js
+    export const ADD_OR_REMOVE_FROM_QUEUE = gql`
+      mutation addOrRemoveFromQueue($input: SongInput!) {
+        addOrRemoveFromQueue(input: $input) @client
+      }
+    `;
+    ```
+- **Executing a mutation locally in React:**
+  - In SongList.js file and inside *Song* component:
+    - Import useMutation from @apollo/client
+    - Import the ADD_OR_REMOVE_FROM_QUEUE mutation
+    - Call the useMutation() hook to execute a mutation and pass in the ADD_OR_REMOVE_FROM_QUEUE mutation as an argument. What we get back is the addOrRemoveFromQueue mutate function
+    - We want to perform this operation when the user clicks on the Save button on a song. On the Save button, add an onClick event handler that executes the handleAddOrRemoveFromQueue method
+    - Then write a handleAddOrRemoveFromQueue function that executes the addOrRemoveFromQueue mutate function
+      - We need to provide the variables object which consists of the input variable. And in this input object we provide the song data and the __typename of Song. We declared the Song type in typeDefs in client.js. Now we're telling Apollo to use this Song type on the song data we provide
+    ```js
+    import { useMutation, useSubscription } from '@apollo/client';
+    import { ADD_OR_REMOVE_FROM_QUEUE } from '../graphql/mutations';
+
+    function Song({ song }) {
+      const [addOrRemoveFromQueue] = useMutation(ADD_OR_REMOVE_FROM_QUEUE);
+      
+      function handleAddOrRemoveFromQueue() {
+        addOrRemoveFromQueue({
+          variables: { input: { ...song, __typename: 'Song' } }
+        });
+      }
+    }
+    ```
+- **Creating functionality of mutation function with resolvers:**
+  - Now that we've collected the data in the input variable we want to perform the add or remove mutation operation with that data to our local database
+  - We do this with resolvers. It determines how different queries and mutations are resolved - resolved to a value
+  - In src/graphql/client.js file:
+    - Inside the new client configuration object, add a resolvers property
+    - And on this resolvers object, create a Mutation object that corresponds to the type Mutation we extend
+    - And on this Mutation object is going to have the addOrRemoveFromQueue function that's going to resolve the incoming input data into an array of songs with the appropriate values
+    - The addOrRemoveFromQueue function receives 3 parameters. The 1st we can ignore, the 2nd are the arguments provided to the mutation function, the 3rd is the cache object
+    - Currently our queue array in the database is empty. We update the cache to add a song to the queue array
+    - To update data in the cache, we first need to read from it by calling the `cache.readQuery()` method. This method performs a GET_QUEUED_SONGS query operation. What we should get back from the query is an array of songs (queue array). Save the result in queryResult variable
+    - Then check to see if the song we're trying to save (clicking on the Save button) to the queue list is already in the queue. If it does, we want to remove the song from the queue list by its id. If it doesn't, then add the song to the queue list
+    - Lastly, call the `cache.writeQuery()` method to update/manage the data in cache. We're updating the queue array with the newQueue song. Note that the `cache.writeQuery()` method requires that we provide the `data` property to update the data and that we first need to query the data that we want to update
+    - The addOrRemoveFromQueue mutation function is expecting a return an array of songs
+    - When we first readQuery the cache and if there's nothing in there, we return an empty array. We only return a newQueue array if there was a result when we read the query
+    ```js
+    typeDefs: gql`
+      type Mutation {
+        addOrRemoveFromQueue(input: SongInput!): [Song]!
+      }
+    `,
+    resolvers: {
+      Mutation: {
+        addOrRemoveFromQueue: (_, { input }, { cache }) => {
+          const queryResult = cache.readQuery({
+            query: GET_QUEUED_SONGS
+          });
+          if (queryResult) {
+            // destructure the queue property on data object
+            const { queue } = queryResult;
+            const isInQueue = queue.some((song) => song.id === input.id);
+            // newQueue contains the updated queue array
+            const newQueue = isInQueue
+              ? queue.filter((song) => song.id !== input.id)
+              : [...queue, input];
+            cache.writeQuery({
+              query: GET_QUEUED_SONGS,
+              data: { queue: newQueue }
+            });
+            return newQueue;
+          }
+          // return an empty array if there's no queryResult
+          return [];
+        }
+      }
+    }
+    ```
+- **Displaying queued song data in cache on QueuedSongList component:**
+  - Now we want to display the songs in queued list (queue array) stored in local database cache on QueuedSongList component
+  - In src/components/QueuedSongList.js file:
+    ```js
+    function QueuedSongList({ queue }) {
+      console.log({ queue });
+      
+      return (
+        greaterThanMd && (
+          <div style={{ margin: '10px 0' }}>
+            <Typography color='textSecondary' variant='button'>
+              QUEUE ({queue.length})
+            </Typography>
+            {queue.map((song, i) => (
+              <QueuedSong key={i} song={song} />
+            ))}
+          </div>
+        )
+      );
+    }
+    ```
+- **Implementing delete queued song with Delete button:**
+  - In src/components/QueuedSongList.js file and in QueuedSong component:
+    - Import useMutation hook from @apollo/client
+    - Import the ADD_OR_REMOVE_FROM_QUEUE mutation
+    - In the Delete icon button, add an onClick event handler that executes the handleAddOrRemoveFromQueue function
+    - Copy and paste the handleAddOrRemoveFromQueue function we use in SongList component. This function executes the addOrRemoveFromQueue mutation function
+    ```js
+    import { useMutation } from '@apollo/client';
+    import { ADD_OR_REMOVE_FROM_QUEUE } from '../graphql/mutations';
+
+    function QueuedSong({ song }) {
+      const [addOrRemoveFromQueue] = useMutation(ADD_OR_REMOVE_FROM_QUEUE);
+
+      function handleAddOrRemoveFromQueue() {
+        addOrRemoveFromQueue({
+          // spread in all of the song data
+          variables: { input: { ...song, __typename: 'Song' } }
+        });
+      }
+
+      return (
+        <IconButton onClick={handleAddOrRemoveFromQueue}>
+          <Delete color='error' />
+        </IconButton>
+      )
+    }
+    ```
+
+
 
 
 

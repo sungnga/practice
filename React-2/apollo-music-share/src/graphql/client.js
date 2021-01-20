@@ -36,7 +36,32 @@ const client = new ApolloClient({
 		type Mutation {
 			addOrRemoveFromQueue(input: SongInput!): [Song]!
 		}
-	`
+	`,
+	resolvers: {
+		Mutation: {
+			addOrRemoveFromQueue: (_, { input }, { cache }) => {
+				const queryResult = cache.readQuery({
+					query: GET_QUEUED_SONGS
+				});
+				if (queryResult) {
+					// destructure the queue property on data object
+					const { queue } = queryResult;
+					const isInQueue = queue.some((song) => song.id === input.id);
+					// newQueue contains the updated queue array
+					const newQueue = isInQueue
+						? queue.filter((song) => song.id !== input.id)
+						: [...queue, input];
+					cache.writeQuery({
+						query: GET_QUEUED_SONGS,
+						data: { queue: newQueue }
+					});
+					return newQueue;
+				}
+				// return an empty array if there's no queryResult
+				return [];
+			}
+		}
+	}
 });
 
 // Initialize data
