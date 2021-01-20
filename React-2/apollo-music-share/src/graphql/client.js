@@ -64,9 +64,11 @@ const client = new ApolloClient({
 	}
 });
 
+const hasQueue = Boolean(localStorage.getItem('queue'));
+
 // Initialize data
 const data = {
-	queue: []
+	queue: hasQueue ? JSON.parse(localStorage.getItem('queue')) : []
 };
 
 client.writeQuery({

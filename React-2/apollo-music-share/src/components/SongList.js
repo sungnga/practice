@@ -74,7 +74,11 @@ function Song({ song }) {
 	const { id } = song;
 	const classes = useStyles();
 	const { title, artist, thumbnail } = song;
-	const [addOrRemoveFromQueue] = useMutation(ADD_OR_REMOVE_FROM_QUEUE);
+	const [addOrRemoveFromQueue] = useMutation(ADD_OR_REMOVE_FROM_QUEUE, {
+		onCompleted: (data) => {
+			localStorage.setItem('queue', JSON.stringify(data.addOrRemoveFromQueue));
+		}
+	});
 	const { state, dispatch } = useContext(SongContext);
 	const [currentSongPlaying, setCurrentSongPlaying] = useState(false);
 

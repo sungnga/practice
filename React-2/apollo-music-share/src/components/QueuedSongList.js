@@ -11,7 +11,7 @@ import React from 'react';
 import { ADD_OR_REMOVE_FROM_QUEUE } from '../graphql/mutations';
 
 function QueuedSongList({ queue }) {
-	console.log({ queue });
+	// console.log({ queue });
 	const greaterThanMd = useMediaQuery((theme) => theme.breakpoints.up('md'));
 
 	// const song = {
@@ -60,7 +60,11 @@ const useStyles = makeStyles({
 function QueuedSong({ song }) {
 	const classes = useStyles();
 	const { title, artist, thumbnail } = song;
-	const [addOrRemoveFromQueue] = useMutation(ADD_OR_REMOVE_FROM_QUEUE);
+	const [addOrRemoveFromQueue] = useMutation(ADD_OR_REMOVE_FROM_QUEUE, {
+		onCompleted: (data) => {
+			localStorage.setItem('queue', JSON.stringify(data.addOrRemoveFromQueue));
+		}
+	});
 
 	function handleAddOrRemoveFromQueue() {
 		addOrRemoveFromQueue({

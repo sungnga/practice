@@ -1021,7 +1021,7 @@
 
 ### 5. Performing add or remove mutation with resolvers:
 - When the Save button is clicked on an individual song in SongList, the song will be added to the QueuedSongList provided that it doesn't already exist in the queued list. If it already does, the Save button, when clicked, will remove the song from the QueuedSongList
-- All of this update happens in local database in cache. And we perform the add or remove mutation operation with resolvers
+- All of this update happens in the browser's localStorage. And we perform the add or remove mutation operation with resolvers
 - **Writing out a mutation for client:**
   - In src/graphql/mutations.js file:
     - Write a mutation called ADD_OR_REMOVE_FROM_QUEUE that performs a mutation operation in local database
@@ -1149,8 +1149,35 @@
     }
     ```
 
+### 6. Persisting data in browser's localStorage:
+- Next we want the data we store in the browser's localStorage to persist when we refresh the page or when the page reloads. Also, when our app loads for the first time, we want fetch the queued song list (array of songs) from the localStorage and display it in QueuedSonglist
+- We use the getItem and setItem methods on localStorage object to set and fetch data from localStorage. We store the data by the key name and we retrieve data by the same key name
+- In SongList.js file and the Song component:
+  - When we use the useMutation() hook, we can pass a 2nd argument to it and have access to the `onCompleted` callback. The benefit of this is in the parameter of the callback we get access to the data object from the executed mutation
+  - The executed ADD_OR_REMOVE_FROM_QUEUE mutation returns an array of songs on data object
+  - So in the callback, we can call the .setItem() method on localStorage to set the array of songs in localStorage by the key name 'queue'
+  - Another thing to note is localStorage only accepts string values and our songs is in Javascript array object. So we need to call the JSON.stringify() method to convert the array into a string
+  ```js
+	const [addOrRemoveFromQueue] = useMutation(ADD_OR_REMOVE_FROM_QUEUE, {
+		onCompleted: (data) => {
+			localStorage.setItem('queue', JSON.stringify(data.addOrRemoveFromQueue));
+		}
+	});
+  ```
+- We also want to persist changes in localStorage when we delete a song from the queued list
+- In QueuedSongList.js file and in QueuedSong component, copy and paste the `onCompleted` callback we use in the Song component to the useMutation() hook as a 2nd argument
+- The last thing we need to do is when we write the data using client.writeQuery() to cache, we want to use the data saved in localStorage with the key of queue, if there is data there
+- In src/graphql/client.js file:
+  - Write a condition that check to see if there is data in localStorage with the key of queue. It should return a boolean of true or false
+  - Then in our data object, use a ternary operator to see if queue localStorage has data in it. If it does, call getItem() method on localStorage to the the data and parse it to Javascript array. Then set it to the queue(array) property on data object. If there's no data exists in queue localStorage, set the queue property to an empty array
+  ```js
+  const hasQueue = Boolean(localStorage.getItem('queue'));
 
-
+  // Initialize data
+  const data = {
+    queue: hasQueue ? JSON.parse(localStorage.getItem('queue')) : []
+  };
+  ```
 
 
 ## NPM PACKAGES USED
