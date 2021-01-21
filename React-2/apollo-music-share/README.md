@@ -1317,6 +1317,34 @@
   />
   ```
 
+### 4. Playing the next song in queued song list:
+- When the current song that is playing ends we want the first song listed in QueueSongList to play next
+- We want to use useEffect() hook to run a callback whenever there's a change in state.song.id. In the callback:
+  - First, we want to find the position of a song in the queue list by calling data.queue.findIndex(). It'll return a songIndex. For example, if a song is at 1st position in the queue list it'll return 0. If it's not in the queue list, it'll return -1
+  - Second, set the songIndex to the positionInQueue state
+  - Lastly, set the dependencies array to data.queue and state.song.id
+- Then write a piece of state called positionInQueue and initialize it to 0
+- So when the current playing song reaches the end, we want to play the next song in the queue at position 0. We're going to use another useEffect hook to take of this functionality. In the useEffect callback:
+  - First, check to see if there exists a next song in the queue AND if played state is equal to 1, which means the playing song has reached the end
+  - If it does, we want to set played state back to 0
+  - Then call the dispatch() method with action type of SET_SONG and the payload of song set to nextSong. This action sets the nextSong to the song in SongPlayer component
+  - Lastly, set the dependencies array to 
+  ```js
+  const [positionInQueue, setPositionInQueue] = useState(0);
+  
+	useEffect(() => {
+		const songIndex = data.queue.findIndex((song) => song.id === state.song.id);
+		setPositionInQueue(songIndex);
+	}, [data.queue, state.song.id]);
+
+	useEffect(() => {
+		const nextSong = data.queue[positionInQueue + 1];
+		if (played === 1 && nextSong) {
+			setPlayed(0);
+			dispatch({ type: 'SET_SONG', payload: { song: nextSong } });
+		}
+	}, [data.queue, played, dispatch, positionInQueue]);
+  ```
 
 
 
