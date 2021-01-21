@@ -1328,7 +1328,7 @@
   - First, check to see if there exists a next song in the queue AND if played state is equal to 1, which means the playing song has reached the end
   - If it does, we want to set played state back to 0
   - Then call the dispatch() method with action type of SET_SONG and the payload of song set to nextSong. This action sets the nextSong to the song in SongPlayer component
-  - Lastly, set the dependencies array to 
+  - Lastly, set the dependencies array to data.queue, played, dispatch, positionInQueue
   ```js
   const [positionInQueue, setPositionInQueue] = useState(0);
   
@@ -1339,13 +1339,37 @@
 
 	useEffect(() => {
 		const nextSong = data.queue[positionInQueue + 1];
-		if (played === 1 && nextSong) {
+		if (played >= 0.99 && nextSong) {
 			setPlayed(0);
 			dispatch({ type: 'SET_SONG', payload: { song: nextSong } });
 		}
 	}, [data.queue, played, dispatch, positionInQueue]);
   ```
 
+### 5. Implementing the play prevSong and nextSong functionality:
+  ```js
+	function handlePlayPrevSong() {
+		const prevSong = data.queue[positionInQueue - 1];
+		if (prevSong) {
+			dispatch({ type: 'SET_SONG', payload: { song: prevSong } });
+		}
+	}
+
+	function handlePlayNextSong() {
+		const nextSong = data.queue[positionInQueue + 1];
+		if (nextSong) {
+			dispatch({ type: 'SET_SONG', payload: { song: nextSong } });
+		}
+  }
+  
+  <IconButton onClick={handlePlayPrevSong}>
+    <SkipPrevious />
+  </IconButton>
+
+  <IconButton onClick={handlePlayNextSong}>
+    <SkipNext />
+  </IconButton>
+  ```
 
 
 ## NPM PACKAGES USED
