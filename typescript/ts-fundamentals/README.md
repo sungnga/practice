@@ -8,13 +8,6 @@
 - The command `ts-node` combines the commands `tsc index.ts` and `node index.js` into one. It compiles the typescript code and automatically executes the resulting javascript code
   - `ts-node index.ts`
 
-### VSCode setup:
-- Install PATH
-- Prettier by Esben Petersen
-  - Go to Settings -> check Format on Save box
-  - Check the Prettier: Single Quote box
-  - Set Editor: Tab Size to 2
-
 ## Syntax + Features
 - Understand basic types in TS
 - Function typing + annotations
@@ -30,8 +23,8 @@
 - A value is anything that can be assign to a variable
   - Strings, numbers, booleans, null, undefined, objects, functions, classes, arrays
 - So a value has a type. Every value that we create has a type assign to it
-- 1. Type in TS is a shortcuts for describing the different properties and methods that a single value has
-- 2. Every single value in TS has a type
+- Type in TS is a shortcuts for describing the different properties and methods that a single value has
+- Every single value in TS has a type
 
 #### Type: examples
 - Type: string :: Values that have this type: 'hi there', "", 'Today is Monday'
@@ -52,4 +45,104 @@
 - Types are used by the Typescript Compiler to analyze our code for errors
 - Types allow other engineers to understand what values are flowing around our codebase
 
+
+### TYPE ANNOTATIONS + TYPE INFERENCE
+
+#### Type annotations: definition
+- Code we add to tell Typescript what type of value a variable will refer to
+- We (developers) tell Typescript the type
+
+#### Type inference: definition
+- Typescript tries to figure out what type of value a variable refers to
+- Typescript guesses the type
+
+#### Type annotations: annotations with variables
+```ts
+// ': number' is type annotation
+let apples: number = 5; // assign a value of type number to the variable of apples
+let speed: string = 'fast';
+let hasName: boolean = true;
+
+let nothingMuch: null = null;
+let nothing: undefined = undefined;
+
+// Built-in objects
+let now: Date = new Date();
+```
+
+#### Type annotations: object literal annotations
+```ts
+// Array
+let colors: string[] = ['red', 'green', 'blue'];
+let myNumbers: number[] = [1, 2, 3];
+let truths: boolean[] = [true, true, false];
+
+// Classes
+class Car {}
+let car: Car = new Car();
+
+// Object literal
+let point: { x: number; y: number } = {
+	x: 10,
+	y: 20
+};
+```
+
+#### Type annotations: annotations around functions
+```js
+// Function
+// ': (i: number) => void' is the annotation, a description of a function
+const logNumber: (i: number) => void = (i: number) => {
+	console.log(i);
+};
+```
+
+#### Type inference: understanding inference
+```js
+// const color = variable declaration
+// 'red' = variable initialization
+const color = 'red';
+```
+- If declaration and initialization are on the same line (in one single expression), Typescript will figure out the type of 'color' for us
+
+#### When to use...
+- Type inference: TS guesses the type
+  - Always!
+- Type annotations: We (developers) tell TS the type
+  - When we declare a variable on one line then initialize it later
+  - When we want a variable to have a type that can't be inferred
+  - When a function returns the 'any' type and we need to clarify the value
+    - TS has no idea what this is - can't check for correct property references
+    - Avoid variables with 'any' at all costs
+  ```js
+  // When to use annotations
+  // 1) Function that returns the 'any' type
+  const json = '{"x": 10, "y": 20}';
+  const coordinates = JSON.parse(json);
+  console.log(coordinates); //{x: 10, y: 20}
+
+  // Fixing the 'any' type
+  const json = '{"x": 10, "y": 20}';
+  const coordinates: { x: number; y: number } = JSON.parse(json);
+  console.log(coordinates); //{x: 10, y: 20}
+
+  // 2) When we declare a variable on one line
+  // and initialize it later
+  let words = ['red', 'green', 'blue'];
+  let foundWord: boolean;
+
+  for (let i = 0; i < words.length; i++) {
+    if (words[i] === 'green') foundWord = true;
+  }
+
+  // 3) Variable whose type cannot be inferred correctly
+  let numbers = [-10, -1, 12];
+  let numberAboveZero: boolean | number = false;
+
+  for (let i = 0; i < numbers.length; i++) {
+    if (numbers[i] > 0) {
+      numberAboveZero = numbers[i];
+    }
+  }
+  ```
 
