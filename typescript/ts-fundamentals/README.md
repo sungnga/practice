@@ -146,3 +146,77 @@ const color = 'red';
   }
   ```
 
+
+### TYPE ANNOTATIONS + TYPE INFERENCE FOR FUNCTIONS
+
+#### Type annotations around functions
+- Code we add to tell TS what type of arguments a function will receive and what type of values it will return
+  ```js
+  // 'a: number' type annotation for input arguments
+  // ': number' type annotation for what the function will return
+  const add = (a: number, b: number): number => {
+    return a + b;
+  };
+  ```
+
+#### Type inference around functions
+- TS tries to figure out what type of value a function will return, but it will not try to figure out what type of value the arguments are
+- Although we've declared the what type of value the function will return, TS isn't going to check whether we have the correct code inside the function
+- No type inference for arguments. So we ALWAYS ANNOTATE input arguments every single time we define a function
+- Type inference works out function output, but we won't use it. So we ALWAYS ANNOTATE function output
+
+#### Different function syntax with type annotations
+```js
+// Arrow function with annotations for arguments and return
+const subtract = (a: number, b: number): number => {
+	return a - b;
+};
+
+// Function keyword
+function divide(a: number, b: number): number {
+	return a / b;
+}
+
+// Anonymous function assigned variable to
+const multiply = function (a: number, b: number): number {
+	return a * b;
+};
+```
+
+#### Function return: void and never
+```ts
+// Use function return void when there's no return value from the function
+// Technically it can return 'null' or 'undefined'
+const logger = (message: string): void => {
+	console.log(message);
+};
+
+// We're never going to reach the end of this function
+// exit the function early without returning any value
+// this is not very common
+const throwError = (message: string): never => {
+	throw new Error(message);
+};
+```
+
+#### Destructuring with annotations
+```ts
+// Destructuring
+const todaysWeather = {
+	date: new Date(),
+	weather: 'sunny'
+};
+
+const logWeather = ({
+	date,
+	weather
+}: {
+	date: Date;
+	weather: string;
+}): void => {
+	console.log(date);
+	console.log(weather);
+};
+
+logWeather(todaysWeather);
+```
