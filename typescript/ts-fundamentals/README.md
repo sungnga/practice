@@ -1,5 +1,5 @@
 ### Installing Typescript compiler:
-- `sudo npm i -g typescript ts-node`
+- Install: `sudo npm i -g typescript ts-node`
 - We get a `tsc` CLI, a typescript compiler
 - The command `tsc` compiles typescript code into plain Javascript
   - `tsc index.ts`
@@ -7,6 +7,7 @@
   - Run `node index.js` to execute the JS file
 - The command `ts-node` combines the commands `tsc index.ts` and `node index.js` into one. It compiles the typescript code and automatically executes the resulting javascript code
   - `ts-node index.ts`
+
 
 ## Syntax + Features
 - Understand basic types in TS
