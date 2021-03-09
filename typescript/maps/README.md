@@ -68,7 +68,10 @@
 - Mark the `google.maps.Map` instance as private
 - Import CustomMap class in index.ts file
 
-#### 5. Adding user and company markers on map (bad code)
+#### 5. Adding user and company markers on a map (bad code)
 - Create a addUserMarker and a addCompanyMarker method in CustomMap class
 - The reason why it's bad code is code duplication. Code in both methods are almost identical
 - Call these two methods in index.ts file to display both markers on a map
+
+#### 6. Adding markers on a map with interfaces
+- In CustomMap.ts, define a Mappable interface and use it as an argument check/gatekeeper to addMaker() method
