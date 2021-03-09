@@ -299,3 +299,39 @@ const arrayOfArrays: string[][] = [];
 #### When to use typed arrays
 - Any time we need to represent a collection of records with some arbitrary sort order
 
+
+### TUPLES
+
+#### Tuple: definition
+- Array-like structure where each element represents some property of a record
+- Looks very similar to an array
+- A tuple contains multiple properties to describe one single thing
+- Usually inside a tuple we will mix and match many different types of data
+- The order of the elements in a tuple is very important
+
+#### Tuples in action
+```ts
+// An annotated tuple
+// The order inside a tuple must be of these types
+const pepsi: [string, boolean, number] = ['brown', true, 40];
+pepsi[0] = 40 //error: wrong type at index 0
+
+// Type alias
+type Drink = [string, boolean, number];
+
+// A tuple with type alias
+const sprite: Drink = ['clear', true, 20];
+const tea: Drink = ['brown', false, 0];
+```
+
+#### Why tuples
+- Won't be using tuples often
+  ```ts
+  // A tuple to model a record
+  const carSpecs: [number, number] = [4000, 3355];
+  // An object to model a record
+  const carStats = {
+    horsePower: 400,
+    weight: 3355
+  };
+  ```
