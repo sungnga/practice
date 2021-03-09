@@ -14,5 +14,9 @@
   "devDependencies": {
     "parcel": "^2.0.0-beta.1",
     "typescript": "^4.2.3"
+  },
+  "dependencies": {
+    "@types/faker": "^5.1.7",
+    "faker": "^5.4.0"
   }
 }
