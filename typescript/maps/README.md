@@ -29,8 +29,11 @@
 ### STEPS TO BUILDING THIS MINI APP
 
 #### 1. Generating random User data with faker library
-- fake allows us to randomly generate a bunch of different types of information that we need for our project
+- faker allows us to randomly generate a bunch of different types of information that we need for our project
 - Manually install @types/faker module, a type definition file
 - Using faker type definition file in User.ts file
 - Export the User.ts class and import it in index.ts file
   - NOTE: When working with typescript files, try to name export the file instead of using default export
+
+#### 2. Defining a Company class with faker library
+- Import the Company.ts class in index.ts file
