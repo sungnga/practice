@@ -75,3 +75,6 @@
 
 #### 6. Adding markers on a map with interfaces
 - In CustomMap.ts, define a Mappable interface and use it as an argument check/gatekeeper to addMaker() method
+
+#### 7. Showing pop-up windows with infoWindow
+- Create an instance of `google.maps.InfoWindow` that displays a piece of content when a marker is clicked on
