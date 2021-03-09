@@ -26,6 +26,7 @@
   }
   ```
 - Then run: `npm start`
+- Or with parcel CLI: `parcel index.html`
 
 
 ### STEPS TO BUILDING THIS MINI APP
@@ -33,11 +34,11 @@
 #### 1. Generating random User data with faker library
 - faker allows us to randomly generate a bunch of different types of information that we need for our project
 - Manually install @types/faker module, a type definition file
-- Using faker type definition file in User.ts file
+- Create a User class with faker type definition in User.ts file
 - Export the User.ts class and import it in index.ts file
   - NOTE: When working with typescript files, try to name export the file instead of using default export
 
-#### 2. Defining a Company class with faker library
+#### 2. Creating a Company class with faker type definition
 - Import the Company.ts class in index.ts file
 
 #### 3. Integrating Google Maps with TypeScript
@@ -51,3 +52,18 @@
 - Using the google.maps type definition in index.ts
 - In index.html file, add a div tag with an id of 'map'
 - Create an index.css file and insert it into index.html file
+
+**Ideal things we can do in the index.ts file:**
+- Company class
+  - Create a new Company instance
+  - Reference name/slogan/lat/lng properties
+- User class
+  - Create a new User instance
+  - Reference name/age/lat/lng properties
+- CustomMap class
+  - Create a new CustomMap instance
+  - addMarker
+
+#### 4. Creating a CustomMap class with googlemaps type definition
+- Mark the `google.maps.Map` instance as private
+- Import CustomMap class in index.ts file
