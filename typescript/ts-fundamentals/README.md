@@ -335,3 +335,122 @@ const tea: Drink = ['brown', false, 0];
     weight: 3355
   };
   ```
+
+
+### INTERFACES
+
+#### Interface: definition
+- Creates a new type, describing the property names and value types of an object
+- When we create an interface, we're creating a new type inside our application just the same way that we have types like strings, numbers, etc
+- It's a custom type that a programmer defines
+
+#### Long type annotations
+```ts
+const oldCivic = {
+	name: 'civic',
+	year: 2000,
+	broken: true
+};
+
+const printVehicle = (vehicle: {
+	name: string;
+	year: number;
+	broken: boolean;
+}): void => {
+	console.log(`Name: ${vehicle.name}`);
+	console.log(`Year: ${vehicle.year}`);
+	console.log(`Broken? ${vehicle.broken}`);
+};
+
+printVehicle(oldCivic);
+```
+
+#### Fixing annotations with interfaces
+```ts
+interface Vehicle {
+	name: string;
+	year: number;
+	broken: boolean;
+}
+
+const oldCivic = {
+	name: 'civic',
+	year: 2000,
+	broken: true
+
+};
+
+const printVehicle = (vehicle: Vehicle): void => {
+	console.log(`Name: ${vehicle.name}`);
+	console.log(`Year: ${vehicle.year}`);
+	console.log(`Broken? ${vehicle.broken}`);
+};
+
+printVehicle(oldCivic);
+```
+
+#### Syntax around interfaces
+```ts
+// can be other types than primitive types
+// can express functions inside an interface definition
+interface Vehicle {
+	name: string;
+	year: Date;
+	broken: boolean;
+	// a function that returns a string
+	summary(): string;
+}
+
+const oldCivic = {
+	name: 'civic',
+	year: new Date(),
+	broken: true,
+	summary(): string {
+		return `Name: ${this.name}`;
+	}
+};
+
+const printVehicle = (vehicle: Vehicle): void => {
+	console.log(vehicle.summary());
+};
+
+printVehicle(oldCivic);
+```
+
+#### Refactor: code reuse with interfaces
+```ts
+interface Reportable {
+	// a function that returns a string
+	summary(): string;
+}
+
+const oldCivic = {
+	name: 'civic',
+	year: new Date(),
+	broken: true,
+	summary(): string {
+		return `Name: ${this.name}`;
+	}
+};
+
+const drink = {
+	color: 'brown',
+	carbonated: true,
+	sugar: 40,
+	summary(): string {
+		return `My drink has ${this.sugar} grams of sugar`;
+	}
+};
+
+const printSummary = (item: Reportable): void => {
+	console.log(item.summary());
+};
+
+printSummary(oldCivic);
+printSummary(drink);
+```
+
+#### General plan with interfaces
+- General strategy for reusable code in TS
+  - Create functions that accept arguments that are typed with interfaces
+  - Objects/classes can decide to 'implement' a given interface to work with a function
