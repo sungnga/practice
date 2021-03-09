@@ -78,3 +78,7 @@
 
 #### 7. Showing pop-up windows with infoWindow
 - Create an instance of `google.maps.InfoWindow` that displays a piece of content when a marker is clicked on
+
+#### 8. Updating interface definitions to include markerContent method
+- Since the Mappable interface now has a markerContent method, any instance that wants to call the addMarker method must have a markerContent method as well
+- Add a markerContent method to both User and Company classes
