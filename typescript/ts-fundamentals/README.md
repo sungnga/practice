@@ -251,3 +251,51 @@ const {
 	coords: { lat, lng }
 }: { coords: { lat: number; lng: number } } = profile;
 ```
+
+
+### TYPED ARRAYS
+
+#### Arrays in typescript: definition
+- Arrays where each element is some consistent type of value
+- For example, if we make an array that's supposed to contain string, we will only put strings inside there. If we put a number or boolean, we'll get an error
+
+#### Typed arrays: examples
+```ts
+const carMakers: string[] = ['ford', 'toyota', 'chevy'];
+const dates = [new Date(), new Date()];
+
+// An array of type string using type inference. No annotations.
+const carsByMake = [['f150'], ['corolla'], ['camaro']];
+const arrayOfArrays: string[][] = [];
+```
+
+#### Why typed arrays? Why do we care?
+- TS can do type inference when extracting values from an array
+- TS can prevent us from adding incompatible values to an array
+- We can get help with 'map', 'forEach', 'reduce' functions
+- Flexible - arrays can still contain multiple different types
+  ```ts
+  // Help with inference when extracting values
+  const carMakers: string[] = ['ford', 'toyota', 'chevy'];
+  const car = carMakers[0]; //TS knows car has a type of string
+  const myCar = carMakers.pop();
+
+  // Prevent incompatible values
+  carMakers.push(100); // error: can't do this
+
+  // Help with 'map'
+  carMakers.map((car: string): string => {
+    return car.toUpperCase();
+  });
+
+  // Flexible types
+  // Multiple types in arrays
+  const importantDates: (Date | string)[] = [];
+  importantDates.push('2030-10-10');
+  importantDates.push(new Date());
+  importantDates.push(100); // error: can't do this
+  ```
+
+#### When to use typed arrays
+- Any time we need to represent a collection of records with some arbitrary sort order
+
