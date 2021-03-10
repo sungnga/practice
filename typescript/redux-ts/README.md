@@ -50,3 +50,10 @@ A mini app exercise using React, Redux, and Typescript together
 ### Refactoring our actions and action types into separate files
 - Move the actions (with action interfaces) and action types (ActionType enum) into its separate files
 - Then import them into the repositoriesReducer.ts file
+
+### Adding action creators
+- The action creator, searchRepositories(), will make a request to the NPM API with the provided search term. It does this by dispatching a SEARCH_REPOSITORIES action
+- Use the axios library to make the request
+- Add the request logic in a try/catch block
+- Catch the error by dispatching the SEARCH_REPOSITORIES_ERROR action type
+- Apply typings to dispatch function to make sure that we're dispatching the correct type of action in all of the different action creator. The possible actions that can be dispatched are found in the type Action (in actions folder)
