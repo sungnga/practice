@@ -82,3 +82,7 @@
 #### 8. Updating interface definitions to include markerContent method
 - Since the Mappable interface now has a markerContent method, any instance that wants to call the addMarker method must have a markerContent method as well
 - Add a markerContent method to both User and Company classes
+
+#### 9. Adding implements clauses
+- To help us further detect errors in the right location that's caused by implementing an interface, we can add an implements clause to the class/instance that is implementing the interface
+- Add `implements Mappable` interface to User and Company classes
