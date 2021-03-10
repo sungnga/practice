@@ -67,3 +67,11 @@ A mini app exercise using React, Redux, and Typescript together
 ### Initializing state in reducer function
 - Create an initialState object and assign it to the `state` argument in the reducer function
 
+### Wiring up Redux to React
+- In src/components/App.tsx file:
+  - Import the Provider component from react-redux
+  - Import the store that we created
+  - The Provider is a React component that we're going to use to get access to our Redux store
+  - In the render section of App component, render the Provider component and pass in the store as store props. Now any components rendered inside the Provider component will have access to the store
+  - Inside the Provider component render the RepositoriesList component
+- Create the RepositoriesList component that renders a form which has an input field and a Search button
