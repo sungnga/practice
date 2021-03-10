@@ -35,3 +35,7 @@ A mini exercise using React, Typescript, and Redux together
   - 'Child2' will be a React function component
   - 'Child2' might have properties assigned to it like 'propTypes' and 'contextTypes'
   - 'Child2' will receive props of type 'ChildProps'
+
+### Annotations with children
+- The first approach cannot directly receive children unless manually add an annotation to ChildProps interface
+- The second approach can receive children prop. `React.FC` does expect to receive a children prop

@@ -1,7 +1,11 @@
-import { Child } from './Child';
+import { ChildAsFC } from './Child';
 
 const Parent = () => {
-	return <Child color='red' />;
+	return (
+		<ChildAsFC color='red' onClick={() => console.log('Clicked')}>
+			Content between the opening and closing tag is children
+		</ChildAsFC>
+	);
 };
 
 export default Parent;
