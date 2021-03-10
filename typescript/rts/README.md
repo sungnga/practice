@@ -73,3 +73,13 @@ Mini exercises using React, Typescript, and Redux
 ### Typescript with class components
 - The UserSearch app written with class based component
 - Must pass in the users array as children props to the UserSearch component
+
+### Applying types to refs
+- Create a ref using useRef() hook inside a function component and properly type it with typescript
+- When the UserSearch component appears on the screen, the input field is automatically focused allowing user to start typing without having to first click into it
+- Whenever we create a ref that is going to refer to some kind of HTML element, we're going to apply a type that's going to describe the type of element that the `inputRef` is passed off to did not get pass down to an html element
+- For example, a ref to an input element is of type HTMLInputElement
+- If the `inputRef` did not get applied to some html element, then the thing that the `inputRef` is pointing to might be of type null. TS takes this into account
+  - `const `inputRef` = useRef<HTMLInputElement | null>(null);`
+
+
