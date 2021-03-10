@@ -31,3 +31,18 @@ A mini app exercise using React, Redux, and Typescript together
 - Create a RepositoriesState interface definition
 - Assign the interface to the `state` argument of the reducer function. This means the state properties that the reducer function is receiving must be of type we've defined in the interface
 - Annotate the return type of the reducer function to the RepositoriesState interface as well. This means for each property that we're returning, it must match the type that we've defined in the interface
+
+### Typing action types, applying action interfaces in a reducer
+- Every action object must have an action type property and optionally have a payload property. To indicate that it's optional, add a question mark after the property name
+- Create 3 different action type interfaces that each describes a specific action that gets passed to the reducer function
+- Then create a type Action enum containing the 3 possible actions. This represents all the different possible actions that can be processed by all the different reducers
+- Assign the Action type enum to the action argument in reducer function. This means that the action object that the reducer receives as an argument must satisfy one of the three action type interfaces that we've defined
+- Create an ActionType enum containing all the possible action types
+- Use the ActionType enum in the switch case statement
+- Use the ActionType enum in the 3 action interfaces that we define the type property
+- A recap on how to setup a reducer with type:
+  - Setup the reducer
+  - Create an interface definition for state argument
+  - Type the different action types with interfaces
+  - Setup type Action that an action argument can take and apply it inside the reducer
+  - Setup ActionType enum and make use of the enum inside the reducer and the action type interfaces
