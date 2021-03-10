@@ -63,3 +63,7 @@ A mini app exercise using React, Redux, and Typescript together
 - Now combine all the different parts into a redux store. Create a store by calling createStore()
 - Next, create an index.ts file at the root of the state folder. This serves as the entry point where other components can go get access to action creators and store
 - The last thing we need to do on the Redux side is exporting everything that we might need to get access to from other parts of our project into this index.ts file
+
+### Initializing state in reducer function
+- Create an initialState object and assign it to the `state` argument in the reducer function
+
