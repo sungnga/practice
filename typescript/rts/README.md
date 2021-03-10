@@ -1,6 +1,6 @@
 # React + Typescript + Redux
 
-A mini exercise using React, Typescript, and Redux together
+Mini exercises using React, Typescript, and Redux
 
 ### Initialize project with react-create-app
 - Run: `npx create-react-app rts --template typescript --use-npm`
@@ -43,3 +43,7 @@ A mini exercise using React, Typescript, and Redux together
 ### State with typescript
 - Whenever we make use of state inside React, we can put in a default value. If TS can figure out what type of that value is, we won't get an error
 - If we put any default value where type inference doesn't work, we need to specify the actual type for that piece of state. For example, if we initialize our state to be an empty array. TS can't figure what type of value this empty array will hold. So we need to annotate this piece of state to `useState<string[]>([])` to indicate that it's an array of strings
+
+### Type Unions in state
+- A simple UserSearch app that returns either foundUser or undefined
+- Create state with typescript
