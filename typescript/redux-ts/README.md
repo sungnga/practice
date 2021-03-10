@@ -75,3 +75,8 @@ A mini app exercise using React, Redux, and Typescript together
   - In the render section of App component, render the Provider component and pass in the store as store props. Now any components rendered inside the Provider component will have access to the store
   - Inside the Provider component render the RepositoriesList component
 - Create the RepositoriesList component that renders a form which has an input field and a Search button
+
+### Adding form submit event handler with type
+- Create a piece of state called term and initialize it to an empty string
+- Store the form input value in term state by calling setTerm()
+- Create an onSubmit function to handle form submission. Prevent the default behavior of form submission
