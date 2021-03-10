@@ -46,3 +46,7 @@ A mini app exercise using React, Redux, and Typescript together
   - Type the different action types with interfaces
   - Setup type Action that an action argument can take and apply it inside the reducer
   - Setup ActionType enum and make use of the enum inside the reducer and the action type interfaces
+
+### Refactoring our actions and action types into separate files
+- Move the actions (with action interfaces) and action types (ActionType enum) into its separate files
+- Then import them into the repositoriesReducer.ts file
