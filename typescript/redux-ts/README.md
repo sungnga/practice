@@ -57,3 +57,9 @@ A mini app exercise using React, Redux, and Typescript together
 - Add the request logic in a try/catch block
 - Catch the error by dispatching the SEARCH_REPOSITORIES_ERROR action type
 - Apply typings to dispatch function to make sure that we're dispatching the correct type of action in all of the different action creator. The possible actions that can be dispatched are found in the type Action (in actions folder)
+
+### Combining reducers, creating a store, and setting up exports
+- Combine all the reducers using the combineReducers function into one called `reducers`. At the moment we only have one reducer
+- Now combine all the different parts into a redux store. Create a store by calling createStore()
+- Next, create an index.ts file at the root of the state folder. This serves as the entry point where other components can go get access to action creators and store
+- The last thing we need to do on the Redux side is exporting everything that we might need to get access to from other parts of our project into this index.ts file
