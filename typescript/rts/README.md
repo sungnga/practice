@@ -39,3 +39,7 @@ A mini exercise using React, Typescript, and Redux together
 ### Annotations with children
 - The first approach cannot directly receive children unless manually add an annotation to ChildProps interface
 - The second approach can receive children prop. `React.FC` does expect to receive a children prop
+
+### State with typescript
+- Whenever we make use of state inside React, we can put in a default value. If TS can figure out what type of that value is, we won't get an error
+- If we put any default value where type inference doesn't work, we need to specify the actual type for that piece of state. For example, if we initialize our state to be an empty array. TS can't figure what type of value this empty array will hold. So we need to annotate this piece of state to `useState<string[]>([])` to indicate that it's an array of strings
