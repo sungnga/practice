@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 const users = [
 	{ name: 'Sarah', age: 20 },
@@ -12,7 +12,14 @@ const UserSearch: React.FC = () => {
 	// Define the types for possible values this state might hold
 	const [user, setUser] = useState<{ name: string; age: number } | undefined>();
 
+	useEffect(() => {
+		// return early if inputRef isn't assigned to an element
+		if (!inputRef.current) return;
+		inputRef.current.focus();
+	}, []);
+
 	function onClick() {
+		setName('');
 		const foundUser = users.find((user) => {
 			return user.name === name;
 		});

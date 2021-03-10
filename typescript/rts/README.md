@@ -1,6 +1,6 @@
-# React + Typescript + Redux
+# React + Typescript
 
-Mini exercises using React, Typescript, and Redux
+Mini exercises of React working with Typescript
 
 ### Initialize project with react-create-app
 - Run: `npx create-react-app rts --template typescript --use-npm`
@@ -82,4 +82,6 @@ Mini exercises using React, Typescript, and Redux
 - If the `inputRef` did not get applied to some html element, then the thing that the `inputRef` is pointing to might be of type null. TS takes this into account
   - `const `inputRef` = useRef<HTMLInputElement | null>(null);`
 
-
+### Implementing inputRef in useEffect hook
+- Use useEffect() hook to apply the inputRef when the component first mounts or when the page reloads
+- Write a condition that if `!inputRef.current`, meaning that the inputRef hasn't been assigned to an html element, then return early. If there is, call .focus() on it
