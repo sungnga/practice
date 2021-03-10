@@ -69,3 +69,7 @@ Mini exercises using React, Typescript, and Redux
 - Apply type annotation to an event inside an event handler function
 - Type inference will not apply if we define the event function ahead of time and pass down the function to JSX
 - Type inference will only applied inside of JSX when we define that callback function directly inline (like the code above)
+
+### Typescript with class components
+- The UserSearch app written with class based component
+- Must pass in the users array as children props to the UserSearch component
