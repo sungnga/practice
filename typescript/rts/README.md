@@ -47,3 +47,25 @@ Mini exercises using React, Typescript, and Redux
 ### Type Unions in state
 - A simple UserSearch app that returns either foundUser or undefined
 - Create state with typescript
+
+
+## TYPES AROUND EVENTS AND REFS
+
+### Inline event handlers
+- We don't get any errors with inline event handlers
+  ```ts
+  const EventComponent: React.FC = () => {
+    return (
+      <div>
+        <input onChange={(e) => console.log(e)} />
+      </div>
+    );
+  };
+
+  export default EventComponent;
+  ```
+
+### Typing standalone event handlers
+- Apply type annotation to an event inside an event handler function
+- Type inference will not apply if we define the event function ahead of time and pass down the function to JSX
+- Type inference will only applied inside of JSX when we define that callback function directly inline (like the code above)
