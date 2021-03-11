@@ -80,3 +80,8 @@ A mini app exercise using React, Redux, and Typescript together
 - Create a piece of state called term and initialize it to an empty string
 - Store the form input value in term state by calling setTerm()
 - Create an onSubmit function to handle form submission. Prevent the default behavior of form submission
+
+### Creating a useActions hook
+- This hook will automatically give us access to all the different action creators
+- The bindActionCreators function is going to give us back an object that contains all the action creators that we provide as as the 1st arg. The 2nd arg that we pass in is the dispatch function
+
