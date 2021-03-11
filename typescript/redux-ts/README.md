@@ -113,3 +113,9 @@ A mini app exercise using React, Redux, and Typescript together
   ```
   - `ReturnType` is a built-in helper inside of Typescript that says, take the function that we provide (reducers) and give us back the type of whatever that function returns. And we're going to assign that type to `RootState`
   - `RootState` is a type that describes the type of information inside of Redux store. And we need to export this type in state/index.ts file, so other components can have access to it
+
+### Creating a typed selector: useTypedSelector hook
+- The useTypedSelector hook is a version of react-redux's useSelector hook but now with type. So when we use this hook to select a state in Redux store, the state is typed
+- Use the useTypedSelector hook in the RepositoriesList component
+- We only want the repositories object from the store and we can then destructure its properties
+- Now the data array, error, and loading each has a type
