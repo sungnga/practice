@@ -94,3 +94,22 @@ A mini app exercise using React, Redux, and Typescript together
 - We don't need to get all the states. The only state that we want is the repositories property. And we can destructure the three properties we want: data, loading, and error
 - Now when we type in and submit a search term, we can see the result data is stored in the data array state
 
+### Defining the root state type
+- NOTE: TS doesn't know what the type of data is inside of Redux store. So we need to programmatically figure out what the type of our data is in the store and then communicate that information over to react-redux
+- First, create a new type that describes the type of data inside of Redux store in reducers (combineReducers) file
+  ```ts
+  import { combineReducers } from 'redux';
+  import repositoriesReducer from './repositoriesReducer';
+
+  // reducers is a function
+  const reducers = combineReducers({
+    repositories: repositoriesReducer
+  });
+
+  export default reducers;
+
+  // Assign the type of whatever reducers returns to RootState
+  export type RootState = ReturnType<typeof reducers>;
+  ```
+  - `ReturnType` is a built-in helper inside of Typescript that says, take the function that we provide (reducers) and give us back the type of whatever that function returns. And we're going to assign that type to `RootState`
+  - `RootState` is a type that describes the type of information inside of Redux store. And we need to export this type in state/index.ts file, so other components can have access to it
