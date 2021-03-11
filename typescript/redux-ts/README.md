@@ -119,3 +119,9 @@ A mini app exercise using React, Redux, and Typescript together
 - Use the useTypedSelector hook in the RepositoriesList component
 - We only want the repositories object from the store and we can then destructure its properties
 - Now the data array, error, and loading each has a type
+
+### Consuming store state
+- Now we want to make use of the data, error, and loading in the JSX of our RepositoriesList component
+  - Display error is there's an error
+  - Display loading if it's loading
+  - Display the data array if we have data
