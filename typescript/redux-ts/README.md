@@ -85,3 +85,6 @@ A mini app exercise using React, Redux, and Typescript together
 - This hook will automatically give us access to all the different action creators
 - The bindActionCreators function is going to give us back an object that contains all the action creators that we provide as as the 1st arg. The 2nd arg that we pass in is the dispatch function
 
+### Getting and calling searchRepositories action creator with useActions hook
+- In RepositoriesList.tsx component, get the searchRepositories action creator using useActions() hook
+- Then in the onSubmit function, call the searchRepositories() action creator and pass in the term state as an argument. This action creator will make a request to NPM API to get the data based on the provided search term
