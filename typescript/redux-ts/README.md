@@ -1,4 +1,4 @@
-## React + Redux + Typescript
+# React + Redux + Typescript
 
 A mini app exercise using React, Redux, and Typescript together
 
@@ -125,3 +125,8 @@ A mini app exercise using React, Redux, and Typescript together
   - Display error is there's an error
   - Display loading if it's loading
   - Display the data array if we have data
+
+### Big issues with Redux/React-Redux + Typescript
+- Imports between files can turn into a mess very quickly. We resolved this by creating a single point of entry in index.ts in state folder. In this file, we exported the store, the action creators and the reducers. This way all the other components can access them from here
+- Communicating types over to your components can be challenging. We need to write a bit of extra code to communicate the information about the structure of data inside of Redux store over to react-redux. The solution is to create a separate custom useSelector hook that has type
+- Type def files for Redux, React-Redux, and others are possibly over-engineered. So reading those type definition files can be challenging
