@@ -88,3 +88,9 @@ A mini app exercise using React, Redux, and Typescript together
 ### Getting and calling searchRepositories action creator with useActions hook
 - In RepositoriesList.tsx component, get the searchRepositories action creator using useActions() hook
 - Then in the onSubmit function, call the searchRepositories() action creator and pass in the term state as an argument. This action creator will make a request to NPM API to get the data based on the provided search term
+
+### Selecting state from Redux store
+- Use useSelector hook from react-redux to get access to the  states in the store
+- We don't need to get all the states. The only state that we want is the repositories property. And we can destructure the three properties we want: data, loading, and error
+- Now when we type in and submit a search term, we can see the result data is stored in the data array state
+
