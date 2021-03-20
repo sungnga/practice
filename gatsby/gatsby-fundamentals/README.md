@@ -15,3 +15,7 @@
 
 ### Using CSS modules
 - A CSS module is a CSS file in which all class names and animation names are scoped locally by default
+
+### Styled components
+- Install gatsby-plugin-styled-components plugin
+- Add the plugin in the `plugins` array in gatsby.config.js file
