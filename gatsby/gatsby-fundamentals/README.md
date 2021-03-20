@@ -5,4 +5,8 @@
 ### Creating pages
 
 ### Linking components
-- Using React's Link component
+- Using Gatsby's Link component
+
+### Setting up a Navbar component
+
+
