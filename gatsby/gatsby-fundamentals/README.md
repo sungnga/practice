@@ -25,3 +25,10 @@
 - Query name: `firstQuery`
 - Field alias: `info: siteMetadata`
 - Destructuring data
+
+### GraphQL: StaticQuery component
+- Old way of writing static query
+- In GraphiQL console, click on Code Exporter and select StaticQuery in the dropdown menu. It will generate the StaticQuery code
+- Render the `<StaticQuery />` component and it has a query and render props
+- The query props is set to the graphql string template literal that has the query in it
+- The render props calls a function that has the data result passed to it
