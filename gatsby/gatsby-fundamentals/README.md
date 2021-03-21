@@ -36,3 +36,28 @@
 ### GraphQL: PageQuery component
 - Cannot set up PageQuery component in a regular component
 - Note the the query name must be unique
+
+### Working with images and filesystem
+- Docs: https://www.gatsbyjs.com/plugins/gatsby-plugin-image
+- Install gatsby-plugin-image plugin and gatsby-plugin-sharp for image optimization
+- Install gatsby-source-filesystem plugin to access our local files and working with static images
+- Install gatsby-transformer-sharp if working with dynamic images
+- Install: `npm install gatsby-plugin-image gatsby-plugin-sharp gatsby-source-filesystem gatsby-transformer-sharp`
+- Configure the 4 plugins in gatsby-config.js file:
+  ```js
+  module.exports = {
+    plugins: [
+      `gatsby-plugin-image`,
+      `gatsby-plugin-sharp`,
+      `gatsby-transformer-sharp`, // Needed for dynamic images
+      {
+        resolve: `gatsby-source-filesystem`,
+        options: {
+          name: `images`,
+          path: `${__dirname}/src/images/`,
+        }
+      },
+    ],
+  }
+  ```
+

@@ -3,6 +3,7 @@ import { graphql } from "gatsby"
 import Layout from "../components/Layout"
 import Header from "../examples/Header"
 import HeaderStatic from "../examples/HeaderStatic"
+import { StaticImage } from "gatsby-plugin-image"
 
 // Destructure data from page props
 function examples({ data }) {
@@ -21,6 +22,12 @@ function examples({ data }) {
       <Header />
       <HeaderStatic />
       <h5>Author: {author}</h5>
+      <StaticImage
+        src="../images/desert-1.jpeg"
+        alt="Desert-1"
+        width={200}
+        height={200}
+      />
     </Layout>
   )
 }
