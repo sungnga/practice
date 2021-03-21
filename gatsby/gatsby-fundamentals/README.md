@@ -19,3 +19,9 @@
 ### Styled components
 - Install gatsby-plugin-styled-components plugin
 - Add the plugin in the `plugins` array in gatsby.config.js file
+
+### GraphQL: useStaticQuery hook
+- Query keyword: `query`
+- Query name: `firstQuery`
+- Field alias: `info: siteMetadata`
+- Destructuring data
