@@ -22,7 +22,7 @@
 
 ### GraphQL: useStaticQuery hook
 - Query keyword: `query`
-- Query name: `firstQuery`
+- Query name: `firstQuery`. This name must be unique
 - Field alias: `info: siteMetadata`
 - Destructuring data
 
@@ -32,3 +32,7 @@
 - Render the `<StaticQuery />` component and it has a query and render props
 - The query props is set to the graphql string template literal that has the query in it
 - The render props calls a function that has the data result passed to it
+
+### GraphQL: PageQuery component
+- Cannot set up PageQuery component in a regular component
+- Note the the query name must be unique
