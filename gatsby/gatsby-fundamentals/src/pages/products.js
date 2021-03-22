@@ -6,8 +6,7 @@ import * as styles from "../components/products.module.css"
 
 function products({ data }) {
   const products = data.allContentfulProduct.nodes
-  products.shift()
-  console.log(products)
+  // console.log(products)
 
   return (
     <Layout>

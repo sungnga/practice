@@ -3,7 +3,7 @@
 ## TOPICS
 
 ### Running Gatsby development server:
-- `gatsby develop`
+- Run in the terminal: `gatsby develop`
 - Must restart the server whenever updating the gatsby-config.js file
 
 ### Creating pages
@@ -72,3 +72,10 @@
 - Querying data in Contentful and display contents onto the page
 - After install and configure contentful plugin, query data using GraphiQL console
 - Use pageQuery component to query the data inside of a page component and render the contents onto the page
+
+### Creating nested pages using page templates
+- If we have nested pages that have the same page layout but with different contents, we can create a page template and use pageQuery to dynamically fetch the data and display it on each individual page
+- A slug is the part of a URL which identifies a particular page on a website in an easy to read form; It's the part of the URL that explains the page's content
+- Use Gatsby-Node to create the page template
+  - We will make use of a slug to generate the names of the nested pages
+- Use graphql to query the data for a single page and render the contents. Do this in the page template (component) file
