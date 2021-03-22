@@ -2,6 +2,10 @@
 
 ## TOPICS
 
+### Running Gatsby development server:
+- `gatsby develop`
+- Must restart the server whenever updating the gatsby-config.js file
+
 ### Creating pages
 
 ### Linking components
@@ -61,3 +65,10 @@
   }
   ```
 
+### Working with CMS Contentful and rendering contents
+- Docs: https://www.gatsbyjs.com/plugins/gatsby-source-contentful/?=gatsby-source-contentful
+- Install Contentful plugin and configure in gatsby-config.js file:
+  - `npm install gatsby-source-contentful`
+- Querying data in Contentful and display contents onto the page
+- After install and configure contentful plugin, query data using GraphiQL console
+- Use pageQuery component to query the data inside of a page component and render the contents onto the page
