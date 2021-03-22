@@ -79,3 +79,9 @@
 - Use Gatsby-Node to create the page template
   - We will make use of a slug to generate the names of the nested pages
 - Use graphql to query the data for a single page and render the contents. Do this in the page template (component) file
+
+### Gatsby build
+- If using any env variables in the project, must create an `.env.production` file at the root of the project before running a production-ready build
+- So we should have a `.env.development` and a `.env.production` file
+- Then run: `gatsby build`
+- The production build will be in the `public` directory
