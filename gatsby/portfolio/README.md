@@ -56,10 +56,20 @@ The codebase for each step can be found in the commit link
 - Add projects content-type to `contentTypes` array in gatsby-config.js file
 - Query for featured projects data with graphql in index.js page
   - Pass down the projects array as projects props to the Projects child component
-  - In the Projects component, render the Project component and pass down the project data as project props to the Project child component
+  - In the Projects component, iterate over the projects array and render each project in a Project component. Pass down the project data as project props to the Project child component
   - In the Project component, render the project data
-- A list of 'featured projects' Projects component is rendered in the index.js home page
+- A list of 'featured projects' is displayed in the index.js home page
 
 ### 9. Building the Projects page
 - The projects page will list out all of the projects
 - Query for projects data in the ProjectsPage component and pass down the projects array as props to the Projects child component
+
+### 10. Building the Latest Articles section in home page
+- Define a blogs content-type (and fields) in Strapi Admin console
+- Add blog contents to blogs content-type
+- Add blogs content-type to `contentTypes` array in gatsby-config.js file
+- Query for blogs data with graphql in index.js page
+  - Pass down the blogs array as blogs props to the Blogs child component
+  - In the Blogs component, iterate over the blogs array and render each blog in a Blog component. Pass down the blog data as blog props to the Blog child component
+  - In the Blog component, render the blog data
+- A list of blogs is displayed in the index.js home page
