@@ -2,6 +2,9 @@
 
 The codebase for each step can be found in the commit link
 
+### Starting up Gatsby dev server:
+- In the terminal, run: `gatsby develop`
+
 ### 1. Building the Navbar
 - The Layout component renders the Navbar, Sidebar, and Footer components
 
@@ -35,3 +38,9 @@ The codebase for each step can be found in the commit link
   - A form appears in a window and can enter the contents for each fields
   - Don't forget to Save and Publish the content
   - To view the data, to go: `http://localhost:1337/<content-type-name>`
+
+### 6. Connecting Strapi to Gatsby
+- Install gatsby-source-strapi plugin and configure in gatsby-config.js
+  - Install: `npm install gatsby-source-strapi`
+  - In config file, add the name of the content-type that was created in Strapi Admin to the `ContentTypes` array
+- Restart Gatsby dev server
