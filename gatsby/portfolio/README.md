@@ -59,3 +59,7 @@ The codebase for each step can be found in the commit link
   - In the Projects component, render the Project component and pass down the project data as project props to the Project child component
   - In the Project component, render the project data
 - A list of 'featured projects' Projects component is rendered in the index.js home page
+
+### 9. Building the Projects page
+- The projects page will list out all of the projects
+- Query for projects data in the ProjectsPage component and pass down the projects array as props to the Projects child component
