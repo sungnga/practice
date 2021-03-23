@@ -16,7 +16,7 @@ const query = graphql`
 const Hero = () => {
   const data = useStaticQuery(query)
   const heroImg = getImage(data.file.childImageSharp)
-  console.log(heroImg)
+  // console.log(heroImg)
 
   return (
     <header className="hero">

@@ -44,3 +44,7 @@ The codebase for each step can be found in the commit link
   - Install: `npm install gatsby-source-strapi`
   - In config file, add the name of the content-type that was created in Strapi Admin to the `ContentTypes` array
 - Restart Gatsby dev server
+
+### 7. Building the Experience section
+- Querying for jobs data with graphql inside of the Jobs component
+- Dynamically displaying the job info when clicking on a company name
