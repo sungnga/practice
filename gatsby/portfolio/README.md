@@ -73,3 +73,7 @@ The codebase for each step can be found in the commit link
   - In the Blogs component, iterate over the blogs array and render each blog in a Blog component. Pass down the blog data as blog props to the Blog child component
   - In the Blog component, render the blog data
 - A list of blogs is displayed in the index.js home page
+
+### 11. Building the Blog page
+- The BlogPage will list out all of the blogs
+- Use PageQuery to query for blogs data in the BlogPage component and pass down the blogs array as props to the Blogs child component

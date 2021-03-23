@@ -3,8 +3,36 @@ import Layout from "../components/Layout"
 import { graphql } from "gatsby"
 import Blogs from "../components/Blogs"
 
-const Blog = () => {
-  return <h2>blog page</h2>
+const BlogPage = ({ data }) => {
+  const blogs = data.allStrapiBlogs.nodes
+
+  return (
+    <Layout>
+      <section className="blog-page">
+        <Blogs blogs={blogs} title="blog" />
+      </section>
+    </Layout>
+  )
 }
 
-export default Blog
+export const query = graphql`
+  {
+    allStrapiBlogs {
+      nodes {
+        desc
+        title
+        date(formatString: "MMMM Do, YYYY")
+        id
+        slug
+        category
+        image {
+          childImageSharp {
+            gatsbyImageData(layout: CONSTRAINED, placeholder: BLURRED)
+          }
+        }
+      }
+    }
+  }
+`
+
+export default BlogPage
