@@ -42,9 +42,20 @@ The codebase for each step can be found in the commit link
 ### 6. Connecting Strapi to Gatsby
 - Install gatsby-source-strapi plugin and configure in gatsby-config.js
   - Install: `npm install gatsby-source-strapi`
-  - In config file, add the name of the content-type that was created in Strapi Admin to the `ContentTypes` array
+  - In config file, add the name of the content-type that was created in Strapi Admin to the `contentTypes` array
 - Restart Gatsby dev server
 
 ### 7. Building the Experience section
 - Querying for jobs data with graphql inside of the Jobs component
 - Dynamically displaying the job info when clicking on a company name
+
+### 8. Building the Featured Projects section in home page
+- Define a projects content-type (and fields) in Strapi Admin console
+- Add the projects contents to projects content-type
+- Add roles and permissions for projects content-type in Settings menu
+- Add projects content-type to `contentTypes` array in gatsby-config.js file
+- Query for featured projects data with graphql in index.js page
+  - Pass down the projects array as projects props to the Projects child component
+  - In the Projects component, render the Project component and pass down the project data as project props to the Project child component
+  - In the Project component, render the project data
+- A list of 'featured projects' Projects component is rendered in the index.js home page
