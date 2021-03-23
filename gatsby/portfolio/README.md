@@ -77,3 +77,18 @@ The codebase for each step can be found in the commit link
 ### 11. Building the Blog page
 - The BlogPage will list out all of the blogs
 - Use PageQuery to query for blogs data in the BlogPage component and pass down the blogs array as props to the Blogs child component
+
+### 12. Creating single blog pages programmatically with blog template
+- First, query for blog slugs in BlogTemplate component to use as nested pages
+- Second, setup a gatsby-node.js file to create a page template
+- Create the BlogTemplate component and render the blog info
+  - Install the `react-markdown` library to translate the markdown 'content' data. We get back a ReactMarkdown component that we can use to render the blog's content property
+  - We're going to store the blog images in Cloudinary media storage service
+
+**Setup Strapi-Cloudinary plugin:**
+- Whenever we upload a media file using the Strapi Admin console, we can use a plugin to store the files to Cloudinary instead of Strapi server
+- Install the strapi-provider-upload-cloudinary plugin **in the Strapi application** and configure it in ./config/plugins.js file
+  - Install: `npm i strapi-provider-upload-cloudinary`
+  - Create plugins.js file in config folder and setup plugin config. Use env variables for cloudinary credentials
+  - Once done, start up Strapi dev server: `npm run develop`
+- Back in Strapi Admin console, upload any media file and it will be stored in Cloudinary
