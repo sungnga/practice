@@ -107,3 +107,9 @@ The codebase for each step can be found in the commit link
 - Only animate the Sidebar if isOpen state is true
 
 ### 15. Building the error 404 page
+
+### 16. Building the About page
+- Create an about content-type in Strapi Admin console. This is going to be a Single Type
+- Add contents to an about content-type
+- Add `about` content-type to `singleTypes` array in gatsby-config.js file
+- Use PageQuery to query the about data in the About component and render the data onto the page
