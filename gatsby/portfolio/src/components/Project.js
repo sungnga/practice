@@ -6,7 +6,6 @@ import { GatsbyImage, getImage } from "gatsby-plugin-image"
 const Project = ({ project, index }) => {
   const { title, description, github, url, stack, image } = project
   const projectImg = getImage(image)
-  console.log(projectImg)
 
   return (
     <article className="project">

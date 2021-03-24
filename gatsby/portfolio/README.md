@@ -1,9 +1,12 @@
-# Steps to building this project
+# Steps to building this portfolio project
 
 The codebase for each step can be found in the commit link
 
-### Starting up Gatsby dev server:
+### To start up Gatsby dev server:
 - In the terminal, run: `gatsby develop`
+
+### To start up Strapi app dev server:
+- In Strapi app project, run: `npm run develop`
 
 ### 1. Building the Navbar
 - The Layout component renders the Navbar, Sidebar, and Footer components
@@ -102,3 +105,5 @@ The codebase for each step can be found in the commit link
 - Write a toggleSidebar function that toggles the boolean value of isOpen state
 - Pass down the toggleSidebar function as props to the both the Navbar and Sidebar components. And pass down the isOpen state as props to the Sidebar component
 - Only animate the Sidebar if isOpen state is true
+
+### 15. Building the error 404 page
