@@ -96,3 +96,9 @@ The codebase for each step can be found in the commit link
 ### 13. Building the Footer section
 - The Footer component renders the SocialLinks component
 - The SocialLinks component iterates over the data array and displays a list of social links
+
+### 14. Building the Sidebar, toggling the Sidebar
+- Create a piece of isOpen state in the Layout component. This state keeps track of whether the SideBar is open or not
+- Write a toggleSidebar function that toggles the boolean value of isOpen state
+- Pass down the toggleSidebar function as props to the both the Navbar and Sidebar components. And pass down the isOpen state as props to the Sidebar component
+- Only animate the Sidebar if isOpen state is true
