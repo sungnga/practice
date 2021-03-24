@@ -832,6 +832,7 @@ Footer
   text-align: center;
   display: grid;
   place-items: center;
+  color: var(--clr-white);
 }
 .footer h4 {
   margin-top: 0.5rem;

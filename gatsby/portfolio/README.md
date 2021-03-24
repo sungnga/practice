@@ -92,3 +92,7 @@ The codebase for each step can be found in the commit link
   - Create plugins.js file in config folder and setup plugin config. Use env variables for cloudinary credentials
   - Once done, start up Strapi dev server: `npm run develop`
 - Back in Strapi Admin console, upload any media file and it will be stored in Cloudinary
+
+### 13. Building the Footer section
+- The Footer component renders the SocialLinks component
+- The SocialLinks component iterates over the data array and displays a list of social links
