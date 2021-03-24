@@ -3,6 +3,7 @@ import Layout from "../components/Layout"
 import { graphql } from "gatsby"
 import { GatsbyImage, getImage } from "gatsby-plugin-image"
 import Title from "../components/Title"
+import SEO from "../components/SEO"
 
 const About = ({ data }) => {
   const { info, stack, title, image } = data.allStrapiAbout.nodes[0]
@@ -10,6 +11,7 @@ const About = ({ data }) => {
 
   return (
     <Layout>
+      <SEO title="About" description="about webDev" />
       <section className="about-page">
         <div className="section-center about-center">
           <GatsbyImage image={aboutImg} alt="about" className="about-img" />

@@ -1,6 +1,8 @@
 # Steps to building this portfolio project
-
 The codebase for each step can be found in the commit link
+
+### TECHNOLOGY STACK:
+- Gatsby.js, Strapi CMS, Cloudinary
 
 ### To start up Gatsby dev server:
 - In the terminal, run: `gatsby develop`
@@ -123,8 +125,38 @@ The codebase for each step can be found in the commit link
   - Then for each input field, make sure that there's a `name` property
 - If a form is submitted, a copy of the form values will be sent to the email that was provided when signed up for the project
 
-### Pre-fetching fonts
+### 18. Pre-fetching fonts
 - For users with slow internet connection, it's a better experience to fetch fonts before the page loads
 - Install gatsby-plugin-webfonts plugin and configure in gatsby-config.js file
   - Install: `npm i gatsby-plugin-webfonts`
   - In config file, list the web-fonts and font-weights we want to pre-fetch
+
+### 19. Setting up SEO
+- We will add a head element to all of our pages where it will provide information about our project such as page title and page description
+- We will use react-helmet library to create a component that will control or add meta tag in the page head element. And then we'll add this component to all of our pages. Adding that metadata will help search engines to better understand our content
+
+**Install and configure react-helmet:**
+- Install and configure gatsby-plugin-react-helmet plugin
+  - Install: `npm i gatsby-plugin-react-helmet react-helmet`
+- In gatsby-config.js file:
+  - Setup the siteMetadata object with project title, description, author, siteUrl
+    - NOTE: make sure to remove the last `/` at the end of siteUrl
+  - Add `gatsby-plugin-react-helmet` to the `plugins` array
+
+**SEO basic setup:**
+- Create an SEO component and in it:
+  - Import Helmet component from react-helmet
+  - This component receives a title (page title) and description (page description) as props
+  - Render the Helmet component and pass down to it a `title` and `htmlAttributes` props
+    - Inside the Helmet component, add a `meta` tags and specify the attributes
+- Import the SEO component in index.js home page and render the `<SEO />` component inside of the Layout component. Specify the values for title and description props
+
+**SEO querying siteMetadata:**
+- In SEO component:
+  - Use staticQuery to query project site with graphql. The data that we get back comes from the siteMetadata object that we set up in gatsby-config.js file
+  - Pass the data from SiteMetadata to the Helmet component
+
+**SEO all pages:**
+- In each project pages, import the SEO component
+- Render the `<SEO />` component inside of the Layout component. Specify the values for title and description props
+
