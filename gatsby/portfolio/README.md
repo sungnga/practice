@@ -113,3 +113,12 @@ The codebase for each step can be found in the commit link
 - Add contents to an about content-type
 - Add `about` content-type to `singleTypes` array in gatsby-config.js file
 - Use PageQuery to query the about data in the About component and render the data onto the page
+
+### 17. Building the Contact page
+- The service that we're going to use to collect the form data from contact page is Formspree
+- Signup for an account at formspree.io
+  - Create a project, then create a form
+  - Copy the form's endpoint link
+  - In the form element, set the `action` property to this endpoint. set the `method` property to POST
+  - Then for each input field, make sure that there's a `name` property
+- If a form is submitted, a copy of the form values will be sent to the email that was provided when signed up for the project
