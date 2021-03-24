@@ -160,3 +160,11 @@ The codebase for each step can be found in the commit link
 - In each project pages, import the SEO component
 - Render the `<SEO />` component inside of the Layout component. Specify the values for title and description props
 
+### 20. Adding a sitemap plugin
+- Sitemap plugin generates XML sitemap, which is raw document that lists all important pages of our site. It helps search engines to learn about the structures of our site and crawl them as well
+- Install and configure gatsby-plugin-sitemap plugin
+  - Install: `npm i gatsby-plugin-sitemap`
+  - In gatsby-config.js file:
+    - Add the `gatsby-plugin-sitemap` to the `plugins` array
+    - In the siteMetadata object, make sure to specify a `siteUrl` property
+    - Can also add options to exclude certain sites
