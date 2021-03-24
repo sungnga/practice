@@ -168,3 +168,7 @@ The codebase for each step can be found in the commit link
     - Add the `gatsby-plugin-sitemap` to the `plugins` array
     - In the siteMetadata object, make sure to specify a `siteUrl` property
     - Can also add options to exclude certain sites
+
+### 21. Adding a Twitter card
+- Generate a Twitter card to share the project on social media
+- Do this in the SEO component

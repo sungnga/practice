@@ -1,5 +1,4 @@
 import React from "react"
-import PropTypes from "prop-types"
 import { FaGithubSquare, FaShareSquare } from "react-icons/fa"
 import { GatsbyImage, getImage } from "gatsby-plugin-image"
 
