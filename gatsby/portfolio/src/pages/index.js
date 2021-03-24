@@ -7,7 +7,7 @@ import Jobs from "../components/Jobs"
 import Projects from "../components/Projects"
 import Blogs from "../components/Blogs"
 
-export default ({ data }) => {
+export default function Home({ data }) {
   const projects = data.allStrapiProjects.nodes
   const blogs = data.allStrapiBlogs.nodes
 

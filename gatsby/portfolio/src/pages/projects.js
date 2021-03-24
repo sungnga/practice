@@ -7,9 +7,11 @@ const ProjectsPage = ({ data }) => {
   const projects = data.allStrapiProjects.nodes
 
   return (
-    <section className="projects-page">
-      <Projects projects={projects} title="all projects" />
-    </section>
+    <Layout>
+      <section className="projects-page">
+        <Projects projects={projects} title="all projects" />
+      </section>
+    </Layout>
   )
 }
 
