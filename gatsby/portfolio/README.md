@@ -122,3 +122,9 @@ The codebase for each step can be found in the commit link
   - In the form element, set the `action` property to this endpoint. set the `method` property to POST
   - Then for each input field, make sure that there's a `name` property
 - If a form is submitted, a copy of the form values will be sent to the email that was provided when signed up for the project
+
+### Pre-fetching fonts
+- For users with slow internet connection, it's a better experience to fetch fonts before the page loads
+- Install gatsby-plugin-webfonts plugin and configure in gatsby-config.js file
+  - Install: `npm i gatsby-plugin-webfonts`
+  - In config file, list the web-fonts and font-weights we want to pre-fetch
