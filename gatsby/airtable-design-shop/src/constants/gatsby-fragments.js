@@ -1,2 +1,0 @@
-// ...GatsbyImageSharpFluid
-// ...GatsbyImageSharpFixed
