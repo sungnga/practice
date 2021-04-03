@@ -1,5 +1,5 @@
 ### Project starter file structure:
-  .
+```
   ├── src
   ├──── components
   ├────── layout
@@ -18,4 +18,10 @@
   ├── package-lock.json
   ├── package.json
   └── README.md
+```
 
+### CSS reset
+- Meyerweb reset: https://meyerweb.com/eric/tools/css/reset/
+- Use CSS reset to overwrite Gatsby default CSS styles in layout.css file
+
+### Setting global CSS
