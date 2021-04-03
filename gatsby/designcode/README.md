@@ -37,4 +37,10 @@
   ```
 - Install gatsby-plugin-styled-components and configure it
   - `npm install gatsby-plugin-styled-components styled-components babel-plugin-styled-components`
-  
+
+### Setting text styles, color variables, and global style
+- Set text styles in TextStyles.js file
+- Set color styles in ColorStyles.js file
+- Set global style in GlobalStyle.js file
+  - Here we can set background color themes preferences
+  - Use the GlobalStyle component in layout.js file
