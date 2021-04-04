@@ -54,3 +54,11 @@
 ### Applying CSS hover, transition, and transform to PurchaseButton component
 
 ### Using advanced CSS selectors and filter property
+
+### Adding MockupAnimation component to HeroSection
+- The MockupAnimation component is placed in the 2nd column of the HeroSection
+- To build the MockupAnimation:
+  - Create a simple div tag and add a className that holds each mockup animation. There are 5 total
+  - For each mockup item, copy the CSS code for the mockup background from Figma file and paste it in the styled component
+  - Then add the svg to the mockup `background` property
+  - Using position relative and position absolute allow you to place each mockup item exactly where you want it to be in the MockupAnimation component
