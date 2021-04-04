@@ -48,3 +48,5 @@
 ### Creating a reusable button component
 - Create a PurchaseButton component and render it in the HeroSection component. Pass down the title and subtitle props
 - In the PurchaseButton component, receive the title and subtitle props and render their values in the Link button
+
+### Applying CSS grid to PurchaseButton component
