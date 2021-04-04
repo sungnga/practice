@@ -68,3 +68,7 @@
 ### Applying perspective 3-D effects to MockupAnimation component
 - Apply 3-D perspective to the MockupAnimation and animate it over hover state
 - Also apply CSS effects when hover over individual mockup items
+
+### Adding the Navbar component
+- The Navbar component is rendered in the Layout component
+- Iterate over the menuData array and display each menu item as a Link
