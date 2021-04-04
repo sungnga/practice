@@ -50,3 +50,5 @@
 - In the PurchaseButton component, receive the title and subtitle props and render their values in the Link button
 
 ### Applying CSS grid to PurchaseButton component
+
+### Applying CSS hover, transition, and transform to PurchaseButton component
