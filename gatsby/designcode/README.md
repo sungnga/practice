@@ -72,3 +72,5 @@
 ### Adding the Navbar component
 - The Navbar component is rendered in the Layout component
 - Iterate over the menuData array and display each menu item as a Link
+
+### Styling the Navbar and using CSS grid
