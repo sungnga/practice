@@ -52,3 +52,5 @@
 ### Applying CSS grid to PurchaseButton component
 
 ### Applying CSS hover, transition, and transform to PurchaseButton component
+
+### Using advanced CSS selectors and filter property
