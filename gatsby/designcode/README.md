@@ -52,8 +52,10 @@
 ### Applying CSS grid to PurchaseButton component
 
 ### Applying CSS hover, transition, and transform to PurchaseButton component
+- Apply animation to the icon and button on hover state
 
 ### Using advanced CSS selectors and filter property
+- Apply filter to the icon when hover over the button
 
 ### Adding MockupAnimation component to HeroSection
 - The MockupAnimation component is placed in the 2nd column of the HeroSection
@@ -62,3 +64,7 @@
   - For each mockup item, copy the CSS code for the mockup background from Figma file and paste it in the styled component
   - Then add the svg to the mockup `background` property
   - Using position relative and position absolute allow you to place each mockup item exactly where you want it to be in the MockupAnimation component
+
+### Applying perspective 3-D effects to MockupAnimation component
+- Apply 3-D perspective to the MockupAnimation and animate it over hover state
+- Also apply CSS effects when hover over individual mockup items
