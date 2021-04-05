@@ -74,3 +74,10 @@
 - Iterate over the menuData array and display each menu item as a Link
 
 ### Styling the Navbar and using CSS grid
+
+### Passing props to styled components
+- Move the Navbar menu item Links into a separate component called MenuButton
+- Render this component when iterating over the menuData array in the Navbar component
+- Just like a React component, we can pass props to styled components and apply different CSS styles
+  - For example, if there's no title props passed to the MenuItem styled component, we don't add an additional 10px gap to the column
+  - Another example is, we dynamically adjust the number of columns in Navbar depending on the length of the menuData array
