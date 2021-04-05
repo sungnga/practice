@@ -117,3 +117,5 @@
 - The children are the Title, Description, and PurchaseButton styled components
 
 ### Apply gradient to texts using background masking technique
+
+### Applying media queries, adding hamburgerMenu icon
