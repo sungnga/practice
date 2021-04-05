@@ -122,3 +122,8 @@
 
 ### Changing wave background for dark mode
 - Reusing a previously declared styled component to add more customization
+
+### Dismissing the tooltip menu using useEffect hook
+- We want to dismiss the tooltip menu when a user clicks anywhere on the page. We also want to dismiss it when the Account menuButton is clicked on, but does not dismiss when clicking inside the tooltip menu itself
+- Use useRef() hook to reference different items and elements. We only want to dismiss the tooltip menu anywhere the page is clicked except the tooltip menu itself and the menuWrapper which contains the menu items
+- In useEffect() hook, we need to manually unmount the eventListener so it doesn't persist and continuously firing
