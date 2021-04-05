@@ -81,3 +81,22 @@
 - Just like a React component, we can pass props to styled components and apply different CSS styles
   - For example, if there's no title props passed to the MenuItem styled component, we don't add an additional 10px gap to the column
   - Another example is, we dynamically adjust the number of columns in Navbar depending on the length of the menuData array
+
+### Building the MenuTooltip component, toggling the MenuTooltip in Navbar
+- First, in the Navbar component:
+  - Create a piece of state called isOpen and initialize it to false
+  - For the account MenuButton, pass down an additional onClick event as props. This onClick props executes the handleClick function as a callback. So when the account MenuButton is clicked, isOpen state is toggled
+  - Write a handleClick function that toggles the isOpen state from false to true and vise versa
+    - This function also receives an event object as an argument
+    - Call event.preventDefault() to prevent the default onClick behavior, which takes you to the /account page
+  - In the return section, render the MenuTooltip component and pass down the isOpen state as props
+- In the MenuButton component:
+  - Receive the onClick props from the Navbar parent component
+  - In the Link component, add an onClick event handler and set it to the onClick props
+  - So this onClick props is only applied to the account MenuButton item. When this button is clicked, it toggles the isOpen state and the MenuTooltip component will be visible or hidden depending on this state
+- In the MenuTooltip component:
+  - Receive the isOpen props from the Navbar parent component
+  - Iterate over the tooltipData array and display each item in a MenuButton component. Pass down to it the item props
+  - Pass down the isOpen state as props to the Wrapper styled component
+  - In the Wrapper component, set the value of visibility property to `visible` if isOpen state is true. Else, set the value to `hidden`
+  - Finally, add styles to the component using CSS and CSS grid
