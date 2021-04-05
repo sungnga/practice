@@ -115,3 +115,5 @@
 ### Applying CSS keyframes animation with delay to HeroSection
 - Animate each child element at different delay time
 - The children are the Title, Description, and PurchaseButton styled components
+
+### Apply gradient to texts using background masking technique
