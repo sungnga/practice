@@ -1,5 +1,5 @@
 import React from "react"
-import styled from "styled-components"
+import styled, { keyframes } from "styled-components"
 import { H1, MediumText } from "../styles/TextStyles"
 import { themes } from "../styles/ColorStyles"
 import PurchaseButton from "../buttons/PurchaseButton"
@@ -31,6 +31,11 @@ export default function HeroSection() {
   )
 }
 
+const animation = keyframes`
+  0% { opacity: 0; transform: translateY(-10px); filter: blur(8px); }
+  100% { opacity: 1; transform: translateY(0px); filter: blur(0px); }
+`
+
 const Wrapper = styled.div`
   overflow: hidden;
 `
@@ -47,6 +52,23 @@ const TextWrapper = styled.div`
   max-width: 360px;
   display: grid;
   gap: 30px;
+
+  /* selecting the direct children */
+  /* The Title, Description, and PurchaseButton components */
+  > * {
+    opacity: 0;
+    animation: ${animation} 1s forwards;
+
+    :nth-child(1) {
+      animation-delay: 0s;
+    }
+    :nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    :nth-child(3) {
+      animation-delay: 0.4s;
+    }
+  }
 `
 
 const Title = styled(H1)`

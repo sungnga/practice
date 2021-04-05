@@ -107,7 +107,11 @@
   - Move the `background` property from the HeroSection component to this component
   - Position the three waves using inline styling
   - Set the wave background and the linear-gradient background behind all the texts and graphics in the HeroSection using the z-index property
-- NOTE: using a blur effect on the wave background doesn't work well in all browsers
-- To solve this issue, use a png instead of an svg
+- NOTE: the CSS blur effect doesn't work well in all browsers
+- To solve this issue, export as a png instead of an svg when using a blur effect
 - The size of a png file is much bigger than an svg. Use a tool called ImageOptim to bring down the file size
 - Export the wave1 background as a png in Figma, use ImageOptim to reduce the file size, and use it in the WaveBackground component
+
+### Applying CSS keyframes animation with delay to HeroSection
+- Animate each child element at different delay time
+- The children are the Title, Description, and PurchaseButton styled components
