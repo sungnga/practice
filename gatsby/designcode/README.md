@@ -100,3 +100,14 @@
   - Pass down the isOpen state as props to the Wrapper styled component
   - In the Wrapper component, set the value of visibility property to `visible` if isOpen state is true. Else, set the value to `hidden`
   - Finally, add styles to the component using CSS and CSS grid
+
+### Creating a wave background in WaveBackground component
+- The WaveBackground component is rendered in the HeroSection component and inside of the Wrapper styled component
+- In the WaveBackground component:
+  - Move the `background` property from the HeroSection component to this component
+  - Position the three waves using inline styling
+  - Set the wave background and the linear-gradient background behind all the texts and graphics in the HeroSection using the z-index property
+- NOTE: using a blur effect on the wave background doesn't work well in all browsers
+- To solve this issue, use a png instead of an svg
+- The size of a png file is much bigger than an svg. Use a tool called ImageOptim to bring down the file size
+- Export the wave1 background as a png in Figma, use ImageOptim to reduce the file size, and use it in the WaveBackground component
