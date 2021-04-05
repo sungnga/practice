@@ -119,3 +119,6 @@
 ### Apply gradient to texts using background masking technique
 
 ### Applying media queries, adding hamburgerMenu icon
+
+### Changing wave background for dark mode
+- Reusing a previously declared styled component to add more customization
