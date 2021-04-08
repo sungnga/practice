@@ -1,3 +1,5 @@
+## Notes
+
 ### Project starter file structure:
 ```
   ├── src
@@ -24,7 +26,7 @@
 - Meyerweb reset: https://meyerweb.com/eric/tools/css/reset/
 - Use CSS reset to overwrite Gatsby default CSS styles in layout.css file
 
-### [Setting global CSS](https://github.com/sungnga/practice/commit/aeee60675f10568fae88c45ad2f3ce035971cc34#diff-6eda8ee35420e362720377cf501f22543bc7b26493177980d86d3f1f131ccfe3)
+### [Setting global CSS](https://github.com/sungnga/practice/commit/9ce905be767381f48ce4c539f5908b828ff36c3d#diff-6eda8ee35420e362720377cf501f22543bc7b26493177980d86d3f1f131ccfe3)
 
 ### [Using styled components](https://github.com/sungnga/practice/commit/aeee60675f10568fae88c45ad2f3ce035971cc34#diff-6eda8ee35420e362720377cf501f22543bc7b26493177980d86d3f1f131ccfe3)
 - Install styled-components: `npm i styled-components`
