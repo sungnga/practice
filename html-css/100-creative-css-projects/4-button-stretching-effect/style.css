@@ -1,0 +1,33 @@
+*,
+::after,
+::before {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+a {
+	text-decoration: none;
+	border: 3px solid #e1332d;
+	padding: 40px 80px;
+	color: #e1332d;
+	font-family: 'roboto';
+	font-size: 40px;
+	text-transform: uppercase;
+	font-weight: 300;
+	letter-spacing: -2px;
+	transition: all 0.5s;
+}
+
+a:hover {
+	font-weight: 900;
+	letter-spacing: 10px;
+	border: 7px solid #e1332d;
+}
