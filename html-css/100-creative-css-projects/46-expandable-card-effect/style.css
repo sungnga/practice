@@ -1,0 +1,61 @@
+*,
+::before,
+::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-family: sans-serif;
+}
+
+.card {
+	position: relative;
+	width: 300px;
+	height: 260px;
+	border-radius: 10px;
+	padding: 20px 40px;
+	box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
+	transition: 0.3s;
+}
+
+.imgbox {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	transform: translateY(-60px);
+	z-index: 1;
+}
+
+img {
+	width: 100%;
+	border-radius: 10px;
+}
+
+p {
+	padding: 10px 0 0 0;
+	font-size: 14px;
+}
+
+.card:hover {
+	height: 360px;
+}
+
+.content {
+	padding: 10px 20px;
+	text-align: center;
+	color: #111;
+	transition: 0.3s;
+	transform: translateY(-500px);
+	opacity: 0;
+}
+
+.card:hover .content {
+	opacity: 1;
+	transform: translateY(-150px);
+}
