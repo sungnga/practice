@@ -1,0 +1,80 @@
+*,
+::before,
+::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+}
+
+div {
+	width: 150px;
+	height: 150px;
+	background-color: red;
+	animation-name: moving;
+	/* the duration of the animation */
+	animation-duration: 3s;
+	/* tells the browser what to do outside of the animation duration window */
+	/* forwards makes the element stay at its final stage */
+	/* backwards makes the element start at first(0%) keyframe */
+	/* both value applies both backwards and forwards */
+	animation-fill-mode: both;
+	/* the amount of time the animation delays before it starts */
+	animation-delay: 1s;
+	/* infinite makes the animation play forever */
+	animation-iteration-count: infinite;
+	/* controls the speed of the animation */
+	animation-timing-function: linear;
+	/* alternate means going from start point to end point and then from end point to starting point */
+	animation-direction: alternate;
+	/* animation shorthand method. Separate each property by a space */
+	/* NOTE: the animation-delay MUST BE AFTER the animation-duration */
+	animation: moving 3s both infinite linear alternate 5s;
+}
+
+/*  
+==========
+NOTES
+==========
+- keywords from and to creates 2 stages only
+- use percentages to add more stages to add more control over the animation
+- the animation-fill-mode property tells the browser what to do
+    with the element outside the animation duration window
+- by default, the element pops back to its original place after the animation duration.
+  - Use the forwards value to make the element stay at its final stage
+  - Use the backwards value to start the element at first(0%) keyframe
+  - Use the both value to apply both backwards and forwards
+- the animation-delay property delays the animation for a certain period of time
+- the animation-iteration-count property tells the browser how many times the animation should be repeated
+- the animation-timing-function property is similar to the transition-timing-function
+  - controls the speed of the animation
+  - ease, linear, ease-in, ease-out, ease-in-out
+- the animation-direction property specifies the direction of the animation based on the keyframes
+  - normal, reverse, alternate, alternate-reverse
+- animation shorthand method: separate each property by a space
+  - 1st value - the animation name
+  - 2nd value - the animation duration
+  - after this, specify any other properties and order does not matter
+  - NOTE: the animation-delay MUST BE AFTER the animation-duration
+*/
+
+/* this is like writing a function. Invoke the function inside an element by the animation's name */
+/* the name of this animation is moving */
+@keyframes moving {
+	/* 0% means at the start of the animation duration */
+	0% {
+		transform: translateX(500px);
+	}
+
+	50% {
+		transform: translateX(1000px);
+	}
+
+	/* 100% means at the end of the animation duration */
+	100% {
+		transform: translate(1000px, 300px);
+	}
+}

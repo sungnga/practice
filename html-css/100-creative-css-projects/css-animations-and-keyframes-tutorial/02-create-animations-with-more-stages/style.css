@@ -1,0 +1,48 @@
+*,
+::before,
+::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+}
+
+div {
+	width: 150px;
+	height: 150px;
+	background-color: red;
+  /* the duration of the animation */
+	animation-name: moving;
+  /* how long the animation takes place */
+	animation-duration: 3s;
+}
+
+/* 
+==========
+NOTES
+==========
+- keywords from and to creates 2 stages only
+- use percentages to add more stages to add more control over the animation
+*/
+
+
+/* this is like writing a function. Invoke the function inside an element by the animation's name */
+/* the name of this animation is moving */
+@keyframes moving {
+	/* 0% means at the start of the animation duration */
+	0% {
+		transform: translateX(0);
+	}
+
+	10% {
+		transform: translateX(1000px);
+	}
+
+	/* 100% means at the end of the animation duration */
+	100% {
+		transform: translate(1000px, 300px);
+	}
+}

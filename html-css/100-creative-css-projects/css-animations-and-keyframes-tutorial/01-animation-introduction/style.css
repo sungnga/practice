@@ -1,0 +1,36 @@
+*,
+::before,
+::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+}
+
+div {
+	width: 150px;
+	height: 150px;
+	background-color: red;
+  /* applying the animation to the div element */
+	animation-name: moving;
+  /* how long the animation takes place */
+	animation-duration: 3s;
+}
+
+
+/* this is like writing a function. Invoke the function inside an element by the animation's name */
+/* the name of this animation is moving */
+@keyframes moving {
+	/* first stage */
+	from {
+		transform: translateX(0);
+	}
+
+	/* final stage in 3s duration */
+	to {
+		transform: translateX(1000px);
+	}
+}
