@@ -1,0 +1,36 @@
+*,
+::before,
+::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+.banner {
+	height: 100vh;
+	background: url(bg.png);
+	/* image position at left top */
+	background-position: 0 0;
+	animation: animated-pattern 15s linear;
+}
+
+@keyframes animated-pattern {
+	from {
+		background-position: 0 0;
+	}
+	/* 600px from the top. This is the height of the bg image */
+	/* this animates the bg vertically */
+	to {
+		background-position: 0 600px;
+	}
+
+	/* animating horizontally. 800px from the left*/
+	to {
+		background-position: 800px 0;
+	}
+
+	/* animating horizontally and vertically at the same time */
+	to {
+		background-position: 800px 600px;
+	}
+}
