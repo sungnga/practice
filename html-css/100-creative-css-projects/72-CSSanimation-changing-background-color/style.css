@@ -1,0 +1,45 @@
+*,
+::before,
+::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: inherit;
+}
+
+body {
+	box-sizing: border-box;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-family: sans-serif;
+	animation: bgchange 10s infinite;
+}
+
+h1 {
+	font-size: 70px;
+	text-align: center;
+	text-transform: capitalize;
+	color: white;
+}
+
+@keyframes bgchange {
+	0% {
+		background-color: #272727;
+	}
+	20% {
+		background-color: darkorange;
+	}
+	40% {
+		background-color: teal;
+	}
+	60% {
+		background-color: darkolivegreen;
+	}
+	80% {
+		background-color: crimson;
+	}
+	100% {
+		background-color: #272727;
+	}
+}
