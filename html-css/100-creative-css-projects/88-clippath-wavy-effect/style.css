@@ -1,0 +1,83 @@
+*,
+::before,
+::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: inherit;
+}
+
+body {
+	box-sizing: border-box;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-family: sans-serif;
+	background-color: #2f2f2f;
+}
+
+.wave {
+	position: relative;
+	width: 500px;
+	height: 500px;
+}
+
+h2 {
+	position: absolute;
+	text-align: center;
+	line-height: 500px;
+	font-size: 170px;
+	text-transform: uppercase;
+}
+
+h2:nth-child(1) {
+	color: transparent;
+	-webkit-text-stroke: 2px #03a9f4;
+}
+
+h2:nth-child(2) {
+	color: #03a9f4;
+	animation: wave 2s ease-in-out infinite;
+}
+
+@keyframes wave {
+	0% {
+		clip-path: polygon(
+			0 35%,
+			14% 40%,
+			29% 48%,
+			45% 56%,
+			59% 59%,
+			79% 61%,
+			100% 57%,
+			100% 100%,
+			1% 100%
+		);
+	}
+	50% {
+		clip-path: polygon(
+			0 54%,
+			11% 44%,
+			26% 39%,
+			45% 43%,
+			63% 47%,
+			83% 43%,
+			100% 33%,
+			100% 100%,
+			1% 100%
+		);
+	}
+	100% {
+		clip-path: polygon(
+			0 35%,
+			12% 41%,
+			26% 51%,
+			43% 56%,
+			62% 58%,
+			59% 59%,
+			100% 53%,
+			100% 100%,
+			1% 100%
+		);
+	}
+}
