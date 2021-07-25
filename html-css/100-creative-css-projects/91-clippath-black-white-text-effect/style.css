@@ -1,0 +1,54 @@
+*,
+::before,
+::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: inherit;
+}
+
+body {
+	box-sizing: border-box;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #c8d6e5;
+}
+
+.main {
+	position: relative;
+	width: 800px;
+}
+
+h1 {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	text-align: center;
+	font-size: 220px;
+	text-transform: uppercase;
+}
+
+/* At initial state, the word white is clipped in diagonally half */
+h1:nth-child(2) {
+	color: white;
+	transition: 0.5s;
+	clip-path: polygon(0 0, 100% 0, 100% 0, 0% 100%);
+	background-color: #c8d6e5;
+}
+
+/* when hovering over the word white, the word white fully appears (no clipping)*/
+h1:nth-child(2):hover {
+	clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+}
+
+/* ~ means targeting the element that sits directly after the element being hovered */
+/* when hovering over the word black (1st h1), make changes to the word white (2nd h1) */
+/* when hovering over the word black, the word white is completely clipped */
+h1:nth-child(1):hover ~ h1 {
+	clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+}
