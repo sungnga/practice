@@ -1,3 +1,5 @@
+# Fundamentals of Typescript
+
 ### Installing Typescript compiler:
 - Install: `sudo npm i -g typescript ts-node`
 - We get a `tsc` CLI, a typescript compiler
@@ -9,6 +11,99 @@
   - `ts-node index.ts`
 
 
+## An example of how Typescript can help catch errors
+
+### [Initialize project with package.json, install axios](https://github.com/sungnga/practice/commit/9f302c29c2baf9c87d1e7cb588f46d53c81ca782#diff-969545dde1584d88227517c6a0c969eb716015671cd6be053b3aaf14d85aa8c8?ts=2)
+- Create a package.json file at the root directory by running: `npm init -y`
+- Install axios: `npm i axios`
+
+### [Making axios api request, codebase contains errors](https://github.com/sungnga/practice/commit/90a80cc2291b4d91373be8b86e5e80220346b290#diff-969545dde1584d88227517c6a0c969eb716015671cd6be053b3aaf14d85aa8c8?ts=2)
+  ```ts
+  import axios from 'axios';
+
+  const url = 'https://jsonplaceholder.typicode.com/todos/1';
+
+  axios.get(url).then((response) => {
+    // console.log(response.data)
+    const todo = response.data;
+
+    const ID = todo.ID;
+    const title = todo.Title;
+    const finished = todo.finished;
+
+    console.log(`
+      The Todo with ID: ${ID}
+      Has a title of: ${title}
+      Is it finished? ${finished}
+    `);
+  });
+  ```
+
+### [Fixing errors with typescript, interface](https://github.com/sungnga/practice/commit/f18d9f06861e909d0d0a0918ca8dc39f695a009e#diff-5522c415f99f0000d2cb5cb19e30ff4b14116422649ddc394c0b2aae1003f8b1?ts=2)
+  ```ts
+  import axios from 'axios';
+
+  const url = 'https://jsonplaceholder.typicode.com/todos/1';
+
+  // Interfaces in ts are used to define the structure of an object
+  // Define the type for each property of an object
+  interface Todo {
+    id: number;
+    title: string;
+    completed: boolean;
+  }
+
+  axios.get(url).then((response) => {
+    // console.log(response.data)
+    const todo = response.data as Todo;
+
+    const id = todo.id;
+    const title = todo.title;
+    const completed = todo.completed;
+
+    console.log(`
+      The Todo with ID: ${id}
+      Has a title of: ${title}
+      Is it finished? ${completed}
+    `);
+  });
+  ```
+
+### [Catching more errors with typescript: annotation](https://github.com/sungnga/practice/commit/d605a81c566f722dc742c6fd701b79447863b39f#diff-5522c415f99f0000d2cb5cb19e30ff4b14116422649ddc394c0b2aae1003f8b1?ts=2)
+  ```ts
+  import axios from 'axios';
+
+  const url = 'https://jsonplaceholder.typicode.com/todos/1';
+
+  // Interfaces in ts are used to define the structure of an object
+  // Define the type for each property of an object
+  interface Todo {
+    id: number;
+    title: string;
+    completed: boolean;
+  }
+
+  axios.get(url).then((response) => {
+    // console.log(response.data)
+    const todo = response.data as Todo;
+
+    const id = todo.id;
+    const title = todo.title;
+    const completed = todo.completed;
+
+    logTodo(id, title, completed);
+  });
+
+  const logTodo = (id: number, title: string, completed: boolean) => {
+    console.log(`
+      The Todo with ID: ${id}
+      Has a title of: ${title}
+      Is it finished? ${completed}
+    `);
+  };
+  ```
+
+
 ## Syntax + Features
 - Understand basic types in TS
 - Function typing + annotations
@@ -17,7 +112,7 @@
 - Modules systems
 - Class + refresher on OOP
 
-### TYPES
+### [TYPES](https://github.com/sungnga/practice/commit/5c7eb4ed22616b49a91422a8e085fc81fd1de682#diff-5522c415f99f0000d2cb5cb19e30ff4b14116422649ddc394c0b2aae1003f8b1?ts=2)
 
 #### Type: definition
 - Easy way to refer to the different properties and functions that a value has
@@ -47,7 +142,7 @@
 - Types allow other engineers to understand what values are flowing around our codebase
 
 
-### TYPE ANNOTATIONS + TYPE INFERENCE
+### [TYPE ANNOTATIONS + TYPE INFERENCE](https://github.com/sungnga/practice/commit/b236891c21d2cdc004f49ca935c8fd696b5dbde0#diff-5522c415f99f0000d2cb5cb19e30ff4b14116422649ddc394c0b2aae1003f8b1?ts=2)
 
 #### Type annotations: definition
 - Code we add to tell Typescript what type of value a variable will refer to
@@ -84,8 +179,8 @@ let car: Car = new Car();
 
 // Object literal
 let point: { x: number; y: number } = {
-	x: 10,
-	y: 20
+  x: 10,
+  y: 20
 };
 ```
 
@@ -94,7 +189,7 @@ let point: { x: number; y: number } = {
 // Function
 // ': (i: number) => void' is the annotation, a description of a function
 const logNumber: (i: number) => void = (i: number) => {
-	console.log(i);
+  console.log(i);
 };
 ```
 
@@ -148,7 +243,7 @@ const color = 'red';
   ```
 
 
-### TYPE ANNOTATIONS + TYPE INFERENCE FOR FUNCTIONS
+### [TYPE ANNOTATIONS + TYPE INFERENCE FOR FUNCTIONS](https://github.com/sungnga/practice/commit/e25eb55a69c8c913364945c873256d91a7229911#diff-5522c415f99f0000d2cb5cb19e30ff4b14116422649ddc394c0b2aae1003f8b1?ts=2)
 
 #### Type annotations around functions
 - Code we add to tell TS what type of arguments a function will receive and what type of values it will return
@@ -170,17 +265,17 @@ const color = 'red';
 ```js
 // Arrow function with annotations for arguments and return
 const subtract = (a: number, b: number): number => {
-	return a - b;
+  return a - b;
 };
 
 // Function keyword
 function divide(a: number, b: number): number {
-	return a / b;
+  return a / b;
 }
 
 // Anonymous function assigned variable to
 const multiply = function (a: number, b: number): number {
-	return a * b;
+  return a * b;
 };
 ```
 
@@ -189,14 +284,14 @@ const multiply = function (a: number, b: number): number {
 // Use function return void when there's no return value from the function
 // Technically it can return 'null' or 'undefined'
 const logger = (message: string): void => {
-	console.log(message);
+  console.log(message);
 };
 
 // We're never going to reach the end of this function
 // exit the function early without returning any value
 // this is not very common
 const throwError = (message: string): never => {
-	throw new Error(message);
+  throw new Error(message);
 };
 ```
 
@@ -204,37 +299,37 @@ const throwError = (message: string): never => {
 ```ts
 // Destructuring
 const todaysWeather = {
-	date: new Date(),
-	weather: 'sunny'
+  date: new Date(),
+  weather: 'sunny'
 };
 
 const logWeather = ({
-	date,
-	weather
+  date,
+  weather
 }: {
-	date: Date;
-	weather: string;
+  date: Date;
+  weather: string;
 }): void => {
-	console.log(date);
-	console.log(weather);
+  console.log(date);
+  console.log(weather);
 };
 
 logWeather(todaysWeather);
 ```
 
 
-### TYPE ANNOTATIONS FOR OBJECTS
+### [TYPE ANNOTATIONS FOR OBJECTS](https://github.com/sungnga/practice/commit/fa91e2cc0e068bae3e7d6915db4e3ae8f930ea2c#diff-5522c415f99f0000d2cb5cb19e30ff4b14116422649ddc394c0b2aae1003f8b1?ts=2)
 ```ts
 const profile = {
-	name: 'alex',
-	age: 20,
-	coords: {
-		lat: 0,
-		lng: 15
-	},
-	setAge(age: number): void {
-		this.age = age;
-	}
+  name: 'alex',
+  age: 20,
+  coords: {
+    lat: 0,
+    lng: 15
+  },
+  setAge(age: number): void {
+    this.age = age;
+  }
 };
 
 // Destructuring age and name from profile
@@ -249,12 +344,12 @@ const { coords: { lat, lng } } = profile;
 
 // Destructuring lat & lng with annotations
 const {
-	coords: { lat, lng }
+  coords: { lat, lng }
 }: { coords: { lat: number; lng: number } } = profile;
 ```
 
 
-### TYPED ARRAYS
+### [TYPED ARRAYS](https://github.com/sungnga/practice/commit/5164a807085428d049ec84fc5d121001c7f82e54#diff-5522c415f99f0000d2cb5cb19e30ff4b14116422649ddc394c0b2aae1003f8b1?ts=2)
 
 #### Arrays in typescript: definition
 - Arrays where each element is some consistent type of value
@@ -301,7 +396,7 @@ const arrayOfArrays: string[][] = [];
 - Any time we need to represent a collection of records with some arbitrary sort order
 
 
-### TUPLES
+### [TUPLES](https://github.com/sungnga/practice/commit/378bc5d0b35510ababa6edcdd2c56e078997306e#diff-5522c415f99f0000d2cb5cb19e30ff4b14116422649ddc394c0b2aae1003f8b1?ts=2)
 
 #### Tuple: definition
 - Array-like structure where each element represents some property of a record
@@ -338,7 +433,7 @@ const tea: Drink = ['brown', false, 0];
   ```
 
 
-### INTERFACES
+### [FEATURES: INTERFACES](https://github.com/sungnga/practice/commit/27c40b162c4d8586e2aa1ac18ca57063473a35fb#diff-5522c415f99f0000d2cb5cb19e30ff4b14116422649ddc394c0b2aae1003f8b1?ts=2)
 
 #### Interface: definition
 - Creates a new type, describing the property names and value types of an object
@@ -348,19 +443,19 @@ const tea: Drink = ['brown', false, 0];
 #### Long type annotations
 ```ts
 const oldCivic = {
-	name: 'civic',
-	year: 2000,
-	broken: true
+  name: 'civic',
+  year: 2000,
+  broken: true
 };
 
 const printVehicle = (vehicle: {
-	name: string;
-	year: number;
-	broken: boolean;
+  name: string;
+  year: number;
+  broken: boolean;
 }): void => {
-	console.log(`Name: ${vehicle.name}`);
-	console.log(`Year: ${vehicle.year}`);
-	console.log(`Broken? ${vehicle.broken}`);
+  console.log(`Name: ${vehicle.name}`);
+  console.log(`Year: ${vehicle.year}`);
+  console.log(`Broken? ${vehicle.broken}`);
 };
 
 printVehicle(oldCivic);
@@ -369,22 +464,22 @@ printVehicle(oldCivic);
 #### Fixing annotations with interfaces
 ```ts
 interface Vehicle {
-	name: string;
-	year: number;
-	broken: boolean;
+  name: string;
+  year: number;
+  broken: boolean;
 }
 
 const oldCivic = {
-	name: 'civic',
-	year: 2000,
-	broken: true
+  name: 'civic',
+  year: 2000,
+  broken: true
 
 };
 
 const printVehicle = (vehicle: Vehicle): void => {
-	console.log(`Name: ${vehicle.name}`);
-	console.log(`Year: ${vehicle.year}`);
-	console.log(`Broken? ${vehicle.broken}`);
+  console.log(`Name: ${vehicle.name}`);
+  console.log(`Year: ${vehicle.year}`);
+  console.log(`Broken? ${vehicle.broken}`);
 };
 
 printVehicle(oldCivic);
@@ -395,24 +490,24 @@ printVehicle(oldCivic);
 // can be other types than primitive types
 // can express functions inside an interface definition
 interface Vehicle {
-	name: string;
-	year: Date;
-	broken: boolean;
+  name: string;
+  year: Date;
+  broken: boolean;
 	// a function that returns a string
-	summary(): string;
+  summary(): string;
 }
 
 const oldCivic = {
-	name: 'civic',
-	year: new Date(),
-	broken: true,
-	summary(): string {
-		return `Name: ${this.name}`;
-	}
+  name: 'civic',
+  year: new Date(),
+  broken: true,
+  summary(): string {
+    return `Name: ${this.name}`;
+  }
 };
 
 const printVehicle = (vehicle: Vehicle): void => {
-	console.log(vehicle.summary());
+  console.log(vehicle.summary());
 };
 
 printVehicle(oldCivic);
@@ -421,30 +516,30 @@ printVehicle(oldCivic);
 #### Refactor: code reuse with interfaces
 ```ts
 interface Reportable {
-	// a function that returns a string
-	summary(): string;
+  // a function that returns a string
+  summary(): string;
 }
 
 const oldCivic = {
-	name: 'civic',
-	year: new Date(),
-	broken: true,
-	summary(): string {
-		return `Name: ${this.name}`;
-	}
+  name: 'civic',
+  year: new Date(),
+  broken: true,
+  summary(): string {
+    return `Name: ${this.name}`;
+  }
 };
 
 const drink = {
-	color: 'brown',
-	carbonated: true,
-	sugar: 40,
-	summary(): string {
-		return `My drink has ${this.sugar} grams of sugar`;
-	}
+  color: 'brown',
+  carbonated: true,
+  sugar: 40,
+  summary(): string {
+    return `My drink has ${this.sugar} grams of sugar`;
+  }
 };
 
 const printSummary = (item: Reportable): void => {
-	console.log(item.summary());
+  console.log(item.summary());
 };
 
 printSummary(oldCivic);
@@ -457,7 +552,7 @@ printSummary(drink);
   - Objects/classes can decide to 'implement' a given interface to work with a function
 
 
-### CLASSES
+### [FEATURES: CLASSES](https://github.com/sungnga/practice/commit/3f6a72aa6951e168ed4d6d97c6578dd4458efcda#diff-5522c415f99f0000d2cb5cb19e30ff4b14116422649ddc394c0b2aae1003f8b1?ts=2)
 
 #### Classes: definition
 - Blueprint to create an object with some fields (values) and methods (functions) to represent a 'thing'
@@ -468,22 +563,22 @@ printSummary(drink);
 ```ts
 // Super class
 class Vehicle {
-	drive(): void {
-		console.log('chugga chugga');
-	}
+  drive(): void {
+    console.log('chugga chugga');
+  }
 
-	honk(): void {
-		console.log('beep');
-	}
+  honk(): void {
+    console.log('beep');
+  }
 }
 
 // Car class extends the Vehicle super class
 // Car is a child class of Vehicle parent class
 class Car extends Vehicle {
-	// Overwrite the inherited method
-	drive(): void {
-		console.log('vroom');
-	}
+  // Overwrite the inherited method
+  drive(): void {
+    console.log('vroom');
+  }
 }
 
 const car = new Car();
@@ -527,18 +622,18 @@ car.honk();
 #### Second step: Fields in classes
 ```ts
 class Vehicle {
-	// color: string;
+  // color: string;
 
   // add the public keyword in front of color field
   // can use keyword modifiers on a field/property
   // a shortcut way to define color field inside a class
-	constructor(public color: string) {
-		// this.color = color;
-	}
+  constructor(public color: string) {
+    // this.color = color;
+  }
 
-	protected honk(): void {
-		console.log('beep');
-	}
+  protected honk(): void {
+    console.log('beep');
+  }
 }
 
 // Must provide a value for color field when instantiating
@@ -550,33 +645,33 @@ console.log(vehicle.color);
 #### Fields with inheritance
 ```ts
 class Vehicle {
-	constructor(public color: string) {}
+  constructor(public color: string) {}
 
-	protected honk(): void {
-		console.log('beep');
-	}
+  protected honk(): void {
+    console.log('beep');
+  }
 }
 
 const vehicle = new Vehicle('orange');
 console.log(vehicle.color);
 
 class Car extends Vehicle {
-	// defining two fields of Car class
-	constructor(public wheels: number, color: string) {
-		// when defining a constructor method inside a child class
-		// must call super() to invoke the constructor method in super class
-		// super constructor requires a color field argument
-		super(color);
-	}
+  // defining two fields of Car class
+  constructor(public wheels: number, color: string) {
+    // when defining a constructor method inside a child class
+    // must call super() to invoke the constructor method in super class
+    // super constructor requires a color field argument
+    super(color);
+  }
 
-	private drive(): void {
-		console.log('vroom');
-	}
+  private drive(): void {
+    console.log('vroom');
+  }
 
-	startDrivingProcess(): void {
-		this.drive();
-		this.honk(); // this is allowed
-	}
+  startDrivingProcess(): void {
+    this.drive();
+    this.honk(); // this is allowed
+  }
 }
 
 // Must provide the two arguments when instantiating
