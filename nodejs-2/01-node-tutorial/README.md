@@ -17,4 +17,44 @@
   - module - info about current module (file)
   - process - info about env where the problem is being executed
 
+### 03. Modules
+- File: 03-modules.js
+- `module` is a global variable
+- Node uses the CommonJS library under the hood. So every file in Node is a module (by default)
+  - If we write `console.log(module)` inside a file and run this file in the terminal, we get a lot of information about this file in the `Module` object
+  - The property we're most interested in in this Module object is the `exports` property. `exports` is an object and we can specify what piece of information or code within this file(module) that we want to share globally by putting it in this `exports` object
+- Modules - Encapsulated Code (only share minimum)
+- **To export a module:**
+  - Inside a file that we want to export(share) certain piece of information
+  - Export an object: `module.exports = { object1, object2 };`
+  - Export a function: `module.exports = nameOfFunction;`
+  - Export as-we-go: `module.exports.items = ['item1', 'item2'];`
+  - Export an object:
+    ```js
+    const person = {
+      name: 'bob'
+    };
+
+    module.exports.singlePerson = person;
+    ```
+- **To import a module:**
+  - Inside another file that we want to consume a module
+  - Write `require('path_name')`. We can also assign the result to a variable
+    - `const names = require('./04-names');`
+  - NOTE: when you require a module, you actually invoking it. For example, if the module that you're importing is a function and that function is called in the file that the function is written in, you essentially invoke the function when requiring the module
+    - file1.js:
+      ```js
+      const num1 = 5;
+      const num2 = 10;
+
+      function addValues() {
+        console.log(`The sum is: ${num1 + num2}`);
+      }
+
+      addValues();
+      ```
+    - file2.js:
+      ```js
+      require('./file1');
+      ```
   
