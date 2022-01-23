@@ -58,3 +58,33 @@
       require('./file1');
       ```
   
+### 04. Built-in modules
+- Some of useful Node's built-in modules:
+  - OS
+  - PATH
+  - FS
+  - HTTP
+- We do not have to install built-in modules to use it. They come with Node
+- When require a built-in module, we don't need to provide a path to the module. We simple call the name of the module
+- **OS - built-in module:**
+  - File: 08-os-module.js
+  ```js
+  // now we have access to all the properties and methods the os module provides
+  const os = require('os');
+
+  // info about current user
+  const user = os.userInfo();
+  console.log(user);
+
+  // method return the system uptime in seconds
+  console.log(`The System Uptime is ${os.uptime()} seconds`);
+
+  const currentOS = {
+    name: os.type(),
+    release: os.release(),
+    totalMem: os.totalmem(),
+    freeMem: os.freemem()
+  };
+
+  console.log(currentOS);
+  ```
