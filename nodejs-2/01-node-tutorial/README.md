@@ -1,4 +1,5 @@
 ## SECTION 1: NODE TUTORIAL
+- Folder directory: /01-node-tutorial/
 
 ### 01. Using the CLI
 - File: 01-cli.js
@@ -8,7 +9,7 @@
 - We should be able to see messages printed out in the terminal
 
 ### 02. Globals - no window!
-- File: 02-globals.js. Run: `node 02-globals.js`
+- File: 02-globals.js. In the terminal, run: `node 02-globals.js` to execute this file
 - In vanilla JS, we have access to the Window object from the browser and this gives us built-in methods to use. In Node.js, there's no Window object. There is, however, global variables that we have access to 
 - Here are some examples of global variables:
   - __dirname - path to current directory
@@ -178,4 +179,23 @@
       );
     });
   });
+  ```
+- **HTTP - setup module:**
+  - File: 12-http.js
+  - Run this file in the terminal: node 12-http.js
+  - Now the server is listening on port 5000
+  - Go to a web browser and type in localhost:5000 to see the printed message
+  ```js
+  const http = require('http');
+
+  // the req is the incoming request object
+  // the res is what is sending back
+  const server = http.createServer((req, res) => {
+    res.write('Welcome to our home page');
+    // end the request
+    res.end();
+  });
+  
+  // provide the port number the server is listening to
+  server.listen(5000);
   ```
