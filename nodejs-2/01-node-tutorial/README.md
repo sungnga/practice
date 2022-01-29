@@ -185,7 +185,7 @@
   - Run this file in the terminal: `node 12-http.js`
   - Now the server is listening on port 5000
   - To stop the server, run: `control c`
-  - Go to a web browser and type in localhost:5000 to see the printed message
+  - Go to a web browser and type in `localhost:5000` to see the printed message
   ```js
   const http = require('http');
 
@@ -226,3 +226,44 @@
   // provide the port number the server is listening to
   server.listen(5000);
   ```
+
+### 04. NPM - Node Package Manager
+- Node Package Manager (NPM) is a library, module, or dependency written by other developers and shared in the community
+- **NPM command:**
+  - `npm` is a global command, comes with Node
+    - To find out the npm version you have, run: `npm --version`
+  - Local dependency - use it only in this particular project
+    - To install a package, run: `npm i <packageName>`
+  - Global dependency - use it in any project
+    - To install a dependency globally, add the `-g` flag: `npm i -g <packageName>`
+    - On a mac: `sudo npm i -g <packageName>`
+- **Creating package.json file:**
+  - `package.json` is a manifest file (stores important info about project/package)
+  - 1st approach to create the package.json file: the manual approach (create package.json in the root, create properties etc.)
+  - 2nd approach: run `npm init` (step by step, press enter to skip)
+  - 3rd approach: run `npm init -y` (everything default)
+  - All the names of the dependencies installed locally for a project/application will be listed in the `dependencies` property in the package.json file
+- **node_module folder:**
+  - When installing a dependency via `npm install`, the dependency package (along with any other dependencies it needs) will be stored in a folder called `node_modules`. Node automatically creates one at the root of the project if it doesn't already have one
+  - When downloading someone else's project we need to install the project dependencies ourselves by running `npm install`. Node will go to the package.json file and look for all the dependencies (and their version) and install them in the `node_modules` folder
+- **Installing nodemon dependency:**
+  - Nodemon is a dev dependency that watches for changes in a file and automatically re-executes the code without us having to type `node <fileName>` in the terminal every time
+  - To install globally, run: `npm i -g nodemon`
+    - By installing nodemon globally we can run nodemon in any project
+    - To run nodemon on a file, run in the terminal: `nodemon <fileName>`. Now nodemon is watching that file
+  - To install as dev dependency in a project, run: `npm i -D nodemon`
+    - Now nodemon and its version is added to the `devDependencies` property in package.json file
+    ```js
+    "devDependencies": {
+      "nodemon": "^2.0.15"
+    }
+    ```
+  - Can also run nodemon in the `scripts` property in package.json file
+    ```js
+    "scripts": {
+      "start": "nodemon app.js",
+      "dev": "nodemon index.js"
+    }
+    ```
+    - To run the script, simply run: `npm run start` or `npm run dev`
+  - To stop running nodemon, run: `control + c`
