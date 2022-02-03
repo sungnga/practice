@@ -126,7 +126,7 @@
   // WriteFileSync() is a method that writes a file
   // 1st arg is the name of file. If it doesn't exist, Node will create one
   // 2nd arg is the value. By default, if the file already exists, it'll overwrite the value
-  // 3rd arg is a flag object to appending a value instead of overwriting it
+  // 3rd arg is a flag object to append a value instead of overwriting it
   writeFileSync(
     './content/result-sync.txt',
     `Here is the result: ${first}, ${second} `,
@@ -312,3 +312,95 @@
   bar
   ```
   - That's a big difference between Promises (and Async/await, which is built on promises) and plain old asynchronous functions through setTimeout() or other platform APIs
+
+### 06. Blocking code, promises, and async/await patterns
+- **Blocking code:**
+  - A `for` loop is a blocking code because it takes sometime to finish
+  ```js
+  const http = require('http');
+
+  const server = http.createServer((req, res) => {
+    if (req.url === '/') {
+      res.end('Home page');
+    } else if (req.url === '/about') {
+      // Blocking code
+      for (let i = 0; i < 1000; i++) {
+        for (let j = 0; j < 1000; j++) {
+          console.log(`${i} ${j}`);
+        }
+      }
+      res.end('About page');
+    } else res.end('Error page');
+  });
+
+  server.listen(5000, () => {
+    console.log('Server listening on port 5000');
+  });
+  ```
+- **Promise pattern:**
+  ```js
+  const { readFile } = require('fs');
+
+  // the getText() function returns a promise
+  // pass in a callback function to the new Promise object
+  // the callback receives a resolve and a reject functions as arguments
+  const getText = (path) => {
+    return new Promise((resolve, reject) => {
+      readFile(path, 'utf8', (err, data) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  };
+
+  // call the getText() function and provide the path
+  // chain on the .then() and .catch() methods when a function returns a promise
+  getText('./content/first.txt')
+    .then((result) => console.log(result))
+    .catch((err) => console.log(err));
+  ```
+- **Async/await pattern:**
+  - When using async/await, it waits for the promise to be resolved before moving on
+  - Use a try/catch block when writing an async function
+  - Can perform multiple operations in an async function
+  ```js
+  // when writing an async function use a try/catch block
+  const start = async () => {
+    // performing multiple operations
+    try {
+      const first = await getText('./content/first.txt');
+      const second = await getText('./content/second.txt');
+      console.log(first, second);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  start();
+  ```
+- **Async/await pattern - Node's native option:**
+  - Chain on `.promises` on a module and the functions from the module will return promises
+  ```js
+  // chain on .promises to the module and the functions will return promises
+  const { readFile, writeFile } = require('fs').promises;
+
+  const start = async () => {
+    try {
+      const first = await readFile('./content/first.txt', 'utf8');
+      const second = await readFile('./content/second.txt', 'utf8');
+      await writeFile(
+        './content/result-mind-grenade.txt',
+        `THIS IS AWESOME: ${first} ${second}`,
+        { flag: 'a' }
+      );
+      console.log(first, second);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  start();
+  ```
