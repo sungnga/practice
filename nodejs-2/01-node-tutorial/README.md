@@ -314,6 +314,7 @@
   - That's a big difference between Promises (and Async/await, which is built on promises) and plain old asynchronous functions through setTimeout() or other platform APIs
 
 ### 06. Blocking code, promises, and async/await patterns
+- File: 13-promises-async-await.js
 - **Blocking code:**
   - A `for` loop is a blocking code because it takes sometime to finish
   ```js
@@ -403,4 +404,31 @@
   };
 
   start();
+  ```
+
+### 07. Event emitter
+- File: 14-event-emitter.js
+  ```js
+  // get back the class from the events module
+  // if want custom extend from class
+  // otherwise just for emitting and handling events create instance
+  const EventEmitter = require('events');
+
+  const customEmitter = new EventEmitter();
+
+  // the on() and emit() methods
+  // the order when these methods are called is important
+  // additional arguments
+  // built-in modules utilize it all the time
+  // response is the name of the event
+  // the callback function is where we write the logic of what to do with the data
+  customEmitter.on('response', (name, id) => {
+    console.log(`data received user ${name} with id:${id}`);
+  });
+
+  customEmitter.on('response', () => {
+    console.log('some other logic here');
+  });
+
+  customEmitter.emit('response', 'john', 34);
   ```
