@@ -406,7 +406,7 @@
   start();
   ```
 
-### 07. Event emitter
+### 07. Events Emitter
 - File: 14-event-emitter.js
   ```js
   // get back the class from the events module
@@ -419,7 +419,7 @@
   // the on() and emit() methods
   // the order when these methods are called is important
   // additional arguments
-  // built-in modules utilize it all the time
+  // other built-in modules utilize it all the time
   // response is the name of the event
   // the callback function is where we write the logic of what to do with the data
   customEmitter.on('response', (name, id) => {
@@ -431,4 +431,24 @@
   });
 
   customEmitter.emit('response', 'john', 34);
+  ```
+
+### 08. Events emitter - HTTP module example
+- An example of `http` module is utilizing events emitter behind the scenes
+  ```js
+  const http = require('http');
+
+  // const server = http.createServer((req, res) => {
+  //   res.end('Welcome')
+  // })
+
+  // Using Event Emitter API
+  const server = http.createServer();
+  // behind the scenes, server emits the request event
+  // then we can subscribe to it / listen for it / respond to it using the .on() method
+  server.on('request', (req, res) => {
+    res.end('Welcome');
+  });
+
+  server.listen(5000);
   ```
