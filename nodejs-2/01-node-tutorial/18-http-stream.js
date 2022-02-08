@@ -9,7 +9,7 @@ http
 
 		// refactor to using createReadStream()
 		const fileStream = fs.createReadStream('./content/big.txt', 'utf8');
-		fileStream.on('open', () => {
+    fileStream.on('open', () => {
 			// the pipe() method is pushing the read stream into the write stream
 			fileStream.pipe(res);
 		});

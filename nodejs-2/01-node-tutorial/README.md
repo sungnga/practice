@@ -434,6 +434,7 @@
   ```
 
 ### 08. Events emitter - HTTP module example
+- File: 15-request-event.js
 - An example of `http` module is utilizing events emitter behind the scenes
   ```js
   const http = require('http');
@@ -451,4 +452,70 @@
   });
 
   server.listen(5000);
+  ```
+
+### 09. Streams
+- Streams are used to read or write data sequentially
+- There are four types of streams
+  - Writeable
+  - Readable
+  - Duplex - read and write data
+  - Transform - data can be modified when reading or writing 
+- The stream is from the `fs` module
+- Stream extends the `events` module. That means a stream instance has access to events methods and properties
+- **Streams - read file**
+  - Read stream will come in handy when we want to read large amount of data in a file
+  - Create a 16-create-big-file.js file and in this file will write a `./content/big.txt` file. Execute this file by running `node 16-create-big-file.js`
+    ```js
+    const { writeFileSync } = require('fs');
+    for (let i = 0; i < 10000; i++) {
+      writeFileSync('./content/big.txt', `hello world ${i}\n`, { flag: 'a' });
+    }
+    ```
+  - File: 17-streams.js
+    ```js
+    const { createReadStream } = require('fs');
+
+    // create a stream instance
+    // default 64kb
+    // last buffer - remainder
+    // highWaterMark - control size
+    // const stream = createReadStream('./content/big.txt', { highWaterMark: 90000 })
+    // const stream = createReadStream('../content/big.txt', { encoding: 'utf8' })
+    const stream = createReadStream('./content/big.txt', {
+      highWaterMark: 90000,
+      encoding: 'utf8'
+    });
+
+    // the .on() method extends from the events module
+    // the .on() method listens or subscribes to the data
+    // data is the name of the event we're listening to
+    stream.on('data', (result) => {
+      console.log(result);
+    });
+    stream.on('error', (err) => console.log(err));
+    ```
+- **Stream - HTTP example**
+  - File: 18-http-stream.js
+  ```js
+  var http = require('http');
+  var fs = require('fs');
+
+  http
+    .createServer(function (req, res) {
+      // reading and sending a big file size is not effective
+      // const text = fs.readFileSync('./content/big.txt', 'utf8')
+      // res.end(text)
+
+      // refactor to using createReadStream()
+      const fileStream = fs.createReadStream('./content/big.txt', 'utf8');
+      fileStream.on('open', () => {
+        // the pipe() method is pushing the read stream into the write stream
+        fileStream.pipe(res);
+      });
+      fileStream.on('error', (err) => {
+        res.end(err);
+      });
+    })
+    .listen(5000);
   ```
