@@ -199,3 +199,45 @@
 - In the browser, navigate to `http://localhost:5000`. This will trigger the requests to the server for the data necessary to display the homepage navbar, logo, css styles, and logic
 - First, get all the files by calling the `readFileSync` method from the `fs` module
 - Then create the server using the `http.createServer` method from the `http` module. From this, we have access to the request and response object in a callback function. In this callback, the server can send the data and its content-type back to the client (browser) via the response object
+
+### [05. Express - basics]()
+- Express docs: www.expressjs.com
+- Express is a framework for Node.js designed to make developing web apps and APIs much faster and easier
+- Install Express: `npm i express --save`
+- File: 04-express-basics.js
+  ```js
+  const express = require('express');
+  // Invoke the express method and we get back an app object
+  const app = express();
+
+  // the .get() method is client requesting for data
+  // 1st arg is the path to the resource
+  // 2nd arg is the callback function. This callback runs every time when a request made to this path
+  // In the callback, the server sends back the status code and the data
+  app.get('/', (req, res) => {
+    console.log('client hits the resource');
+    res.status(200).send('Home page');
+  });
+
+  app.get('/about', (req, res) => {
+    res.status(200).send('About page');
+  });
+
+  app.all('*', (req, res) => {
+    res.status(404).send('<h1>Resource not found</h1>');
+  });
+
+  app.listen(5000, () => {
+    console.log('Server is listening on port 5000');
+  });
+
+  // ------ HTTP METHODS ------
+  // app.get - read data
+  // app.post - insert data
+  // app.put - update data
+  // app.delete - delete data
+
+  // app.all - handles all http methods
+  // app.use - responsible for middleware
+  // app.listen - the port the server is listening on
+  ```
