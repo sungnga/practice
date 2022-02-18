@@ -5,7 +5,7 @@
 - Get start project file from https://github.com/john-smilga/node-express-course/tree/main/02-express-tutorial
 - Run `rm -rf .git` to avoid any issues if pushing to your own github repo
 - Run `npm install` to install the nodemon and express libraries
-- Then run the script `npm start` to startup the project
+- Then run the script `npm start` to start up the project
 
 ### [02. HTTP - basics]()
 - File: 01-http-basics.js
@@ -207,7 +207,7 @@
 - File: 04-express-basics.js
   ```js
   const express = require('express');
-  // Invoke the express method and we get back an app object
+  // Invoke the express method to instantiate the app object
   const app = express();
 
   // the .get() method is client requesting for data
@@ -240,4 +240,34 @@
   // app.all - handles all http methods
   // app.use - responsible for middleware
   // app.listen - the port the server is listening on
+  ```
+
+### [06. Express - App example]()
+- This app example is using the Express server instead of the `http` module that comes with Node. Express has built-in middleware, `express.static()` method, that allows us to easily serve static content
+- At the root of 02-express-tutorial folder, create a folder called `public`. Then copy the browser-app.js, logo.svg, and styles.css files from the navbar-app folder into this folder
+- File: 05-express-app-example.js
+  ```js
+  const express = require('express');
+  // Invoke the express method to instantiate the app object
+  const app = express();
+  const path = require('path');
+
+  // Setup static and middleware
+  // Static is Express's built-in middleware
+  // The 'public' folder stores static assets. The server doesn't need to change
+  app.use(express.static('./public'));
+
+  app.get('/', (req, res) => {
+    // The __dirname provides absolute path
+    // Can also use path.join()
+    res.sendFile(path.resolve(__dirname, './navbar-app/index.html'));
+  });
+
+  app.all('*', (req, res) => {
+    res.status(404).send('resource not found');
+  });
+
+  app.listen(5000, () => {
+    console.log('Server is listening on port 5000');
+  });
   ```
