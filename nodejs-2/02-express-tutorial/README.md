@@ -253,6 +253,7 @@
   const path = require('path');
 
   // Setup static and middleware
+  // app.use - responsible for middleware
   // Static is Express's built-in middleware
   // The 'public' folder stores static assets. The server doesn't need to change
   app.use(express.static('./public'));
@@ -262,6 +263,37 @@
     // Can also use path.join()
     res.sendFile(path.resolve(__dirname, './navbar-app/index.html'));
   });
+
+  app.all('*', (req, res) => {
+    res.status(404).send('resource not found');
+  });
+
+  app.listen(5000, () => {
+    console.log('Server is listening on port 5000');
+  });
+  ```
+
+### [07. Express - all static]()
+- Technically, the index.html file in the navbar-app folder is also a static asset file. We can place this index.html file in the public folder. The Express's middleware `static()` method will automatically serve this file in the static public folder. This is the entry point file for the public folder. So we don't need to make a get request to get this file to serve the home page
+- File: 06-all-static.js
+  ```js
+  const express = require('express');
+  const path = require('path');
+  // Invoke the express method to instantiate the app object
+  const app = express();
+
+  // Setup static and middleware
+  // app.use - responsible for middleware
+  // Static is Express's built-in middleware
+  // The 'public' folder stores static assets. The server doesn't need to change
+  app.use(express.static('./public'));
+
+  // app.get('/', (req, res) => {
+  // 	// The __dirname provides absolute path
+  // 	// Can also use path.join()
+  // 	res.sendFile(path.resolve(__dirname, './navbar-app/index.html'));
+  // 	// Adding this index.html file to static assets folder 'public'
+  // });
 
   app.all('*', (req, res) => {
     res.status(404).send('resource not found');
