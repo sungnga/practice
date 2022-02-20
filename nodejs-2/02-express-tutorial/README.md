@@ -303,3 +303,34 @@
     console.log('Server is listening on port 5000');
   });
   ```
+
+### API vs SSR
+- We use Express server to either setup API or template with server-side rendering (SSR)
+- With APIs, the server provides the data. Any front-end apps that want to access it can simply perform HTTP request. To use the data, setup the API and functionality
+- **API:**
+  - In Express or HTTP, an API is setting an HTTP interface to interact with our data
+  - Data is sent using JSON - Javascript Object Notation
+  - `res.json()` - a method to send back a response. This method sets up the proper content-type and stringifies the data
+- **SSR:**
+  - SSR - we setup templates
+  - Send template - send back the entire HTML, CSS, and Javascript
+  - `res.render()` - sends back the template with HTML, CSS, and Javascript
+
+### [08. JSON - basics]()
+- File: 07-json-basics.js
+  ```js
+  const express = require('express');
+  const app = express();
+  // import the products array module from data.js file
+  const { products } = require('./data');
+
+  app.get('/', (req, res) => {
+    // sends a JSON response w/ the correct content-type
+    res.json(products);
+  });
+
+  app.listen(5000, () => {
+    console.log('Server is listening on port 5000');
+  });
+  ```
+- In the web browser, navigate to `http://localhost:5000` to see the JSON data
