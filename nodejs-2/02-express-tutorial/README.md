@@ -414,3 +414,43 @@
     console.log('Server is listening on port 5000');
   });
   ```
+
+### [11. Query string params]()
+- Query string parameters or also called the URL parameters is a way to send a small amount of information using the URL. Send back only the data that matches the query string params
+- The way the query string params is setup is provide key-value pairs after the question mark `?`
+- If there are more than one query string params, use an `&` to separate between each key-value pair. For example, `/api/v1/query?search=a&limit=1`
+- If no query string params is provided, then the server will send back the entire data collection
+- File: 10-query-string.js
+  ```js
+  // If no query string params is provided, the server will return the entire data collection
+  app.get('/api/v1/query', (req, res) => {
+    // The query string params can be found in req.query
+    console.log(req.query);
+    // Destructuring the key properties off of req.query
+    const { search, limit } = req.query;
+    // Create a new products array from the existing products array
+    let sortedProducts = [...products];
+
+    // If string param search is provided,
+    // filter the product name by the value of the search key
+    if (search) {
+      sortedProducts = sortedProducts.filter((product) => {
+        return product.name.startsWith(search);
+      });
+    }
+    if (limit) {
+      // Because the value for the limit key is a string
+      // need to convert to an integer
+      sortedProducts = sortedProducts.slice(0, Number(limit));
+    }
+    // If the sortedProducts array is empty and there's nothing wrong with the query
+    // send a custom json object with a success status code and an empty data array
+    if (sortedProducts.length < 1) {
+      res.status(200).send('No products matched your search');
+      return res.status(200).json({ success: true, data: [] });
+    }
+
+    // Send back data in JSON format
+    res.status(200).json(sortedProducts);
+  });
+  ```
