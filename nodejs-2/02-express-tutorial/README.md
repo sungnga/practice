@@ -454,3 +454,62 @@
     res.status(200).json(sortedProducts);
   });
   ```
+
+### [12. Middleware - basics]()
+- Middleware in Express.js are functions that execute during the request to the server. Each middleware function has access to the `request` and `response` object and `next` function. Middleware functions are everywhere in Express
+- Inside the HTTP method, the middleware sits between the request route params and the callback function
+  - app.METHOD('ROUTE_PARAMS', MIDDLEWARE, CALLBACK_FUNCTION)
+  - `app.get('/', logger, (req, res) => { ... })`
+- **NOTE:** When setting up a middleware function, after you write your logic, you must always either terminate the middleware by sending back a response (`res.send()`) OR pass it on to the next middleware by calling `next()`
+  ```js
+  // A middleware function
+  // Express provides req, res, and next
+  const logger = (req, res, next) => {
+    const method = req.method;
+    const url = req.url;
+    const time = new Date().getFullYear();
+    console.log(method, url, time);
+
+    // After writing the logic above...
+    // MUST PERFORM ONE OF THESE TWO METHODS
+    res.send('Home'); //terminate the middleware by sending a response
+    // OR
+    next(); //pass it on to the next middleware
+  };
+  ```
+- A middleware function can be used multiple times in different requests
+- File: 11-middleware-basics.js
+  ```js
+  const express = require('express');
+  const app = express();
+
+  // A middleware sits between a request and the response
+  // Between the route params and the callback function
+  // req => middleware => res
+
+  // A middleware function
+  // Express provides req and res objects and next method
+  const logger = (req, res, next) => {
+    const method = req.method;
+    const url = req.url;
+    const time = new Date().getFullYear();
+    console.log(method, url, time);
+
+    next(); //pass it on to the next middleware
+    // The other option is to send back a response here
+  };
+
+  // 2nd arg is referencing the logger middleware
+  app.get('/', logger, (req, res) => {
+    res.send('Home page');
+  });
+
+  // Using the logger middleware
+  app.get('/about', logger, (req, res) => {
+    res.send('About page');
+  });
+
+  app.listen(5000, () => {
+    console.log('Server is listening on port 5000');
+  });
+  ```
