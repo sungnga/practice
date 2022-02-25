@@ -513,3 +513,38 @@
     console.log('Server is listening on port 5000');
   });
   ```
+
+### [13. Middleware - app.use() method]()
+- File: 12-middleware-use-method.js
+- When working with middleware in Express.js, it is best practice to have all middleware in a separate file
+- Create a file called logger.js. Move the logger middleware function into this file and export it as a module
+  ```js
+  // Express provides req, res, and next
+  const logger = (req, res, next) => {
+    const method = req.method;
+    const url = req.url;
+    const time = new Date().getFullYear();
+    console.log(method, url, time);
+
+    next(); //pass it on to the next middleware
+    // The other option is to send back a response here
+  };
+
+  module.exports = logger;
+  ```
+- Another thing is we don't need to reference a middleware for every route request we make. Instead, we can use `app.use()` method and pass in the name of the middleware. This makes the middleware available to all route
+  ```js
+  // Import the logger middleware module
+  const logger = require('./logger');
+
+  // app.use() method makes middleware be available to all routes
+  // NOTE: order of code matters. Invoke the middleware first
+  // 1st arg is the path that the middleware will apply
+  // 2nd arg is the middleware
+  app.use('/api', logger);
+
+  // No need to pass in a middleware as 2nd arg
+  app.get('/', (req, res) => {
+    res.send('Home page');
+  });
+  ```
