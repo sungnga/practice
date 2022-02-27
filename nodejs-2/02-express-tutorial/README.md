@@ -532,7 +532,7 @@
 
   module.exports = logger;
   ```
-- Another thing is we don't need to reference a middleware for every route request we make. Instead, we can use `app.use()` method and pass in the name of the middleware. This makes the middleware available to all route
+- Another thing is we don't need to reference a middleware for every route request we make. Instead, we can use `app.use()` method and pass in the name of the middleware. This makes the middleware available to all routes that want to use the middleware
   ```js
   // Import the logger middleware module
   const logger = require('./logger');
@@ -548,3 +548,71 @@
     res.send('Home page');
   });
   ```
+
+### [14. Multiple middleware, middleware options]()
+- **Applying multiple middleware to all routes:**
+  - We can apply multiple middleware functions to all routes simply by passing an array of middleware to the `app.use()` method. Note that the order of these middleware matters. They're being executed in this order
+  - `app.use([logger, authorize]);`
+- File: authorize.js
+  - Create a middleware function called authorize and export as a module
+  - What this middleware does is it takes the value of user from the string query params and then performs some logic
+  ```js
+  const authorize = (req, res, next) => {
+    // destructuring user from string query params
+    const { user } = req.query;
+
+    // if request string params doesn't match john, send Unauthorize
+    if (user === 'john') {
+      // Attaching the user property to the request object
+      req.user = { name: 'john', id: 3 };
+      next();
+    } else {
+      res.status(401).send('Unauthorized');
+    }
+  };
+
+  module.exports = authorize; 
+  ```
+- File: 13-middleware-multiple-options.js
+  - Import the authorize middleware
+  - When we want to pass multiple middleware function to app.use() method, we put them in an array. NOTE: the order of the middleware matters! app.use() method executes these middleware in this order
+  ```js
+  const logger = require('./logger');
+  const authorize = require('./authorize');
+
+  // app.use() method makes middleware be available to all routes
+  // NOTE: order of code matters. Invoke the middleware first
+  // 1st arg is the path that the middleware will apply
+  // 2nd arg is the middleware
+  // Pass in multiple middleware function in an array
+  // NOTE: the order of the middleware in the array matters
+  app.use([logger, authorize]);
+
+  app.get('/api/items', (req, res) => {
+    console.log(req.user);
+    res.send('Items');
+  });
+  ```
+  - Now all the routes have access to the authorize middleware. The way this middleware is setup is if someone makes a request to a route and does not provide the a request string params of user, that person is not authorized
+  - In the browser, type `http://localhost:5000/api/items/?user=john`. If the user name matches, then this user can access the requested page. If not, you should see a text "Unauthorized" displayed
+- **Applying multiple middleware to one route:**
+  - Another way to apply multiple middleware functions to only a specific route is by passing the middleware array as 2nd argument to that route method
+  ```js
+  // Applying multiple middleware functions to just one route
+  app.get('/api/items', [logger, authorize], (req, res) => {
+    console.log(req.user);
+    res.send('Items');
+  });
+  ```
+  - Now the user must provide the query string when making a request to this particular route
+- **Middleware options:**
+  - The `app.use()` method expects a middleware to be passed in
+  - There are three middleware options we can use: our own, Express, or third party
+  - An example of our custom middleware:
+    - Use middleware: `app.use([logger, authorize]);`
+  - We don't need to install Express's middleware. We just need to invoke it
+    - Use middleware: `app.use(express.static('./public'));`
+  - We must install third party's middleware
+    - Install morgan: `npm i morgan`
+    - Import the middleware: `const morgan = require('morgan);`
+    - Use: `app.use(morgan('tiny'));`
