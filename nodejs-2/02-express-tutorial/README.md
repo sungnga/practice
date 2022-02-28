@@ -616,3 +616,34 @@
     - Install morgan: `npm i morgan`
     - Import the middleware: `const morgan = require('morgan);`
     - Use: `app.use(morgan('tiny'));`
+
+### [15. HTTP methods]()
+- **HTTP methods:**
+  - `app.get()` - read data - get data
+  - `app.post()` - insert data - send data
+  - `app.put()` - update data - path params + send data
+
+
+  - `app.use()` - responsible for middleware
+  - `app.delete()` - delete data - path params  - `app.all()` - handles all http methods
+  - `app.listen()` - the port the server is listening on
+- File: 14-methods.js
+- **GET method:**
+  - Get the data using the path params
+  - By default, the server performs the `.get()` method on an HTTP request
+  ```js
+  const express = require('express');
+  const app = express();
+  // destructure people array from data.js file
+  let { people } = require('./data');
+
+  app.get('/api/people', (req, res) => {
+    // responding with status code and the data in json format
+    res.status(200).json({ success: true, data: people });
+  });
+
+  app.listen(5000, () => {
+    console.log('Server is listening on port 5000');
+  });
+  ```
+
