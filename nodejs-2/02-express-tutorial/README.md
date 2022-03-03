@@ -623,7 +623,6 @@
   - `app.post()` - insert data - send data
   - `app.put()` - update data - path params + send data
 
-
   - `app.use()` - responsible for middleware
   - `app.delete()` - delete data - path params  - `app.all()` - handles all http methods
   - `app.listen()` - the port the server is listening on
@@ -646,4 +645,44 @@
     console.log('Server is listening on port 5000');
   });
   ```
+- **POST method - using form:**
+  - We cannot just perform a POST request from the browser. We either need to use an outside tool such as POSTMAN or a working application to make a POST request
+  - The `methods-public` folder contains static assets that we're going to use in this example. Use `app.use()` method to invoke Express's built-in middleware `express.static()` and pass in the path to this public folder as an argument
+    - `app.use(express.static('./methods-public'));`
+    - Browse to `http://localhost:5000/` to see these static assets being served. It's a simple form that we can use to send data using the POST method
+  - File: methods-public/index.html
+    ```js
+    <form action="/login" method="POST">
+      <h3>Traditional Form</h3>
+      <div class="form-row">
+        <label for="name"> enter name </label>
+        <input type="text" name="name" id="name" autocomplete="false" />
+      </div>
+      <button type="submit" class="block">submit</button>
+    </form>
+    ```
+  - File: 14-methods.js
+    ```js
+    const express = require('express');
+    const app = express();
 
+    // static assets
+    app.use(express.static('./methods-public'));
+
+    // parse the form data
+    // and add the value to req.body property in POST method
+    // express.urlencoded() is express built-in middleware
+    // that parses incoming requests with urlencoded payloads
+    app.use(express.urlencoded({ extended: false }));
+
+    // Handling a POST request
+    app.post('/login', (req, res) => {
+      console.log(req.body); //to see the value submitted from form
+      const { name } = req.body;
+      if (name) {
+        return res.status(200).send(`Welcome ${name}`);
+      }
+      res.status(401).send('Please provide credential');
+    });
+    ```
+  - NOTE that the `Content-Type` in the Request Headers object is `application/x-www-form-urlencoded`
