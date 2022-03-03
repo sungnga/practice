@@ -12,8 +12,26 @@ app.use(express.static('./methods-public'));
 // that parses incoming requests with urlencoded payloads
 app.use(express.urlencoded({ extended: false }));
 
+// parse json data
+// this middleware makes it possible for the json data
+// be available in req.body in POST method
+app.use(express.json());
+
 app.get('/api/people', (req, res) => {
 	res.status(200).json({ success: true, data: people });
+});
+
+// Handling a POST request using Javascript
+app.post('/api/people', (req, res) => {
+	console.log(req.body); //to see the parsed json data
+	const { name } = req.body;
+	if (!name) {
+		return res
+			.status(400)
+			.json({ success: false, msg: 'Please provide name value' });
+	}
+	// the form value is stored in the person key
+	res.status(201).json({ success: true, person: name });
 });
 
 // Handling a POST request

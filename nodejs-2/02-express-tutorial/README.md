@@ -686,3 +686,93 @@
     });
     ```
   - NOTE that the `Content-Type` in the Request Headers object is `application/x-www-form-urlencoded`
+- **POST method - using Javascript:**
+  - In this example, we're still using a form on front-end to submit the data, but we're going to use Javascript to send the HTTP request
+  - We're also going to use Axios package to setup the HTTP request instead of using the built-in `fetch()`. Axios provides cleaner API and better error messages
+  - File: methods-public/javascript.html
+    - Here the form element doesn't perform a POST method
+    - Include an axios script
+    - On the front-end, use axios to perform a GET method to fetch the people array data from '/api/people' file. Then iterate over the people array and display each name element beneath the form
+    - In terms of submitting the form data to the server, use axios to perform a POST method to the '/api/people' path along with the submitted form value
+    ```js
+    <form>
+      <h3>Javascript Form</h3>
+      <div class="form-row">
+        <label for="name"> enter name </label>
+        <input
+          type="text"
+          name="name"
+          id="name"
+          class="form-input"
+          autocomplete="false"
+        />
+        <small class="form-alert"></small>
+      </div>
+      <button type="submit" class="block submit-btn">submit</button>
+    </form>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"
+      integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      const result = document.querySelector('.result')
+
+      const fetchPeople = async () => {
+        try {
+          const { data } = await axios.get('/api/people')
+
+          const people = data.data.map((person) => {
+            return `<h5>${person.name}</h5>`
+          })
+          result.innerHTML = people.join('')
+        } catch (error) {
+          result.innerHTML = `<div class="alert alert-danger">Can't Fetch Data</div>`
+        }
+      }
+      fetchPeople()
+      // submit form
+      const btn = document.querySelector('.submit-btn')
+      const input = document.querySelector('.form-input')
+      const formAlert = document.querySelector('.form-alert')
+      btn.addEventListener('click', async (e) => {
+        e.preventDefault()
+        const nameValue = input.value
+
+        try {
+          const { data } = await axios.post('/api/people', { name: nameValue })
+          const h5 = document.createElement('h5')
+          h5.textContent = data.person
+          result.appendChild(h5)
+        } catch (error) {
+          // console.log(error.response)
+          formAlert.textContent = error.response.data.msg
+        }
+        input.value = ''
+      })
+    </script>
+    ```
+  - File: 14-methods.js
+    ```js
+    // parse json data
+    // this middleware makes it possible for the json data
+    // be available in req.body in POST method
+    app.use(express.json());
+
+    // Handling a POST request using Javascript
+    // Handling a POST request using Javascript
+    app.post('/api/people', (req, res) => {
+      console.log(req.body); //to see the parsed json data
+      const { name } = req.body;
+      if (!name) {
+        return res
+          .status(400)
+          .json({ success: false, msg: 'Please provide name value' });
+      }
+      // the form value is stored in the person key
+      res.status(201).json({ success: true, person: name });
+    });
+    ```
+  - NOTE that the `Content-Type` in the Request Headers object is `application/json`. Axios automatically adds this for us
