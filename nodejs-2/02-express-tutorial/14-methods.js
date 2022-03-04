@@ -44,6 +44,34 @@ app.post('/login', (req, res) => {
 	res.status(401).send('Please provide credential');
 });
 
+// the name after the : can be anything
+app.put('/api/people/:id', (req, res) => {
+	const { id } = req.params; //get the value in the route params
+	const { name } = req.body; //we have access to json data because of express.json() middleware
+
+	// find the person in people array that matches with the id in route params
+	const person = people.find((person) => person.id === Number(id));
+
+	// if person not found, send back a 404 status code and a message
+	if (!person) {
+		return (
+			res
+				// 404 status is if we can't find the resource
+				.status(404)
+				.json({ success: false, msg: `No person with id ${id}` })
+		);
+	}
+	const newPeople = people.map((person) => {
+		// if the person id in people array matches the id in the params
+		// update the person's name to the name provided from the PUT request
+		if (person.id === Number(id)) {
+			person.name = name;
+		}
+		return person;
+	});
+	res.status(200).json({ success: true, data: newPeople });
+});
+
 app.listen(5000, () => {
 	console.log('Server is listening on port 5000');
 });

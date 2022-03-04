@@ -776,3 +776,46 @@
     });
     ```
   - NOTE that the `Content-Type` in the Request Headers object is `application/json`. Axios automatically adds this for us
+- **PUT method:**
+  - The PUT method is used to update a piece of data. We need to specify the route params that targets the data we want to update and we also provide the data that we want to update it to
+  - File: 14-methods.js
+    - Handling the PUT request
+    ```js
+    // the name after the : can be anything
+    app.put('/api/people/:id', (req, res) => {
+      const { id } = req.params; //get the value in the route params
+      const { name } = req.body; //we have access to json data because of express.json() middleware
+
+      // find the person in people array that matches with the id in route params
+      const person = people.find((person) => person.id === Number(id));
+
+      // if person not found, send back a 404 status code and a message
+      if (!person) {
+        return (
+          res
+            // 404 status is if we can't find the resource
+            .status(404)
+            .json({ success: false, msg: `No person with id ${id}` })
+        );
+      }
+      const newPeople = people.map((person) => {
+        // if the person id in people array matches the id in the params
+        // update the person's name to the name provided from the PUT request
+        if (person.id === Number(id)) {
+          person.name = name;
+        }
+        return person;
+      });
+      res.status(200).json({ success: true, data: newPeople });
+    });
+    ```
+  - To test out our PUT method, use POSTMAN tool and perform a PUT request
+    - In the dropdown menu, select the `PUT` method
+    - Provide the route params: `http://localhost:5000/api/people/2`
+    - Select the `Body` tab, and select `raw` as body type, and select `JSON` as body format
+    - Then provide the new data that we want to modify in JSON format. In our case, change the name of the person based on their id in the people array
+      ```js
+      {
+          "name": "Sarah"
+      }
+      ```
