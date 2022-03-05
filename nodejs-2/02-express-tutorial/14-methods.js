@@ -72,6 +72,27 @@ app.put('/api/people/:id', (req, res) => {
 	res.status(200).json({ success: true, data: newPeople });
 });
 
+// provide the item to be deleted in the route params
+app.delete('/api/people/:id', (req, res) => {
+	// find the person in people array that matches with the id in route params
+	const person = people.find((person) => person.id === Number(req.params.id));
+
+	// if person not found, send back a 404 status code and a message
+	if (!person) {
+		return (
+			res
+				// 404 status is if we can't find the resource
+				.status(404)
+				.json({ success: false, msg: `No person with id ${req.params.id}` })
+		);
+	}
+	// delete or filter out the person in the people array with the matching id
+	const newPeople = people.filter(
+		(person) => person.id !== Number(req.params.id)
+	);
+	return res.status(200).json({ success: true, data: newPeople });
+});
+
 app.listen(5000, () => {
 	console.log('Server is listening on port 5000');
 });

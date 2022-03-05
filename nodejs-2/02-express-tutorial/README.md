@@ -819,3 +819,34 @@
           "name": "Sarah"
       }
       ```
+- **DELETE method:**
+  - For the DELETE method, the route params convention is similar to the PUT method - we need to specify the item we want to delete. Unlike the PUT method, the DELETE method doesn't expect anything from the body
+  - File: 14-methods.js
+    - Handling the DELETE request
+    ```js
+    // provide the item to be deleted in the route params
+    app.delete('/api/people/:id', (req, res) => {
+      // find the person in people array that matches with the id in route params
+      const person = people.find((person) => person.id === Number(req.params.id));
+
+      // if person not found, send back a 404 status code and a message
+      if (!person) {
+        return (
+          res
+            // 404 status is if we can't find the resource
+            .status(404)
+            .json({ success: false, msg: `No person with id ${req.params.id}` })
+        );
+      }
+      // delete or filter out the person in the people array with the matching id
+      const newPeople = people.filter(
+        (person) => person.id !== Number(req.params.id)
+      );
+      return res.status(200).json({ success: true, data: newPeople });
+    });
+    ```
+  - To test out our DELETE method, use POSTMAN tool and perform a DELETE request
+    - In the dropdown menu, select the `DELETE` method
+    - Provide the route params with the item to delete: `http://localhost:5000/api/people/2`
+    - No need to provide anything in the `Body` tab
+
