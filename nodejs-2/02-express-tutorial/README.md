@@ -850,3 +850,71 @@
     - Provide the route params with the item to delete: `http://localhost:5000/api/people/2`
     - No need to provide anything in the `Body` tab
 
+### [16. Express router - setup]()
+- Express has a `router` instance that we can use to group all of our routes together. Eventually we can setup the route functionalities in the controller. This helps organize our routes when the application grows and also not clutter the app.js file
+- Model Control
+  - MVC is a pattern used to setup the API
+- The common convention is to put all the routes in a separate folder and create different routes in separate files
+- In 02-express-tutorial folder, create a `routes` folder. In the router folder, create 2 more files: auth.js, people.js
+- File: routes/people.js
+  - Create a router instance from express.Router class: `const router = express.Router();`
+  - Import the people array from data.js file: `let { people } = require('../data');`
+  - Cut out all the '/api/people' route requests from 15-router-app.js file and paste them into this file
+  - Then, instead of using the `app` instance, replace it with the `router` instance
+    - `app.get(...)` -> `router.get(...)`
+  - For each HTTP requests, we don't need to provide the base route. The base route is how the route is going to start. Here, our base route is `'/api/people'` and it's specified by express middleware `express.use()` where it wants to use the people router
+  - Lastly, export the `router` instance as a module
+  ```js
+  const express = require('express');
+  // create a router instance from the Router class
+  const router = express.Router();
+  let { people } = require('../data');
+
+  // the base route '/api/people' is already setup in express middleware express.use()
+  // no need to write the base route here
+  router.get('/', (req, res) => {
+    res.status(200).json({ success: true, data: people });
+  });
+
+  module.exports = router;
+  ```
+- File: routes/auth.js
+  - Create a router instance from express.Router class: `const router = express.Router();`
+  - Cut out the '/login' route request functionality from 15-router-app.js file and paste it in this file
+  - Replace `app.post()` with `router.post()`
+  - We don't need to provide the base route `'/login'` in the route params
+  - Lastly, export the router instance as a module
+  ```js
+  const express = require('express');
+  // create a router instance from express.Router class
+  const router = express.Router();
+
+  // the base route '/login' is already setup in express middleware express.use()
+  // no need to write the base route here
+  router.post('/', (req, res) => {
+    console.log(req.body); //to see the value submitted from form
+    const { name } = req.body;
+    if (name) {
+      return res.status(200).send(`Welcome ${name}`);
+    }
+    res.status(401).send('Please provide credential');
+  });
+
+  module.exports = router;
+  ```
+- File: 15-router-app.js
+  - Import the router modules for people and auth routes
+  - To use the people routes, use the `express.use()` method. Pass in the base route as 1st arg and the people router module as 2nd arg
+  - To use the auth route, use the `express.use()` method. Pass in the base route as 1st arg and the auth router module as 2nd arg
+  ```js
+  // import the router module for people routes
+  const people = require('./routes/people');
+  // import the router module for auth route
+  const auth = require('./routes/auth');
+
+  // the base route is how the route is going to start
+  // 1st arg is the base route
+  // 2nd arg is the people routes from routes/people.js module
+  app.use('/api/people', people);
+  app.use('/login', auth);
+  ```
