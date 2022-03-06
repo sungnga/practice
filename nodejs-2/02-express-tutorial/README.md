@@ -851,10 +851,10 @@
     - No need to provide anything in the `Body` tab
 
 ### [16. Express router - setup]()
-- Express has a `router` instance that we can use to group all of our routes together. Eventually we can setup the route functionalities in the controller. This helps organize our routes when the application grows and also not clutter the app.js file
-- Model Control
+- Express has a `router` instance, from express.Router class, that we can use to group all of our routes together. Eventually we can setup the route functionalities in the controller. This router instance is then used in app.js file as an Express middleware. This helps organize our routes when the application grows and also not clutter the app.js file
+- Model View Controller
   - MVC is a pattern used to setup the API
-- The common convention is to put all the routes in a separate folder and create different routes in separate files
+- The common convention is to put all the routes in a separate folder and create different routes in separate files. Then import the router as an express middleware in app.js file
 - In 02-express-tutorial folder, create a `routes` folder. In the router folder, create 2 more files: auth.js, people.js
 - File: routes/people.js
   - Create a router instance from express.Router class: `const router = express.Router();`
@@ -912,9 +912,147 @@
   // import the router module for auth route
   const auth = require('./routes/auth');
 
+  // using the router middleware
   // the base route is how the route is going to start
   // 1st arg is the base route
   // 2nd arg is the people routes from routes/people.js module
   app.use('/api/people', people);
   app.use('/login', auth);
+  ```
+
+### [17. Express router - controllers]()
+- Even though we have separated the HTTP request routes into their separate files, by convention, we want to further split the controllers (the functionality of the requests) into their own files
+  - `router.request_method('route', controller)`
+  - The controller is the callback function (the logic) for an HTTP request route
+- After we setup the route controllers in a separate file, we then import those controllers into the route file. We use them by referencing their names in the route requests
+- There are two methods of setting up route requests in the router file
+  - Method #1: `router.request_method('route', controller)`
+  - Method #2: `router.route('route').request_method_1(controller).request_method_2(controller)`
+  - Method #2 is chaining the request methods that have the same route paths
+- In 02-express-tutorial folder, create a `controllers` folder. In the controllers folder, create a file called people.js
+- File: controllers/people.js
+  - Import the people array from data.js file
+  - These controllers are just functions and we can name them whatever we want
+  - Refactor the code of each request route in /routes/people.js file. Cut out the callback function and paste it in this file after giving the controller function a name
+  - Lastly, module export all the controllers as an object
+  ```js
+  let { people } = require('../data');
+
+  const getPeople = (req, res) => {
+    res.status(200).json({ success: true, data: people });
+  };
+
+  // the name of the controller can be anything we want to call it
+  // since this is a controller for a route request, it has access
+  // to the request and response objects
+  const createPerson = (req, res) => {
+    console.log(req.body); //to see the parsed json data
+    const { name } = req.body;
+    if (!name) {
+      return res
+        .status(400)
+        .json({ success: false, msg: 'Please provide name value' });
+    }
+    // the form value is stored in the person key
+    res.status(201).json({ success: true, person: name });
+  };
+
+  const createPersonPostman = (req, res) => {
+    const { name } = req.body;
+    if (!name) {
+      return res
+        .status(400)
+        .json({ success: false, msg: 'Please provide name value' });
+    }
+    // return the existing people array and append name to it
+    res.status(201).json({ success: true, data: [...people, name] });
+  };
+
+  const updatePerson = (req, res) => {
+    const { id } = req.params; //get the value in the route params
+    const { name } = req.body; //we have access to json data because of express.json() middleware
+
+    // find the person in people array that matches with the id in route params
+    const person = people.find((person) => person.id === Number(id));
+
+    // if person not found, send back a 404 status code and a message
+    if (!person) {
+      return (
+        res
+          // 404 status is if we can't find the resource
+          .status(404)
+          .json({ success: false, msg: `No person with id ${id}` })
+      );
+    }
+    const newPeople = people.map((person) => {
+      // if the person id in people array matches the id in the params
+      // update the person's name to the name provided from the PUT request
+      if (person.id === Number(id)) {
+        person.name = name;
+      }
+      return person;
+    });
+    res.status(200).json({ success: true, data: newPeople });
+  };
+
+  const deletePerson = (req, res) => {
+    // find the person in people array that matches with the id in route params
+    const person = people.find((person) => person.id === Number(req.params.id));
+
+    // if person not found, send back a 404 status code and a message
+    if (!person) {
+      return (
+        res
+          // 404 status is if we can't find the resource
+          .status(404)
+          .json({ success: false, msg: `No person with id ${req.params.id}` })
+      );
+    }
+    // delete or filter out the person in the people array with the matching id
+    const newPeople = people.filter(
+      (person) => person.id !== Number(req.params.id)
+    );
+    return res.status(200).json({ success: true, data: newPeople });
+  };
+
+  module.exports = {
+    getPeople,
+    createPerson,
+    createPersonPostman,
+    updatePerson,
+    deletePerson
+  };
+  ```
+- File: routes/people.js
+  - Import and destructure the controllers module
+  - Then, for each route request, pass in the controller as 2nd arg by referencing its name as the callback function
+  - There are two methods of setting up the route requests
+  ```js
+  const express = require('express');
+  const router = express.Router();
+
+  // import and destructure the controllers
+  const {
+    getPeople,
+    createPerson,
+    createPersonPostman,
+    updatePerson,
+    deletePerson
+  } = require('../controllers/people');
+
+  // -----METHOD 1 OF SETTING UP ROUTE REQUESTS-----
+  router.get('/', getPeople);
+  router.post('/', createPerson);
+  router.post('/postman', createPersonPostman);
+  router.put('/:id', updatePerson);
+  router.delete('/:id', deletePerson);
+
+  // -----METHOD 2 OF SETTING UP ROUTE REQUESTS-----
+  // chaining the request methods that have the same routes
+  // note that the base route is omitted here
+  router.route('/').get(getPeople).post(createPerson);
+  router.route('/postman').post(createPersonPostman);
+  router.route('/:id').put(updatePerson).delete(deletePerson);
+
+  module.exports = router;
   ```

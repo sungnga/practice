@@ -20,6 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 // be available in req.body in POST method
 app.use(express.json());
 
+// using the router middleware
 // the base route is how the route is going to start
 // 1st arg is the base route
 // 2nd arg is the people routes from routes/people.js module
