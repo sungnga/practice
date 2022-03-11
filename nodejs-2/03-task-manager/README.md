@@ -134,3 +134,39 @@
 - Test out all the route requests in POSTMAN
   - Create a collection and save all the request methods in this collection
   - When submitting data along with the request, in the Body tab, set the body type to "raw" and the format type to "JSON"
+
+### REST API
+- REST stands for Representational State Transfer
+- It is the most popular API design pattern
+- Our API allows clients to perform CRUD operations on our data
+
+### MongoDB
+- NoSQL, non-relational database. Does not care how data relates to each other
+- Store JSON
+- Instead of rows, we have documents. A document is a set of key-value pairs
+- Easy to get started
+- Free cloud hosting - Atlas
+
+### [Setup MongoDB]()
+- We're going to use MongoDB for our project database
+- After creating a MongoDB account, create a new cluster and give the cluster a name
+- In MongoDB project dashboard
+  - Setup Database Access:
+    - Select Database Access in the main menu
+    - Select Password as Authentication Method
+    - Provide the name and password
+    - For the Database User Privileges, select Read and write to any database
+  - Setup Network Access:
+    - Select Network Access in the main menu
+    - Then select Allow Access from Anywhere
+  - Get connection string:
+    - Select Clusters in the main menu
+    - Click on the "CONNECT" button, then select "Connect your application"
+    - Driver is: Node.js
+    - Version is: 3.6 or later
+    - Copy the connection string to the clipboard
+- At the root of project directory, create a folder called `db`. In it, create a file called connect.js
+- File: db/connect.js
+  ```js
+  const connectionString = 'PASTE_MONGODB_CONNECTION_STRING_HERE';
+  ```
