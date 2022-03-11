@@ -87,3 +87,50 @@
   app.listen(port, console.log(`Sever is listening on port ${port}...`));
   ```
 - To test our getAllTasks route, navigate in the browser to: `http://localhost:3000/api/v1/tasks`. If we're able to make the request successfully, we should see a simple message "All task items"
+
+### [04. Setup all route requests]()
+- Let's setup the rest of the routes and their controllers
+- File: controllers/tasks.js
+  - Setup the controllers for createTask, getTask, updateTask, and deleteTask
+  - Export them as an object
+  ```js
+  const getAllTasks = (req, res) => {
+    res.send('Get all tasks');
+  };
+
+  const createTask = (req, res) => {
+    res.json(req.body);
+  };
+
+  const getTask = (req, res) => {
+    res.json({ id: req.params.id });
+  };
+
+  const updateTask = (req, res) => {
+    res.send('Update task');
+  };
+
+  const deleteTask = (req, res) => {
+    res.send('Delete task');
+  };
+
+  module.exports = { getAllTasks, createTask, getTask, updateTask, deleteTask };
+  ```
+- File: routes/tasks.js
+  - Import and destructure the task controllers
+  - Chain on all the different request methods that have the same paths
+  ```js
+  const {
+    getAllTasks,
+    createTask,
+    getTask,
+    updateTask,
+    deleteTask
+  } = require('../controllers/tasks');
+
+  router.route('/').get(getAllTasks).post(createTask);
+  router.route('/:id').get(getTask).patch(updateTask).delete(deleteTask);
+  ```
+- Test out all the route requests in POSTMAN
+  - Create a collection and save all the request methods in this collection
+  - When submitting data along with the request, in the Body tab, set the body type to "raw" and the format type to "JSON"
