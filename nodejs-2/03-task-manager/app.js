@@ -3,6 +3,7 @@ const app = express();
 // import tasks router
 const tasks = require('./routes/tasks');
 const connectDB = require('./db/connect');
+require('dotenv').config();
 
 // middleware
 // have access to json data in req.body
@@ -25,7 +26,8 @@ const port = 3000;
 const start = async () => {
 	try {
 		// invoking the mongoose.connect() method
-		await connectDB();
+		// it's expecting the MongoDB connection string value
+		await connectDB(process.env.MONGO_URI);
 
 		// start the server if the connection is successful
 		app.listen(port, console.log(`Sever is listening on port ${port}...`));

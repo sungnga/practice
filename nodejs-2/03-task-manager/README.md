@@ -222,3 +222,53 @@
 
   start();
   ```
+
+### [07. Setup ENV VARS]()
+- The dotenv library allows us to store sensitive information such as passwords of our application in a file that will not be shared in public
+- Install dotenv library: `npm install dotenv`
+- At the root of the project directory, create a file called .env
+- In .gitignore file, add the .env file to the list
+- File: .env
+  ```js
+  MONGO_URI=PASTE_MONGODB_CONNECTION_STRING_HERE
+  ```
+- File: db/connect.js
+  - Remove the `connectionString` variable
+  - The connectDB function is expecting `url` as an argument. Pass in this `url` params to the mongoose.connect() method as the first argument
+  ```js
+  const mongoose = require('mongoose');
+
+  // invoke mongoose.connect() in app.js file, not here
+  const connectDB = (url) => {
+    // connecting our application to MongoDB
+    // mongoose.connect() method returns a promise
+    return mongoose.connect(url);
+  };
+
+  module.exports = connectDB;
+  ```
+- File: app.js
+  - To access the .env file, require the dotenv library and no need to assign it to a variable: `require('dotenv');`. Then invoke the config() method: `require('dotenv').config();`
+  - `process.env` is a global variable in Node.js. We use this to access an environmental variable that we've set up in .env file
+  - Inside the `start` function where we invoke the `connectDB` method, pass in `process.env.MONGO_URI` as an argument
+  ```js
+  const connectDB = require('./db/connect');
+  require('dotenv').config();
+
+  // Note that mongoose.connect() method returns a promise
+  // therefore use try/catch block here
+  const start = async () => {
+    try {
+      // invoking the mongoose.connect() method
+      // it's expecting the MongoDB connection string value
+      await connectDB(process.env.MONGO_URI);
+
+      // start the server if the connection is successful
+      app.listen(port, console.log(`Sever is listening on port ${port}...`));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  start();
+  ```
