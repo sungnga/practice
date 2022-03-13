@@ -143,11 +143,11 @@
 ### MongoDB
 - NoSQL, non-relational database. Does not care how data relates to each other
 - Store JSON
-- Instead of rows, we have documents. A document is a set of key-value pairs
+- Instead of rows, we have documents. A document is a set of key-value pairs. A collection is a set of documents
 - Easy to get started
 - Free cloud hosting - Atlas
 
-### [Setup MongoDB]()
+### [05. Setup MongoDB]()
 - We're going to use MongoDB for our project database
 - After creating a MongoDB account, create a new cluster and give the cluster a name
 - In MongoDB project dashboard
@@ -169,4 +169,56 @@
 - File: db/connect.js
   ```js
   const connectionString = 'PASTE_MONGODB_CONNECTION_STRING_HERE';
+  ```
+
+### Mongoose
+- Mongoose is a MongoDB object data modeling for node.js
+- Writing MongoDB validation, casting, and business logic boilerplate can be a pain. Mongoose provides a straight-forward, schema-based solution to model an application data. It includes built-in type casting, validation, query building, business logic hooks and more to make our development faster
+- Install Mongoose library:
+  - Install: `npm install mongoose`
+
+### [06. Connect to DB]()
+- What we want to do in our application is only when we are successfully connected to the database (MongoDB) then we will start up the Express server
+- File: db/connect.js
+  - Import the mongoose library
+  - Write a connectDB function that invokes the mongoose.connect() method to connect to MongoDB database. However, we will invoke this function in app.js file instead
+  - Make sure to provide the MongoDB password in the connection string, else it will not connect! By default, MongoDB assigned a name to the database, but can change it in the connection string
+  - Export the connectDB function as a module
+  ```js
+  const mongoose = require('mongoose');
+
+  // make sure to provide your password here. Else it'll not connect to DB
+  // 03-TASK-MANAGER is the name of the database
+  const connectionString = 'PASTE_MONGODB_CONNECTION_STRING_HERE';
+
+  // invoke mongoose.connect() in app.js file, not here
+  const connectDB = (url) => {
+    // connecting our application to MongoDB that we setup
+    // mongoose.connect() method returns a promise
+    return mongoose.connect(connectionString);
+  };
+
+  module.exports = connectDB;
+  ```
+- File: app.js
+  - Import connectDB function
+  - Write a `start` async function that connects our application to MongoDB with the help of Mongoose library by invoking connectDB() method. If this is successful, start up the Express server by invoking app.listen() method
+  ```js
+  const connectDB = require('./db/connect');
+
+  // Note that mongoose.connect() method returns a promise
+  // therefore use try/catch block here
+  const start = async () => {
+    try {
+      // invoking the mongoose.connect() method
+      await connectDB();
+
+      // start the server if the connection is successful
+      app.listen(port, console.log(`Sever is listening on port ${port}...`));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  start();
   ```

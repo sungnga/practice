@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 // import tasks router
 const tasks = require('./routes/tasks');
+const connectDB = require('./db/connect');
 
 // middleware
 // have access to json data in req.body
@@ -19,7 +20,21 @@ app.use('/api/v1/tasks', tasks);
 
 const port = 3000;
 
-app.listen(port, console.log(`Sever is listening on port ${port}...`));
+// Note that mongoose.connect() method returns a promise
+// therefore use try/catch block here
+const start = async () => {
+	try {
+		// invoking the mongoose.connect() method
+		await connectDB();
+
+		// start the server if the connection is successful
+		app.listen(port, console.log(`Sever is listening on port ${port}...`));
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+start();
 
 // ----ROUTE STRUCTURE----
 // app.get('/api/v1/tasks')        - get all the tasks
