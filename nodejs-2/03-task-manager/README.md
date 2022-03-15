@@ -272,3 +272,43 @@
 
   start();
   ```
+
+### [08. Creating our first schema and model]()
+- In MongoDB, we have collections which made up of documents. A schema created using Mongoose defines the blueprint or structure for a document, such as data types and validations. This is called schema definitions. A document is the data in key/value pairs
+- The valid SchemaTypes in Mongoose are:
+  - String
+  - Number
+  - Date
+  - Buffer
+  - Boolean
+  - Mixed
+  - ObjectId
+  - Map
+  - Schema
+- **Models**
+  - A model is a representation for the collection. In Mongoose, a model is a wrapper for the schema. A Mongoose model provides an interface to the database. Using the model, we'll be able to perform CRUD operations on MongoDB database
+  - An instance of a model is called a document
+  - When calling `mongoose.model()` on a schema, Mongoose compiles a model for you
+    - `const Task = mongoose.model('Task', schema);`
+    - The 1st argument is the singular name of the collection the model is for. Mongoose automatically looks for the plural, lowercase version of the model name. For example, the model Task is for the tasks collection in the database
+    - The `.model()` function makes a copy of `schema`
+- At the root of the project directory, create a folder called models
+- File: models/Task.js
+  - First, create a TaskSchema definitions which defines the structure of our task document
+  - Then create a Task collection and add the TaskSchema (the document) to the Task collection by calling `mongoose.model()`
+  - Lastly, export the Task model
+  ```js
+  const mongoose = require('mongoose');
+
+  // a schema defines the structure for the document in a collection
+  // Strings and Boolean are SchemaTypes
+  const TaskSchema = new mongoose.Schema({
+    name: String,
+    completed: Boolean
+  });
+
+  // the .model() method makes a copy of TaskSchema
+  // 1st arg is the name of the collection
+  // 2nd arg is the schema
+  module.exports = mongoose.model('Task', TaskSchema);
+  ```
