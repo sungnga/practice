@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 // a schema defines the structure for the document in a collection
 // Strings and Boolean are SchemaTypes
+// NOTE: only the properties setup in the schema will be passed to the database
 const TaskSchema = new mongoose.Schema({
 	name: String,
 	completed: Boolean

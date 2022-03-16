@@ -149,22 +149,28 @@
 
 ### [05. Setup MongoDB]()
 - We're going to use MongoDB for our project database
-- After creating a MongoDB account, create a new cluster and give the cluster a name
+- After creating a MongoDB account, create a new project and give the project a name: Nodejs-03-Task-Manager
 - In MongoDB project dashboard
-  - Setup Database Access:
+  - Create a cluster:
+    - Select Database in the main menu
+    - Select the Free tier
+    - Cloud Provider & Region: AWS and select the closest region to where you live
+    - Cluster Name: Give this cluster a name
+  - Setup Database Access Security:
     - Select Database Access in the main menu
     - Select Password as Authentication Method
     - Provide the name and password
     - For the Database User Privileges, select Read and write to any database
-  - Setup Network Access:
+  - Setup Network Access Security:
     - Select Network Access in the main menu
     - Then select Allow Access from Anywhere
   - Get connection string:
-    - Select Clusters in the main menu
+    - Select Database in the main menu
     - Click on the "CONNECT" button, then select "Connect your application"
     - Driver is: Node.js
     - Version is: 3.6 or later
     - Copy the connection string to the clipboard
+      - Replace <password> with the password for the 03-task-manager user. Replace <myFirstDatabase> with the name of the database that connections will use by default
 - At the root of project directory, create a folder called `db`. In it, create a file called connect.js
 - File: db/connect.js
   ```js
@@ -274,7 +280,7 @@
   ```
 
 ### [08. Creating our first schema and model]()
-- In MongoDB, we have collections which made up of documents. A schema created using Mongoose defines the blueprint or structure for a document, such as data types and validations. This is called schema definitions. A document is the data in key/value pairs
+- In MongoDB, we have collections which made up of documents. A schema created using Mongoose defines the blueprint or structure for a document, such as data types and validations. This is called schema definitions. A document is the data in key/value pairs. Only the properties setup in the schema will be passed to the database
 - The valid SchemaTypes in Mongoose are:
   - String
   - Number
@@ -291,10 +297,11 @@
   - When calling `mongoose.model()` on a schema, Mongoose compiles a model for you
     - `const Task = mongoose.model('Task', schema);`
     - The 1st argument is the singular name of the collection the model is for. Mongoose automatically looks for the plural, lowercase version of the model name. For example, the model Task is for the tasks collection in the database
-    - The `.model()` function makes a copy of `schema`
+    - The `.model()` function makes a copy of `schema` (creates a document)
 - At the root of the project directory, create a folder called models
 - File: models/Task.js
   - First, create a TaskSchema definitions which defines the structure of our task document
+  - NOTE: only the properties setup in the schema will be passed to the database
   - Then create a Task collection and add the TaskSchema (the document) to the Task collection by calling `mongoose.model()`
   - Lastly, export the Task model
   ```js
@@ -302,6 +309,7 @@
 
   // a schema defines the structure for the document in a collection
   // Strings and Boolean are SchemaTypes
+  // NOTE: only the properties setup in the schema will be passed to the database
   const TaskSchema = new mongoose.Schema({
     name: String,
     completed: Boolean
@@ -312,3 +320,25 @@
   // 2nd arg is the schema
   module.exports = mongoose.model('Task', TaskSchema);
   ```
+
+### [09. Creating a task document]()
+- Now that we setup the task schema and model, we should be able to perform CRUD operations in the controllers and update the database in MongoDB
+- To add/create a task document to the Task collection, simply call `.create()` on the Task model
+- NOTE: The `Task.create()` function is an async operation. So use async/await on this function
+- File: controllers/tasks.js
+  - Import the Task model: `const Task = require('../models/Task');`
+  - For the `createTask` route, we want to call the `Task.create()` method and pass in the data in `req.body` to it. This will add a new task document containing the data to the Task collection
+  - Adding/creating a document to the database is an async operation. So mark the createTask function as an `async` function and add the `await` keyword in front of the `Task.create()` function
+  ```js
+  const Task = require('../models/Task');;
+
+  // Create a task is a POST method
+  const createTask = async (req, res) => {
+    const task = await Task.create(req.body);
+    res.status(201).json({ task });
+  };
+  ```
+- To test if we're able to create a new task document and add it to the Task collection in MongoDB:
+  - use POSTMAN to create a task. Don't forget to provide the task data (name and completed keys)
+  - if successful, we should get back a 201 status code and a single `task` object back
+  - go to MongoDB dashboard page, select Database from the main menu, and click the "Browse Collections" button. Here, we should be able to see a new task document added to the "tasks" collection. Mongoose also creates an `_id` for each document for us. Note that in MongoDB, the tasks collection is in plural form. But when we created the collection in `mongoose.model('Task', TaskSchema)` method, we used singular form

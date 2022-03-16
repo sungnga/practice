@@ -1,9 +1,13 @@
+const Task = require('../models/Task');
+
 const getAllTasks = (req, res) => {
 	res.send('Get all tasks');
 };
 
-const createTask = (req, res) => {
-	res.json(req.body);
+// Create a task is a POST method
+const createTask = async (req, res) => {
+	const task = await Task.create(req.body);
+	res.status(201).json({ task });
 };
 
 const getTask = (req, res) => {
