@@ -4,8 +4,16 @@ const mongoose = require('mongoose');
 // Strings and Boolean are SchemaTypes
 // NOTE: only the properties setup in the schema will be passed to the database
 const TaskSchema = new mongoose.Schema({
-	name: String,
-	completed: Boolean
+	name: {
+		type: String,
+		required: [true, 'just provide name'],
+		trim: true,
+		maxlength: [20, 'name can not be more than 20 characters']
+	},
+	completed: {
+		type: Boolean,
+		default: false
+	}
 });
 
 // the .model() method makes a copy of TaskSchema

@@ -342,3 +342,43 @@
   - use POSTMAN to create a task. Don't forget to provide the task data (name and completed keys)
   - if successful, we should get back a 201 status code and a single `task` object back
   - go to MongoDB dashboard page, select Database from the main menu, and click the "Browse Collections" button. Here, we should be able to see a new task document added to the "tasks" collection. Mongoose also creates an `_id` for each document for us. Note that in MongoDB, the tasks collection is in plural form. But when we created the collection in `mongoose.model('Task', TaskSchema)` method, we used singular form
+
+### [10. Adding basic validation, handling errors]()
+- With our current setup, users are able to create a new task document without providing data or providing empty values. We can setup basic form validation in the schema
+- **Setting up basic validations:**
+- In the schema definitions, instead of specifying a simple SchemaType to the property, we can specify an object and pass in multiple properties including validations
+- File: models/Task.js
+  - Make the `name` property a required field, trim before and after white spaces, and with a maximum characters of 20
+  - Set the `completed` property default to false
+  ```js
+  // a schema defines the structure for the document in a collection
+  // Strings and Boolean are SchemaTypes
+  // NOTE: only the properties setup in the schema will be passed to the database
+  const TaskSchema = new mongoose.Schema({
+    name: {
+      type: String,
+      required: [true, 'just provide name'],
+      trim: true,
+      maxlength: [20, 'name can not be more than 20 characters']
+    },
+    completed: {
+      type: Boolean,
+      default: false
+    }
+  });
+  ```
+- **Handling validation errors:**
+- Next, if an error do occurs during this async operation, we need to handle it in the createTask controller because this is where the Task model is executed
+- File: controllers/tasks.js
+  - We handle the validation error using a try/catch block
+  ```js
+  // Create a task is a POST method
+  const createTask = async (req, res) => {
+    try {
+      const task = await Task.create(req.body);
+      res.status(201).json({ task });
+    } catch (error) {
+      res.status(500).json({ msg: error }); //2nd option is to send back a simple error message
+    }
+  };
+  ```

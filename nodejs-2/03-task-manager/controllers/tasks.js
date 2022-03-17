@@ -6,8 +6,12 @@ const getAllTasks = (req, res) => {
 
 // Create a task is a POST method
 const createTask = async (req, res) => {
-	const task = await Task.create(req.body);
-	res.status(201).json({ task });
+	try {
+		const task = await Task.create(req.body);
+		res.status(201).json({ task });
+	} catch (error) {
+		res.status(500).json({ msg: error }); //2nd option is to send back a simple error message
+	}
 };
 
 const getTask = (req, res) => {
