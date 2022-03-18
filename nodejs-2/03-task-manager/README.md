@@ -409,3 +409,42 @@
     }
   };
   ```
+
+### [12. Add logic to getTask controller]()
+- Get a single task from the database based on the taskID
+- The static function we will use is Model.findOne()
+- File: controllers/tasks.js
+  ```js
+  const getTask = async (req, res) => {
+    try {
+      // get the id out of req.params
+      // destructure the id and give it a new alias
+      const { id: taskID } = req.params;
+      const task = await Task.findOne({ _id: taskID });
+
+      // if this task id not found
+      if (!task) {
+        return res.status(404).json({ msg: `No task with id: ${taskID}` });
+      }
+
+      res.status(200).json({ task });
+    } catch (error) {
+      // syntax or general error
+      res.status(500).json({ msg: error }); //2nd option is to send back a simple error message
+    }
+  };
+  ```
+- To test out our controller using POSTMAN tool:
+  - First, make a request to get all tasks and copy the `_id` of one of the tasks
+  - Make a single task get request and paste that id into the route params
+  - If we're successful, we should get back a single task object from the database
+    ```js
+    {
+        "task": {
+            "_id": "62313353ebaf6a977c306f92",
+            "name": "Shower",
+            "completed": true,
+            "__v": 0
+        }
+    }
+    ```
