@@ -382,3 +382,30 @@
     }
   };
   ```
+
+### [11. Add logic to getAllTasks controller]()
+- Docs: https://mongoosejs.com/docs/queries
+  - Mongoose models provide several static helper functions for CRUD operations. These functions return a mongoose `Query` object
+    - Model.deleteOne()
+    - Model.deleteMany()
+    - Model.find()
+    - Model.findOne()
+    - Model.findById()
+    - Model.replaceOne()
+    - Model.updateOne()
+    - Model.updateMany()
+  - A mongoose query can be executed in one of two ways. First, if you pass in a callback function, mongoose will execute the query asynchronously and pass the results to the callback
+  - A query also has a `.then()` method, and thus can be used as a promise. NOTE that mongoose queries are not promises. They have a `.then()` method for async/await as a convenience. Calling a query's `.then()` can execute the query multiple times
+- File: controllers/tasks.js
+  - Let's write the logic for the getAllTasks controller. Use a try/catch block since this is an async operation
+  - The Model.find() function will query all the task documents for us
+  ```js
+  const getAllTasks = async (req, res) => {
+    try {
+      const tasks = await Task.find({});
+      res.status(200).json({ tasks });
+    } catch (error) {
+      res.status(500).json({ msg: error }); //2nd option is to send back a simple error message
+    }
+  };
+  ```
