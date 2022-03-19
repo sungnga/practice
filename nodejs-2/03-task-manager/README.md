@@ -448,3 +448,30 @@
         }
     }
     ```
+
+### [13. Add logic to deleteTask controller]()
+- The static function we will use is Model.findOneAndDelete()
+- File: controllers/tasks.js
+  ```js
+  const deleteTask = (req, res) => {
+    try {
+      const { id: taskID } = req.params;
+      const task = await Task.findOneAndDelete({ _id: taskID });
+
+      // if this task id not found
+      if (!task) {
+        return res.status(404).json({ msg: `No task with id: ${taskID}` });
+      }
+
+      // 1st option: send back the task that has been removed
+      // res.status(200).json({ task });
+      // 2nd option: just sent the status code
+      // res.status(200).send();
+      // 3rd option: send status code, set task to null, and a custom message
+      res.status(200).json({ task: null, status: 'success' });
+    } catch (error) {
+      // syntax or general error
+      res.status(500).json({ msg: error }); //2nd option is to send back a simple error message
+    }
+  };
+  ``
