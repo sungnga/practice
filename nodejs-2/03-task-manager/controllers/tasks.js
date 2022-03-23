@@ -39,10 +39,29 @@ const getTask = async (req, res) => {
 };
 
 const updateTask = async (req, res) => {
-	res.send('Update task');
+	try {
+		const { id: taskID } = req.params;
+
+		// the 3rd arg is an options object
+		// by default, it sends back the old task. But we want the new/updated task
+		// runValidators ensures that users provide a value for name property
+		const task = await Task.findOneAndUpdate({ _id: taskID }, req.body, {
+			new: true,
+			runValidators: true
+		});
+
+		if (!task) {
+			return res.status(404).json({ msg: `No task with id: ${taskID}` });
+		}
+
+		res.status(200).json({ task });
+	} catch (error) {
+		// syntax or general error
+		res.status(500).json({ msg: error }); //2nd option is to send back a simple error message
+	}
 };
 
-const deleteTask = (req, res) => {
+const deleteTask = async (req, res) => {
 	try {
 		const { id: taskID } = req.params;
 		const task = await Task.findOneAndDelete({ _id: taskID });

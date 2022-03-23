@@ -453,7 +453,7 @@
 - The static function we will use is Model.findOneAndDelete()
 - File: controllers/tasks.js
   ```js
-  const deleteTask = (req, res) => {
+  const deleteTask = async (req, res) => {
     try {
       const { id: taskID } = req.params;
       const task = await Task.findOneAndDelete({ _id: taskID });
@@ -474,4 +474,36 @@
       res.status(500).json({ msg: error }); //2nd option is to send back a simple error message
     }
   };
-  ``
+  ```
+
+### [14. Add logic to updateTask controller]()
+- To update a task, we need to get the taskID from route params and the data from req.body to be updated
+- The static function we will use is Model.findOneAndUpdate(). We pass in three arguments to this function
+  - The 1st is the taskID
+  - The 2nd is the updated task provided in req.body
+  - The 3rd is an options object. We want to get back the updated task and not the old by task, by default. And we want to add validators
+- File: controllers/tasks.js
+  ```js
+  const updateTask = async (req, res) => {
+    try {
+      const { id: taskID } = req.params;
+
+      // the 3rd arg is an options object
+      // by default, it sends back the old task. But we want the new/updated task
+      // runValidators ensures that users provide a value for name property
+      const task = await Task.findOneAndUpdate({ _id: taskID }, req.body, {
+        new: true,
+        runValidators: true
+      });
+
+      if (!task) {
+        return res.status(404).json({ msg: `No task with id: ${taskID}` });
+      }
+
+      res.status(200).json({ task });
+    } catch (error) {
+      // syntax or general error
+      res.status(500).json({ msg: error }); //2nd option is to send back a simple error message
+    }
+  };
+  ```
