@@ -5,15 +5,12 @@ const tasks = require('./routes/tasks');
 const connectDB = require('./db/connect');
 require('dotenv').config();
 
-// middleware
+// ---middleware---
 // have access to json data in req.body
 app.use(express.json());
+app.use(express.static('./public'));
 
-// routes
-app.get('/hello', (req, res) => {
-	res.send('Task Manager App');
-});
-
+// ---routes---
 // using tasks router as middleware
 // 1st arg is the base route
 // 2nd arg is the tasks router

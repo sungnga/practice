@@ -507,3 +507,15 @@
     }
   };
   ```
+
+### [15. Add front-end]()
+- The next step we want to do is to serve static files in the public folder. And in order to serve static files, we're going to use the Express middleware `express.static()`
+- File: app.js
+  - Call `app.use()` to use a middleware and pass in express middleware's `express.static()` to serve static files in the public folder
+  ```js
+  app.use(express.static('./public'));
+  ```
+- To see our static files being server, navigate in the browser to: `http://localhost:3000/`
+  - Here, we should see a Task Manager form for the user to submit a task and also a list of tasks coming from MongoDB database from tasks collection
+  - If a task is completed, it's crossed out. There's an edit button to update the task and a delete button to delete the task
+  - All the functionalities for the CRUD operations should be working and any changes made should be reflected in MongoDB database
