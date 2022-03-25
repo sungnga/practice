@@ -526,3 +526,24 @@
   - For example, if we provide the data that we want to update but do not provide the data for other properties in the document and we set the option property to `overwrite: true`, then those properties we don't update will be removed
 - PATCH method is for partial update
   - For example, if we provide the data that we want to update and not provide any data for other properties, those properties will remain in put and will not be removed
+
+### [16. Adding a custom route not-found middleware]()
+- If the requested resource is not found we want to send back a custom 404 response
+- To do this, we're going to create a not-found middleware and use it in the app.js file
+- At the root of the directory, create a folder called middleware
+- File: middleware/not-found.js
+  ```js
+  // since this is a middleware, it has access to the req and res objects
+  // sending back a custom message with a 404 status code
+  const notFound = (req, res) => res.status(404).send('Route does not exist');
+
+  module.exports = notFound;
+  ```
+- File: app.js
+  - Import the not-found middleware
+  - Call `app.use()` method to use the middleware
+  ```js
+  const notFound = require('./middleware/not-found');
+
+  app.use(notFound);
+  ```

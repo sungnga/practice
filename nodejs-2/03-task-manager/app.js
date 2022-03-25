@@ -4,6 +4,7 @@ const app = express();
 const tasks = require('./routes/tasks');
 const connectDB = require('./db/connect');
 require('dotenv').config();
+const notFound = require('./middleware/not-found');
 
 // ---middleware---
 // have access to json data in req.body
@@ -15,6 +16,8 @@ app.use(express.static('./public'));
 // 1st arg is the base route
 // 2nd arg is the tasks router
 app.use('/api/v1/tasks', tasks);
+
+app.use(notFound);
 
 const port = 3000;
 
