@@ -519,3 +519,10 @@
   - Here, we should see a Task Manager form for the user to submit a task and also a list of tasks coming from MongoDB database from tasks collection
   - If a task is completed, it's crossed out. There's an edit button to update the task and a delete button to delete the task
   - All the functionalities for the CRUD operations should be working and any changes made should be reflected in MongoDB database
+
+### PUT vs PATCH methods
+- Both PUT and PATCH methods are for updating the resource
+- PUT method is replacing the existing resource
+  - For example, if we provide the data that we want to update but do not provide the data for other properties in the document and we set the option property to `overwrite: true`, then those properties we don't update will be removed
+- PATCH method is for partial update
+  - For example, if we provide the data that we want to update and not provide any data for other properties, those properties will remain in put and will not be removed
