@@ -547,3 +547,41 @@
 
   app.use(notFound);
   ```
+
+### [17. Creating asyncWrapper middleware]()
+- In our current controllers setup, we've been using the try-catch blocks for each async controllers. This approach we have setup has a lot of redundant code. A better approach would be to setup a middleware function and wrap our controllers in it. There are npm packages out there that will do this for us, but for now, we're going to write this middleware function ourselves
+- This `asyncWrapper` middleware is invoked inside the Express `router.route` methods, which essentially, takes the route controller function as an argument and returns an async function that runs the controller function in a try-catch block
+- In middleware folder, create a file called async.js
+- File: middleware/async.js
+  - Create and export an asyncWrapper middleware function
+  - How this asyncWrapper middleware function works is this:
+    - It runs inside the Express `router.route` methods. So it has access to the `req` and `res` objects and the `next` method
+    - This asyncWrapper wraps around the route controller. So it takes a function, which is a controller, as an argument. The controller is an async function, so it returns a promise
+    - The asyncWrapper middleware returns an async function with try-catch block. This returned async function runs the controller function in a try-block and catches the error in a catch-block and passes it to the next errorHandler middleware. The controller function takes `req, res, next` as arguments, which the asyncWrapper middleware has access from Express and passes them down to it
+    - The main task of the asyncWrapper middleware is to run the route controller function in a try-catch block and passes any errors to the next errorHandler middleware
+    - 
+  ```js
+  // takes a function (the controller) as an argument
+  // this function returns an async function with try-catch block
+  const asyncWrapper = (fn) => {
+    // asyncWrapper has access to req, res, and next from Express
+    return async (req, res, next) => {
+      // since the returned funct is an async funct, we use a try-catch block
+      try { 
+        // execute the controller function with the provided req, res, next as args
+        // add the await keyword in front because the controller is an async function
+        await fn(req, res, next);
+      } catch (error) {
+        // if error occurs, pass the error to the next errorHandler middleware
+        next(error);
+      }
+    };
+  };
+
+  module.exports = asyncWrapper;
+  ```
+- File: controllers/tasks.js
+  - Import the asyncWrapper middleware function
+  ```js
+
+  ```
