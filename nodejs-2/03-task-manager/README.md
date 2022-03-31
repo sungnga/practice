@@ -582,6 +582,44 @@
   ```
 - File: controllers/tasks.js
   - Import the asyncWrapper middleware function
+  - For each of the route controller, wrap the entire controller function inside the asyncWrapper middleware. Then remove the try-catch block in the controller because the asyncWrapper is now handling the try-catch block
+  - Still mark the controller as an async function because querying the database is still an async operation. And the controller still has access to the req and res objects
   ```js
+  const asyncWrapper = require('../middleware/async');
 
+  // The asyncWrapper middleware is invoked inside the 
+  // Express router.route.get() .post() etc. methods
+
+  // The asyncWrapper middleware is expecting a function as an argument
+  // Wrap the entire controller inside the asyncWrapper middleware
+  // Then remove the try-catch block. This being handled in the asyncWrapper middleware
+  const getAllTasks = asyncWrapper(async (req, res) => {
+    const tasks = await Task.find({});
+    res.status(200).json({ tasks });
+  });
   ```
+### [18. Creating custom error-handling middleware]()
+- Express has a default built-in error handler, but we want to create our own custom error-handling middleware
+- In middleware folder, create a file called error-handler.js
+- File: middleware/error-handler.js
+  - Write and export the errorHandlerMiddleware
+  ```js
+  // this middleware has access to these four params
+  const errorHandlerMiddleware = (err, req, res, next) => {
+    // return res.status(500).json({ msg: err }); //system-generated error message
+    return res.status(500).json({ msg: `Something went wrong, try again later` }); //custom error message
+  };
+
+  module.exports = errorHandlerMiddleware;
+  ```
+- File: app.js
+  - Import the errorHandlerMiddleware module
+  - Call the `app.use()` method and pass in the middleware as an argument to use the middleware
+  ```js
+  const errorHandlerMiddleware = require('./middleware/error-handler');
+
+  app.use(errorHandlerMiddleware);
+  ```
+- Testing the error handler middleware in POSTMAN
+  - Try to make a POST request without providing a value to the name property
+  - We should see a 500 status code of Internal Server Error with the custom error message
