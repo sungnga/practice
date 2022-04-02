@@ -653,7 +653,7 @@
   - Do the same thing for the `updateTask` and `deleteTask` controllers, if no task exists
   ```js
   const { createCustomError } = require('../errors/custom-error');
-  
+
   const getTask = asyncWrapper(async (req, res, next) => {
     // get the id out of req.params
     // destructure the id and give it a new alias
@@ -691,4 +691,13 @@
   };
 
   module.exports = errorHandlerMiddleware;
+  ```
+
+### [20. Setting PORT variable]()
+- It is okay to hardcode a port value (i.e port 3000) when working in local environment. However, when we deploy our application to a third-party platform, they may want to set their own port value. To make this possible, we want to use whatever port that is available in `process.env.PORT` and also setup an or operator in case it is undefined
+- File: app.js
+  ```js
+  // use port value set in process.env
+  // if not available, use port 3000
+  const port = process.env.PORT || 3000;
   ```
