@@ -598,6 +598,7 @@
     res.status(200).json({ tasks });
   });
   ```
+
 ### [18. Creating custom error-handling middleware]()
 - Express has a default built-in error handler, but we want to create our own custom error-handling middleware
 - In middleware folder, create a file called error-handler.js
@@ -623,3 +624,71 @@
 - Testing the error handler middleware in POSTMAN
   - Try to make a POST request without providing a value to the name property
   - We should see a 500 status code of Internal Server Error with the custom error message
+
+### [19. Creating custom Error class]()
+- What we want to do next is to create a custom Error class by extending from the Javascript built-in Error class. This way we get to use our own properties and methods when we instantiate a new error object in the controllers. We use this custom Error class to handle the 404 error response
+- At the root of the project directory, create a folder called errors
+- File: errors/custom-error.js
+  - Create a CustomAPIError class by extending from the Javascript built-in Error class
+  - Create a createCustomError function that creates a new instance from the CustomAPIError class
+  - Export both the CustomAPIError class and the createCustomError function
+  ```js
+  class CustomAPIError extends Error {
+    constructor(message, statusCode) {
+      super(message);
+      this.statusCode = statusCode;
+    }
+  }
+
+  // a function that creates a new instance from CustomAPIError class
+  const createCustomError = (msg, statusCode) => {
+    return new CustomAPIError(msg, statusCode);
+  };
+
+  module.exports = { CustomAPIError, createCustomError };
+  ```
+- File: controllers/tasks.js
+  - Import the createCustomError function
+  - Let's start with the `getTask` controller. If no task exists, we want to return and call the `next()` method. Then we want to call the createCustomError() method to create a new error instance. And we need to pass in the message and statusCode
+  - Do the same thing for the `updateTask` and `deleteTask` controllers, if no task exists
+  ```js
+  const { createCustomError } = require('../errors/custom-error');
+  
+  const getTask = asyncWrapper(async (req, res, next) => {
+    // get the id out of req.params
+    // destructure the id and give it a new alias
+    const { id: taskID } = req.params;
+    const task = await Task.findOne({ _id: taskID });
+
+    // if this task id not found
+    if (!task) {
+      return next(createCustomError(`No task with id: ${taskID}`, 404));
+    }
+
+    res.status(200).json({ task });
+  });
+  ```
+- File: middleware/error-handler.js
+  - Name import the CustomAPIError class
+  - Write an if statement to check if the `err` object is an instance of the CustomAPIError class. If it is, return the statusCode from err.statusCode and the message from err.message
+  - Then return a default error statusCode of 500 and a custom message
+  ```js
+  const { CustomAPIError } = require('../errors/custom-error');
+
+  // this middleware has access to these four params
+  const errorHandlerMiddleware = (err, req, res, next) => {
+    // check if err is instance of CustomAPIError
+    if (err instanceof CustomAPIError) {
+      return res.status(err.statusCode).json({ msg: err.message });
+    }
+
+    // return res.status(500).json({ msg: err }); //system-generated error message
+
+    // default statusCode and error message
+    return res
+      .status(500)
+      .json({ msg: `Something went wrong, please try again` }); //custom error message
+  };
+
+  module.exports = errorHandlerMiddleware;
+  ```
