@@ -53,3 +53,47 @@
   };
   start();
   ```
+
+### [03. Connect to the database]()
+- Go to MongoDB dashboard page, in the Nodejs-03-Task-Manager project and under the Database menu item, click on the Connect button. Then select 'Connect your application'. Copy the connection string to the clipboard 
+- At the root of the project directory, create a file called .env
+- File: .env
+  - Paste the connection string here
+  - Replace `myFirstDatabase` with 04-STORE-API
+  - Replace `<password>` with a password
+  ```js
+  MONGO_URI=mongodb+srv://03-task-manager:<password>@nodejs-03-task-manager.k3slk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+  ```
+- The connectDB function is already setup in db/connect.js file. We already covered this in section 03
+  ```js
+  const mongoose = require('mongoose');
+
+  const connectDB = (url) => {
+    return mongoose.connect(url, {
+      useNewUrlParser: true,
+      useCreateIndex: true,
+      useFindAndModify: false,
+      useUnifiedTopology: true
+    });
+  };
+
+  module.exports = connectDB;
+  ```
+- File: app.js
+  - Import the connectDB module
+  - In the try block of the async start function, call the `connectDB()` function and pass in the connection string in the .env file as an argument. Add the await keyword in front of it since this is an async operation
+  ```js
+  const connectDB = require('./db/connect');
+
+  const start = async () => {
+    try {
+      // connectDB
+      await connectDB(process.env.MONGO_URI);
+      app.listen(port, console.log(`Server is listening on port ${port}...`));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  start();
+  ```
+- Stop and restart the server. If the connection is successful, you should see 'Server is listening to port 3000...' printed in the console
