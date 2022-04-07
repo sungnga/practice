@@ -97,3 +97,54 @@
   start();
   ```
 - Stop and restart the server. If the connection is successful, you should see 'Server is listening to port 3000...' printed in the console
+
+### [04. Setting up the router]()
+- File: controllers/products.js
+  - Create and export a basic getAllProductsStatic and getAllProducts controllers
+  ```js
+  const getAllProductsStatic = async (req, res) => {
+    res.status(200).json({ msg: 'products testing route' });
+  };
+
+  const getAllProducts = async (req, res) => {
+    res.status(200).json({ msg: 'products route' });
+  };
+
+  module.exports = { getAllProductsStatic, getAllProducts };
+  ```
+- File: routes/products.js
+  - Require in the express module and from there, execute the `express.Router()` class to instantiate a `router` object
+  - Import the getAllProductsStatic and getAllProducts controller modules
+  - Setup the base route to getAllProducts using the `.get()` method
+  - Setup the /static route to getAllProductsStatic using the `.get()` method
+  - Export as a module the `router` middleware
+  ```js
+  const express = require('express');
+  const router = express.Router();
+
+  const {
+    getAllProductsStatic,
+    getAllProducts
+  } = require('../controllers/products');
+
+  router.route('/').get(getAllProducts);
+  router.route('/static').get(getAllProductsStatic);
+
+  module.exports = router;
+  ```
+- File: app.js
+  - Import the router middleware
+  - Here, we want to use the router middleware by using `app.use()`
+    - Provide the base path as first argument
+    - Provide the router middleware as second argument
+  ```js
+  const productsRouter = require('./routes/products');
+
+  // base route
+  // 1st arg is the base path
+  // 2nd arg is the router middleware
+  app.use('/api/v1/products', productsRouter);
+  ```
+- To test out our router setup:
+  - Testing base route: In the browser, navigate to `http://localhost:3000/api/v1/products`. If successful, we should see `"msg": "products route"` printed
+  - Testing /static route: In the browser, navigate to `http://localhost:3000/api/v1/products/static`. If successful, we should see `"msg": "products testing route"` printed
