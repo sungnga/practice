@@ -148,3 +148,33 @@
 - To test out our router setup:
   - Testing base route: In the browser, navigate to `http://localhost:3000/api/v1/products`. If successful, we should see `"msg": "products route"` printed
   - Testing /static route: In the browser, navigate to `http://localhost:3000/api/v1/products/static`. If successful, we should see `"msg": "products testing route"` printed
+
+### [05. Using the express-async-errors library]()
+- Instead of writing our own async error wrapper, we're going to use a library to help us do this
+- With this library, it handles the try-catch block for us and has the `next()` method that passes the error to our error-handler middleware. We simply need to `throw new Error('write_message_here')` object in the controller and our `errorHandlerMiddleware` function in error-handler.js file will handle the error
+  - Install: `npm install express-async-errors`
+- File: app.js
+  - Require in the express-async-errors library
+  ```js
+  require('express-async-errors');
+  ```
+- File: controllers/products.js
+  - Add `throw new Error('testing async errors');` to each controller. Also, no need to pass `next` to the controller either
+  ```js
+  const getAllProductsStatic = async (req, res) => {
+    throw new Error('testing async errors');
+    res.status(200).json({ msg: 'products testing route' });
+  };
+  ```
+- File: middleware/error-handler.js
+  - Console log the error
+  ```js
+  const errorHandlerMiddleware = async (err, req, res, next) => {
+    console.log(err);
+    return res
+      .status(500)
+      .json({ msg: 'Something went wrong, please try again' });
+  };
+
+  module.exports = errorHandlerMiddleware;
+  ```
