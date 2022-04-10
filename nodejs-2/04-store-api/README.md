@@ -222,3 +222,50 @@
 
   module.exports = mongoose.model('Product', productSchema);
   ```
+
+### [07. Populate the database with products]()
+- We already have an array of products in products.json file and we're going to write a function that connects to our MongoDB and populate these products into our database
+- File: populate.js
+  - Write an async start function that
+    - connects to our MongoDB
+    - deletes any existing products in the database
+    - creates new products that's coming from products.json file
+    - if all of the above is successful, exit the process. We don't need to listen to the file anymore
+    - if not successful, console log the error and exit the process
+  ```js
+  require('dotenv').config();
+
+  const connectDB = require('./db/connect');
+  const Product = require('./models/product');
+
+  // an array of products
+  const jsonProducts = require('./products.json');
+
+  const start = async () => {
+    try {
+      // connect to DB
+      // pass in the connection string
+      await connectDB(process.env.MONGO_URI);
+
+      // delete any existing products in DB
+      await Product.deleteMany();
+
+      // populate the products array in DB
+      await Product.create(jsonProducts);
+
+      console.log('Success!!');
+		  // if successful, exit the process
+		  process.exit(0);
+    } catch (error) {
+      console.log(error);
+		  process.exit(1);
+    }
+  };
+  start();
+  ```
+- In the terminal and at root of project, run: `node populate`
+  - If the operation is successful, we should see 'Success!!' printed out
+- This will connect to MongoDB and populate the products array in 04-STORE-API collection 
+- In MongoDB dashboard page, navigate to Nodejs-03-Task-Manager project and select the Collects tab at the top
+  - We should see the 04-STORE-API collection has been created
+  - In it contains the 'products' collection of the products array
