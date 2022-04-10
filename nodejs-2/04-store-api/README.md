@@ -178,3 +178,47 @@
 
   module.exports = errorHandlerMiddleware;
   ```
+
+### [06. Setup Product model]()
+- Setup the product schema using the Mongoose library
+- File: models/product.js
+  - Require in Mongoose package
+  - Then call `new mongoose.Schema()` to create a product schema
+  - Specify all the properties for the Product model in the schema
+  - Lastly, export the Product model as a module
+  ```js
+  const mongoose = require('mongoose');
+
+  const productSchema = new mongoose.Schema({
+    name: {
+      type: String,
+      required: [true, 'product name must be provided']
+    },
+    price: {
+      type: Number,
+      required: [true, 'product price must be provided']
+    },
+    featured: {
+      type: Boolean,
+      default: false
+    },
+    rating: {
+      type: Number,
+      default: 4.5
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now()
+    },
+    company: {
+      type: String,
+      enum: {
+        values: ['ikea', 'liddy', 'caressa', 'marcos'],
+        message: '{VALUE} is not supported'
+      }
+      // enum: ['ikea', 'liddy', 'caressa', 'marcos']
+    }
+  });
+
+  module.exports = mongoose.model('Product', productSchema);
+  ```
