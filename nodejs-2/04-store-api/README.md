@@ -269,3 +269,26 @@
 - In MongoDB dashboard page, navigate to Nodejs-03-Task-Manager project and select the Collects tab at the top
   - We should see the 04-STORE-API collection has been created
   - In it contains the 'products' collection of the products array
+
+### [07. Basic find]()
+- Visit the Mongoose website to see all the query methods that we can use to interact with our database in MongoDB
+- File: controllers/products.js
+  - Require in the Product model
+  - Use the .find() method on the Product model to get all products in DB
+    - By default, passing in an empty object `{}` will return all items in the collection
+    - Can also find specific items by passing in options
+  ```js
+  const Product = require('../models/product');
+
+  const getAllProductsStatic = async (req, res) => {
+    // passing in empty object will return all products
+    const products = await Product.find({});
+
+    //specifying options
+    const products = await Product.find({
+      name: 'vase table'
+    });
+
+    res.status(200).json({ products });
+  };
+  ```
