@@ -4,7 +4,7 @@ const getAllProductsStatic = async (req, res) => {
 	// passing in empty object will return all products
 	// const products = await Product.find({});
 
-	//specifying options
+	//specifying options - filter by hardcoded values
 	const products = await Product.find({
 		name: 'vase table'
 	});
@@ -13,7 +13,10 @@ const getAllProductsStatic = async (req, res) => {
 };
 
 const getAllProducts = async (req, res) => {
-	res.status(200).json({ msg: 'products route' });
+	// find products by query params
+	// get the values of query string params from req.query
+	const products = await Product.find(req.query);
+	res.status(200).json({ products, nbHits: products.length });
 };
 
 module.exports = { getAllProductsStatic, getAllProducts };

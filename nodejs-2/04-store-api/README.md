@@ -284,11 +284,28 @@
     // passing in empty object will return all products
     const products = await Product.find({});
 
-    //specifying options
+    //specifying options - filter by hardcoded values
     const products = await Product.find({
       name: 'vase table'
     });
 
     res.status(200).json({ products });
+  };
+  ```
+
+### [07. Find products with query params]()
+- A user can send requests for specific products using the query string params
+- When a user queries our database using query string params, we have access to those values in `req.query`
+- The query string params are key-value pairs of the properties of the model object
+- In the URL, the query params comes after the `?` character. Separate multiple query strings with `&`
+  - `{{URL}}/products?name=john&featured=true`
+  - name and featured are properties
+- File: controllers/products.js
+  ```js
+  const getAllProducts = async (req, res) => {
+    // find products by query params
+    // get the values of query string params from req.query
+    const products = await Product.find(req.query);
+    res.status(200).json({ products, nbHits: products.length });
   };
   ```
