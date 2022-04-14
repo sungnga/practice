@@ -293,7 +293,7 @@
   };
   ```
 
-### [07. Find products with query params]()
+### [08. Find products with query params]()
 - A user can send requests for specific products using the query string params
 - When a user queries our database using query string params, we have access to those values in `req.query`
 - The query string params are key-value pairs of the properties of the model object
@@ -306,6 +306,41 @@
     // find products by query params
     // get the values of query string params from req.query
     const products = await Product.find(req.query);
+    res.status(200).json({ products, nbHits: products.length });
+  };
+  ```
+
+### [09. Refactor to queryObject]()
+- Right now with our current setup, if the user provides a query params that does not match any of the properties that we set up for the model, Mongoose will return the products of an empty array. What we want instead is if the query params doesn't math, we want to return the entire products collection
+- To make this work, we want to refactor our getAllProducts controller where we first create our own queryObject and append any properties we want to this object. Then pass this queryObject to the `Product.find()` method. If queryObject is an empty object, Mongoose will return all products items. By default, passing in an empty object `{}` to the `.find()` method will return all items in the collection
+- File: controllers/products.js
+  - Let's handle the featured and company properties
+  ```js
+  const getAllProducts = async (req, res) => {
+    // get the values of query params from req.query
+    // destructure the properties from req.query
+    const { featured, company } = req.query;
+    const queryObject = {};
+
+    // if featured query params exists, add featured prop to queryObject
+    if (featured) {
+      // use ternary operator
+      // if the value of featured is true, set featured prop to true
+      // else set to false
+      queryObject.featured = featured === 'true' ? true : false;
+    }
+
+    // if company query params exists
+    if (company) {
+      // add company prop to queryObject
+      // and set its value to the value from query params
+      queryObject.company = company;
+    }
+    console.log(queryObject);
+
+    // if none of the properties matches, queryObject is an empty object
+    // passing in an empty object Mongoose will return all products
+    const products = await Product.find(queryObject);
     res.status(200).json({ products, nbHits: products.length });
   };
   ```
