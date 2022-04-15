@@ -1,12 +1,17 @@
 const Product = require('../models/product');
 
 const getAllProductsStatic = async (req, res) => {
+	const search = 'ab';
+
 	// passing in empty object will return all products
 	// const products = await Product.find({});
 
 	//specifying options - filter by hardcoded values
 	const products = await Product.find({
-		name: 'vase table'
+		// $regex is one of many mongoDB query operators
+		// pass in the pattern to $regex
+		// option i is for case insensitive
+		name: { $regex: search, $options: 'i' }
 	});
 
 	res.status(200).json({ products });
@@ -15,7 +20,7 @@ const getAllProductsStatic = async (req, res) => {
 const getAllProducts = async (req, res) => {
 	// get the values of query params from req.query
 	// destructure the properties from req.query
-	const { featured, company } = req.query;
+	const { featured, company, name } = req.query;
 	const queryObject = {};
 
 	// if featured query params exists, add featured prop to queryObject
@@ -31,6 +36,13 @@ const getAllProducts = async (req, res) => {
 		// add company prop to queryObject
 		// and set its value to the value from query params
 		queryObject.company = company;
+	}
+
+	if (name) {
+		// $regex is one of many mongoDB query operators
+		// pass in the pattern to $regex
+		// option i is for case insensitive
+		queryObject.name = { $regex: name, $options: 'i' };
 	}
 	console.log(queryObject);
 

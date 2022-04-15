@@ -294,6 +294,7 @@
   ```
 
 ### [08. Find products with query params]()
+- The next thing we want to work on is enable our users to filter the products collection by name of product, company, and product is featured or not
 - A user can send requests for specific products using the query string params
 - When a user queries our database using query string params, we have access to those values in `req.query`
 - The query string params are key-value pairs of the properties of the model object
@@ -344,3 +345,45 @@
     res.status(200).json({ products, nbHits: products.length });
   };
   ```
+
+### [10. Query by name]()
+- Google search 'MongoDB query operators' to get a list of all query operators
+- In our case, we want to use `$regex` to query for the name of a product and we want it to be case insensitive. In our project, the `name` property works very similar to search or query where the user can type anything they want to query products by name. We want to pass this `name` query string params as a pattern to the `$regex` query operator
+- File: controllers/products.js
+  ```js
+  const getAllProducts = async (req, res) => {
+    // get the values of query params from req.query
+    // destructure the properties from req.query
+    const { featured, company, name } = req.query;
+    const queryObject = {};
+
+    // if featured query params exists, add featured prop to queryObject
+    if (featured) {
+      // use ternary operator
+      // if the value of featured is true, set featured prop to true
+      // else set to false
+      queryObject.featured = featured === 'true' ? true : false;
+    }
+
+    // if company query params exists
+    if (company) {
+      // add company prop to queryObject
+      // and set its value to the value from query params
+      queryObject.company = company;
+    }
+
+    if (name) {
+      // $regex is one of many mongoDB query operators
+      // pass in the pattern to $regex
+      // option i is for case insensitive
+      queryObject.name = { $regex: name, $options: 'i' };
+    }
+    console.log(queryObject);
+
+    // if non of the properties matches, queryObject is an empty object
+    // passing in an empty object Mongoose will return all products
+    const products = await Product.find(queryObject);
+    res.status(200).json({ products, nbHits: products.length });
+  };
+  ```
+
