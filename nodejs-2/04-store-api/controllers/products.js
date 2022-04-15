@@ -11,16 +11,16 @@ const getAllProductsStatic = async (req, res) => {
 		// $regex is one of many mongoDB query operators
 		// pass in the pattern to $regex
 		// option i is for case insensitive
-		name: { $regex: search, $options: 'i' }
-	});
+		// name: { $regex: search, $options: 'i' }
+	}).sort('-name price');
 
-	res.status(200).json({ products });
+	res.status(200).json({ products, nbHits: products.length });
 };
 
 const getAllProducts = async (req, res) => {
 	// get the values of query params from req.query
 	// destructure the properties from req.query
-	const { featured, company, name } = req.query;
+	const { featured, company, name, sort } = req.query;
 	const queryObject = {};
 
 	// if featured query params exists, add featured prop to queryObject
@@ -44,11 +44,21 @@ const getAllProducts = async (req, res) => {
 		// option i is for case insensitive
 		queryObject.name = { $regex: name, $options: 'i' };
 	}
-	console.log(queryObject);
 
-	// if non of the properties matches, queryObject is an empty object
-	// passing in an empty object Mongoose will return all products
-	const products = await Product.find(queryObject);
+	// don't add the await keyword here
+	let result = Product.find(queryObject);
+	// if sort exists in query params
+	if (sort) {
+		// split the sort array at comma and join back with a space
+		const sortList = sort.split(',').join(' ');
+		// sort the products list by the specified sort query params
+		result = result.sort(sortList);
+	} else {
+		result = result.sort('createdAt');
+	}
+
+	// add the await keyword here
+	const products = await result;
 	res.status(200).json({ products, nbHits: products.length });
 };
 

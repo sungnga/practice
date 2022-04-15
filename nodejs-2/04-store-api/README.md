@@ -387,3 +387,42 @@
   };
   ```
 
+### [11. Implementing sort]()
+- We can use the `.sort()` method to sort the products by ascending or descending order or sort by number from lowest to highest or vice versa
+- A note that the `.sort()` method must be chained to one of the query methods, i.e. the `.find()` method. `Product.find({options}).sort({options})`
+  - Add a negative `-` in front of alphabet sorting will result in descending order
+  - Add a negative `-` in front of numeric sorting will result in descending order
+  - Can pass in multiple sorting options separated by a space
+    - `const products = await Product.find({}).sort('-name price');`
+    - When we get multiple sort values in query params, they're separated by commas. So we need to replace the commas with spaces instead: `'-name,price,createdAt'` to `'-name price createdAt'`. This can be achieved by using Javascript's `list.split(',').join(' ')` methods
+- File: controllers/products.js
+  - Implementing sort on the products list from the database
+  - First use the `.find()` method to get the products from DB, then chain on the `.sort()` method to sort the products
+  - Note that we don't await during the `.find()` method. We await at the end after we get the products and implement sort (if it exists in query params)
+  ```js
+  const getAllProducts = async (req, res) => {
+    // get the values of query params from req.query
+    // destructure the properties from req.query
+    const { featured, company, name, sort } = req.query;
+    const queryObject = {};
+
+    // ---other filter types here---
+
+    // ---implementing sort---
+    // don't add the await keyword here
+    let result = Product.find(queryObject);
+    // if sort exists in query params
+    if (sort) {
+      // split the sort array at comma and join back with a space
+      const sortList = sort.split(',').join(' ');
+      // sort the products list by the specified sort query params
+      result = result.sort(sortList);
+    } else {
+      result = result.sort('createdAt');
+    }
+
+    // add the await keyword here
+    const products = await result;
+    res.status(200).json({ products, nbHits: products.length });
+  };
+  ```
