@@ -408,9 +408,9 @@
 
     // ---other filter types here---
 
-    // ---implementing sort---
     // don't add the await keyword here
     let result = Product.find(queryObject);
+    // ---implementing sort---
     // if sort exists in query params
     if (sort) {
       // split the sort array at comma and join back with a space
@@ -419,6 +419,48 @@
       result = result.sort(sortList);
     } else {
       result = result.sort('createdAt');
+    }
+
+    // add the await keyword here
+    const products = await result;
+    res.status(200).json({ products, nbHits: products.length });
+  };
+  ```
+
+### [12. Implementing select]()
+- The `.select()` method allows the users to specify which properties(fields) of the Product model they want to see. For example, they may only want to see the company and price properties of the products
+- The pattern is very similar to the `.sort()` method. Pass in the list of fields as a string to the `.select()` method
+  - `.select('company price')`
+  - When we get multiple field values in query params, they're separated by commas. So we need to replace the commas with spaces instead: `'name,price,createdAt'` to `'name price createdAt'`. This can be achieved by using Javascript's `list.split(',').join(' ')` methods
+- File: controllers/products.js
+  ```js
+  const getAllProducts = async (req, res) => {
+    // get the values of query params from req.query
+    // destructure the properties from req.query
+    const { featured, company, name, sort, fields } = req.query;
+    const queryObject = {};
+
+    // ---other filter types here---
+
+    // don't add the await keyword here
+    let result = Product.find(queryObject);
+    // ---implementing sort---
+    // if sort exists in query params
+    if (sort) {
+      // split the sort array at comma and join back with a space
+      const sortList = sort.split(',').join(' ');
+      // sort the products list by the specified sort query params
+      result = result.sort(sortList);
+    } else {
+      result = result.sort('createdAt');
+    }
+    
+    // ---implementing select---
+    if (fields) {
+      // split the fields array at comma and join back with a space
+      const fieldsList = fields.split(',').join(' ');
+      // sort the products list by the specified sort query params
+      result = result.select(fieldsList);
     }
 
     // add the await keyword here

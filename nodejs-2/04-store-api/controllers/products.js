@@ -20,7 +20,7 @@ const getAllProductsStatic = async (req, res) => {
 const getAllProducts = async (req, res) => {
 	// get the values of query params from req.query
 	// destructure the properties from req.query
-	const { featured, company, name, sort } = req.query;
+	const { featured, company, name, sort, fields } = req.query;
 	const queryObject = {};
 
 	// if featured query params exists, add featured prop to queryObject
@@ -47,6 +47,7 @@ const getAllProducts = async (req, res) => {
 
 	// don't add the await keyword here
 	let result = Product.find(queryObject);
+	// ---implementing sort---
 	// if sort exists in query params
 	if (sort) {
 		// split the sort array at comma and join back with a space
@@ -55,6 +56,15 @@ const getAllProducts = async (req, res) => {
 		result = result.sort(sortList);
 	} else {
 		result = result.sort('createdAt');
+	}
+
+	// ---implementing select---
+	// if fields property exists in query params
+	if (fields) {
+		// split the fields array at comma and join back with a space
+		const fieldsList = fields.split(',').join(' ');
+		// sort the products list by the specified sort query params
+		result = result.select(fieldsList);
 	}
 
 	// add the await keyword here
