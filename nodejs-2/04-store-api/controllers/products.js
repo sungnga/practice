@@ -12,7 +12,9 @@ const getAllProductsStatic = async (req, res) => {
 		// pass in the pattern to $regex
 		// option i is for case insensitive
 		// name: { $regex: search, $options: 'i' }
-	}).sort('-name price');
+	})
+		.sort('name')
+		.select('name price');
 
 	res.status(200).json({ products, nbHits: products.length });
 };
@@ -66,6 +68,16 @@ const getAllProducts = async (req, res) => {
 		// sort the products list by the specified sort query params
 		result = result.select(fieldsList);
 	}
+
+	// ---implementing pagination---
+	// convert the query string value of page to a number
+	// set the default page number to 1
+	const page = Number(req.query.page) || 1;
+	// limit number is the number of items per page
+	const limit = Number(req.query.limit) || 10;
+	const skip = (page - 1) * limit;
+
+	result = result.skip(skip).limit(limit);
 
 	// add the await keyword here
 	const products = await result;

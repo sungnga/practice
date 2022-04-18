@@ -468,3 +468,38 @@
     res.status(200).json({ products, nbHits: products.length });
   };
   ```
+
+### [13. Implementing limit, skip, pagination]()
+- Both the `.limit()` and `.skip()` methods can be chained to a query method
+  - Limit is specifying the number of items the user wants from a request. Just pass in an integer value to the `.limit()` method
+  - Skip is how many items the user wants to skip. Pass in an integer value to the `.skip()` method
+- NOTE that the values that we get from the `req.query` object will always be a string. Also, if there are multiple values provided for a property, it'll be separated by commas
+  - For multiple values, we need to replace the commas with spaces before we can use them in our logic
+  - Some values that are supposed to be integers we need to convert the string format to numeric values
+- By default, Mongoose has the `.page` property in `req.query` that we can use. We can set the number of items per page using `.limit()` and use the `.skip()` method to go to the next page
+- File: controllers/products.js
+  ```js
+  const getAllProducts = async (req, res) => {
+    // get the values of query params from req.query
+    // destructure the properties from req.query
+    const { featured, company, name, sort, fields } = req.query;
+    const queryObject = {};
+
+    // don't add the await keyword here
+    let result = Product.find(queryObject);
+
+    // ---implementing pagination---
+    // convert the query string value of page to a number
+    // set the default page number to 1
+    const page = Number(req.query.page) || 1;
+    // limit number is the number of items per page
+    const limit = Number(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    result = result.skip(skip).limit(limit);
+
+    // add the await keyword here
+    const products = await result;
+    res.status(200).json({ products, nbHits: products.length });
+  };
+  ```
