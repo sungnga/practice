@@ -8,10 +8,11 @@ const getAllProductsStatic = async (req, res) => {
 
 	//specifying options - filter by hardcoded values
 	const products = await Product.find({
-		// $regex is one of many mongoDB query operators
+		// $regex, $gt are mongoDB query operators
 		// pass in the pattern to $regex
 		// option i is for case insensitive
 		// name: { $regex: search, $options: 'i' }
+		price: { $gt: 100 }
 	})
 		.sort('name')
 		.select('name price');
@@ -22,7 +23,7 @@ const getAllProductsStatic = async (req, res) => {
 const getAllProducts = async (req, res) => {
 	// get the values of query params from req.query
 	// destructure the properties from req.query
-	const { featured, company, name, sort, fields } = req.query;
+	const { featured, company, name, sort, fields, numericFilters } = req.query;
 	const queryObject = {};
 
 	// if featured query params exists, add featured prop to queryObject
@@ -46,6 +47,36 @@ const getAllProducts = async (req, res) => {
 		// option i is for case insensitive
 		queryObject.name = { $regex: name, $options: 'i' };
 	}
+
+	// if numericFilters query params exists
+	if (numericFilters) {
+		// mapping the operator symbols to Mongoose query operators
+		const operatorMap = {
+			'>': '$gt',
+			'>=': '$gte',
+			'=': '$eq',
+			'<': '$lt',
+			'<=': '$lte'
+		};
+		const regEx = /\b(<|>|>=|=|<=)\b/g;
+		// if there is a match, replace the operator symbols in regEx w/ Mongoose query operator
+		let filters = numericFilters.replace(
+			regEx,
+			(match) => `-${operatorMap[match]}-`
+		);
+		console.log(filters); //example numericFilters values: price-$gt-100,rating-$gte-4.5
+
+		// only price and rating in our DB have numeric values
+		const options = ['price', 'rating'];
+
+		filters = filters.split(',').forEach((item) => {
+			const [field, operator, value] = item.split('-');
+			if (options.includes(field)) {
+				queryObject[field] = { [operator]: Number(value) };
+			}
+		});
+	}
+	console.log(queryObject); //final example looks like this: { price: { '$gt': 100 }, rating: { '$gte': 4.5 } }
 
 	// don't add the await keyword here
 	let result = Product.find(queryObject);

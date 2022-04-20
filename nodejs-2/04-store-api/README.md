@@ -270,7 +270,7 @@
   - We should see the 04-STORE-API collection has been created
   - In it contains the 'products' collection of the products array
 
-### [07. Basic find]()
+### [08. Basic find]()
 - Visit the Mongoose website to see all the query methods that we can use to interact with our database in MongoDB
 - File: controllers/products.js
   - Require in the Product model
@@ -293,7 +293,7 @@
   };
   ```
 
-### [08. Find products with query params]()
+### [09. Find products with query params]()
 - The next thing we want to work on is enable our users to filter the products collection by name of product, company, and product is featured or not
 - A user can send requests for specific products using the query string params
 - When a user queries our database using query string params, we have access to those values in `req.query`
@@ -311,7 +311,7 @@
   };
   ```
 
-### [09. Refactor to queryObject]()
+### [10. Refactor to queryObject]()
 - Right now with our current setup, if the user provides a query params that does not match any of the properties that we set up for the model, Mongoose will return the products of an empty array. What we want instead is if the query params doesn't math, we want to return the entire products collection
 - To make this work, we want to refactor our getAllProducts controller where we first create our own queryObject and append any properties we want to this object. Then pass this queryObject to the `Product.find()` method. If queryObject is an empty object, Mongoose will return all products items. By default, passing in an empty object `{}` to the `.find()` method will return all items in the collection
 - File: controllers/products.js
@@ -346,7 +346,7 @@
   };
   ```
 
-### [10. Query by name]()
+### [11. Query by name]()
 - Google search 'MongoDB query operators' to get a list of all query operators
 - In our case, we want to use `$regex` to query for the name of a product and we want it to be case insensitive. In our project, the `name` property works very similar to search or query where the user can type anything they want to query products by name. We want to pass this `name` query string params as a pattern to the `$regex` query operator
 - File: controllers/products.js
@@ -387,7 +387,7 @@
   };
   ```
 
-### [11. Implementing sort]()
+### [12. Implementing sort]()
 - We can use the `.sort()` method to sort the products by ascending or descending order or sort by number from lowest to highest or vice versa
 - A note that the `.sort()` method must be chained to one of the query methods, i.e. the `.find()` method. `Product.find({options}).sort({options})`
   - Add a negative `-` in front of alphabet sorting will result in descending order
@@ -427,7 +427,7 @@
   };
   ```
 
-### [12. Implementing select]()
+### [13. Implementing select]()
 - The `.select()` method allows the users to specify which properties(fields) of the Product model they want to see. For example, they may only want to see the company and price properties of the products
 - The pattern is very similar to the `.sort()` method. Pass in the list of fields as a string to the `.select()` method
   - `.select('company price')`
@@ -469,7 +469,7 @@
   };
   ```
 
-### [13. Implementing limit, skip, pagination]()
+### [14. Implementing limit, skip, pagination]()
 - Both the `.limit()` and `.skip()` methods can be chained to a query method
   - Limit is specifying the number of items the user wants from a request. Just pass in an integer value to the `.limit()` method
   - Skip is how many items the user wants to skip. Pass in an integer value to the `.skip()` method
@@ -487,6 +487,109 @@
 
     // don't add the await keyword here
     let result = Product.find(queryObject);
+
+    // ---implementing pagination---
+    // convert the query string value of page to a number
+    // set the default page number to 1
+    const page = Number(req.query.page) || 1;
+    // limit number is the number of items per page
+    const limit = Number(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    result = result.skip(skip).limit(limit);
+
+    // add the await keyword here
+    const products = await result;
+    res.status(200).json({ products, nbHits: products.length });
+  };
+  ```
+
+### [15. Implementing numeric filters]()
+- An example of numeric filter used in our project is search for products that are greater than $30
+- We're going to make use of Mongoose query operators such as `$gt`, `$lt`, etc to filter by number
+- File: controllers/products.js
+  - The key in the query string is `numericFilters`. This key name is we make up
+  - FINAL CODE FOR QUERY getAllProducts
+  ```js
+  const getAllProducts = async (req, res) => {
+    // get the values of query params from req.query
+    // destructure the properties from req.query
+    const { featured, company, name, sort, fields, numericFilters } = req.query;
+    const queryObject = {};
+
+    // if featured query params exists, add featured prop to queryObject
+    if (featured) {
+      // use ternary operator
+      // if the value of featured is true, set featured prop to true
+      // else set to false
+      queryObject.featured = featured === 'true' ? true : false;
+    }
+
+    // if company query params exists
+    if (company) {
+      // add company prop to queryObject
+      // and set its value to the value from query params
+      queryObject.company = company;
+    }
+
+    if (name) {
+      // $regex is one of many mongoDB query operators
+      // pass in the pattern to $regex
+      // option i is for case insensitive
+      queryObject.name = { $regex: name, $options: 'i' };
+    }
+
+    // if numericFilters query params exists
+    if (numericFilters) {
+      // mapping the operator symbols to Mongoose query operators
+      const operatorMap = {
+        '>': '$gt',
+        '>=': '$gte',
+        '=': '$eq',
+        '<': '$lt',
+        '<=': '$lte'
+      };
+      const regEx = /\b(<|>|>=|=|<=)\b/g;
+      // if there is a match, replace the operator symbols in regEx w/ Mongoose query operator
+      let filters = numericFilters.replace(
+        regEx,
+        (match) => `-${operatorMap[match]}-`
+      );
+      console.log(filters); //example numericFilters values: price-$gt-100,rating-$gte-4.5
+
+      // only price and rating in our DB have numeric values
+      const options = ['price', 'rating'];
+
+      filters = filters.split(',').forEach((item) => {
+        const [field, operator, value] = item.split('-');
+        if (options.includes(field)) {
+          queryObject[field] = { [operator]: Number(value) };
+        }
+      });
+    }
+    console.log(queryObject); //final example looks like this: { price: { '$gt': 100 }, rating: { '$gte': 4.5 } }
+
+    // don't add the await keyword here
+    let result = Product.find(queryObject);
+    // ---implementing sort---
+    // if sort exists in query params
+    if (sort) {
+      // split the sort array at comma and join back with a space
+      const sortList = sort.split(',').join(' ');
+      // sort the products list by the specified sort query params
+      result = result.sort(sortList);
+    } else {
+      result = result.sort('createdAt');
+    }
+
+    // ---implementing select---
+    // if fields property exists in query params
+    if (fields) {
+      // split the fields array at comma and join back with a space
+      const fieldsList = fields.split(',').join(' ');
+      // sort the products list by the specified sort query params
+      result = result.select(fieldsList);
+    }
 
     // ---implementing pagination---
     // convert the query string value of page to a number
