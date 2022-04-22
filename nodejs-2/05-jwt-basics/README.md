@@ -60,3 +60,34 @@
   // base route
   app.use('/api/v1', mainRouter);
   ```
+
+### [03. Validate username and password]()
+- **Steps for authenticating users:**
+  - Check for username and password in POST(login) request in `req.body`
+  - If exists, create a new JWT
+  - Send token back to front-end
+  - Setup authentication so only the request with JWT can access the dashboard
+- File: controllers/main.js
+  - There are three options to check whether the username and password have been provided
+    - Use Mongoose validation when we're connected to the database
+    - Use a third-party package called Joi. Will use this in future projects
+    - Check in the controller. We're going to use this approach in this project
+  - Import the `CustomAPIError` class
+  - In the login controller, write an if statement to check if no username or password was provided, we throw a new CustomAPIError object with a custom message and status code of 400. This error in turn gets handled by the errorHandlerMiddleware in error-handler.js file
+  ```js
+  const CustomAPIError = require('../errors/custom-error');
+
+  const login = async (req, res) => {
+    const { username, password } = req.body;
+    // console.log(username, password);
+
+    // if no username or password, throw a new customAPIError
+    if (!username || !password) {
+      // 400 status code is bad request
+      // this error is handled by the errorHandlerMiddleware
+      throw new CustomAPIError('Please provide email and password', 400);
+    }
+
+    res.send('Fake login/Register/Signup Route');
+  };
+  ```
