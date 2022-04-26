@@ -148,7 +148,7 @@
   - Whenever the user wants to access a protected route or resource, the user agent should send the JWT, typically in the Authorization header using the Bearer schema. The content of the header should look like the following:
     - `Authorization: Bearer <token>`
 
-### [03. Sign JWT]()
+### [04. Sign JWT]()
 - Install the jsonwebtoken package: `npm install jsonwebtoken`
 - File: controllers/main.js
   - Require in the jsonwebtoken module. From this package, we have access to the `jwt` object
@@ -224,3 +224,22 @@
         "exp": 1653460889
       }
       ```
+
+### [05. Send bearer token]()
+- Once a JWT token is created and sent back to the front-end client, the client can use this token to query for data on a secured route. This token is sent in the Authorization headers as a bearer token. The content of the header should look like this:
+    - `Authorization: Bearer <token>`
+- File: controllers/main.js
+  - In the `dashboard` controller, we can see the headers content in `req.headers`
+  ```js
+  const dashboard = async (req, res) => {
+    console.log(req.headers);
+    const luckyNumber = Math.floor(Math.random() * 100);
+    res.status(200).json({
+      msg: `Hello, John Doe`,
+      secret: `Here is your authorized data, your lucky number is ${luckyNumber}`
+    });
+  };
+  ```
+- Let's try to send a bearer token when making a query in POSTMAN:
+  - First, let's generate a token. In the login route, make a POST request and provide the username and password in the body. If successful, it should generate a JWT token. Copy this to the clipboard
+  - Go to the dashboard route and make a GET request. In the Headers tab, provide the `Authorization` key and the value in this format: `Bearer <token>`. If successful, we should get back the data
