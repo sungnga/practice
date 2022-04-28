@@ -243,3 +243,32 @@
 - Let's try to send a bearer token when making a query in POSTMAN:
   - First, let's generate a token. In the login route, make a POST request and provide the username and password in the body. If successful, it should generate a JWT token. Copy this to the clipboard
   - Go to the dashboard route and make a GET request. In the Headers tab, provide the `Authorization` key and the value in this format: `Bearer <token>`. If successful, we should get back the data
+
+### [06. Check for auth header]()
+- In the dashboard controller, let's check to see if the client provided a JWT token when making a request. We check for the token in the headers content
+- File: controllers/main.js
+  - In the dashboard controller:
+    - Get the value from the authorization key in headers and assign it to the `authHeader` variable
+    - Write an if statement to check if there's no `authorization` header or it doesn't start with `"Bearer "`, then we'll throw our customError with status code of 401 (unauthorized error)
+  ```js
+  const dashboard = async (req, res) => {
+    // authHeader is a string that looks like this: "Bearer <token>"
+    const authHeader = req.headers.authorization;
+
+    // can call .startsWith() method on a JS string
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      // 401 code is unauthorized error
+      throw new CustomAPIError('No token provided', 401);
+    }
+
+    // after splitting the string, get the 2nd element (which is the token)
+    const token = authHeader.split(' ')[1];
+    console.log(token);
+
+    const luckyNumber = Math.floor(Math.random() * 100);
+    res.status(200).json({
+      msg: `Hello, John Doe`,
+      secret: `Here is your authorized data, your lucky number is ${luckyNumber}`
+    });
+  };
+  ```
