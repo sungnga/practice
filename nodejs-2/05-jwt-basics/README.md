@@ -272,3 +272,46 @@
     });
   };
   ```
+
+### [07. Verify token]()
+- We used the jsonwebtoken package earlier to help us create a JSON Web Token using the `jwt.sign()` method. Now we're going to use this package again to verify the JSON Web Token using the `jwt.verify()` method
+- After successfully verifying a user's token we will have completed in setting up user authentication when they try to access secured data or routes
+- File: controllers/main.js
+  - In the dashboard controller, use the try-catch block to verify the token
+  - In the try block,
+    - call the `jwt.verify()` method
+    - pass in the `token` value that we get from the auth header as 1st arg
+    - pass in the `process.env.JWT_SECRET` string as 2nd arg
+    - assign the result we get back to a `decoded` variable. Note: this result we get back is an object that looks something like this: `{ id: 28, username: 'nga', iat: 1651182257, exp: 1653774257 }`
+    - lastly, if we're successful with verifying the token, send back to the client a success status code and a json object
+  - If there's an error, throw the CustomAPIError in the catch block with a custom message and a 401 unauthorized error status code 
+  ```js
+  const dashboard = async (req, res) => {
+    // authHeader is a string that looks like this: "Bearer <token>"
+    const authHeader = req.headers.authorization;
+
+    // can call .startsWith() method on a JS string
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      // 401 code is unauthorized error
+      throw new CustomAPIError('No token provided', 401);
+    }
+
+    // after splitting the string, get the 2nd element (which is the token)
+    const token = authHeader.split(' ')[1];
+    console.log(token);
+
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log(decoded); //{ id: 28, username: 'nga', iat: 1651182257, exp: 1653774257 }
+
+      const luckyNumber = Math.floor(Math.random() * 100);
+      res.status(200).json({
+        msg: `Hello, ${decoded.username}`,
+        secret: `Here is your authorized data, your lucky number is ${luckyNumber}`
+      });
+    } catch (error) {
+      // 401 code is unauthorized error
+      throw new CustomAPIError('Not authorized to access this route', 401);
+    }
+  };
+  ```
