@@ -28,32 +28,13 @@ const login = async (req, res) => {
 };
 
 const dashboard = async (req, res) => {
-	// authHeader is a string that looks like this: "Bearer <token>"
-	const authHeader = req.headers.authorization;
-
-	// can call .startsWith() method on a JS string
-	if (!authHeader || !authHeader.startsWith('Bearer ')) {
-		// 401 code is unauthorized error
-		throw new CustomAPIError('No token provided', 401);
-	}
-
-	// after splitting the string, get the 2nd element (which is the token)
-	const token = authHeader.split(' ')[1];
-	console.log(token);
-
-	try {
-		const decoded = jwt.verify(token, process.env.JWT_SECRET);
-		console.log(decoded); //{ id: 28, username: 'nga', iat: 1651182257, exp: 1653774257 }
-
-		const luckyNumber = Math.floor(Math.random() * 100);
-		res.status(200).json({
-			msg: `Hello, ${decoded.username}`,
-			secret: `Here is your authorized data, your lucky number is ${luckyNumber}`
-		});
-	} catch (error) {
-		// 401 code is unauthorized error
-		throw new CustomAPIError('Not authorized to access this route', 401);
-	}
+  // req.user comes from authenticationMiddleware
+	// console.log(req.user);
+	const luckyNumber = Math.floor(Math.random() * 100);
+	res.status(200).json({
+		msg: `Hello, ${req.user.username}`,
+		secret: `Here is your authorized data, your lucky number is ${luckyNumber}`
+	});
 };
 
 module.exports = { login, dashboard };

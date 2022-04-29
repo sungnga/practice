@@ -315,3 +315,76 @@
     }
   };
   ```
+
+### [08. Create authenticationMiddleware]()
+- With our current setup, we check for user authentication in the dashboard controller. In most real-life projects, we have many routes that require authentication and we don't want to write this over and over. It's better to create an authentication middleware and use it wherever a route requires authentication
+- File: middleware/auth.js
+  - Require in the jsonwebtoken package
+  - Import the CustomAPIError module
+  - Write and export an async authorizationMiddleware function
+    - Since this is a middleware, we have access to req, res, and next
+    - Cut and paste the verify auth functionality from the `dashboard` controller to here
+    - If we successfully verify the JWT token, create a `user` object on the `req` body and set the values of id and username
+    - Call next() in the try block to go to the next function or middleware
+    - We throw the CustomAPIError in the catch block if verifying the token failed
+  ```js
+  const jwt = require('jsonwebtoken');
+  const CustomAPIError = require('../errors/custom-error');
+
+  const authorizationMiddleware = async (req, res, next) => {
+    // authHeader is a string that looks like this: "Bearer <token>"
+    const authHeader = req.headers.authorization;
+
+    // can call .startsWith() method on a JS string
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      // 401 code is unauthorized error
+      throw new CustomAPIError('No token provided', 401);
+    }
+
+    // after splitting the string, get the 2nd element (which is the token)
+    const token = authHeader.split(' ')[1];
+    // console.log(token);
+
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log(decoded); //{ id: 28, username: 'nga', iat: 1651182257, exp: 1653774257 }
+      // destructure id and username from decoded object
+      const { id, username } = decoded;
+
+      // if successfully verify JWT, add user object to req body
+      req.user = { id, username };
+
+      next();
+    } catch (error) {
+      // 401 code is unauthorized error
+      throw new CustomAPIError('Not authorized to access this route', 401);
+    }
+  };
+
+  module.exports = authorizationMiddleware;
+  ```
+- File: controllers/main.js
+  - Because `next()` is called in the authorizationMiddleware function, the dashboard controller now has access to the user object in req.user body
+  ```js
+  const dashboard = async (req, res) => {
+    // req.user comes from authenticationMiddleware
+    // console.log(req.user);
+    const luckyNumber = Math.floor(Math.random() * 100);
+    res.status(200).json({
+      msg: `Hello, ${req.user.username}`,
+      secret: `Here is your authorized data, your lucky number is ${luckyNumber}`
+    });
+  };
+  ```
+- File: routes/main.js
+  - Import the authorizationMiddleware function
+  - The dashboard route is the route we want to protect, so this is where we want to use the authorizationMiddleware
+    - In the `.get()` method, pass in the authMiddleware as the 1st argument
+  - What this does is when a client makes a request to the dashboard route, it first goes through the `authenticationMiddleware` function, then `next()` is called to pass to the next function, which is the 2nd argument the dashboard controller
+  ```js
+  const authMiddleware = require('../middleware/auth');
+
+  // a secured dashboard route
+  // first goes through authMiddleware then dashboard controller
+  router.route('/dashboard').get(authMiddleware, dashboard);
+  ```
