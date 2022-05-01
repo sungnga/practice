@@ -388,3 +388,68 @@
   // first goes through authMiddleware then dashboard controller
   router.route('/dashboard').get(authMiddleware, dashboard);
   ```
+
+### [09. Create more error classes]()
+- At the moment we only have one error handler, the CustomAPIError error class that extends from the Error class. In our project we need to handle the error of bad request (status code 400) and unauthorized error (status code 401). We want to create two more classes to handle these errors and they're going to extend from the CustomAPIError class
+- Also, instead of hard-coding the status code values in the classes, we're going to use an external library that allows us to write error codes that are easier to read and understand
+  - Install: `npm install http-status-codes`
+- File: errors/custom-error.js
+  - We're going to remove the `statusCode` property from the CustomAPIError class
+  ```js
+  class CustomAPIError extends Error {
+    constructor(message) {
+      super(message);
+    }
+  }
+
+  module.exports = CustomAPIError;
+  ```
+- File: errors/bad-request.js
+  - Import the CustomAPIError class
+  - Name import the StatusCodes object from the http-status-codes library
+  - Write and export a BadRequestError that extends from the CustomAPIError class
+    - Add the statusCode property and set it to StatusCodes.BAD_REQUEST
+  ```js
+  const CustomAPIError = require('./custom-error');
+  const { StatusCodes } = require('http-status-codes');
+
+  class BadRequestError extends CustomAPIError {
+    constructor(message) {
+      super(message);
+      this.statusCode = StatusCodes.BAD_REQUEST;
+    }
+  }
+
+  module.exports = BadRequestError;
+  ```
+- File: errors/unauthenticated.js
+  - Import the CustomAPIError class
+  - Name import the StatusCodes object from the http-status-codes library
+  - Write and export a BadRequestError that extends from the CustomAPIError class
+    - Add the statusCode property and set it to StatusCodes.UNAUTHORIZED
+  ```js
+  const CustomAPIError = require('./custom-error');
+  const { StatusCodes } = require('http-status-codes');
+
+  class UnauthenticatedError extends CustomAPIError {
+    constructor(message) {
+      super(message);
+      this.statusCode = StatusCodes.UNAUTHORIZED;
+    }
+  }
+
+  module.exports = UnauthenticatedError;
+  ```
+- File: errors/index.js
+  - The index.js file in the errors folder is the entry point file and we just need to import all three error classes here and module export them as an object
+  ```js
+  const CustomAPIError = require('./custom-error');
+  const BadRequestError = require('./bad-request');
+  const UnauthenticatedError = require('./unauthenticated');
+
+  module.exports = {
+    CustomAPIError,
+    BadRequestError,
+    UnauthenticatedError
+  };
+  ```
