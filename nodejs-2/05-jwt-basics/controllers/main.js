@@ -1,15 +1,13 @@
 const jwt = require('jsonwebtoken');
-const CustomAPIError = require('../errors/custom-error');
+const { BadRequestError } = require('../errors');
 
 const login = async (req, res) => {
 	const { username, password } = req.body;
 	// console.log(username, password);
 
-	// if no username or password, throw a new customAPIError
+	// if no username or password, throw a new BadRequestError
 	if (!username || !password) {
-		// 400 status code is bad request
-		// this error is handled by the errorHandlerMiddleware
-		throw new CustomAPIError('Please provide email and password', 400);
+		throw new BadRequestError('Please provide email and password');
 	}
 
 	// just for demo, normally provided by DB
@@ -28,7 +26,7 @@ const login = async (req, res) => {
 };
 
 const dashboard = async (req, res) => {
-  // req.user comes from authenticationMiddleware
+	// req.user comes from authenticationMiddleware
 	// console.log(req.user);
 	const luckyNumber = Math.floor(Math.random() * 100);
 	res.status(200).json({

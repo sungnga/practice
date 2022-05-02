@@ -453,3 +453,59 @@
     UnauthenticatedError
   };
   ```
+
+### [10. Refactor]()
+- Now we need to refactor our application to make use of the different error classes that we created earlier
+- File: middleware/auth.js
+  - We're going to use the UnauthenticatedError class to handle Unauthorized errors in the authorizationMiddleware function
+  - Name import the UnauthenticatedError class from the errors folder. It will look for it in the index.js file, which is the entry file
+  - Replace the CustomAPIError class with the UnauthenticatedError class and we don't need to pass in the status code
+  ```js
+  const { UnauthenticatedError } = require('../errors');
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    throw new UnauthenticatedError('No token provided');
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(decoded); //{ id: 28, username: 'nga', iat: 1651182257, exp: 1653774257 }
+    // destructure id and username from decoded object
+    const { id, username } = decoded;
+
+    // if successfully verify JWT, add user object to req body
+    req.user = { id, username };
+
+    next();
+  } catch (error) {
+    throw new UnauthenticatedError('Not authorized to access this route');
+  }
+  ```
+- File: controllers/main.js
+  - In the login controller, if no username or password is provided, we want to throw the BadRequestError
+  - Name import the BadRequestError class from the errors folder
+  - Replace the CustomAPIError class with the BadRequestError class and we don't need to pass in the status code
+  ```js
+  const { BadRequestError } = require('../errors');
+
+  if (!username || !password) {
+    throw new BadRequestError('Please provide email and password');
+  }
+  ```
+- File: middleware/error-handler.js
+  - Name import the CustomAPIError class from the errors folder
+  - Name import the StatusCodes object from the http-status-codes library
+  - In this middleware, instead of sending back a hard-coded status code 500, we use `StatusCodes.INTERNAL_SERVER_ERROR`. Everything else remains the same
+  ```js
+  const { CustomAPIError } = require('../errors');
+  const { StatusCodes } = require('http-status-codes');
+
+  const errorHandlerMiddleware = (err, req, res, next) => {
+    if (err instanceof CustomAPIError) {
+      return res.status(err.statusCode).json({ msg: err.message });
+    }
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .send('Something went wrong try again later');
+  };
+  ```
