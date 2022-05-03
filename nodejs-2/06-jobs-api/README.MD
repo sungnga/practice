@@ -1,4 +1,4 @@
-## SECTION 5: JOBS API
+## SECTION 6: JOBS API
 - Folder directory: /06-jobs-api/
 
 ### Goals of this project
@@ -68,3 +68,53 @@ Email Validation Regex
       required: true
       description: the job id
 ```
+
+### [02. Setup basic controllers]()
+- Let's setup the basic structures for the auth and jobs controllers
+- Files: controllers/auth.js
+  - Setup the auth controllers to register a new user and to login a user
+  ```js
+  const register = async (req, res) => {
+    res.send('register user');
+  };
+
+  const login = async (req, res) => {
+    res.send('login user');
+  };
+
+  module.exports = {
+    register,
+    login
+  };
+  ```
+- File: controllers/jobs.js
+  - These job controllers are for our CRUD functionality
+  ```js
+  const getAllJobs = async (req, res) => {
+    res.send('get all jobs');
+  };
+
+  const getJob = async (req, res) => {
+    res.send('get a job');
+  };
+
+  const createJob = async (req, res) => {
+    res.send('create job');
+  };
+
+  const updateJob = async (req, res) => {
+    res.send('update job');
+  };
+
+  const deleteJob = async (req, res) => {
+    res.send('delete job');
+  };
+
+  module.exports = {
+    getAllJobs,
+    getJob,
+    createJob,
+    updateJob,
+    deleteJob
+  };
+  ```
