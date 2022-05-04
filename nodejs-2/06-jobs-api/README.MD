@@ -118,3 +118,49 @@ Email Validation Regex
     deleteJob
   };
   ```
+
+### [03. Setup routes for auth and jobs]()
+- File: routes/auth.js
+  ```js
+  const express = require('express');
+  const router = express.Router();
+
+  const { login, register } = require('../controllers/auth');
+
+  router.post('/register', register);
+  router.post('/login', login);
+
+  module.exports = router;
+  ```
+- File: routes/jobs.js
+  ```js
+  const express = require('express');
+  const router = express.Router();
+
+  const {
+    getAllJobs,
+    getJob,
+    createJob,
+    updateJob,
+    deleteJob
+  } = require('../controllers/jobs');
+
+  router.route('/').post(createJob).get(getAllJobs);
+  router.route('/:id').get(getJob).delete(deleteJob).patch(updateJob);
+
+  module.exports = router;
+  ```
+- File: app.js
+  - Import both routers for auth and for jobs
+  - Create the base routes for both auth routes and jobs routes
+  ```js
+  // routers
+  const authRouter = require('./routes/auth');
+  const jobsRouter = require('./routes/jobs');
+
+  // routes
+  // base route for auth
+  app.use('/api/v1/auth', authRouter);
+  // base route for jobs
+  app.use('/api/v1/jobs', jobsRouter);
+  ```
