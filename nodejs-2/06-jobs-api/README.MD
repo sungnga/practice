@@ -213,3 +213,37 @@ Email Validation Regex
 
   start();
   ```
+
+### [05. Create User schema/model]()
+- Let's setup the User model and it'll have three properties: name, email, and password. When a user registers to our application they must provide all three
+- File: models/User.js
+  ```js
+  const mongoose = require('mongoose');
+
+  const UserSchema = new mongoose.Schema({
+    name: {
+      type: String,
+      required: [true, 'Please provide name'],
+      minlength: 3,
+      maxlength: 50
+    },
+    email: {
+      type: String,
+      required: [true, 'Please provide email'],
+      match: [
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+        'Please provide valid email'
+      ],
+      unique: true
+    },
+    password: {
+      type: String,
+      required: [true, 'Please provide password'],
+      minlength: 6,
+      maxlength: 12
+    }
+  });
+
+  // 1st arg is the name of the model we give
+  module.exports = mongoose.model('User', UserSchema);
+  ```
