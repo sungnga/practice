@@ -153,6 +153,12 @@ Email Validation Regex
 - File: app.js
   - Import both routers for auth and for jobs
   - Create the base routes for both auth routes and jobs routes
+    - The full path for auth would look like this:
+      - To register a user: `domain/api/v1/auth/register`
+      - To login a user: `domain/api/v1/auth/login`
+    - The full path for jobs would look like this:
+      - To createJob and getAllJobs: `domain/api/jobs`
+      - To getJob, deleteJob, and updateJob: `domain/api/jobs/:id`
   ```js
   // routers
   const authRouter = require('./routes/auth');
@@ -163,4 +169,47 @@ Email Validation Regex
   app.use('/api/v1/auth', authRouter);
   // base route for jobs
   app.use('/api/v1/jobs', jobsRouter);
+  ```
+
+### [04. Connect to the database]()
+- File: db/connect.js
+  ```s
+  const mongoose = require('mongoose');
+
+  const connectDB = (url) => {
+    return mongoose.connect(url, {
+      useNewUrlParser: true,
+      useCreateIndex: true,
+      useFindAndModify: false,
+      useUnifiedTopology: true
+    });
+  };
+
+  module.exports = connectDB;
+  ```
+- File: .env
+  - Get the connection string from MongoDB project dashboard page by clicking on the connect button. In this string, replace the `<password>` and give the database a name `06-JOBS-API`
+  ```js
+  MONGO_URI=mongodb+srv:<connection_string>
+  JWT_SECRET=<secret>
+  ```
+- File: app.js
+  - Import the connectDB function
+  - Call the connectDB function in the try block of the start function. This is an async operation so add the await keyword in front of it. Pass in `process.env.MONGO_URI` as an argument as it's looking for a URL
+  - If we're able to connect to our MongoDB database, we should see "Server is listening to port 3000..." printed in the console
+  ```js
+  const connectDB = require('./db/connect');
+
+  const start = async () => {
+    try {
+      await connectDB(process.env.MONGO_URI);
+      app.listen(port, () =>
+        console.log(`Server is listening on port ${port}...`)
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  start();
   ```
