@@ -247,3 +247,43 @@ Email Validation Regex
   // 1st arg is the name of the model we give
   module.exports = mongoose.model('User', UserSchema);
   ```
+
+### [06. Create user - basic setup]()
+- For the register route, we want to:
+  - Validate - name, email, password - with mongoose
+  - Hash password (with bcryptjs)
+  - Create token
+  - Send response with token
+- File: controllers/auth.js
+  - Import the User model
+  - Import StatusCodes object from http-status-codes library
+  - In the register controller:
+    - Call the User.create() method to instantiate a new user from the User model. Pass in the entire body.req object as an argument. This is an async operation so add the await keyword in front of the method
+    - If successful, send back the status code along with the user data as an object in json format
+  ```js
+  const User = require('../models/User');
+  const StatusCodes = require('http-status-codes');
+
+  const register = async (req, res) => {
+    const user = await User.create({ ...req.body });
+    // status code is 201 created
+    res.status(StatusCodes.CREATED).json({ user });
+  };
+  ```
+- Let's try to register a user in POSTMAN:
+  - First, create a new collection and call it 06-JOBS-API
+  - Make a POST request to the URL: `localhost:3000/api/v1/auth/register`
+  - Provide the name, email, and password in JSON format in the Body content. NOTE that the email must be unique because that was how we set it up in the User schema
+  - If successful, we should get back a user object that looks like this:
+    ```js
+    {
+      "user": {
+          "_id": "6274591a9044a02dd5089877",
+          "name": "Nga",
+          "email": "nga222@gmail.com",
+          "password": "secret",
+          "__v": 0
+      }
+    }
+    ```
+  - Also, a new user has been created in MongoDB in the `users` collection
