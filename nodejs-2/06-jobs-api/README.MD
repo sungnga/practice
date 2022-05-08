@@ -287,3 +287,56 @@ Email Validation Regex
     }
     ```
   - Also, a new user has been created in MongoDB in the `users` collection
+
+### [07. Hash user password using bcryptjs lib]()
+- Next, we want to hash the password that the user provided. We never want to store their password string in our database as it is
+- We will use the library bcryptjs to hash the password
+  - Install: `npm install bcryptjs`
+- File: controllers/auth.js
+  - Import the bcryptjs library
+  - In the register controller:
+    - We want to replace the user's password value in the req.body object with a hashed password value before we create a new user in the database
+    - To hash a password, we need to first use the `.genSalt()` method on bcrypt to generate a salt and then use the `.hash()` method on bcrypt to hash the password
+    - Create a tempUser object and replace the value of password property with the hashedPassword. The name and email the the user provided remain the same in tempUser
+    - Last thing is instead of passing the entire req.body object to the User.create() method, we pass in the tempUser object
+  ```js
+  const User = require('../models/User');
+  const StatusCodes = require('http-status-codes');
+  const bcrypt = require('bcryptjs');
+
+  const register = async (req, res) => {
+    // destructure name, email, password from req.body object
+    const { name, email, password } = req.body;
+
+    // .genSalt() method generates random byte
+    // the value is how many rounds it generates. 10 is default
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // the user's password string is now replaced with hashedPassword
+    const tempUser = { name, email, password: hashedPassword };
+
+    const user = await User.create({ ...tempUser });
+    // status code is 201 created
+    // send back the user object in json
+    res.status(StatusCodes.CREATED).json({ user });
+  };
+
+  const login = async (req, res) => {
+    res.send('login user');
+  };
+  ```
+- Let's test our hash functionality by registering a new user in POSTMAN:
+  - NOTE that the email must be unique, else we'll get an error. So create a new user with a new email
+  - If successful, we should get back something like this:
+    ```js
+    {
+      "user": {
+          "_id": "627760938723564da547d182",
+          "name": "Nga",
+          "email": "nga1@gmail.com",
+          "password": "$2a$10$RQp.jLcAp06rnoy3sVfmaesB4o8xUlTvWGQcF44dq8MaWl3ZgvI5W",
+          "__v": 0
+      }
+    }
+    ```
