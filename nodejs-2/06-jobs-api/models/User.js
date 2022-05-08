@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema({
 	name: {
@@ -21,6 +22,16 @@ const UserSchema = new mongoose.Schema({
 		required: [true, 'Please provide password'],
 		minlength: 6
 	}
+});
+
+// ---Mongoose middleware---
+// marking the callback as async function, we don't need to call next() in this middleware
+UserSchema.pre('save', async function () {
+	// .genSalt() method generates random byte
+	// the value is how many rounds it generates. 10 is default
+	const salt = await bcrypt.salt(10);
+	// this keyword refers to the UserSchema object
+	this.password = await bcrypt.hash(this.password, salt);
 });
 
 // 1st arg is the name of the model we give

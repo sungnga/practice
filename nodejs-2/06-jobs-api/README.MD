@@ -340,3 +340,37 @@ Email Validation Regex
       }
     }
     ```
+
+### [08. Create Mongoose middleware in UserSchema]()
+- At the moment, we're hashing the user password and then create a new user in the database in the `register` controller. In order to keep our controllers clean and simple, another option is to use Mongoose middleware function to hash the user password before passing on to the next task 
+- In Mongoose, pre middleware functions are executed one after another, when each middleware calls `next`. Also, instead of calling `next()` manually, we can use a use a function that returns a promise. In particular, use `async/await`
+- File: models/User.js
+  - Import the bcryptjs library to hash the user password
+  - Call the `.pre()` method on the UserSchema to create Mongoose middleware. In this middleware, we simply generate the salt and then use it to hash the password in the UserSchema object
+  - By marking the callback function as async function we don't need to call `next()`
+  ```js
+  const bcrypt = require('bcryptjs');
+
+  // Mongoose middleware
+  // marking the callback as async function, we don't need to call next() in this middleware
+  UserSchema.pre('save', async function () {
+    // .genSalt() method generates random byte
+    // the value is how many rounds it generates. 10 is default
+    const salt = await bcrypt.salt(10);
+    // this keyword refers to the UserSchema object
+    this.password = await bcrypt.hash(this.password, salt);
+  });
+  ```
+- File: controllers/auth.js
+  - In the register controller:
+    - Remove the bcryptjs hash user password functionality
+    - We pass the req.body object to the User.create() method. Because we're using Mongoose middleware to hash the user password, the password value in req.body is hashedPassword
+  ```js
+  const register = async (req, res) => {
+    const user = await User.create({ ...req.body });
+    // status code is 201 created
+    // send back the user object in json
+    res.status(StatusCodes.CREATED).json({ user });
+  };
+  ```
+- By setting up a Mongoose middleware to hash the user password in the UserSchema model, the user password has been hashed before the `register` controller function runs. Now the register controller only creates a new user in the database and sends back a status code of user created and a json object
