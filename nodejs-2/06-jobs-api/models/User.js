@@ -29,7 +29,7 @@ const UserSchema = new mongoose.Schema({
 UserSchema.pre('save', async function () {
 	// .genSalt() method generates random byte
 	// the value is how many rounds it generates. 10 is default
-	const salt = await bcrypt.salt(10);
+	const salt = await bcrypt.genSalt(10);
 	// this keyword refers to the UserSchema object
 	this.password = await bcrypt.hash(this.password, salt);
 });

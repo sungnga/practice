@@ -356,7 +356,7 @@ Email Validation Regex
   UserSchema.pre('save', async function () {
     // .genSalt() method generates random byte
     // the value is how many rounds it generates. 10 is default
-    const salt = await bcrypt.salt(10);
+    const salt = await bcrypt.genSalt(10);
     // this keyword refers to the UserSchema object
     this.password = await bcrypt.hash(this.password, salt);
   });
@@ -374,3 +374,36 @@ Email Validation Regex
   };
   ```
 - By setting up a Mongoose middleware to hash the user password in the UserSchema model, the user password has been hashed before the `register` controller function runs. Now the register controller only creates a new user in the database and sends back a status code of user created and a json object
+
+### [09. Generate token - in register controller]()
+- Let's generate a token when we register a new user. For the time being, let's generate the token in the register controller. We will refactor our code where we will generate the token in the UserSchema using Mongoose instance method
+- File: controllers/auth.js
+  - In the register controller, once we generated the token for the user, we send back a response that has the user name and the token
+  - The controller needs to send back the token to front-end client. That way they can use it to make requests to secured database or routes
+  ```js
+  const jwt = require('jsonwebtoken');
+
+  const register = async (req, res) => {
+    const user = await User.create({ ...req.body });
+
+    // create a token for new user
+    // 1st arg is the payload object. Try to keep payload small
+    // 2nd arg is jwt.Secret. In production, use long, complex and unguessable string value
+    // 3rd arg is options object. Set when this token will expire
+    const token = jwt.sign(
+      { userId: user._id, name: user.name },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: '30d'
+      }
+    );
+
+    // status code is 201 created
+    // send back the user name and the token in json
+    res.status(StatusCodes.CREATED).json({ user: { name: user.name }, token });
+  };
+
+  const login = async (req, res) => {
+    res.send('login user');
+  };
+  ```
