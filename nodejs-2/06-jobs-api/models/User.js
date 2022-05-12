@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const UserSchema = new mongoose.Schema({
 	name: {
@@ -33,6 +34,21 @@ UserSchema.pre('save', async function () {
 	// this keyword refers to the UserSchema object
 	this.password = await bcrypt.hash(this.password, salt);
 });
+
+// ---Generate token---
+// Creating instance method
+// NOTE: do not use arrow function. Use simple function!
+// This keyword refers to UserModel object
+UserSchema.methods.createJWT = function () {
+	// 1st arg is the payload object. Try to keep payload small
+	// 2nd arg is jwt.Secret. In production, use long, complex and unguessable string value
+	// 3rd arg is options object. Set when this token will expire
+	return jwt.sign(
+		{ userId: this._id, name: this.name },
+		process.env.JWT_SECRET,
+		{ expiresIn: '30d' }
+	);
+};
 
 // 1st arg is the name of the model we give
 module.exports = mongoose.model('User', UserSchema);

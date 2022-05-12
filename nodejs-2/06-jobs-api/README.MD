@@ -407,3 +407,49 @@ Email Validation Regex
     res.send('login user');
   };
   ```
+ 
+### [10. Generate token using instance method in UserSchema]()
+- In order to keep our business logic clean in the register controller, we should generate the user token in the UserSchema model instead, because generating a token is part of the process of creating a user instance from the UserSchema model
+- In Mongoose, instances of Models are documents. Documents have many of their own built-in instance methods and we can also define our own document instance methods
+  - The pattern for creating document instance method looks like this:
+    ```js
+    Model.methods.method_name = function () {
+      // logic
+    }
+    ```
+    - NOTE: do not use arrow function for this as we need to use the `this` keyword to refer to the Model object. Use simple function
+  - Then invoke the instance method on the document: `document.method_name()`
+- We want to create an instance method on our UserSchema model that generates a user token. So in the register controller, where the user instance is created, the user(document) can invoke the instance method to generate the token
+- File: models/User.js
+  ```js
+  const jwt = require('jsonwebtoken');
+
+  // ---Generate token---
+  // Creating instance method
+  // NOTE: do not use arrow function. Use simple function!
+  // This keyword refers to UserModel object
+  UserSchema.methods.createJWT = function () {
+    // 1st arg is the payload object. Try to keep payload small
+    // 2nd arg is jwt.Secret. In production, use long, complex and unguessable string value
+    // 3rd arg is options object. Set when this token will expire
+    return jwt.sign(
+      { userId: this._id, name: this.name },
+      process.env.JWT_SECRET,
+      { expiresIn: '30d' }
+    );
+  };
+  ```
+- File: controllers/auth.js
+  - Remove the jsonwebtoken library as we don't need it anymore
+  - Once a user instance is created, it has access to the instance method that was created in the UserSchema model. We just need to invoke the instance method to generate the JWT token
+  ```js
+  const register = async (req, res) => {
+    const user = await User.create({ ...req.body });
+    // generate user token using instance method
+    const token = user.createJWT();
+
+    // status code is 201 created
+    // send back the user name and the token in json
+    res.status(StatusCodes.CREATED).json({ user: { name: user.name }, token });
+  };
+  ```
