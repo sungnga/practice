@@ -453,3 +453,31 @@ Email Validation Regex
     res.status(StatusCodes.CREATED).json({ user: { name: user.name }, token });
   };
   ```
+
+### [11. Using env variables]()
+- To make the JWT_SECRET key more secure, we can use a website to randomly generate keys for us
+- Website: allkeysgenerators.com
+  - Click on the Encryption key tab and select 256bit for security level
+- File: .env
+  - Create JWT_SECRET variable and set it to the generated key
+  - Create JWT_LIFETIME variable and set a time when the JWT token will expire
+  ```js
+  MONGO_URI=mongodb+srv:<connection_string>
+  JWT_SECRET=<generated_key>
+  JWT_LIFETIME=30d
+  ```
+- File: models/User.js
+  - In the jwt.sign() method, pass in process.env.JWT_SECRET as 2nd arg
+  - Set the expiresIn option to process.env.JWT_LIFETIME
+  ```js
+  UserSchema.methods.createJWT = function () {
+    // 1st arg is the payload object. Try to keep payload small
+    // 2nd arg is jwt.Secret. In production, use long, complex and unguessable string value
+    // 3rd arg is options object. Set when this token will expire
+    return jwt.sign(
+      { userId: this._id, name: this.name },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_LIFETIME }
+    );
+  };
+  ```
