@@ -481,3 +481,44 @@ Email Validation Regex
     );
   };
   ```
+
+### [12. Setup login controller]()
+- We start by setting a basic logic for the register controller. Here, we want to check if email and password was provided. If successful, we want to find the user by their email in the User DB. If that is successful, then we create a JWT token for the user. If not successful, we throw our custom error classes that we created. We will compare user password later
+- File: controllers/auth.js
+  - Import the BadRequestError and UnauthenticatedError classes
+  - In the login controller:
+    - Write an if statement to check if no email or password is provided throw the BadRequestError and provide a custom message
+    - If this is successful, call User.findOne() method to find the user by their email in the User DB
+    - If user doesn't exist, throw the UnauthenticatedError and provide a custom message
+    - If user is found, then call user.createJWT() method to create a token for the user
+    - Lastly, the login controller sends back a status code and a user object in json
+  ```js
+  const User = require('../models/User');
+  const { StatusCodes } = require('http-status-codes');
+  const { BadRequestError, UnauthenticatedError } = require('../errors');
+
+  const login = async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      throw new BadRequestError('Please provide email and password');
+    }
+
+    // find user by their email in DB
+    const user = await User.fineOne({ email });
+
+    if (!user) {
+      throw new UnauthenticatedError('Invalid Credentials');
+    }
+
+    // if user exists, create a JWT token for the user
+    const token = user.createJWT();
+    res.status(StatusCodes.OK).json({ user: { name: user.name }, token });
+  };
+  ```
+- Let's test out user login functionality in POSTMAN
+  - First, make sure to create a user in register route
+  - Go to login route and make a POST request and provide username and password
+  - If no email or password is provided we should get back a 400 Bad Request status code
+  - If email or password is incorrect we should get a 401 Unauthorized status code
+
