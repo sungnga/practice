@@ -518,7 +518,30 @@ Email Validation Regex
   ```
 - Let's test out user login functionality in POSTMAN
   - First, make sure to create a user in register route
-  - Go to login route and make a POST request and provide username and password
+  - Go to login route (`http://localhost:3000/api/v1/auth/login`) and make a POST request and provide username and password
   - If no email or password is provided we should get back a 400 Bad Request status code
   - If email or password is incorrect we should get a 401 Unauthorized status code
 
+### [13. Compare password]()
+- When we register a new user, we hash their password value using the bcrypt package before storing in the database. Now in the login controller we want to compare the user password against the hashed password in DB. The bcrypt package has a `.compare()` method that we can use to get this done. We're not going to do it in the login controller, but rather, we'll create an instance method on our UserSchema to compare the password
+- File: models/User.js
+  - Write comparePassword instance method that compares the candidate's password with the document password in the database
+  - This instance method takes candidatePassword as an argument. So wherever this method is called, the candidatePassword must be provided
+  ```js
+  UserSchema.methods.comparePassword = async function (candidatePassword) {
+    // this.password is accessing the document(user) password in DB
+    const isMatch = await bcrypt.compare(candidatePassword, this.password);
+    return isMatch;
+  };
+  ```
+- File: controllers/auth.js
+  - In the login controller, call the comparePassword instance method on the `user` object. Note that at this stage, we already checked to make sure we have a user instance. Pass in the `password` as an argument. Assign the result to isPasswordCorrect
+  - Then write an if statement to check that if the password doesn't make, we throw an error
+  ```js
+  // the comparePassword instance method came from UserSchema model
+  const isPasswordCorrect = await user.comparePassword(password);
+  // if password doesn't make, throw an error
+  if (!isPasswordCorrect) {
+    throw new UnauthenticatedError('Invalid Credentials');
+  }
+  ```

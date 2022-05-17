@@ -21,8 +21,14 @@ const login = async (req, res) => {
 
 	// find user by their email in DB
 	const user = await User.fineOne({ email });
-
 	if (!user) {
+		throw new UnauthenticatedError('Invalid Credentials');
+	}
+
+	// the comparePassword instance method came from UserSchema model
+	const isPasswordCorrect = await user.comparePassword(password);
+	// if password doesn't make, throw an error
+	if (!isPasswordCorrect) {
 		throw new UnauthenticatedError('Invalid Credentials');
 	}
 
