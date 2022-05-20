@@ -545,3 +545,39 @@ Email Validation Regex
     throw new UnauthenticatedError('Invalid Credentials');
   }
   ```
+
+### [14. Setup auth middleware]()
+- The next thing we want to work on is job routes. We want to protect all job routes and only the authenticated user has access to the job routes. Since we have multiple job routes that we want to protect, it would make more sense to create an auth middleware function to call on any route we want to protect
+- File: middleware/authentication.js
+  - Write an async auth middleware function that verifies the user token in the req.body headers
+  - Call the `jwt.verify()` method to verify the token
+  - If successfully verify JWT, add user object to the job routes
+  ```js
+  const User = require('../models/User');
+  const jwt = require('jsonwebtoken');
+  const { UnauthenticatedError } = require('../errors');
+
+  const auth = async (req, res, next) => {
+    // check header
+    // authHeader is a string that looks like this: "Bearer <token>"
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      throw new UnauthenticatedError('Authorization invalid');
+    }
+
+    // after splitting the string, get the 2nd element (which is the token)
+    const token = authHeader.split(' ')[1];
+
+    try {
+      const payload = jwt.verify(token, process.env.JWT_SECRET);
+      // attach the user to the job routes
+      req.user = { userId: payload.userId, name: payload.name };
+      next();
+    } catch (error) {
+      throw new UnauthenticatedError('Authorization invalid');
+    }
+  };
+
+  module.exports = auth;
+  ```
+
