@@ -581,3 +581,28 @@ Email Validation Regex
   module.exports = auth;
   ```
 
+### [15. Testing auth middleware]()
+- The first option to applying the auth middleware to the job routes is to use it on the individual routes in jobs.js file in routes folder
+- The second option is to apply it on the jobs base rout which is in the app.js file. This way all the job routes are protected
+- File: app.js
+  - By applying the auth middleware at the jobs base route, all job routes will be protected
+  - Pass the auth middleware as a 2nd argument
+  ```js
+  // auth middleware
+  const authenticateUser = require('./middleware/authentication');
+
+  // base route for jobs
+  // 2nd arg is the middleware
+  app.use('/api/v1/jobs', authenticateUser, jobsRouter);
+  ```
+- File: controllers/jobs.js
+  - In the createJob controller, send back the user object if authentication was successful
+  ```js
+  const createJob = async (req, res) => {
+    res.json(req.user);
+  };
+  ```
+- Let's test out our auth middleware in the createJob route. In POSTMAN:
+  - make a POST request to jobs route (`http://localhost:3000/api/v1/jobs`). Note that this route was setup in routes/jobs.js file
+  - in the Headers authentication body, provide the token `Bearer <token>`. Must first register a user to generate a token
+  - if successful, we should get back a user object
