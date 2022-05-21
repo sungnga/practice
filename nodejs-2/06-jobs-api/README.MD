@@ -505,7 +505,7 @@ Email Validation Regex
     }
 
     // find user by their email in DB
-    const user = await User.fineOne({ email });
+    const user = await User.findOne({ email });
 
     if (!user) {
       throw new UnauthenticatedError('Invalid Credentials');
@@ -606,3 +606,40 @@ Email Validation Regex
   - make a POST request to jobs route (`http://localhost:3000/api/v1/jobs`). Note that this route was setup in routes/jobs.js file
   - in the Headers authentication body, provide the token `Bearer <token>`. Must first register a user to generate a token
   - if successful, we should get back a user object
+
+### [16. Setup Job model: JobSchema]()
+- File: models/Job.js
+  - Here, every time we create a new job we tie the job to the user. We do this by using `mongoose.Types.ObjectId` and referencing the model name. In our case, it's the User model
+  ```js
+  const mongoose = require('mongoose');
+
+  const JobSchema = new mongoose.Schema(
+    {
+      company: {
+        type: String,
+        required: [true, 'Please provide company name'],
+        maxlength: 50
+      },
+      position: {
+        type: String,
+        required: [true, 'Please provide position'],
+        maxlength: 100
+      },
+      status: {
+        type: String,
+        enum: ['interview', 'declined', 'pending'],
+        default: 'pending'
+      },
+      createdBy: {
+        // assign the new job to the user
+        type: mongoose.Types.ObjectId,
+        // referencing the User model
+        ref: 'User',
+        required: [true, 'Please provide user']
+      }
+    },
+    { timestamps: true }
+  );
+
+  module.exports = mongoose.model('Job', JobSchema);
+  ```
