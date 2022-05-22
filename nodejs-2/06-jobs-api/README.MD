@@ -643,3 +643,19 @@ Email Validation Regex
 
   module.exports = mongoose.model('Job', JobSchema);
   ```
+
+### [17. Implement createJob controller]()
+- File: controllers/jobs.js
+  - Import the Job model, the StatusCodes, and the BadRequestError and NotFoundError classes
+  ```js
+  const Job = require('../models/Job');
+  const { StatusCodes } = require('http-status-codes');
+  const { BadRequestError, NotFoundError } = require('../errors');
+
+  const createJob = async (req, res) => {
+    // add createdBy property to req.body and set it to userId from req.user
+    req.body.createdBy = req.user.userId;
+    const job = await Job.create(req.body);
+    res.status(StatusCodes.CREATED).json({ job });
+  };
+  ```
