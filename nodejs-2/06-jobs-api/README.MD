@@ -659,3 +659,16 @@ Email Validation Regex
     res.status(StatusCodes.CREATED).json({ job });
   };
   ```
+
+### [17. Implement getAllJobs controller]()
+- Since each job is tied to a userId who created the job, in the getAllJobs controller, we can find all jobs that belong to that user by the createdBy property
+- Since the getAllJobs route is protected, authentication token must be provided in the headers body of the query. And in our auth middleware, if authentication is successful, the user object is added to the jobs route. Hence, in the getAllJobs controller, we have access to the user object in `req.user` and we can get the userId here
+- File: controllers/jobs.js
+  ```js
+  const getAllJobs = async (req, res) => {
+    // once authenticateUser is successful,
+    // we have access to user object in req.user
+    const jobs = await Job.find({ createdBy: req.user.userId }).sort('createdAt');
+    res.status(StatusCodes.OK).json({ jobs, count: jobs.length });
+  };
+  ```
