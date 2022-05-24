@@ -660,7 +660,7 @@ Email Validation Regex
   };
   ```
 
-### [17. Implement getAllJobs controller]()
+### [18. Implement getAllJobs controller]()
 - Since each job is tied to a userId who created the job, in the getAllJobs controller, we can find all jobs that belong to that user by the createdBy property
 - Since the getAllJobs route is protected, authentication token must be provided in the headers body of the query. And in our auth middleware, if authentication is successful, the user object is added to the jobs route. Hence, in the getAllJobs controller, we have access to the user object in `req.user` and we can get the userId here
 - File: controllers/jobs.js
@@ -672,3 +672,22 @@ Email Validation Regex
     res.status(StatusCodes.OK).json({ jobs, count: jobs.length });
   };
   ```
+
+### [19. Set token dynamically in POSTMAN]()
+- In our project, as we want to create more users or make different job queries, we don't want to type in the token value in the headers content every time. In the Postman we can set this up dynamically where if we successfully register a new user and we get back the token in json response, we can pass the token value as global variable to the jobs routes
+- **Setting up token dynamically:**
+  - For the login and register routes:
+    - Click on the Tests tab and set this up
+      ```js
+      // pm stands for postman
+      const jsonData = pm.response.json();
+      // setup global variable
+      // token is the name of the property we get back in json response
+      // accessToken is the name of the global variable
+      pm.globals.set("accessToken", jsonData.token)
+      ```
+- **Using the dynamic token:**
+  - For all the jobs routes:
+    - In the Headers tab, uncheck or remove the Authorization property
+    - Click on the Authorization tab and select the "Bearer Token" type
+    - Then provide the global variable as the token value: `{{accessToken}}`
