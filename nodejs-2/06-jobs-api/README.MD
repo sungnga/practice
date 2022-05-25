@@ -686,8 +686,54 @@ Email Validation Regex
       // accessToken is the name of the global variable
       pm.globals.set("accessToken", jsonData.token)
       ```
+    - Click the Se nd button
 - **Using the dynamic token:**
   - For all the jobs routes:
     - In the Headers tab, uncheck or remove the Authorization property
     - Click on the Authorization tab and select the "Bearer Token" type
     - Then provide the global variable as the token value: `{{accessToken}}`
+
+### [20. Implement getJob controller]()
+- The get single job route requires a job id in the query params. So the route looks like this: `/jobs/:id`
+- File: controllers/jobs.js
+  ```js
+  const getJob = async (req, res) => {
+    // user object comes from auth middleware
+    // destructure the user object and get the userId from it
+    // the params object is provided by express
+    // assign an alias for id to jobId to be more explicit
+    const {
+      user: { userId },
+      params: { id: jobId }
+    } = req;
+
+    const job = await Job.findOne({
+      _id: jobId,
+      createdBy: userId
+    });
+    if (!job) {
+      throw new NotFoundError(`No job with id ${jobId}`);
+    }
+
+    res.status(StatusCodes.OK).json({ job });
+  };
+  ```
+- Let's test this route using POSTMAN
+  - Make a GET request to get single job route
+  - don't forget to provide the dynamic token value in the Authorization tab. Select Bearer Token and the value `{{accessToken}}`
+  - Login a user in the login route. Then make a query to the getAllJobs route to get all jobs for this user. Take one of the job ids and make a query to getJob route and provide the job id in the query params `{{URL}}/jobs/628dc6b2ad025b93970f506b`
+  - if successful, we should get a single job object back
+    ```js
+    {
+        "job": {
+            "status": "pending",
+            "_id": "628dc6b2ad025b93970f506b",
+            "company": "amazon",
+            "position": "back-end developer",
+            "createdBy": "6288704ea1ae4c5c61ef37df",
+            "createdAt": "2022-05-25T06:03:31.143Z",
+            "updatedAt": "2022-05-25T06:03:31.143Z",
+            "__v": 0
+        }
+    }
+    ```
