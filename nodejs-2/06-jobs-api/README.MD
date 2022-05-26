@@ -737,3 +737,43 @@ Email Validation Regex
         }
     }
     ```
+
+### [20. Implement updateJob controller]()
+- Updating a job is a PATCH request and it requires a jobId in the query params
+- The user must provide the values for company and position properties in the Body content
+- Since this route is protected, once the user has been authenticated, the user object is attached to the req object of this route
+- File: controllers/jobs.js
+  ```js
+  const updateJob = async (req, res) => {
+    // destructure from req object
+    const {
+      body: { company, position },
+      user: { userId },
+      params: { id: jobId }
+    } = req;
+
+    if (company === '' || position === '') {
+      throw new BadRequestError('Company or Position fields cannot be empty');
+    }
+
+    // set new to true means it will return the updated job
+    const job = await Job.findByIdAndUpdate(
+      { _id: jobId, createdBy: userId },
+      req.body,
+      { new: true, runValidators: true }
+    );
+    if (!job) {
+      throw new NotFoundError(`No job with id ${jobId}`);
+    }
+
+    res.status(StatusCodes.OK).json({ job });
+  };
+  ```
+- Let's update a job using POSTMAN:
+  - Make a PATCH request to update a job
+    - Provide a job id in the query params
+    - Provide the user token (dynamically) in Authorization
+    - Provide the values for company and position
+  - If successful, we should get back the updated job object
+  - Go back to getAllJobs route and make a request. Check to see if the job we want to job has been updated
+
