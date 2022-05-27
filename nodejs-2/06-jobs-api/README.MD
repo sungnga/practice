@@ -777,3 +777,27 @@ Email Validation Regex
   - If successful, we should get back the updated job object
   - Go back to getAllJobs route and make a request. Check to see if the job we want to job has been updated
 
+### [21. Implement deleteJob controller]()
+- To remove a job, make a DELETE query and provide the jobId in the query params
+- File: controllers/jobs.js
+  - Use the `.findOneAndRemove()` method on the Job model to remove a job
+  - If successful, we don't send back anything but the status code
+  ```js
+  const deleteJob = async (req, res) => {
+    const {
+      user: { userId },
+      params: { id: jobId }
+    } = req;
+
+    const job = await Job.findOneAndRemove({
+      _id: jobId,
+      createdBy: userId
+    });
+    if (!job) {
+      throw new NotFoundError(`No job with id ${jobId}`);
+    }
+
+    // if successful, we don't send back anything but the status code
+    res.status(StatusCodes.OK).send();
+  };
+  ```
