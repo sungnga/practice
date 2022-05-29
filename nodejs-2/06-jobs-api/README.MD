@@ -801,3 +801,43 @@ Email Validation Regex
     res.status(StatusCodes.OK).send();
   };
   ```
+
+### [22. Handle duplicate email error]()
+- Let's work on error handling where we send back a more user-friendly response when an error occurs
+- Currently we have three Mongoose errors:
+  - Validation errors - if the user doesn't provide the values
+  - Duplicate email - email must be unique
+  - Cast error - if the id doesn't match with Mongoose's id
+- File: middleware/error-handler.js
+  ```js
+  // const { CustomAPIError } = require('../errors');
+  const { StatusCodes } = require('http-status-codes');
+
+  const errorHandlerMiddleware = (err, req, res, next) => {
+    let customError = {
+      // set default
+      statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
+      msg: err.message || 'Something went wrong try again later'
+    };
+
+    // don't need to use this anymore. The default customError handles this already
+    // if (err instanceof CustomAPIError) {
+    // 	return res.status(err.statusCode).json({ msg: err.message });
+    // }
+
+    // handling duplicate email error
+    // error code 11000 is email duplicate
+    if (err.code && err.code === 11000) {
+      // sending custom error message
+      customError.msg = `Duplicate value entered ${Object.keys(
+        err.keyValue
+      )} field, please choose another value`;
+      // sending custom status code
+      customError.statusCode = 400;
+    }
+
+    // return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error })
+    return res.status(customError.statusCode).json({ msg: customError.msg });
+  };
+  ```
+
