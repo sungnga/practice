@@ -841,3 +841,21 @@ Email Validation Regex
   };
   ```
 
+### [23. Handle validation error]()
+- Let's handle validation errors. For example, if the user doesn't provide a value for name, email, or password in registration
+- File: middleware/error-handler.js
+  - Console log the err.errors object to what we have to work with
+  - To make the error message more user-friendly, we map over the err.errors array. The items in this array are `email` and `password` and they are objects themselves. What we want to print out is the `message` property in each item and we join them together
+  ```js
+  // handling validation error
+  // i.e if user doesn't provide email or password during registration
+  // the err.errors object contains password and email objects
+  // Object.values() method turns object into array
+  if (err.name === 'ValidationError') {
+    console.log(Object.values(err.errors));
+    customError.msg = Object.values(err.errors)
+      .map((item) => item.message)
+      .join(',');
+    customError.statusCode = 400;
+  }
+  ```

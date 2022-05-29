@@ -13,6 +13,18 @@ const errorHandlerMiddleware = (err, req, res, next) => {
 	// 	return res.status(err.statusCode).json({ msg: err.message });
 	// }
 
+	// handling validation error
+	// i.e if user doesn't provide email or password during registration
+	// the err.errors object contains password and email objects
+	// Object.values() method turns object into array
+	if (err.name === 'ValidationError') {
+		console.log(Object.values(err.errors));
+		customError.msg = Object.values(err.errors)
+			.map((item) => item.message)
+			.join(',');
+		customError.statusCode = 400;
+	}
+
 	// handling duplicate email error
 	// error code 11000 is email duplicate
 	if (err.code && err.code === 11000) {
