@@ -36,7 +36,16 @@ const errorHandlerMiddleware = (err, req, res, next) => {
 		customError.statusCode = 400;
 	}
 
-	// return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error })
+	// handling cast error
+	if (err.name === 'CastError') {
+		// sending custom error message
+		customError.msg = `No item found with id: ${err.value}`;
+		// sending custom status code
+		customError.statusCode = 404;
+	}
+
+	// to see the values in the err object
+	// return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ err });
 	return res.status(customError.statusCode).json({ msg: customError.msg });
 };
 

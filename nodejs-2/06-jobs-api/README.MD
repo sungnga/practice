@@ -844,7 +844,7 @@ Email Validation Regex
 ### [23. Handle validation error]()
 - Let's handle validation errors. For example, if the user doesn't provide a value for name, email, or password in registration
 - File: middleware/error-handler.js
-  - Console log the err.errors object to what we have to work with
+  - Console log the err.errors object to see what we have to work with
   - To make the error message more user-friendly, we map over the err.errors array. The items in this array are `email` and `password` and they are objects themselves. What we want to print out is the `message` property in each item and we join them together
   ```js
   // handling validation error
@@ -858,4 +858,91 @@ Email Validation Regex
       .join(',');
     customError.statusCode = 400;
   }
+  ```
+
+### [24. Handle cast error]()
+- If we're updating a job, get a single job or deleting a job, we need to provide a job id to the query params. If we provide a jobId that's not in the database we get a 404 status code. However, if we provide a jobId that isn't correct (i.e if the number of characters is too long or too short or a syntax error), we get a casting error
+  - Example of casting error
+  ```js
+  {
+      "msg": "Cast to ObjectId failed for value \"628c805cad025b93970f50677\" (type string) at path \"_id\" for model \"Job\""
+  }
+  ```
+- If we console log the `err` object, these are the values that we get back
+  ```js
+  {
+    "err": {
+        "stringValue": "\"628c805cad025b93970f50677\"",
+        "valueType": "string",
+        "kind": "ObjectId",
+        "value": "628c805cad025b93970f50677",
+        "path": "_id",
+        "reason": {},
+        "name": "CastError",
+        "message": "Cast to ObjectId failed for value \"628c805cad025b93970f50677\" (type string) at path \"_id\" for model \"Job\""
+    }
+  }
+  ```
+- File: middleware/error-handler.js
+  ```js
+  // handling cast error
+  if (err.name === 'CastError') {
+    // sending custom error message
+    customError.msg = `No item found with id: ${err.value}`;
+    // sending custom status code
+    customError.statusCode = 404;
+  }
+
+  // to see the values in the err object
+  // return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ err });
+  return res.status(customError.statusCode).json({ msg: customError.msg });
+  ```
+- Final code for the errorHandlerMiddleware function
+  ```js
+  const { StatusCodes } = require('http-status-codes');
+
+  const errorHandlerMiddleware = (err, req, res, next) => {
+    let customError = {
+      // set default
+      statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
+      msg: err.message || 'Something went wrong try again later'
+    };
+
+    // handling validation error
+    // i.e if user doesn't provide email or password during registration
+    // the err.errors object contains password and email objects
+    // Object.values() method turns object into array
+    if (err.name === 'ValidationError') {
+      console.log(Object.values(err.errors));
+      customError.msg = Object.values(err.errors)
+        .map((item) => item.message)
+        .join(',');
+      customError.statusCode = 400;
+    }
+
+    // handling duplicate email error
+    // error code 11000 is email duplicate
+    if (err.code && err.code === 11000) {
+      // sending custom error message
+      customError.msg = `Duplicate value entered ${Object.keys(
+        err.keyValue
+      )} field, please choose another value`;
+      // sending custom status code
+      customError.statusCode = 400;
+    }
+
+    // handling cast error
+    if (err.name === 'CastError') {
+      // sending custom error message
+      customError.msg = `No item found with id: ${err.value}`;
+      // sending custom status code
+      customError.statusCode = 404;
+    }
+
+    // to see the values in the err object
+    // return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ err });
+    return res.status(customError.statusCode).json({ msg: customError.msg });
+  };
+
+  module.exports = errorHandlerMiddleware;
   ```
