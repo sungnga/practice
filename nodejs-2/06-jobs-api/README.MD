@@ -52,10 +52,10 @@ Email Validation Regex
 - Cast Error
 
 #### Security
-- helmet
-- cors
-- xss-clean
-- express-rate-limit
+  - helmet
+  - cors
+  - xss-clean
+  - express-rate-limit
 
 #### Swagger UI
 ```yaml
@@ -945,4 +945,34 @@ Email Validation Regex
   };
 
   module.exports = errorHandlerMiddleware;
+  ```
+
+### [25. Setup security and install security packages]()
+- These are the security packages we will use to make our application a little more secured before deploying it to Heroku. These security packages are used as middleware in our application
+  - helmet - a very popular security package securing the http headers
+  - cors - ensures our API is accessible from different domain
+  - xss-clean - sanitizes the user's input in req.body, req.query, req.params, thus prevents attacker from injecting malicious code
+  - express-rate-limit - limits the amount of requests a user can make
+- File: app.js
+  - Import the security packages
+  - Invoke each one as middleware in `app.use()` method
+  ```js
+  // extra security packages
+  const helmet = require('helmet');
+  const cors = require('cors');
+  const xss = require('xss-clean');
+  const rateLimiter = require('rate-limiter');
+
+  // enable if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx)
+  app.set('trust proxy', 1);
+  app.use(
+    rateLimiter({
+      windowMs: 15 * 60 * 1000, //15 minutes
+      max: 100 //limit each IP to 100 requests per windowMs
+    })
+  );
+  app.use(express.json());
+  app.use(helmet());
+  app.use(cors());
+  app.use(xss());
   ```
