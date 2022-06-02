@@ -976,3 +976,77 @@ Email Validation Regex
   app.use(cors());
   app.use(xss());
   ```
+
+### [26. Deploy app to Heroku]()
+- Need three things:
+  - Sign up for Heroku account
+  - GIT version control installed
+  - Install Heroku CLI - a tool to deploy our app from the terminal
+- Make a copy of this application so that there's only this project in a folder
+- **Prepping the project:**
+- NOTE: always start by removing the existing GIT repo
+  - In the terminal and in the project directory: `rm -rf .git`
+- File: app.js
+  - Check to make sure there's a `process.env.PORT` set up. This allows Heroku to setup a port for us and our application will run on that port
+    - `const port = process.env.PORT || 3000;`
+  - Then create a simple GET request at the root of the project just to make sure it is working properly once we deployed the app to Heroku
+    ```js
+    // testing the root route
+    app.get('/', (req, res) => {
+      res.send('jobs api');
+    });
+    ```
+- File: package.json
+  - Add the `engines` property to set the node version we're using. In the terminal, type: `node -v` to see the version installed on the computer
+  - Then in the start scripts, change `nodemon app.js` to `node app.js`
+  ```js
+  "scripts": {
+    "start": "node app.js"
+  },
+  "engines": {
+    "node": "14.x"
+  }
+  ```
+- At the root of project directory create a `ProcFile` file with no extension
+  ```js
+  web: node app.js
+  ```
+- **Setup GIT version control. In the terminal:**
+  - `git init`
+  - `git add .` to add all files
+  - `git commit -m "Initial commit"` to add a commit message
+- **Deploy to Heroku from the terminal:**
+  - Login to Heroku: `heroku login`. A browser window will pop up asking to login
+  - Create a new app in Heroku by giving it a name (can't start with a number): `heroku create <app_name>`
+  - Check to see if Heroku is pointing to the GIT repo: `git remote -v`
+  - Push to GitHub: `git push heroku master`
+- Setup our .env variables in Heroku GUI dashboard
+  - Navigate to our project on Heroku dashboard and click on the "Settings" tab
+  - Scroll to the Config Vars section and enter the keys and values that we have setup in the `.env` file. Copy and paste exactly as is. There should be three of them
+  - Click on the "More" button and select "Restart all dynos". Heroku will update our app with the correct .env info
+  - Click on the "Open app" button to launch our app
+- Once our application is deployed to Heroku we get a URL for our app. We can then use this domain name to test out our API routes in Postman
+- **Testing API routes using POSTMAN:**
+  - We don't want to lose our global variable URL for development in port 3000, so we're going to create a new PROD_URL global variable
+  - Create a global variable for Heroku URL route. Click on the EYE icon to get to the global variable and click the "Edit" button
+    - Set the `VARIABLE` property to `PROD_URL`
+    - Set the `INITIAL VALUE` property to the Heroku URL of our app, plus add `/api/v1` to it
+    - The value for `CURRENT VALUE` property will be the same as `INITIAL VALUE` property
+    - Click the "Save" button
+  - Let's try to login a user:
+    - Make a POST request and the URL is: `{{PROD_URL}}/auth/login`
+    - In the Body content, provide the user's email and password in json format
+    - We need to provide the user token. Click on the Tests tab and past in the code
+      ```js
+      // pm stands for postman
+      const jsonData = pm.response.json();
+      // setup global variable
+      // token is the name of the property we get back in json response
+      // accessToken is the name of the global variable
+      pm.globals.set("accessToken", jsonData.token)
+      ```
+    - If successful logging in, we should get back the user name and the token value
+  - Let's try to get all jobs for this user:
+    - Make a GET request to the URL: `{{PROD_URL}}/jobs`
+    - Click on the Authorization tab and select the Bearer Token type. The token value is `{{accessToken}}`
+    - If successful, we should get back all the jobs
