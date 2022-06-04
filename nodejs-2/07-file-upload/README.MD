@@ -17,3 +17,26 @@
   - `MONGO_URI=<connect_string_from_mongoDB>`
 - Create a `.gitignore` file. Add these files to the list: package-lock.json, /node_modules, and .env
 - Then run the script `npm start` to start up the project. This will run nodemon on app.js file
+
+### [02. Setup Product model]()
+- File: models/Product.js
+  ```js
+  const mongoose = require('mongoose');
+
+  const ProductSchema = new mongoose.Schema({
+    name: {
+      type: String,
+      require: true
+    },
+    price: {
+      type: Number,
+      require: true
+    },
+    image: {
+      type: String,
+      require: true
+    }
+  });
+
+  module.exports = mongoose.model('Product', ProductSchema);
+  ```
