@@ -738,7 +738,7 @@ Email Validation Regex
     }
     ```
 
-### [20. Implement updateJob controller]()
+### [21. Implement updateJob controller]()
 - Updating a job is a PATCH request and it requires a jobId in the query params
 - The user must provide the values for company and position properties in the Body content
 - Since this route is protected, once the user has been authenticated, the user object is attached to the req object of this route
@@ -777,7 +777,7 @@ Email Validation Regex
   - If successful, we should get back the updated job object
   - Go back to getAllJobs route and make a request. Check to see if the job we want to job has been updated
 
-### [21. Implement deleteJob controller]()
+### [22. Implement deleteJob controller]()
 - To remove a job, make a DELETE query and provide the jobId in the query params
 - File: controllers/jobs.js
   - Use the `.findOneAndRemove()` method on the Job model to remove a job
@@ -802,7 +802,7 @@ Email Validation Regex
   };
   ```
 
-### [22. Handle duplicate email error]()
+### [23. Handle duplicate email error]()
 - Let's work on error handling where we send back a more user-friendly response when an error occurs
 - Currently we have three Mongoose errors:
   - Validation errors - if the user doesn't provide the values
@@ -841,7 +841,7 @@ Email Validation Regex
   };
   ```
 
-### [23. Handle validation error]()
+### [24. Handle validation error]()
 - Let's handle validation errors. For example, if the user doesn't provide a value for name, email, or password in registration
 - File: middleware/error-handler.js
   - Console log the err.errors object to see what we have to work with
@@ -860,7 +860,7 @@ Email Validation Regex
   }
   ```
 
-### [24. Handle cast error]()
+### [25. Handle cast error]()
 - If we're updating a job, get a single job or deleting a job, we need to provide a job id to the query params. If we provide a jobId that's not in the database we get a 404 status code. However, if we provide a jobId that isn't correct (i.e if the number of characters is too long or too short or a syntax error), we get a casting error
   - Example of casting error
   ```js
@@ -947,7 +947,7 @@ Email Validation Regex
   module.exports = errorHandlerMiddleware;
   ```
 
-### [25. Setup security and install security packages]()
+### [26. Setup security and install security packages]()
 - These are the security packages we will use to make our application a little more secured before deploying it to Heroku. These security packages are used as middleware in our application
   - helmet - a very popular security package securing the http headers
   - cors - ensures our API is accessible from different domain
@@ -977,7 +977,7 @@ Email Validation Regex
   app.use(xss());
   ```
 
-### [26. Deploy app to Heroku]()
+### [27. Deploy app to Heroku]()
 - Need three things:
   - Sign up for Heroku account
   - GIT version control installed
@@ -1050,3 +1050,12 @@ Email Validation Regex
     - Make a GET request to the URL: `{{PROD_URL}}/jobs`
     - Click on the Authorization tab and select the Bearer Token type. The token value is `{{accessToken}}`
     - If successful, we should get back all the jobs
+
+### [28. How to clone existing Heroku project]()
+- The idea is we want to clone a copy of our project that we just deployed to Heroku. This project is now sitting in the cloud. If we want to make a change to the project, we can make the changes on our local machine and push it back up to Heroku
+- Clone a copy of Heroku project to computer desktop
+  - In the terminal, cd into desktop adn run: `heroku git:clone -a <name_of_project>`
+  - Name of Heroku project can be found on Heroku dashboard page
+- In this clone project, we need to add a `.env` file and fill in the necessary environment variables which we can get on Heroku project dashboard
+- Lastly, we need to create the package.json file and startup the local server
+  - cd into the project directory and run: `npm install && npm start`
