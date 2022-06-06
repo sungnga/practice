@@ -7,13 +7,23 @@ const app = express();
 // database
 const connectDB = require('./db/connect');
 
+// product router
+const productRouter = require('./routes/productRoutes');
+
 // error handler
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
 
+// to get access to all the data in req.body
+app.use(express.json());
+
 app.get('/', (req, res) => {
-  res.send('<h1>File Upload Starter</h1>');
+	res.send('<h1>File Upload Starter</h1>');
 });
+
+// use productRouter as middleware
+// the root route
+app.use('/api/v1/products', productRouter);
 
 // middleware
 app.use(notFoundMiddleware);
@@ -22,15 +32,15 @@ app.use(errorHandlerMiddleware);
 const port = process.env.PORT || 3000;
 
 const start = async () => {
-  try {
-    await connectDB(process.env.MONGO_URI);
+	try {
+		await connectDB(process.env.MONGO_URI);
 
-    app.listen(port, () =>
-      console.log(`Server is listening on port ${port}...`)
-    );
-  } catch (error) {
-    console.log(error);
-  }
+		app.listen(port, () =>
+			console.log(`Server is listening on port ${port}...`)
+		);
+	} catch (error) {
+		console.log(error);
+	}
 };
 
 start();

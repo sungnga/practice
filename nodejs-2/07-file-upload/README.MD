@@ -40,3 +40,61 @@
 
   module.exports = mongoose.model('Product', ProductSchema);
   ```
+
+### [03. Setup basic structure for controllers and routes]()
+- Let's setup the basic structure for the controllers and their routes
+- We will have two types of controllers: productController and uploadsController
+  - The product controllers (two of them) will go to the home route: `/`
+  - The upload product image controller goes to uploads route: `/uploads`
+- File: controllers/productController.js
+  - Setup basic structure for the createProduct and the getAllProducts controllers
+  ```js
+  const Product = require('../models/Product');
+  const { StatusCodes } = require('http-status-codes');
+
+  const createProduct = async (req, res) => {
+    res.send('create product');
+  };
+
+  const getAllProducts = async (req, res) => {
+    res.send('list of products');
+  };
+
+  module.exports = { createProduct, getAllProducts };
+  ```
+- File: controllers/uploadsController.js
+  ```js
+  const { StatusCodes } = require('http-status-codes');
+
+  const uploadProductImage = async (req, res) => {
+    res.send('upload product image');
+  };
+
+  module.exports = { uploadProductImage };
+  ```
+- File: routes/productRoutes.js
+  - Setup the routes for the three controllers
+  ```js
+  const express = require('express');
+  const router = express.Router();
+
+  const { createProduct, getAllProducts } = require('../controllers/productController');
+  const { uploadProductImage } = require('../controllers/uploadsController');
+
+  router.route('/').post(createProduct).get(getAllProducts);
+  router.route('/uploads').post(uploadProductImage);
+
+  module.exports = router;
+  ```
+- File: app.js
+  ```js
+  // product router
+  const productRouter = require('./routes/productRoutes');
+
+  // to get access to all the data in req.body
+  app.use(express.json());
+
+  // use productRouter as middleware
+  // 1st arg is the root route
+  app.use('/api/v1/products', productRouter);
+  ```
