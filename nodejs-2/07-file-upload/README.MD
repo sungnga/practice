@@ -98,3 +98,13 @@
   // 1st arg is the root route
   app.use('/api/v1/products', productRouter);
   ```
+
+### [04. Setup basic routes in Postman]()
+- Let's setup the basic routes in Postman for this project
+- Create a new collection and give the collection a name
+- The base URL, which we created a global variable for is `http://localhost:3000/api/v1` and it's stored in `{{URL}}`
+  - Remember that our root route is: `/api/v1/products`
+- We will have three routes:
+  - A POST route to create product: `{{URL}}/products`
+  - A GET route to get all products: `{{URL}}/products`
+  - A POST route to upload image: `{{URL}}/products/uploads`
