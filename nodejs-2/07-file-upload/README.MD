@@ -109,9 +109,9 @@
   - A GET route to get all products: `{{URL}}/products`
   - A POST route to upload image: `{{URL}}/products/uploads`
 
-### [05. Upload image file using Postman]()
+### [05. Implement uploadProductImage controller]()
 - The way we set up our ProductSchema model is we must provide the values for name, price, and image properties. The value of the `image` property is a string and it's a path to the image that we must first upload to a cloud server (eventually to Cloudinary). For now, we're uploading it to our development server which stores the image in a public directory. We will create a separate folder to store the uploaded image as a path
-- **Uploading an image using POSTMAN:**
+- **Uploading an image file using POSTMAN:**
   - Make a POST request to the upload image route: `{{URL}}/products/uploads`
   - Click on the Body tab and select form-data to upload a file
   - Provide a name for the image upload as the KEY. Call it `image` for example. For the VALUE, select an image file from the file system
@@ -175,9 +175,91 @@
     ```js
     {
       "image": {
-          "src": "/uploads/computer-2.jpeg"
+        "src": "/uploads/computer-2.jpeg"
       }
     }
     ```
   - To see the image in the browser: `http://localhost:3000/uploads/computer-2.jpeg`
-  
+
+### [06. Implement createProduct, getAllProducts controllers]()
+- **Implementing createProduct functionality:**
+- File: controllers/productController.js
+  - In the createProduct controller:
+    - console log the req.body object to see the data being submitted
+    - call Product.create() method to create a product instance
+    - send back the status code and the product instance in json format
+  ```js
+  const Product = require('../models/Product');
+  const { StatusCodes } = require('http-status-codes');
+
+  const createProduct = async (req, res) => {
+    // console.log(req.body);
+    const product = await Product.create(req.body);
+    res.status(StatusCodes.CREATED).json({ product });
+  };
+  ```
+- Let's create a product using POSTMAN:
+  - First, upload an image in the upload image route: `{{URL}}/products/uploads`. If successful, we should get back an image object that contains the image path. We need this image path when we create a product
+    ```js
+    {
+      "image": {
+        "src": "/uploads/computer-2.jpeg"
+      }
+    }
+    ```
+  - Make a POST request in the create product route: `{{URL}}/products`
+  - In the Body content, provide the values for the name, price, and image properties. Copy and paste the image path as a string value for the image property
+    ```js
+    {
+      "name": "product 2",
+      "price": 600,
+      "image": "/uploads/computer-2.jpeg"
+    }
+    ```
+  - If successful, we should get back a product object
+    ```js
+    {
+      "product": {
+        "_id": "62a04c00d3ed0fc6b82377c9",
+        "name": "product 2",
+        "price": 600,
+        "image": "/uploads/computer-2.jpeg",
+        "__v": 0
+      }
+    }
+    ```
+- **Implementing getAllProducts functionality:**
+- File: controllers/productController.js
+  - In the getAllProducts controller:
+    - Call the .find() method on the Product model and pass in an empty object. This, by default, will find all the products
+    - Send back a status code and the array of products in an object
+  ```js
+  const getAllProducts = async (req, res) => {
+    // passing in empty object {} will find all the products
+    const products = await Product.find({});
+    res.status(StatusCodes.OK).json({ products });
+  };
+  ```
+- Let's get all products using POSTMAN:
+  - Make a GET request in the get all products rout: `{{URL}}/products`
+  - If successful, we should get back the products object that contains an array of products
+    ```js
+    {
+      "products": [
+        {
+          "_id": "62a04c00d3ed0fc6b82377c9",
+          "name": "product 2",
+          "price": 600,
+          "image": "/uploads/computer-2.jpeg",
+          "__v": 0
+        },
+        {
+          "_id": "62a04d78d3ed0fc6b82377cb",
+          "name": "product 3",
+          "price": 600,
+          "image": "/uploads/computer-3.jpeg",
+          "__v": 0
+        }
+      ]
+    }
+    ```
