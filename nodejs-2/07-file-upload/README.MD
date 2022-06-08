@@ -108,3 +108,76 @@
   - A POST route to create product: `{{URL}}/products`
   - A GET route to get all products: `{{URL}}/products`
   - A POST route to upload image: `{{URL}}/products/uploads`
+
+### [05. Upload image file using Postman]()
+- The way we set up our ProductSchema model is we must provide the values for name, price, and image properties. The value of the `image` property is a string and it's a path to the image that we must first upload to a cloud server (eventually to Cloudinary). For now, we're uploading it to our development server which stores the image in a public directory. We will create a separate folder to store the uploaded image as a path
+- **Uploading an image using POSTMAN:**
+  - Make a POST request to the upload image route: `{{URL}}/products/uploads`
+  - Click on the Body tab and select form-data to upload a file
+  - Provide a name for the image upload as the KEY. Call it `image` for example. For the VALUE, select an image file from the file system
+- A NOTE WHEN UPLOADING A FILE USING POSTMAN
+  - Since we're uploading a file (not providing raw data) in the Body content, by default, we don't have access to the file data in `req.body` object
+  - We need to use an external library `express-fileupload` in order to access the file data
+  - Once the library is installed, we have access to the file/image data in `req.files`
+- Install express-fileupload library: `npm i express-fileupload`
+- **Implementing the express-fileupload package:**
+  - File: app.js
+    - Import the express-fileupload library
+    - Invoke it as a middleware
+    ```js
+    const fileUpload = require('express-fileupload');
+
+    app.use(fileUpload());
+    ```
+- **Storing the image data in a public path:**
+  - The next step we want to do is to create a public path that stores the uploaded image data. This in turn makes the image a public image asset
+  - Inside the `public` directory, create a folder called `uploads`
+  - Then, the express-fileupload library has a `.mv()` method that we can call on the file object to move the file/image to a specified path
+  - We use the `path` module that comes with Node.js to create the path in the `uploads` folder
+  - File: controllers/uploadsController.js
+    - Import the path module that comes with Node.js
+    - Console log req.files to see the file data
+    - Create an imagePath in the uploads folder in the public directory
+    - Call .mv() method on the productImage object to move the image data to the imagePath
+    - Then send back the status code along with an image object that contains the source to the image path
+    - If successful, the productImage object will be moved to the imagePath that we created in the `uploads` folder inside the `public` directory
+    - This officially uploads a file image to our development server that we can view in the browser
+    ```js
+    const path = require('path');
+    const { StatusCodes } = require('http-status-codes');
+
+    const uploadProductImage = async (req, res) => {
+      console.log(req.files);
+      let productImage = req.files.image;
+
+      // create a path in uploads folder
+      const imagePath = path.join(
+        __dirname,
+        '../public/uploads/' + `${productImage.name}`
+      );
+      // moving image data to the imagePath in uploads folder
+      // the .mv() method is provided by express-fileupload library
+      await productImage.mv(imagePath);
+      return res
+        .status(StatusCodes.OK)
+        .json({ image: { src: `/uploads/${productImage.name}` } });
+    };
+    ```
+- **Making a folder public:**
+  - File: app.js
+    - Here, we're making the public directory as a public folder
+    ```js
+    app.use(express.static('./public'));
+    ```
+- **To view the uploaded image file in the browser:**
+  - Go to POSTMAN to upload an image in the upload image route
+  - If successful, we should get back an image object that contains the path to the uploaded image
+    ```js
+    {
+      "image": {
+          "src": "/uploads/computer-2.jpeg"
+      }
+    }
+    ```
+  - To see the image in the browser: `http://localhost:3000/uploads/computer-2.jpeg`
+  
