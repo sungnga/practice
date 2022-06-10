@@ -263,3 +263,46 @@
       ]
     }
     ```
+
+### [07. Additional validation for image upload]()
+- Let's add additional checks to the uploadProductImage controller to see whether the user has uploaded a file, whether the file is an image file, and whether the file exceeds a specified size
+- File: controllers/uploadsController.js
+  - First, console log the req.files object to see the properties that we're checking for
+  - Import the entire custom error object from errors/index.js file
+  - In the uploadProductImage controller:
+    - Check to see if the file exists
+    - Check to see if the file type is an image file
+    - Check to see if the file size exceeds 1KB
+    - For each of these three errors, we throw our custom BadRequestError handler
+  ```js
+  // we're getting the entire error object from errors/index.js file
+  const CustomError = require('../errors');
+
+  const uploadProductImage = async (req, res) => {
+    console.log(req.files);
+
+    // check if file exists
+    if (!req.files) {
+      throw new CustomError.BadRequestError('No file uploaded');
+    }
+
+    const productImage = req.files.image;
+
+    // check format
+    if (!productImage.mimetype.startsWith('image')) {
+      throw new CustomError.BadRequestError('Please upload image');
+    }
+
+    // maxSize is 1MB
+    const maxSize = 1024 * 1024;
+    // check size
+    if (productImage.size > maxSize) {
+      throw new CustomError.BadRequestError(
+        'Please upload image smaller than 1KB'
+      );
+    }
+
+    // <---the rest of the code -->
+  };
+  ```
+
