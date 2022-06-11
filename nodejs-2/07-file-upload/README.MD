@@ -306,3 +306,34 @@
   };
   ```
 
+### [08. Setup Cloudinary]()
+- **Signup for Cloudinary account:**
+  - Go to the Account Details section in the dashboard page and we're looking for these three things:
+    - Cloud name
+    - API Key
+    - API Secret
+- **Setup in .env file:**
+  ```js
+  MONGO_URI=<mongoDB_connection_string>
+  CLOUD_NAME=<cloudinary_name>
+  CLOUD_API_KEY=<cloudinary_api_key>
+  CLOUD_API_SECRET=<cloudinary_api_secret>
+  ```
+- **Install Cloudinary package:**
+  - `npm i cloudinary`
+- **Setup Cloudinary:**
+  - File: app.js
+    - Import cloudinary library and make sure to use version 2
+    - Call cloudinary.config() method and pass in, as an object, the cloudinary .env information
+    ```js
+    // use version 2
+    const cloudinary = require('cloudinary').v2;
+
+    cloudinary.config({
+      cloud_name: process.env.CLOUD_NAME,
+      api_key: process.env.CLOUD_API_KEY,
+      api_secret: process.env.CLOUD_API_SECRET
+    });
+    ```
+  - Restart the server. If everything is working properly, it should print "Server is listening to port 3000..."
+
