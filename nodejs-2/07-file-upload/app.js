@@ -28,7 +28,9 @@ const errorHandlerMiddleware = require('./middleware/error-handler');
 app.use(express.static('./public'));
 // to get access to all the data in req.body
 app.use(express.json());
-app.use(fileUpload());
+// the express-fileupload lib first parses the upload image file
+// then creates a temp directory in the project and stores the parsed file
+app.use(fileUpload({ useTempFiles: true }));
 
 app.get('/', (req, res) => {
 	res.send('<h1>File Upload Starter</h1>');

@@ -307,7 +307,7 @@
   ```
 
 ### [08. Setup Cloudinary]()
-- **Signup for Cloudinary account:**
+- **Sign up for Cloudinary account:**
   - Go to the Account Details section in the dashboard page and we're looking for these three things:
     - Cloud name
     - API Key
@@ -337,3 +337,47 @@
     ```
   - Restart the server. If everything is working properly, it should print "Server is listening to port 3000..."
 
+### [09. Upload image to Cloudinary]()
+- Up to this point, the uploadProductImage controller function that we wrote uploads an image file to our local server using Postman. Now we want to write controller that uploads the image file to Cloudinary and the steps are a little different. Rename the current `uploadProductImage` controller to `uploadProductImageLocal` and save it for reference
+- The controller that uploads an image file to Cloudinary takes the following steps:
+  - First, we want to utilize the `express-fileupload` library in the app.js file to perform two tasks. The first is it parses the image file we get from the user. Second, it creates a `temp` folder inside our project directory. It stores the image data in this folder. To enable this feature, we set the `useTempFiles` option to true. After this, when an image is uploaded, we see the `tempFilePath` property in the `req.files.image` object. It's a path to the image file data
+  - In the `uploadProductImage` controller, we call the `cloudinary.uploader.upload()` method and pass in the `tempFilePath` to upload the image file data to cloudinary. We can also specify the name of the folder in Cloudinary that we want to store the image
+- File: app.js
+  - In the fileUpload middleware, pass in the useTempFiles option and set it to true
+  - The express-fileupload package will parse the uploaded image file and then it creates a temp folder inside our project and stores the image file data in this folder
+  ```js
+  const fileUpload = require('express-fileupload');
+
+  // the express-fileupload lib first parses the upload image file
+  // then creates a temp directory in the project and stores the parsed file
+  app.use(fileUpload({ useTempFiles: true }));
+  ```
+- File: controllers/uploadsController.js
+  - First, rename to current uploadProductImage controller to uploadProductImageLocal
+  - The image file data is stored in the tempFilePath property. Console log `req.files.image` to see this property
+  - Call the cloudinary.uploader.upload() method and pass in the tempFilePath as the 1st arg. 2nd arg is an object where we can specify the name of the folder where we want to store the image
+  ```js
+  // this controller uploads image to Cloudinary
+  const uploadProductImage = async (req, res) => {
+    console.log(req.files.image); //will see the tempFilePath property where the image file is stored
+
+    // 1st arg is the path
+    // 2nd arg is options
+    const result = await cloudinary.uploader.upload(
+      req.files.image.tempFilePath,
+      {
+        use_filename: true,
+        folder: 'Nodejs-07-File-Upload'
+      }
+    );
+
+    console.log(result); //the image path on Cloudinary is in the secure_url property
+    return res.status(StatusCodes.OK).json({ image: { src: result.secure_url } });
+  };
+  ```
+- Let's test out the functionality using Postman:
+  - Upload an image file in the upload image route
+  - If successful, we should get back an image object that contains the path to the image on Cloudinary server
+  - We should also see a `temp` folder created in our project by `express-fileupload` library. The image path is stored here
+  - To see the image, visit this path in the browser
+  - We can also see the image stored in the Nodejs-07-File-Upload folder on Cloudinary website
