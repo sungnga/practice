@@ -362,7 +362,7 @@
     console.log(req.files.image); //will see the tempFilePath property where the image file is stored
 
     // 1st arg is the path
-    // 2nd arg is options
+    // 2nd arg is options where to store the image on Cloudinary
     const result = await cloudinary.uploader.upload(
       req.files.image.tempFilePath,
       {
@@ -381,3 +381,17 @@
   - We should also see a `temp` folder created in our project by `express-fileupload` library. The image path is stored here
   - To see the image, visit this path in the browser
   - We can also see the image stored in the Nodejs-07-File-Upload folder on Cloudinary website
+
+### [10. Remove temp files]()
+- Every time we upload an image file we're storing it on Cloudinary server and also on our local server in the `temp` folder. We can write a function inside the `uploadProductImage` controller to remove it from the file system once it has been successfully uploaded to Cloudinary
+- File: controllers/uploadsController.js
+  - Import the file system library
+  - Call fs.unlinkSync() method and pass in the req.files.image.tempFilePath as an argument
+  - Now every time an image has been successfully uploaded to Cloudinary, the tempFilePath will be removed from the temp folder on the local server
+  ```js
+  const fs = require('fs');
+
+  // removing the tempFilePath from temp folder
+  // once the image has been uploaded to Cloudinary
+  fs.unlinkSync(req.files.image.tempFilePath);
+  ```
