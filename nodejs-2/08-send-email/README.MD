@@ -79,3 +79,57 @@
   - This will trigger the sendEmail controller function
   - If successful, we should get back the send email info displayed on the page
   - Head to https://ethereal.email dashboard page and click on "Open MailBox" button. Should see the sent email
+
+### [03. Send emails with SendGrid]()
+- SendGrid is one of the most popular email providers for production
+- **Sign up for SendGrid:**
+  - Sign up for a SendGrid account
+  - Setup a Sender Identity - an email address that SendGrid is going to use to send emails on our behalf
+    - On the main account page, click on the "Send a Single Sender" button
+    - Fill out the Create a Sender form. Make sure to provide an actual email address because it'll ask you to verify the sender
+- **Setup Web API integration:**
+  - On the main account page, select the Email API item in the main menu and select Integration Guide
+  - Choose the Web API as a setup method
+  - Chose Node.js as the language
+  - In step 2, give the API Key a name and click on the "Create Key" button
+  - Copy the API key to the clipboard as we will use it in our .env file
+- **Create an environment variable:**
+  - At the root of the project directory, create a .env file
+  - Create an environment variable to store the SendGrid API key
+  - File: .env
+    ```js
+    SENDGRID_API_KEY=<SendGrid_API_Key>
+    ```
+  - Restart the server
+- **Install SendGrid package:**
+  - Install: `npm i --save @sendgrid/mail`
+- **Implementing the sendEmail controller:**
+  - First, rename the current `sendEmail` controller to `sendEmailEthereal`
+  - Then create another controller called sendEmail that sends email with SendGrid 
+  -  File: controllers/sendEmail.js
+    - Import the SendGrid module
+    - Inside the sendEmail controller:
+      - Setup the API key using the process.env
+      - Create a message object that contains the to, from, subject, text, and html properties
+      - Call the sgMail.send() method to send message object. This is an async operation, so add the await keyword in front of it. Assign the result that we get back to an `info` object
+      - Lastly, this controller returns the `info` object in json format
+      ```js
+      const sgMail = require('@sendgrid/mail');
+
+      // send email with SendGrid
+      const sendEmail = async (req, res) => {
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+        const msg = {
+          to: 'nga@example.com', // Change to your recipient
+          from: 'myEmail@example.com', // Change to your verified sender
+          subject: 'Sending with SendGrid is Fun',
+          text: 'and easy to do anywhere, even with Node.js',
+          html: '<strong>and easy to do anywhere, even with Node.js</strong>'
+        };
+        const info = await sgMail.send(msg);
+        res.json(info); // This is for testing purposes only
+      };
+
+      module.exports = sendEmail;
+      ```
+
