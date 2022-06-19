@@ -17,6 +17,27 @@
 - Create a `.gitignore` file. Add these files to the list: package-lock.json, /node_modules, and .env
 - Then run the script `npm start` to start up the project. This will run nodemon on app.js file
 
+### [02. Setup basic Express server]()
+- File: app.js
+  ```js
+  // express
+  const express = require('express');
+  const app = express();
+
+  const port = process.env.PORT || 5000;
+
+  const start = async () => {
+    try {
+      app.listen(port, console.log(`Server is listening on port ${port}...`));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  start();
+  ```
+
+
 
 
 
@@ -29,8 +50,8 @@
 [E-Commerce API Heroku URL](https://e-commerce-api-10.herokuapp.com/)
 
 #### Setup Basic Express Server
-- [] import express and assign to variable
-- [] setup start port variable (5000) and start function
+- [x] import express and assign to variable
+- [x] setup start port variable (5000) and start function
 
 #### Connect To DB
 - [] get connection string
