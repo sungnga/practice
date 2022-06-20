@@ -18,6 +18,8 @@
 - Then run the script `npm start` to start up the project. This will run nodemon on app.js file
 
 ### [02. Setup basic Express server]()
+- [] import express and assign to variable
+- [] setup start port variable (5000) and start function
 - File: app.js
   ```js
   // express
@@ -37,6 +39,59 @@
   start();
   ```
 
+### [03. Connect to database]()
+- [] get connection string from MongoDB
+- [] setup .env with MONGO_URL variable and assign the value
+- [] import 'dotenv' and setup package
+- [] import connect() and invoke in the starter
+- [] restart the server
+- [] mongoose V6 info
+- File: .env
+  - In the connection string, give the database a name and provide the password
+  ```js
+  MONGO_URL=<connection_string>
+  ```
+- File: db/connect.js
+  ```js
+  const mongoose = require('mongoose');
+
+  const connectDB = (url) => {
+    return mongoose.connect(url, {
+      useNewUrlParser: true,
+      useCreateIndex: true,
+      useFindAndModify: false,
+      useUnifiedTopology: true
+    });
+  };
+
+  module.exports = connectDB;
+  ```
+- File: app.js
+  - Import the dotenv package
+  - Import the connectDB function
+  - In the start function and inside the try block, invoke the connectDB() method and pass in the process.env.MONGO_URL as an argument
+  ```js
+  require('dotenv').config();
+
+  // express
+  const express = require('express');
+  const app = express();
+
+  // database
+  const connectDB = require('./db/connect');
+
+  const port = process.env.PORT || 5000;
+  const start = async () => {
+    try {
+      // connect to MongoDB
+      await connectDB(process.env.MONGO_URL);
+      app.listen(port, console.log(`Server is listening on port ${port}...`));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  start();
+  ```
 
 
 
@@ -54,7 +109,7 @@
 - [x] setup start port variable (5000) and start function
 
 #### Connect To DB
-- [] get connection string
+- [] get connection string from MongoDB
 - [] setup .env with MONGO_URL variable and assign the value
 - [] import 'dotenv' and setup package
 - [] import connect() and invoke in the starter
@@ -65,7 +120,7 @@
 - [] setup / GET Route
 - [] setup express.json() middleware
 - [] setup 404 and errorHandler middleware
-- [] import 'exress-async-errors' package
+- [] import 'express-async-errors' package
 
 #### 404 vs ErrorHandler Middleware
 
