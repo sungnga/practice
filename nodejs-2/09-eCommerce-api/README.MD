@@ -107,7 +107,7 @@
   require('express-async-errors');
 
   // middleware
-  const NotFoundMiddleware = require('./middleware/not-found');
+  const notFoundMiddleware = require('./middleware/not-found');
   const errorHandlerMiddleware = require('./middleware/error-handler');
 
   // parse json data
@@ -122,12 +122,26 @@
 
   // the 404 error handler is placed after all the routes and before other error handlers
   // because this middleware doesn't call next(). Everything ends after this
-  app.use(NotFoundMiddleware);
+  app.use(notFoundMiddleware);
   // custom error handler goes last because this middleware is only invoked
   // inside an existing route
   app.use(errorHandlerMiddleware);
   ```
 
+### [05. Using Morgan package for debugging]()
+- Morgan is a useful tool to help with debugging while in development. It logs useful route request information and prints it to the console. It tells the type of request method, the route path being made, the status code, and how long the request takes
+- Install Morgan: `npm i morgan`
+- File: app.js
+  - Install morgan package
+  ```js
+  const morgan = require('morgan');
+
+  app.use(morgan('tiny'));
+  ```
+- **Testing Morgan:**
+  - Keep the terminal open
+  - Go to the browser and make a request to the home page: `http://localhost:5000/`. You see this printed in the console: `GET / 304 - - 20.431 ms`
+  - Make a request to this route: `http://localhost:5000/apple`. You should see this printed in the console: `GET /apple 404 20 - 4.403 ms`
 
 
 

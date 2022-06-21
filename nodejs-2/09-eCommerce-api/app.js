@@ -7,6 +7,9 @@ require('express-async-errors');
 const express = require('express');
 const app = express();
 
+// other packages
+const morgan = require('morgan');
+
 // database
 const connectDB = require('./db/connect');
 
@@ -14,6 +17,7 @@ const connectDB = require('./db/connect');
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
 
+app.use(morgan('tiny'));
 // parse json data
 // this middleware makes it possible for the json data
 // be available in req.body in POST and UPDATE methods
@@ -26,7 +30,7 @@ app.get('/', (req, res) => {
 
 // the 404 error handler is placed after all the routes and before other error handlers
 // because this middleware doesn't call next(). Everything ends after this
-app.use(NotFoundMiddleware);
+app.use(notFoundMiddleware);
 // custom error handler goes last because this middleware is only invoked
 // inside an existing route
 app.use(errorHandlerMiddleware);
