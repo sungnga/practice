@@ -31,7 +31,7 @@ app.get('/', (req, res) => {
 // the 404 error handler is placed after all the routes and before other error handlers
 // because this middleware doesn't call next(). Everything ends after this
 app.use(notFoundMiddleware);
-// custom error handler goes last because this middleware is only invoked
+// the errorHandler middleware goes last because this middleware is only invoked
 // inside an existing route
 app.use(errorHandlerMiddleware);
 

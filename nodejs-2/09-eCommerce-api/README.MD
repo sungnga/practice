@@ -100,6 +100,9 @@
 - [] import 'express-async-errors' package
   - This middleware automatically applies the async-await to all of the controllers
   - So we don't need to use the try-catch block in the controllers
+- **404 vs ErrorHandler Middleware**
+  - The 404 error handler is placed after all the routes and before other error handlers because this middleware doesn't call next(). Everything ends after this
+  - The errorHandler middleware goes last because this middleware is only invoked inside an existing route
 - File: app.js
   ```js
   // this middleware automatically applies the async-await to all of the controllers
@@ -123,13 +126,14 @@
   // the 404 error handler is placed after all the routes and before other error handlers
   // because this middleware doesn't call next(). Everything ends after this
   app.use(notFoundMiddleware);
-  // custom error handler goes last because this middleware is only invoked
+  // the errorHandler middleware goes last because this middleware is only invoked
   // inside an existing route
   app.use(errorHandlerMiddleware);
   ```
 
 ### [05. Using Morgan package for debugging]()
 - Morgan is a useful tool to help with debugging while in development. It logs useful route request information and prints it to the console. It tells the type of request method, the route path being made, the status code, and how long the request takes
+- Docs: https://www.npmjs.com/package/morgan
 - Install Morgan: `npm i morgan`
 - File: app.js
   - Install morgan package
@@ -143,8 +147,44 @@
   - Go to the browser and make a request to the home page: `http://localhost:5000/`. You see this printed in the console: `GET / 304 - - 20.431 ms`
   - Make a request to this route: `http://localhost:5000/apple`. You should see this printed in the console: `GET /apple 404 20 - 4.403 ms`
 
+### [06. Setup UserSchema model]()
+- We have two types of users in our UserSchema model:
+  - Admin user - can perform CRUD operations on product
+  - Regular user - can checkout, cannot add or modify product
+- When we create a new user instance we want to specify their role, whether they're an admin user or regular user
+- [] create models folder and User.js file
+- [] create schema with name,email, password, role (all type:String)
+- [] export mongoose model
+- File: models/User.js
+  - This is a basic UserSchema model with no validations
+  ```js
+  const mongoose = require('mongoose');
 
+  const UserSchema = new mongoose.Schema({
+    name: {
+      type: String,
+      required: [true, 'Please provide name'],
+      minlength: 3,
+      maxlength: 50
+    },
+    email: {
+      type: String,
+      required: [true, 'Please provide email']
+    },
+    password: {
+      type: String,
+      required: [true, 'Please provide password'],
+      minlength: 6
+    },
+    role: {
+      type: String,
+      enum: ['admin', 'user'],
+      default: 'user'
+    }
+  });
 
+  module.exports = mongoose.model('User', UserSchema);
+  ```
 
 
 
@@ -185,7 +225,7 @@
 
 #### User Model
 - [] create models folder and User.js file
-- [] create schema with name,email, password (all type:String)
+- [] create schema with name,email, password, role (all type:String)
 - [] export mongoose model
 
 #### Validator Package
