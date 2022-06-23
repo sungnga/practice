@@ -186,9 +186,28 @@
   module.exports = mongoose.model('User', UserSchema);
   ```
 
+### [07. Using Validator package]()
+- [Validator docs](https://www.npmjs.com/package/validator)
+- Install Validator: `npm i validator`
+- In our UserSchema model, we want to validate the email that the client provides. One approach is to use Mongoose's built-in validators. We can also define our custom validators. We're going to use a very popular package called Validator
+- Validator package:
+  - It validates and sanitizes strings only
+  - It comes with many validation functions 
+- File: models/User.js
+  - Import validator package
+  - Add the mongoose's validate property and in this object, set the validator.email function to the validator property. Include a message
+  ```js
+  const validator = require('validator');
 
-
-
+  email: {
+    type: String,
+    required: [true, 'Please provide email'],
+    validate: {
+      validator: validator.email,
+      message: 'Please provide valid email'
+    }
+  },
+  ```
 
 
 
