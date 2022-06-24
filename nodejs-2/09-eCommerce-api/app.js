@@ -13,6 +13,9 @@ const morgan = require('morgan');
 // database
 const connectDB = require('./db/connect');
 
+// routers
+const authRouter = require('./routes/authRoutes.js');
+
 // middleware
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
@@ -27,6 +30,8 @@ app.use(express.json());
 app.get('/', (req, res) => {
 	res.send('Home page');
 });
+
+app.use('/api/v1/auth', authRouter);
 
 // the 404 error handler is placed after all the routes and before other error handlers
 // because this middleware doesn't call next(). Everything ends after this

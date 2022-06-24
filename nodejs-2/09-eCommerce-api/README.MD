@@ -195,7 +195,7 @@
   - It comes with many validation functions 
 - File: models/User.js
   - Import validator package
-  - Add the mongoose's validate property and in this object, set the validator.email function to the validator property. Include a message
+  - Add the mongoose's validate property and in this object, set the validator.email function to the validator property. Include an error message to the user as well if the email is invalid
   ```js
   const validator = require('validator');
 
@@ -208,6 +208,61 @@
     }
   },
   ```
+
+### [08. Setup structure for auth controllers and routes]()
+- [] create controllers folder
+- [] add authController file
+- [] export (register,login,logout) functions
+- [] res.send('some string value')
+- [] create routes folder
+- [] setup authRoutes file
+- [] import all controllers
+- [] setup three routes
+- [] post('/register') post('/login') get('/logout')
+- [] import authRoutes as authRouter in the app.js
+- [] setup app.use('/api/v1/auth', authRouter)
+- File: controllers/authController.js
+  - Setup the basic structure for the three auth controllers
+  ```js
+  const register = async (req, res) => {
+    res.send('register user');
+  };
+
+  const login = async (req, res) => {
+    res.send('login user');
+  };
+
+  const logout = async (req, res) => {
+    res.send('logout user');
+  };
+  module.exports = { register, login, logout };
+  ```
+- File: routes/authRoutes.js
+  - Setup the routes for the three auth controllerss
+  ```js
+  const express = require('express');
+  const router = express.Router();
+
+  const { register, login, logout } = require('../controllers/authController');
+
+  router.post('/register', register);
+  router.post('/login', login);
+  router.get('/logout', logout);
+
+  module.exports = router;
+  ```
+- File: app.js
+  ```js
+  // routers
+  const authRouter = require('./routes/authRoutes.js');
+
+  app.use('/api/v1/auth', authRouter);
+  ```
+
+
+
+
+
 
 
 
