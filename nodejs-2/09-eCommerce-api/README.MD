@@ -259,6 +259,34 @@
   app.use('/api/v1/auth', authRouter);
   ```
 
+### [09. Setup Postman environment, test routes]()
+- Postman environment is a way to setup different environment variables for different projects. For example, some projects may be localhost:3000 and others may be using localhost:5000
+- **Setup Postman environment:**
+  - Click on the Eye icon and in the Environment section, click on the Add button
+  - Give the environment a name. Call it: Dev Environment
+    - Add a VARIABLE value: URL
+    - Add an INITIAL VALUE: http://localhost:5000/api/v1
+    - Add a CURRENT VALUE: http://localhost:5000/api/v1
+    - Click the Save icon
+- **Setup Auth routes:**
+  - Create a new Collection and give the project a name: Node.js-eCommerce-api
+  - In the collection, create an Auth folder
+  - In the Auth folder, create three auth routes
+  - Create a Logout User route:
+    - This is a GET method
+    - The path is: {{URL}}/auth/logout
+    - In the Environment dropdown menu, select: Dev Environment
+    - Click on the Send button. If everything is setup properly, we should get back "logout user"
+  - Create a Register User route:
+    - This is a POST method
+    - The path is: {{URL}}/auth/register
+    - The Environment is: Dev Environment
+    - Click on the Send button. If everything is setup properly, we should get back "register user"
+  - Create a Login User route:
+    - This is a POST method
+    - The path is: {{URL}}/auth/login
+    - The Environment is: Dev Environment
+    - Click on the Send button. If everything is setup properly, we should get back "login user"
 
 
 
