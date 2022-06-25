@@ -203,7 +203,7 @@
     type: String,
     required: [true, 'Please provide email'],
     validate: {
-      validator: validator.email,
+      validator: validator.isEmail,
       message: 'Please provide valid email'
     }
   },
@@ -288,8 +288,47 @@
     - The Environment is: Dev Environment
     - Click on the Send button. If everything is setup properly, we should get back "login user"
 
+### [10. Initial setup for register controller]()
+- [] create user
+- [] send response with entire user (only while testing)
+- [] check if email already in use (schema and controller)
+- [] ignore 'role'
+- [] alternative 'admin' setup
+- File: controllers/authController.js
+  - For the time being, let's implement the register controller where it creates a new user instance and send back the user object with the information the client provided. We'll handle email validation and the role later
+  ```js
+  const User = require('../models/User');
+  const { StatusCodes } = require('http-status-codes');
+  const CustomError = require('../errors');
 
-
+  const register = async (req, res) => {
+    const user = await User.create(req.body);
+    res.status(StatusCodes.CREATED).json({ user });
+  };
+  ```
+- **Register a user using Postman:**
+  - Make a POST request in the register user route: {{URL}}/auth/register
+  - In the Body tab, select raw data and JSON format. Provide the values for name, email, and password properties
+    ```js
+    {
+      "name": "james",
+      "email": "james1234@example.com",
+      "password": "james1234"
+    }
+    ```
+  - If the register controller is setup properly, we should get back a user object
+    ```js
+    {
+      "user": {
+        "name": "james",
+        "email": "james1234@example.com",
+        "password": "james1234",
+        "role": "user",
+        "_id": "62b6a254bd58e369430076ce",
+        "__v": 0
+      }
+    }
+    ```
 
 
 
