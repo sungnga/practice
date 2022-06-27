@@ -289,8 +289,8 @@
     - Click on the Send button. If everything is setup properly, we should get back "login user"
 
 ### [10. Initial setup for register controller]()
-- [] create user
-- [] send response with entire user (only while testing)
+- [X] create user
+- [X] send response with entire user (only while testing)
 - [] check if email already in use (schema and controller)
 - [] ignore 'role'
 - [] alternative 'admin' setup
@@ -329,6 +329,42 @@
       }
     }
     ```
+
+### [10. Implement register controller: unique email]()
+- [X] check if email already in use (schema and controller)
+- We can validate the email to make sure that it is unique in two places:
+  - Use Mongoose in the UserSchema model to add a `unique` property to the `email` object. Note that this DOES NOT validate the email, but rather checks to see if the email is unique. It'll throw an error if the value of email isn't unique
+  - In the register controller, check to see if the email already exists in the User collection. If it does, we throw our CustomError class with an error message
+- File: models/User.js
+  ```js
+  email: {
+    type: String,
+    unique: true,
+    required: [true, 'Please provide email'],
+    validate: {
+      validator: validator.isEmail,
+      message: 'Please provide valid email'
+    }
+  },
+  ```
+- File: controllers/authController.js
+  - Destructure the email property from req.body
+  - Call the User.findOne() method and pass in the email property to find the email in the User collection
+  - Write an if statement that checks if the email already exists, throw a CustomError class
+  ```js
+  const register = async (req, res) => {
+    const { email } = req.body;
+
+    const emailAlreadyExists = await User.findOne({ email });
+    if (emailAlreadyExists) {
+      throw new CustomError.BadRequestError('Email already exists');
+    }
+
+    const user = await User.create(req.body);
+    res.status(StatusCodes.CREATED).json({ user });
+  };
+  ```
+
 
 
 
