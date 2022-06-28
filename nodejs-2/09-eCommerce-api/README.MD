@@ -395,6 +395,57 @@
   };
   ```
 
+### [11. Handle password]()
+- [] UserSchema.pre('save') - hook
+- [] use simple function instead of arrow function - this points to User instance
+- [] bcrypt.genSalt() method - number of rounds
+- [] bcrypt.hash() method
+- Before saving the user object as a document in the database, we want to first hash the user password. We use a package called bcryptjs to help us with this
+- Install bcryptjs: `npm i bcryptjs`
+- File: models/User.js
+  ```js
+  const bcrypt = require('bcryptjs');
+
+  // hash the password before saving the document
+  // this is a hook
+  UserSchema.pre('save', async function () {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+  });
+
+  // make sure to use simple function instead of arrow function
+  // so that this.password points to User instance
+  UserSchema.methods.comparePassword = async function (candidatePassword) {
+    const isMatch = await bcrypt.compare(candidatePassword, this.password);
+    return isMatch;
+  };
+  ```
+- **Testing hash password using Postman:**
+  - Register a new user in the register user route: {{URL}}/auth/register
+  - Provide user name, email, and password information
+    ```js
+    {
+      "name": "james",
+      "email": "james1234@example.com",
+      "password": "james1234"
+    }
+    ```
+  - If hashing password is setup correctly, we should get back a user object containing the hashed password
+    ```js
+    {
+      "user": {
+        "name": "james",
+        "email": "james1234@example.com",
+        "password": "$2a$10$hSFHpaZrqoVzL4hst6.bTuERLXt.g9BUoxHDCVegv6w9wkbkHE3/q",
+        "role": "admin",
+        "_id": "62baa22c497b3555b890fa22",
+        "__v": 0
+      }
+    }
+    ```
+  - Go to MongoDB dashboard page and navigate to the project's "users" collection. There should be a user document created with the hashed password
+
+
 
 
 

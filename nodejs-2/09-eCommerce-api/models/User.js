@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcrypt = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema({
 	name: {
@@ -28,5 +29,19 @@ const UserSchema = new mongoose.Schema({
 		default: 'user'
 	}
 });
+
+// hash the password before saving the document
+// this is a hook
+UserSchema.pre('save', async function () {
+	const salt = await bcrypt.genSalt(10);
+	this.password = await bcrypt.hash(this.password, salt);
+});
+
+// make sure to use simple function instead of arrow function
+// so that this.password points to User instance
+UserSchema.methods.comparePassword = async function (candidatePassword) {
+	const isMatch = await bcrypt.compare(candidatePassword, this.password);
+	return isMatch;
+};
 
 module.exports = mongoose.model('User', UserSchema);
