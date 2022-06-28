@@ -365,6 +365,37 @@
   };
   ```
 
+### [10. Implement register controller: setting role]()
+- [X] ignore 'role'
+- [X] alternative 'admin' setup
+- In our current setup in the UserSchema model, when we register a new user, it'll be assigned as a regular user role by default. Also in front-end, when a person registers as a new user, he or she doesn't get to choose a role either. We can, however, go to User collection in MongoDB to change a user role. In a more real life scenario, we can setup the project where we can change a user's permission and role
+- In this project, we want to make the first registered user as an admin user. We can set this up in the register controller
+- File: controllers/authController.js
+  ```js
+  const User = require('../models/User');
+  const { StatusCodes } = require('http-status-codes');
+  const CustomError = require('../errors');
+
+  const register = async (req, res) => {
+    const { email, name, password } = req.body;
+
+    const emailAlreadyExists = await User.findOne({ email });
+    if (emailAlreadyExists) {
+      throw new CustomError.BadRequestError('Email already exists');
+    }
+
+    // first registered user is an admin
+    // the value of isFirstAccount is either truthy or falsy
+    const isFirstAccount = (await User.countDocuments({})) === 0;
+    const role = isFirstAccount ? 'admin' : 'user';
+
+    const user = await User.create({ name, email, password, role });
+
+    res.status(StatusCodes.CREATED).json({ user });
+  };
+  ```
+
+
 
 
 
