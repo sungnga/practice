@@ -445,6 +445,65 @@
     ```
   - Go to MongoDB dashboard page and navigate to the project's "users" collection. There should be a user document created with the hashed password
 
+### [12. Setup JWT in authController]()
+- [] setup jwt in authControllers
+- [] require 'jsonwebtoken' package
+- [] create jwt - jwt.sign(payload,secret,options)
+- Let's issue json web token to users so we can start restricting access to certain resources
+- We're going to start setting up the jsonwebtoken in the authController and later we will refactor the code into a utils folder so we can use it in multiple places
+- Install jsonwebtoken package: `npm i jsonwebtoken`
+- File: controllers/authController.js
+  - Import jsonwebtoken package
+  - Inside the register controller:
+    - Once a user instance has been created, we want to create a tokenUser object which doesn't contain the user email and password
+    - Then call the jwt.sign() method to issue the token to the tokenUser. This method takes three arguments
+    - This register controller returns an object that contains the user object and the token property
+  ```js
+  const jwt = require('jsonwebtoken');
+
+  const register = async (req, res) => {
+    const { email, name, password } = req.body;
+
+    const emailAlreadyExists = await User.findOne({ email });
+    if (emailAlreadyExists) {
+      throw new CustomError.BadRequestError('Email already exists');
+    }
+
+    // first registered user is an admin
+    // the value of isFirstAccount is either truthy or falsy
+    const isFirstAccount = (await User.countDocuments({})) === 0;
+    const role = isFirstAccount ? 'admin' : 'user';
+
+    const user = await User.create({ name, email, password, role });
+    // after a user instance has been created, create a tokenUser object
+    // tokenUser doesn't contain email and password
+    const tokenUser = { name: user.name, userId: user._id, role: user.role };
+    const token = jwt.sign(tokenUser, 'jwtSecret', { expiresIn: '1d' });
+
+    // return a user object and token property
+    res.status(StatusCodes.CREATED).json({ user: tokenUser, token });
+  };
+
+  const login = async (req, res) => {
+    res.send('login user');
+  };
+  ```
+- **Testing jwt in Postman:**
+  - Register a new user in the Register user route
+  - Provide the information for name, email, and password
+  - If a new user has been successfully created, we should get back an object that looks like this:
+    ```js
+    {
+      "user": {
+        "name": "susan",
+        "userId": "62bbe39c579f855ba5659e6c",
+        "role": "user"
+      },
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoic3VzYW4iLCJ1c2VySWQiOiI2MmJiZTM5YzU3OWY4NTViYTU2NTllNmMiLCJyb2xlIjoidXNlciIsImlhdCI6MTY1NjQ4MDY2OCwiZXhwIjoxNjU2NTY3MDY4fQ.erMeBSfmHJguy8Muj4U_tTGrawn9Di11ara68IDHBII"
+    }
+    ```
+
+
 
 
 

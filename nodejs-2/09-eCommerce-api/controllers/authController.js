@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
+const jwt = require('jsonwebtoken');
 
 const register = async (req, res) => {
 	const { email, name, password } = req.body;
@@ -16,8 +17,13 @@ const register = async (req, res) => {
 	const role = isFirstAccount ? 'admin' : 'user';
 
 	const user = await User.create({ name, email, password, role });
+	// after a user instance has been created, create a tokenUser object
+	// tokenUser doesn't contain email and password
+	const tokenUser = { name: user.name, userId: user._id, role: user.role };
+	const token = jwt.sign(tokenUser, 'jwtSecret', { expiresIn: '1d' });
 
-	res.status(StatusCodes.CREATED).json({ user });
+	// return a user object and token property
+	res.status(StatusCodes.CREATED).json({ user: tokenUser, token });
 };
 
 const login = async (req, res) => {
