@@ -40,12 +40,12 @@
   ```
 
 ### [03. Connect to database]()
-- [] get connection string from MongoDB
-- [] setup .env with MONGO_URL variable and assign the value
-- [] import 'dotenv' and setup package
-- [] import connect() and invoke in the starter
-- [] restart the server
-- [] mongoose V6 info
+- [X] get connection string from MongoDB
+- [X] setup .env with MONGO_URL variable and assign the value
+- [X] import 'dotenv' and setup package
+- [X] import connect() and invoke in the starter
+- [X] restart the server
+- [X] mongoose V6 info
 - File: .env
   - In the connection string, give the database a name and provide the password
   ```js
@@ -94,10 +94,10 @@
   ```
 
 ### [04. Setup basic routes and middleware]()
-- [] setup / GET Route
-- [] setup express.json() middleware
-- [] setup 404 and errorHandler middleware
-- [] import 'express-async-errors' package
+- [X] setup / GET Route
+- [X] setup express.json() middleware
+- [X] setup 404 and errorHandler middleware
+- [X] import 'express-async-errors' package
   - This middleware automatically applies the async-await to all of the controllers
   - So we don't need to use the try-catch block in the controllers
 - **404 vs ErrorHandler Middleware**
@@ -152,9 +152,9 @@
   - Admin user - can perform CRUD operations on product
   - Regular user - can checkout, cannot add or modify product
 - When we create a new user instance we want to specify their role, whether they're an admin user or regular user
-- [] create models folder and User.js file
-- [] create schema with name,email, password, role (all type:String)
-- [] export mongoose model
+- [X] create models folder and User.js file
+- [X] create schema with name,email, password, role (all type:String)
+- [X] export mongoose model
 - File: models/User.js
   - This is a basic UserSchema model with no validations
   ```js
@@ -210,17 +210,17 @@
   ```
 
 ### [08. Setup structure for auth controllers and routes]()
-- [] create controllers folder
-- [] add authController file
-- [] export (register,login,logout) functions
-- [] res.send('some string value')
-- [] create routes folder
-- [] setup authRoutes file
-- [] import all controllers
-- [] setup three routes
-- [] post('/register') post('/login') get('/logout')
-- [] import authRoutes as authRouter in the app.js
-- [] setup app.use('/api/v1/auth', authRouter)
+- [X] create controllers folder
+- [X] add authController file
+- [X] export (register,login,logout) functions
+- [X] res.send('some string value')
+- [X] create routes folder
+- [X] setup authRoutes file
+- [X] import all controllers
+- [X] setup three routes
+- [X] post('/register') post('/login') get('/logout')
+- [X] import authRoutes as authRouter in the app.js
+- [X] setup app.use('/api/v1/auth', authRouter)
 - File: controllers/authController.js
   - Setup the basic structure for the three auth controllers
   ```js
@@ -396,10 +396,10 @@
   ```
 
 ### [11. Handle password]()
-- [] UserSchema.pre('save') - hook
-- [] use simple function instead of arrow function - this points to User instance
-- [] bcrypt.genSalt() method - number of rounds
-- [] bcrypt.hash() method
+- [X] UserSchema.pre('save') - hook
+- [X] use simple function instead of arrow function - this points to User instance
+- [X] bcrypt.genSalt() method - number of rounds
+- [X] bcrypt.hash() method
 - Before saving the user object as a document in the database, we want to first hash the user password. We use a package called bcryptjs to help us with this
 - Install bcryptjs: `npm i bcryptjs`
 - File: models/User.js
@@ -445,10 +445,10 @@
     ```
   - Go to MongoDB dashboard page and navigate to the project's "users" collection. There should be a user document created with the hashed password
 
-### [12. Setup JWT in authController]()
-- [] setup jwt in authControllers
-- [] require 'jsonwebtoken' package
-- [] create jwt - jwt.sign(payload,secret,options)
+### [12. JWT setup in authController]()
+- [X] initial jwt setup in authController
+- [X] require 'jsonwebtoken' package
+- [X] create jwt - jwt.sign(payload,secret,options)
 - Let's issue json web token to users so we can start restricting access to certain resources
 - We're going to start setting up the jsonwebtoken in the authController and later we will refactor the code into a utils folder so we can use it in multiple places
 - Install jsonwebtoken package: `npm i jsonwebtoken`
@@ -503,9 +503,65 @@
     }
     ```
 
+### [13. Refactor JWT setup]()
+- [X] add variables in .env - JWT_SECRET=jwtSecret and JWT_LIFETIME=1d
+- [X] restart the server !!!!
+- [X] refactor code, create jwt functions in utils folder
+  - [X] require 'jsonwebtoken' package
+  - [X] create jwt - jwt.sign(payload,secret,options)
+  - [X] verify jwt - jwt.verify(token,secret)
+- [] refactor cookie code
+- [] setup func attachCookiesToResponse
+- [] accept payload(res, tokenUser)
+- [] create token, setup cookie
+- [] optionally send back the response
+- Let's refactor the create JWT function and the verify JWT function so they are in a utils folder. This way we can use them as many time as we need in our project
+- Once we have the createJWT function in the utils folder, we will make use of it in the auth register controller 
+- File: .env
+  - Add JWT_SECRET and JWT_LIFETIME variables
+  ```js
+  JWT_SECRET=<jwtSecret>
+  JWT_LIFETIME=30d
+  ```
+- File: utils/jwt.js
+  ```js
+  const jwt = require('jsonwebtoken');
 
+  const createJWT = ({ payload }) => {
+    // the jwt.sign() method takes 3 args
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_LIFETIME
+    });
 
+    return token;
+  };
 
+  const isTokenValid = ({ token }) => jwt.verify(token, process.env.JWT_SECRET);
+
+  module.exports = { createJWT, isTokenValid };
+  ```
+- File: utils/index.js
+  - Destructure both jwt function from jwt.js file
+  - Then export both functions in index.js file in utils folder
+  - This index.js file serves as entry point to all functions that we export here
+  ```js
+  const { createJWT, isTokenValid } = require('./jwt');
+
+  module.exports = { createJWT, isTokenValid };
+  ```
+- File: controllers/authController.js
+  - Import the createJWT util function from utils folder
+  - In the register controller, use the createJWT function to issue a token to the new user
+  ```js
+  const { createJWT } = require('../utils');
+
+  const user = await User.create({ name, email, password, role });
+  // after a user instance has been created, create a tokenUser object
+  // tokenUser doesn't contain email and password
+  const tokenUser = { name: user.name, userId: user._id, role: user.role };
+  // issue jwt to the new user using the createJWT util function
+  const token = createJWT({ payload: tokenUser });
+  ```
 
 
 
