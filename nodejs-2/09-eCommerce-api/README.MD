@@ -563,6 +563,44 @@
   const token = createJWT({ payload: tokenUser });
   ```
 
+### [14. Setup cookies]()
+- [X] refactor cookie code
+- Up to this point in our register controller, once a new user has been created and a jwt has been issued, it sends back the user object and the token. Now, we want to store the token in the cookies instead. The register controller returns the user object and the cookie. The advantage of storing the token in a cookie is we can set it up in such a way that only the web browser(http) has access to it and the browser will automatically send the cookie upon the next http request
+- The Express package comes with the `res.cookie()` method to send a cookie as a response in a controller
+  - `res.cookie(name, value, [, options])`
+  - name parameter is the name of the cookie
+  - value parameter is the token - may be a string or object converted to json
+  - options parameter is an object: expires, httpOnly, maxAge, path, secure, signed
+- File: controllers/authController.js
+  - In the res.status().json() response, remove the token property from the json response
+  - In the register controller, call the res.cookie() method to send a cookie as a response. Provide the three necessary arguments
+    - name of the cookie
+    - the token as the value
+    - in the option param - set the cookie expiration date and httpOnly
+  ```js
+  // milliseconds * seconds * minutes * hours
+  const oneDay = 1000 * 60 * 60 * 24;
+
+  // sending a cookie as a response
+  // store token in cookie
+  res.cookie('token', token, {
+    httpOnly: true,
+    expires: new Date(Date.now() + oneDay)
+  });
+
+  // return a user object and token property
+  res.status(StatusCodes.CREATED).json({ user: tokenUser });
+  ```
+- **Testing cookies in Postman:**
+  - Register a new user in the Register user route: {{URL}}/auth/register
+  - Provide the user name, email, and password
+  - We should get back a user object in the Body response tab
+  - In the Cookies response tab, we get back the name of the token, the token value, expiration date and HttpOnly set to true
+
+
+
+
+
 
 
 

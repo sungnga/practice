@@ -23,8 +23,18 @@ const register = async (req, res) => {
 	// issue jwt to the new user using the createJWT util function
 	const token = createJWT({ payload: tokenUser });
 
+	// milliseconds * seconds * minutes * hours
+	const oneDay = 1000 * 60 * 60 * 24;
+
+	// sending a cookie as a response
+	// store token in cookie
+	res.cookie('token', token, {
+		httpOnly: true,
+		expires: new Date(Date.now() + oneDay)
+	});
+
 	// return a user object and token property
-	res.status(StatusCodes.CREATED).json({ user: tokenUser, token });
+	res.status(StatusCodes.CREATED).json({ user: tokenUser });
 };
 
 const login = async (req, res) => {
