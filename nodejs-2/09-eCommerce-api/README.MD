@@ -597,7 +597,36 @@
   - We should get back a user object in the Body response tab
   - In the Cookies response tab, we get back the name of the token, the token value, expiration date and HttpOnly set to true
 
+### [15. Parse cookies]()
+- Now that we're able to deliver the jwt in a cookie, we want to retrieve the jwt coming back from the browser on a server. We want to see if the front-end really attaches a cookie for the upcoming requests. To do this, we need to use an external package, a middleware called cookie-parser, to parse the cookie
+- Install cookie-parser: `npm i cookie-parser`
+- After installing and using the middleware, we have access to the cookies in `req.cookies`
+- File: app.js
+  - Import the cookie-parser package
+  - Call app.use() method to use the cookie-parser middleware
+  - In the home test route, console log req.cookies to see what we get. This is what the server gets from the front-end when a request is made
+  ```js
+  const cookieParser = require('cookie-parser');
 
+  // middleware to parse a cookie
+  app.use(cookieParser());
+
+  // testing cookie parser
+  app.get('/api/v1', (req, res) => {
+    console.log(req.cookies);
+    res.send('Home page');
+  });
+  ```
+- **Testing cookie-parser using Postman:**
+  - Make a GET request to the home page: {{URL}}
+  - In the Body content, provide the user information: name, email, and password
+  - If the cookie-parser middleware is setup correctly, we should see the token property in an object printed out in the console. This is what the server gets from the front-end
+    ```js
+    {
+      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTmdhIiwidXNlcklkIjoiNjJiZmNkZTk5Y2I2Nzc3YTIzYjk0MzViIiwicm9sZSI6InVzZXIiLCJpYXQiOjE2NTY3MzcyNTcsImV4cCI6MTY1OTMyOTI1N30.e35rb84gSRGtGDAOj7UQ95ijSxfcUxnE9N8d3sdFSs8'
+    }
+    GET /api/v1 200 9 - 4.813 ms
+    ```
 
 
 

@@ -9,6 +9,7 @@ const app = express();
 
 // other packages
 const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
 
 // database
 const connectDB = require('./db/connect');
@@ -25,9 +26,17 @@ app.use(morgan('tiny'));
 // this middleware makes it possible for the json data
 // be available in req.body in POST and UPDATE methods
 app.use(express.json());
+// middleware to parse a cookie
+app.use(cookieParser());
 
 // testing the root route
 app.get('/', (req, res) => {
+	res.send('Home page');
+});
+
+// testing cookie parser
+app.get('/api/v1', (req, res) => {
+	console.log(req.cookies);
 	res.send('Home page');
 });
 
