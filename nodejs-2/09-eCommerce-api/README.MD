@@ -628,6 +628,77 @@
     GET /api/v1 200 9 - 4.813 ms
     ```
 
+### [16. Refactor cookies setup]()
+- [X] refactor cookie code
+- [X] setup func attachCookiesToResponse
+- [X] accept payload(res, tokenUser)
+- [X] create token, setup cookie
+- [X] optionally send back the response
+- In this step we're going to refactor the cookie setup as a util function and then use it in the register controller. We will also use this function in other places of the project in the future. The functionality of this function is first create a jwt by calling the createJWT() method that we created earlier and then call the res.cookie() method (provided by Express) to attach the jwt to the cookie response
+- File: utils/jwt.js
+  - Create a attachCookiesToResponse util function that accepts a res object and user object as payload
+  - In this function:
+    - First, create a jwt by calling the createJWT() method that we created earlier. It takes a user object as payload
+    - Second, setup the cookie and attach the jwt to the cookie as a response by calling the res.cookie() method. Setup the three parameters
+    - We don't need to return anything from this function
+    - Export the function
+  ```js
+  const attachCookiesToResponse = ({ res, user }) => {
+    const token = createJWT({ payload: user });
+
+    // milliseconds * seconds * minutes * hours
+    const oneDay = 1000 * 60 * 60 * 24;
+
+    // sending a cookie as a response
+    // store token in cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      expires: new Date(Date.now() + oneDay)
+    });
+  };
+
+  module.exports = { createJWT, isTokenValid, attachCookiesToResponse };
+  ```
+- File: utils/index.js
+  - Destructure the attachCookiesToResponse function from jwt.js file
+  - Then export the function in this index.js file
+  ```js
+  const { createJWT, isTokenValid, attachCookiesToResponse } = require('./jwt');
+
+  module.exports = { createJWT, isTokenValid, attachCookiesToResponse };
+  ```
+- File: controllers/authController.js
+  - Import the attachCookiesToResponse util function
+  - In the register controller, call the attachCookiesToResponse function and pass in the res object and the user object as payload. The res object comes from the register controller
+  - This controller still returns the user object and the user token is attached in the res.cookie response
+  ```js
+  const { attachCookiesToResponse } = require('../utils');
+
+  const register = async (req, res) => {
+    const { email, name, password } = req.body;
+
+    const emailAlreadyExists = await User.findOne({ email });
+    if (emailAlreadyExists) {
+      throw new CustomError.BadRequestError('Email already exists');
+    }
+
+    // first registered user is an admin
+    // the value of isFirstAccount is either truthy or falsy
+    const isFirstAccount = (await User.countDocuments({})) === 0;
+    const role = isFirstAccount ? 'admin' : 'user';
+
+    const user = await User.create({ name, email, password, role });
+    // after a user instance has been created, create a tokenUser object
+    // tokenUser doesn't contain email and password
+    const tokenUser = { name: user.name, userId: user._id, role: user.role };
+
+    attachCookiesToResponse({ res, user: tokenUser });
+
+    // return a user object
+    res.status(StatusCodes.CREATED).json({ user: tokenUser });
+  };
+  ```
+
 
 
 
