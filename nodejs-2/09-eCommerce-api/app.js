@@ -27,7 +27,7 @@ app.use(morgan('tiny'));
 // be available in req.body in POST and UPDATE methods
 app.use(express.json());
 // middleware to parse a cookie
-app.use(cookieParser());
+app.use(cookieParser(process.env.JWT_SECRET));
 
 // testing the root route
 app.get('/', (req, res) => {
@@ -36,7 +36,7 @@ app.get('/', (req, res) => {
 
 // testing cookie parser
 app.get('/api/v1', (req, res) => {
-	console.log(req.cookies);
+	console.log(req.signedCookies);
 	res.send('Home page');
 });
 

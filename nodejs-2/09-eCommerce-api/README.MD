@@ -515,6 +515,7 @@
 - [] accept payload(res, tokenUser)
 - [] create token, setup cookie
 - [] optionally send back the response
+- [] add signed and secure flags to cookie
 - Let's refactor the create JWT function and the verify JWT function so they are in a utils folder. This way we can use them as many time as we need in our project
 - Once we have the createJWT function in the utils folder, we will make use of it in the auth register controller 
 - File: .env
@@ -699,8 +700,35 @@
   };
   ```
 
+### [17. Add signed and secure flags to cookie setup]()
+- [X] add signed and secure flags to cookie setup
+- Let's finish setting up the res.cookie with the signed and secure flags
+- The secure flag marks the cookie to be used with HTTPS only. It restricts browsers to send cookies only over HTTPS. Set this flag to true when in production mode
+- The signed flag indicates if the cookie is signed. It detects if the client has modified the cookie
+- File: utils/jwt.js
+  - In the attachCookiesToResponse function and inside the res.cookie() method:
+    - Add the secure flag in the options argument. Set this flag to true if process.env.NODE_ENV is equal to 'production'
+    - Add the signed flag and set it true
+    ```js
+    res.cookie('token', token, {
+      httpOnly: true,
+      expires: new Date(Date.now() + oneDay),
+      secure: process.env.NODE_ENV === 'production',
+      signed: true
+    });
+    ```
+- File: app.js
+  - In the cookieParser middleware, we need to pass in our signature
+  - To access the signed cookie, it's in req.signedCookies
+  ```js
+  app.use(cookieParser(process.env.JWT_SECRET));
 
-
+  // testing cookie parser
+  app.get('/api/v1', (req, res) => {
+    console.log(req.signedCookies);
+    res.send('Home page');
+  });
+  ```
 
 
 
@@ -783,6 +811,7 @@
 - [] accept payload(res, tokenUser)
 - [] create token, setup cookie
 - [] optionally send back the response
+- [] add signed and secure flags to cookie
 
 #### Login Route
 - [] check if email and password exist, if one missing return 400
