@@ -619,8 +619,11 @@
   });
   ```
 - **Testing cookie-parser using Postman:**
-  - Make a GET request to the home page: {{URL}}
+  - First, make a POST request to Register user route: {{URL}}/auth/register
   - In the Body content, provide the user information: name, email, and password
+  - This creates a new user instance and the token is stored in the cookie response
+  - Second, let's retrieve the token in cookie sent from the browser on the backend server
+  - Make a GET request to the home page: {{URL}}
   - If the cookie-parser middleware is setup correctly, we should see the token property in an object printed out in the console. This is what the server gets from the front-end
     ```js
     {
@@ -704,7 +707,7 @@
 - [X] add signed and secure flags to cookie setup
 - Let's finish setting up the res.cookie with the signed and secure flags
 - The secure flag marks the cookie to be used with HTTPS only. It restricts browsers to send cookies only over HTTPS. Set this flag to true when in production mode
-- The signed flag indicates if the cookie is signed. It detects if the client has modified the cookie
+- The signed flag indicates if the cookie is signed. It detects if the cookie has been tempered
 - File: utils/jwt.js
   - In the attachCookiesToResponse function and inside the res.cookie() method:
     - Add the secure flag in the options argument. Set this flag to true if process.env.NODE_ENV is equal to 'production'
@@ -719,7 +722,7 @@
     ```
 - File: app.js
   - In the cookieParser middleware, we need to pass in our signature
-  - To access the signed cookie, it's in req.signedCookies
+  - **To access the signed cookie, it's now in `req.signedCookies`, not `req.cookies`**
   ```js
   app.use(cookieParser(process.env.JWT_SECRET));
 
@@ -729,6 +732,66 @@
     res.send('Home page');
   });
   ```
+
+### [18. Implement login controller]()
+- [X] check if email and password exist, if one missing return 400
+- [X] find user, if no user return 401
+- [X] check password, if does not match return 401
+- [X] if everything is correct, attach cookie
+  and send back the same response as in register
+- File: controllers/authController.js
+  ```js
+  const User = require('../models/User');
+  const { StatusCodes } = require('http-status-codes');
+  const CustomError = require('../errors');
+  const { attachCookiesToResponse } = require('../utils');
+
+  const login = async (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      throw new CustomError.BadRequestError('Please provide email and password');
+    }
+
+    // find user by email in DB
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new CustomError.UnauthenticatedError('Invalid credentials');
+    }
+
+    // comparePassword is a method we created in UserSchema model
+    // user instance has access to this method
+    const isPasswordCorrect = await user.comparePassword(password);
+    if (!isPasswordCorrect) {
+      throw new CustomError.UnauthenticatedError('Invalid credentials');
+    }
+
+    const tokenUser = { name: user.name, userId: user._id, role: user.role };
+
+    attachCookiesToResponse({ res, user: tokenUser });
+
+    // return a user object
+    res.status(StatusCodes.OK).json({ user: tokenUser });
+  };
+  ```
+- **Testing login controller in Postman:**
+  - Make a POST request in Login user route: {{URL}}/auth/login
+  - In the Body tab, provide the email and password credentials of a user we already registered
+    ```js
+    {
+      "email": "chris@example.com",
+      "password": "secret"
+    }
+    ```
+  - If the login controller is setup properly, we should get back the user object that has their name, userId, and role. We should also get back the user token in cookies response
+  - To see the user token on the server, make a GET request to the home route and the user token should be printed in the console
+
+
+
+
+
+
+
+
 
 
 
