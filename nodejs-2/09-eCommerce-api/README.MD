@@ -564,8 +564,8 @@
   const token = createJWT({ payload: tokenUser });
   ```
 
-### [14. Setup cookies]()
-- [X] refactor cookie code
+### [14. Setup cookies in register controller]()
+- [X] Setup cookies in register controller
 - Up to this point in our register controller, once a new user has been created and a jwt has been issued, it sends back the user object and the token. Now, we want to store the token in the cookies instead. The register controller returns the user object and the cookie. The advantage of storing the token in a cookie is we can set it up in such a way that only the web browser(http) has access to it and the browser will automatically send the cookie upon the next http request
 - The Express package comes with the `res.cookie()` method to send a cookie as a response in a controller
   - `res.cookie(name, value, [, options])`
@@ -785,9 +785,32 @@
   - If the login controller is setup properly, we should get back the user object that has their name, userId, and role. We should also get back the user token in cookies response
   - To see the user token on the server, make a GET request to the home route and the user token should be printed in the console
 
+### [19. Implement logout controller]()
+- [] set token cookie equal to some string value
+- [] set expires:new Date(Date.now())
+- When implementing the logout controller, there are two things we need to do. First thing is we need to set the value of token property in the cookie to a different value. Second set the cookie expiration date to something very small
+- File: controllers/authController.js
+  - In the logout controller:
+    - Call the res.cookie() method to send a cookie response. Pass in the three arguments
+    - 1st arg is the name of the property we want to set a new value. In our case, we stored the user jwt under `token` property when we first created the cookie in the register controller
+    - 2nd arg is the value want to set the `token` property to. We essentially temper the cookie response, and therefore, the cookie will be removed
+    - 3rd arg is the options. Here, we want to set the httpOnly to true and set the cookie expiration date to a timestamp that is very short
+  ```js
+  const logout = async (req, res) => {
+    res.cookie('token', 'logout', {
+      httpOnly: true,
+      expires: new Date(Date.now())
+    });
 
-
-
+    // for development purposes, send a json response
+    res.status(StatusCodes.OK).json({ msg: 'User logged out' });
+  };
+  ```
+- **Testing the logout controller using Postman:**
+  - Make a GET request to the Logout user route: {{URL}}/auth/logout
+  - No need to provide any data here
+  - If the logout controller is setup properly, we get back a 200 OK status code and response a message. Also, the cookie response has been removed
+  - To double check that the cookie has been removed, make a GET request to the home page route. We should not see the token value printed in the console. This means that when we make a subsequent request, the browser did not send a cookie to the server
 
 
 

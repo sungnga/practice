@@ -33,7 +33,7 @@ const login = async (req, res) => {
 		throw new CustomError.BadRequestError('Please provide email and password');
 	}
 
-  // find user by email in DB
+	// find user by email in DB
 	const user = await User.findOne({ email });
 	if (!user) {
 		throw new CustomError.UnauthenticatedError('Invalid credentials');
@@ -55,6 +55,13 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-	res.send('logout user');
+	res.cookie('token', 'logout', {
+		httpOnly: true,
+		expires: new Date(Date.now())
+	});
+
+	// for development purposes, send a json response
+	res.status(StatusCodes.OK).json({ msg: 'User logged out' });
 };
+
 module.exports = { register, login, logout };
