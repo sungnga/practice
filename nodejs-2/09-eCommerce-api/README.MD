@@ -896,7 +896,56 @@
   - Create an 'Update user password' route with a PATCH method: {{URL}}/users/updateUserPassword
     - In the Body tab, update the password property in json format
     
-  
+### [21. Implement getAllUsers and getSingleUser controllers]()
+- [X] Get all users where role is 'user' and remove password
+- [X] Get Single User where id matches id param and remove password
+- [X] If no user 404
+- File: controllers/userController.js
+  - Import the User model, the StatusCodes object, and the CustomError class
+  ```js
+  const User = require('../models/User');
+  const { StatusCodes } = require('http-status-codes');
+  const CustomError = require('../errors');
+
+  // only admin users have access to this route
+  const getAllUsers = async (req, res) => {
+    // get all users with role of 'user'
+    // then remove the password property from the return array of users
+    const users = await User.find({ role: 'user' }).select('-password');
+
+    res.status(StatusCodes.OK).json({ users });
+  };
+
+  const getSingleUser = async (req, res) => {
+    // find one user that has the match id from req.params.id
+    // then remove the password property from the found user object
+    const user = await User.findOne({ _id: req.params.id }).select('-password');
+    if (!user) {
+      throw new CustomError.NotFoundError(`No user with id: ${req.params.id}`);
+    }
+
+    res.status(StatusCodes.OK).json({ user });
+  };
+  ```
+- **Testing the getAllUsers and getSingleUser controllers using Postman:**
+  - Make a GET request in the 'Get all users' route: {{URL}}/users
+  - If the getAllUsers controller is setup properly, we should get an array of users from the database
+  - Copy the value id of one of the users we got back from the database
+    ```js
+    {
+      "_id": "62c29041dab89f45151942a0",
+      "name": "Chris",
+      "email": "chris@example.com",
+      "role": "user",
+      "__v": 0
+    }
+    ```
+  - Make a GET request in the 'Get single user' route and pass in the user id as the params.id: {{URL}}/users/62c29041dab89f45151942a0
+  - If the getSingleUser controller is setup properly, we should get back the matching user object. Also test with an incorrect user id
+
+
+
+
 
 
 
