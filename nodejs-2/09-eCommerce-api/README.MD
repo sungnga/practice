@@ -786,8 +786,8 @@
   - To see the user token on the server, make a GET request to the home route and the user token should be printed in the console
 
 ### [19. Implement logout controller]()
-- [] set token cookie equal to some string value
-- [] set expires:new Date(Date.now())
+- [X] set token cookie equal to some string value
+- [X] set expires:new Date(Date.now())
 - When implementing the logout controller, there are two things we need to do. First thing is we need to set the value of token property in the cookie to a different value. Second set the cookie expiration date to something very small
 - File: controllers/authController.js
   - In the logout controller:
@@ -812,8 +812,91 @@
   - If the logout controller is setup properly, we get back a 200 OK status code and response a message. Also, the cookie response has been removed
   - To double check that the cookie has been removed, make a GET request to the home page route. We should not see the token value printed in the console. This means that when we make a subsequent request, the browser did not send a cookie to the server
 
+### [20. Setup user routes structure]()
+- [X] add userController file in controllers folder
+- [X] export (getAllUsers,getSingleUser,showCurrentUser,updateUser,updateUserPassword) functions
+- [X] res.send('some string value')
+- [X] setup userRoutes file
+- [X] import all controllers
+- [X] setup just one route - router.route('/').get(getAllUsers);
+- [X] import userRoutes as userRouter in the app.js
+- [X] setup app.use('/api/v1/users', userRouter)
+- All the auth routes we have set up are public routes. Now, let's setup some secured user routes where only authenticated users have access to the routes
+- File: controllers/userController.js
+  - Setup the basic structure of the five user controllers and export them
+  ```js
+  // only admin users have access to this route
+  const getAllUsers = async (req, res) => {
+    res.send('get all users route');
+  };
 
+  const getSingleUser = async (req, res) => {
+    res.send(req.params);
+  };
 
+  const showCurrentUser = async (req, res) => {
+    res.send('show current user');
+  };
+
+  const updateUser = async (req, res) => {
+    res.send(req.body);
+  };
+
+  const updateUserPassword = async (req, res) => {
+    res.send(req.body);
+  };
+
+  module.exports = {
+    getAllUsers,
+    getSingleUser,
+    showCurrentUser,
+    updateUser,
+    updateUserPassword
+  };
+  ```
+- File: routes/userRoutes.js
+  - Setup the routes for the five user controllers
+  ```js
+  const express = require('express');
+  const router = express.Router();
+
+  const {
+    getAllUsers,
+    getSingleUser,
+    showCurrentUser,
+    updateUser,
+    updateUserPassword
+  } = require('../controllers/userController');
+
+  router.route('/').get(getAllUsers);
+
+  router.route('/showMe').get(showCurrentUser);
+  router.route('/updateUser').patch(updateUser);
+  router.route('/updateUserPassword').patch(updateUserPassword);
+
+  // the order of these routes matter!
+  // put routes with :id params last
+  router.route('/:id').get(getSingleUser);
+
+  module.exports = router;
+  ```
+- File: app.js
+  ```js
+  const userRouter = require('./routes/userRoutes');
+
+  app.use('/api/v1/users', userRouter);
+  ```
+- **Setup user routes in Postman:**
+  - In main project folder, create a folder called User. Setup the five user routes in this folder
+  - Create a 'Get all users' route with a GET method: {{URL}}/users
+  - Create a 'Get single user' route with a GET method: {{URL}}/users/123
+  - Create a 'Show current user' route with a GET method: {{URL}}/users/showMe
+  - Create an 'Update user' route with a PATCH method: {{URL}}/users/updateUser
+    - In the Body tab, update the name property in json format
+  - Create an 'Update user password' route with a PATCH method: {{URL}}/users/updateUserPassword
+    - In the Body tab, update the password property in json format
+    
+  
 
 
 

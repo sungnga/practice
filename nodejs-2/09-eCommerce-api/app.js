@@ -16,6 +16,7 @@ const connectDB = require('./db/connect');
 
 // routers
 const authRouter = require('./routes/authRoutes.js');
+const userRouter = require('./routes/userRoutes');
 
 // middleware
 const notFoundMiddleware = require('./middleware/not-found');
@@ -36,11 +37,13 @@ app.get('/', (req, res) => {
 
 // testing cookie parser
 app.get('/api/v1', (req, res) => {
+	// console.log(req.cookies);
 	console.log(req.signedCookies);
 	res.send('Home page');
 });
 
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/users', userRouter);
 
 // the 404 error handler is placed after all the routes and before other error handlers
 // because this middleware doesn't call next(). Everything ends after this
