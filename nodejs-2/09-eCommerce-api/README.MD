@@ -943,7 +943,76 @@
   - Make a GET request in the 'Get single user' route and pass in the user id as the params.id: {{URL}}/users/62c29041dab89f45151942a0
   - If the getSingleUser controller is setup properly, we should get back the matching user object. Also test with an incorrect user id
 
+### [22. Authenticate user: authenticateUser middleware]()
+- [X] Authenticate user
+- The next step we want to take is create a middleware that we can use to protect the user routes. Only authenticated users have access to the resources of these routes
+- **This is the user flow cycle:**
+  - When a user register to our application, they must provide their name, email and password. The password is encrypted and the user information is stored in the database. A jwt is issued and stored in a signed cookies response. The browser automatically sends this to the server for subsequent requests
+  - When a user successfully logged in to our application, a jwt is issued and stored in a signed cookies response. The browser automatically sends this cookie to the server for subsequent requests
+  - A protected route has an authenticateUser middleware that verifies the user token before it allows access to the resource
+  - When a user logs out, the token is removed from the cookies response
+- File: middleware/authentication.js
+  - Write an authenticateUser middleware that verifies the user token. If successful, add the authenticated user object to the req object
+  - The token of the user who is making the request to the protected route is found in req.signedCookies.token
+  - Call the isTokenValid util function to verify the token
+  - If the token is valid, add the user object to the req object. Add only the name, userId, and role properties to the user object
+  - Call next() method because this is a middleware
+  ```js
+  const CustomError = require('../errors');
+  const { isTokenValid } = require('../utils');
 
+  const authenticateUser = async (req, res, next) => {
+    const token = req.signedCookies.token;
+    if (!token) {
+      throw new CustomError.UnauthenticatedError('Authentication invalid');
+    }
+
+    try {
+      // verify the token
+      // the isTokenValid() util method returns the auth user object
+      // destructure the properties
+      const { name, userId, role } = isTokenValid({ token });
+      // if successful, add user object to the req object w/ these props
+      req.user = { name, userId, role };
+      next();
+    } catch (error) {
+      throw new CustomError.UnauthenticatedError('Authentication invalid');
+    }
+  };
+
+  module.exports = { authenticateUser };
+  ```
+- File: routes/userRoutes.js
+  - Import the authenticateUser middleware
+  - Use the middleware on the getAllUsers and getSingleUser routes
+  ```js
+  const { authenticateUser } = require('../middleware/authentication');
+
+  // use the middleware on the routes we want to protect
+  router.route('/').get(authenticateUser, getAllUsers);
+  router.route('/:id').get(authenticateUser, getSingleUser);
+  ```
+- File: controllers/userController.js
+  - In the getAllUsers controller, console log req.user to see if we get back the user object when we make a request to 'Get all users' route
+  ```js
+  const getAllUsers = async (req, res) => {
+    console.log(req.user);
+
+    // get all users with role of 'user'
+    // then remove the password property from the return array of users
+    const users = await User.find({ role: 'user' }).select('-password');
+
+    res.status(StatusCodes.OK).json({ users });
+  };
+  ```
+- **Testing the authenticateUser middleware using Postman:**
+  - First, make sure a user is logged in to our application. Make a POST request to the 'Login user' route: {{URL}}/auth/login
+  - If the user is successfully logged in, the jwt has been issued and it's stored in the signed cookies response in res.signedCookies. The browser sends this cookie to the server for subsequent requests
+  - Then make a GET request to the 'Get all users' route: {{URL}}/users
+  - Since this route is protected with the authenticateUser middleware, only authenticated user has access to the resource
+  - If the authentication is successful, we will get back a list of users. Also in the console, it'll print out the authenticated user object
+    - `{ name: 'Chris', userId: '62c29041dab89f45151942a0', role: 'user' }`
+  - Also test the middleware by not logging in a user and then make a request to the 'Get all users' route. We should get back an error message "Authentication invalid"
 
 
 

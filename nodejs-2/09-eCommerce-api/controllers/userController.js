@@ -4,6 +4,8 @@ const CustomError = require('../errors');
 
 // only admin users have access to this route
 const getAllUsers = async (req, res) => {
+  console.log(req.user);
+  
 	// get all users with role of 'user'
 	// then remove the password property from the return array of users
 	const users = await User.find({ role: 'user' }).select('-password');
