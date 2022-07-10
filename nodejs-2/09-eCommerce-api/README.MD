@@ -952,7 +952,7 @@
   - A protected route has an authenticateUser middleware that verifies the user token before it allows access to the resource
   - When a user logs out, the token is removed from the cookies response
 - File: middleware/authentication.js
-  - Write an authenticateUser middleware that verifies the user token. If successful, add the authenticated user object to the req object
+  - Write an authenticateUser middleware that verifies the user token. If successful, add the authenticated user object to the req object. If unsuccessful, throw an error with an error message
   - The token of the user who is making the request to the protected route is found in req.signedCookies.token
   - Call the isTokenValid util function to verify the token
   - If the token is valid, add the user object to the req object. Add only the name, userId, and role properties to the user object
@@ -1013,6 +1013,75 @@
   - If the authentication is successful, we will get back a list of users. Also in the console, it'll print out the authenticated user object
     - `{ name: 'Chris', userId: '62c29041dab89f45151942a0', role: 'user' }`
   - Also test the middleware by not logging in a user and then make a request to the 'Get all users' route. We should get back an error message "Authentication invalid"
+
+### [23. Authorize permissions: authorizePermissions middleware]()
+- [X] write a 2nd authentication middleware - checks user roles
+- [X] introduce params
+- How that we authenticated user in user routes, we also want to set permissions so that only users with certain roles can access certain routes. For example, in our application, only users with admin role have access to the 'getAllUsers' route
+- We're going to write a second middleware that checks for the user role before they have access to the route. Note that this second middleware only runs after the first middleware (authenticateUser middleware) is successful, which is authenticate user 
+- File: errors/unauthorized.js
+  - Write and export an UnauthorizedError class that extends the CustomAPIError class. This error class has a status code of 403, which is a forbidden error
+  ```js
+  const { StatusCodes } = require('http-status-codes');
+  const CustomAPIError = require('./custom-api');
+
+  class UnauthorizedError extends CustomAPIError {
+    constructor(message) {
+      super(message);
+      this.statusCode = StatusCodes.FORBIDDEN; //status code of 403 Forbidden
+    }
+  }
+
+  module.exports = UnauthorizedError;
+  ```
+- File: errors/index.js
+  - Add the UnauthorizedError class to this index.js file. This file serves as the entry point to all the error classes
+  ```js
+  const UnauthorizedError = require('./unauthorized');
+
+  module.exports = { UnauthorizedError };
+  ```
+- File: middleware/authentication.js
+  - Write a second middleware, authorizePermissions, that checks for the user role. If it's not an 'admin' user, throw the UnauthorizedError class error
+  ```js
+  const CustomError = require('../errors');
+
+  // ...roles is a rest operation that collects all the args passed to this middleware
+  const authorizePermissions = (...roles) => {
+    // this middleware returns a callback function
+    // because it's invoked right away in
+    // getAllUsers route in userRoutes.js file
+    return (req, res, next) => {
+      // since this is a 2nd middleware, it has access to the req.user object
+      // that was created from the 1st middleware
+      if (req.user.role !== 'admin') {
+        throw new CustomError.UnauthorizedError(
+          'Unauthorized to access this route'
+        );
+      }
+
+      next();
+    };
+  };
+
+  module.exports = { authorizePermissions };
+  ```
+- File: routes/userRoutes.js
+  - Import the authorizePermissions middleware
+  - Use this middleware as 2nd middleware in the getAllUsers route. Here, we want to pass in the user roles that have permission to access this route. NOTE THAT WE ARE INVOKING THIS SECOND MIDDLEWARE HERE
+  ```js
+  const {
+    authenticateUser,
+    authorizePermissions
+  } = require('../middleware/authentication');
+
+  // 1st arg is 1st middleware - authenticateUser
+  // 2nd arg is 2nd middleware - authorizePermissions. This middleware is invoked right away
+  // 3rd arg is the controller - getAllUsers
+  router
+    .route('/')
+    .get(authenticateUser, authorizePermissions('admin', 'owner'), getAllUsers);
+  ```
 
 
 
@@ -1131,6 +1200,7 @@
 #### Auth User Complete
 
 #### Authorize Permissions Setup
+- [] write a 2nd authentication middleware - checks user roles
 - [] hardcode
 
 #### Authorize Permissions Complete
