@@ -1083,6 +1083,29 @@
     .get(authenticateUser, authorizePermissions('admin', 'owner'), getAllUsers);
   ```
 
+### [24. Implement showCurrentUser controller]()
+- [X] get user from req
+- [X] send response with user
+- The task of the showCurrentUser controller simply checks to see if there's a user object on the current user page. The route is https://domain/api/v1/users/showMe. For example, if the user is on this page and they decide to refresh the page. This makes a GET request to the 'showMe' route and this controller just checks to see if a user exists on the `req.user` object after the user authentication process is completed. The `req.user` is created only if the authentication is successful, if the token in the signed cookies response is still valid. If the user hasn't logged in or registered or there's no token in the cookies, then there's no `req.user` object. This controller does not need to query the database for the user
+- File: routes/userRoutes.js
+  - In the 'showMe' route, add the authenticateUser middleware as the first arg
+  ```js
+  router.route('/showMe').get(authenticateUser, showCurrentUser);
+  ```
+- File: controllers/userController.js
+  - In the showCurrentUser controller, send back the status code of 200 OK and the user object in json format. The user object is found in req.user because we're applying the authenticateUser middleware on the 'showMe' route
+  ```js
+  const showCurrentUser = async (req, res) => {
+    res.status(StatusCodes.OK).json({ user: req.user });
+  };
+  ```
+- **Testing the showCurrentUser controller in PostMan:**
+  - First, log in a user in the 'Login user' route: {{URL}}/auth/login
+  - Then make a GET request to the 'Show current user' route: {{URL}}/users/showMe
+  - Don't need to pass in any data
+  - If the showCurrentUser controller is setup properly, we should get back the user object, the authenticated user
+  - Also test if a user is not logged in. We should get back an error message of "Authentication invalid" and status code of 401 Unauthorized
+
 
 
 
