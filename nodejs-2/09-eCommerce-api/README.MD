@@ -1106,6 +1106,64 @@
   - If the showCurrentUser controller is setup properly, we should get back the user object, the authenticated user
   - Also test if a user is not logged in. We should get back an error message of "Authentication invalid" and status code of 401 Unauthorized
 
+### [25. Implement updateUserPassword controller]()
+- [X] almost identical to login user
+- [X] add authenticateUser middleware in the route
+- [X] check for oldPassword and newPassword in the body
+- [X] if one missing 400
+- [X] look for user with req.user.userId
+- [X] check if oldPassword matches with user.comparePassword
+- [X] if no match 401
+- [X] if everything good set user.password equal to newPassword
+- [X] await user.save()
+- File: routes/userRoutes.js
+  - Add the authenticateUser middleware to the updateUserPassword route
+  - Adding the middleware serves two things on this route. The first is, we only want authenticated user to access this route. The second is, we get access to the `req.user` object
+  ```js
+  router.route('/updateUserPassword').patch(authenticateUser, updateUserPassword);
+  ```
+- File: controllers/userController.js
+  ```js
+  const updateUserPassword = async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+    if (!oldPassword || !newPassword) {
+      throw new CustomError.BadRequestError('Please provide both values');
+    }
+
+    const user = await User.findOne({ _id: req.user.userId });
+
+    // we created the comparePassword method in UserSchema model
+    const isPasswordCorrect = await user.comparePassword(oldPassword);
+    if (!isPasswordCorrect) {
+      throw new CustomError.UnauthenticatedError('Invalid credentials');
+    }
+    user.password = newPassword;
+
+    // the save() method is Mongoose's pre save hook
+    // we setup this hook to hash the password before saving the user instance to DB
+    await user.save();
+    res.status(StatusCodes.OK).json({ msg: 'Success! Password updated' });
+  };
+  ```
+- **Testing the updateUserPassword controller using Postman:**
+  - First, make sure to login a user in the 'Login user' route: {{URL}}/auth/login
+  - Then make a PATCH request to the 'Update user password' route: {{URL}}/users/updateUserPassword
+    - In the Body tab, provide the values to the oldPassword and newPassword properties
+    ```js
+    {
+      "oldPassword": "secret",
+      "newPassword": "newSecret"
+    }
+    ```
+  - If the updateUserPassword controller is setup properly, we should get back a success message with a 200 OK status code
+  - Note that the user password has been hashed and updated in MongoDB database
+
+
+
+
+
+
+
 
 
 
