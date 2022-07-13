@@ -1158,11 +1158,45 @@
   - If the updateUserPassword controller is setup properly, we should get back a success message with a 200 OK status code
   - Note that the user password has been hashed and updated in MongoDB database
 
+### [26. Create createTokenUser util function]()
+- [X] create a file in utils (createTokenUser)
+- [X] setup a function that accepts user object and returns userToken object
+- [X] export as default
+- [X] setup all the correct imports/exports and refactor existing code
+- At this point, we've been creating the `tokenUser` object on the fly at least twice now in our project (in register and login controllers). We are about to do this again. When something we repeat over and over, it's a good idea to create a util function for it so that we can simply call it when we need to use it 
+- File: utils/createTokenUser.js
+  - Create and export a createTokenUser util function that takes a user object as an argument. It returns an object that has the user name, userId, and role
+  ```js
+  const createTokenUser = (user) => {
+    return { name: user.name, userId: user._id, role: user.role };
+  };
 
+  module.exports = { createTokenUser };
+  ```
+- File: utils/index.js
+  - Import and export the createTokenUser util function in the index.js file in the utils folder. This file serves as the entry point to all the util functions
+  ```js
+  const { createJWT, isTokenValid, attachCookiesToResponse } = require('./jwt');
+  const { createTokenUser } = './createTokenUser.js';
 
-
-
-
+  module.exports = {
+    createJWT,
+    isTokenValid,
+    attachCookiesToResponse,
+    createTokenUser
+  };
+  ```
+- Let's refactor our existing code to utilize the createTokenUser function
+- File: controllers/authController.js
+  - Import the createTokenUser util function
+  - In both of the register and login controller, refactor the code for creating the userToken object
+  ```js
+  // after a user instance has been created, create a tokenUser object
+  // tokenUser doesn't contain email and password
+  // const tokenUser = { name: user.name, userId: user._id, role: user.role };
+  // refactor using the createTokenUser util function
+  const tokenUser = createTokenUser(user);
+  ```
 
 
 
