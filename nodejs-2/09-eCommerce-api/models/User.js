@@ -33,6 +33,12 @@ const UserSchema = new mongoose.Schema({
 // hash the password before saving the document
 // this is a hook
 UserSchema.pre('save', async function () {
+	// console.log(this.modifiedPaths());
+	// console.log(this.isModified('name'));
+
+	// if password isn't modified/updated, return early
+	// this prevents re-hashing the password when update user info
+	if (!this.isModified('password')) return;
 	const salt = await bcrypt.genSalt(10);
 	this.password = await bcrypt.hash(this.password, salt);
 });

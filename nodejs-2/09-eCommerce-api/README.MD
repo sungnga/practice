@@ -1177,7 +1177,7 @@
   - Import and export the createTokenUser util function in the index.js file in the utils folder. This file serves as the entry point to all the util functions
   ```js
   const { createJWT, isTokenValid, attachCookiesToResponse } = require('./jwt');
-  const { createTokenUser } = './createTokenUser.js';
+  const { createTokenUser } = require('./createTokenUser');
 
   module.exports = {
     createJWT,
@@ -1196,6 +1196,123 @@
   // const tokenUser = { name: user.name, userId: user._id, role: user.role };
   // refactor using the createTokenUser util function
   const tokenUser = createTokenUser(user);
+  ```
+
+### [27. Implement updateUser controller ]()
+- [] add authenticateUser middleware in the route
+- [] check for name and email in the body
+- [] if one is missing, send 400 (optional)
+- [] use findOneAndUpdate()
+- [] create token user, attachCookiesToResponse and send back the tokenUser
+- There are two ways to update a user instance:
+  - User.findOneAndUpdate() method
+  - User.save() method
+- While this controller enables users to update their information, we don't want them to change their role from regular user to admin user. Also, they can't update their password here. We have a separate route for them to update their password
+- **IMPORTANT NOTES ABOUT THE UPDATEUSER CONTROLLER**
+  - The updateUser controller performs two main tasks. The first is it updates the user document in the database. The second is it updates the user token in the cookies response by calling the attachCookiesToResponse() method
+  - Updating the cookies response is important because the authenticateUser middleware looks for the token in the signed cookies response to validate the user. Once the authentication process is successful, the middleware attaches the user object to the req object, hence the user info found in the `req.user` object gets updated 
+  - Now when a different controller uses the authenticateUser middleware, the `req.user` object that the middleware generates will have the updated user info
+- **Add the authenticateUser middleware to the updateUser route:**
+- File: routes/userRoutes.js
+  - Add the authenticateUser middleware to the updateUser route
+  ```js
+  router.route('/updateUser').patch(authenticateUser, updateUser);
+  ```
+- **updateUser controller using findOneAndUpdate() method:**
+- File: controllers/userController.js
+  - Import the createTokenUser and attachCookiesToResponse util functions
+  - Use the .findOneAndUpdate() method on the User model to update the user instance. We find the user in the database by their id
+  - After we update the user instance in DB, we want to update the user info in `req.user` object on the front-end by updating the user token in the cookies response
+  - Call the createTokenUser() util method to create the tokenUser object. The tokenUser object has the properties of name, userId, and role. So technically, we're only updating the user name here
+  - Then call the attachCookiesToResponse() method to attach the cookies to the response
+  - Lastly, this controller sends back the user object along with the status code
+  ```js
+  const User = require('../models/User');
+  const { StatusCodes } = require('http-status-codes');
+  const CustomError = require('../errors');
+  const { createTokenUser, attachCookiesToResponse } = require('../utils');
+
+  const updateUser = async (req, res) => {
+    const { email, name } = req.body;
+    if (!email || !name) {
+      throw new CustomError.BadRequestError('Please provide all values');
+    }
+
+    // updating the user instance
+    // 1st arg is we're looking for user by their id
+    // 2nd arg is the properties to update
+    // 3rd arg is the options
+    const user = await User.findOneAndUpdate(
+      { _id: req.user.userId },
+      { email, name },
+      { new: true, runValidators: true }
+    );
+    const tokenUser = createTokenUser(user);
+    attachCookiesToResponse({ res, user: tokenUser });
+    res.status(StatusCodes.OK).json({ user: tokenUser });
+  };
+  ```
+- **Testing the userUpdate controller using Postman:**
+  - First make sure to login a user in the 'Login user' route
+  - Make a PATCH request to the 'Update user' route: {{URL}}/users/updateUser
+  - Update the user name and/or email
+    ```js
+    {
+      "name": "newDavid",
+      "email": "newdavid@example.com"
+    }
+    ```
+  - If the updateUser controller is setup properly, we should get back the user object, the signed cookies response, and status code of 200 OK
+    ```js
+    {
+      "user": {
+        "name": "newDavid",
+        "userId": "62c133d2b5407e43468f4ba3",
+        "role": "user"
+      }
+    }
+    ```
+- **updateUser controller using user.save() method:**
+- File: controllers/userController.js
+  - First, call User.findOne() method to find the user by their id
+  - Manually update the email and name properties
+  - Then call user.save() method to invoke the pre save hook on the user instance
+  ```js
+  // update user with user.save()
+  const updateUser = async (req, res) => {
+    const { email, name } = req.body;
+    if (!email || !name) {
+      throw new CustomError.BadRequestError('Please provide all values');
+    }
+
+    const user = await User.findOne({ _id: req.user.userId });
+    user.email = email;
+    user.name = name;
+    // invoking the Mongoose pre save hook method on the user instance
+    await user.save();
+
+    const tokenUser = createTokenUser(user);
+    attachCookiesToResponse({ res, user: tokenUser });
+    res.status(StatusCodes.OK).json({ user: tokenUser });
+  };
+  ```
+- File: models/User.js
+  - The pre save hook hash the user password before saving the user instance to MongoDB
+  - We don't want this hook to hash the user password when we update the user information in the updateUser controller
+  - We need to write a condition that only hash the user password if the password property has been modified/updated
+  ```js
+  // hash the password before saving the document
+  // this is a hook
+  UserSchema.pre('save', async function () {
+    // console.log(this.modifiedPaths());
+    // console.log(this.isModified('name'));
+
+    // if password isn't modified/updated, return early
+    // this prevents re-hashing the password when update user info
+    if (!this.isModified('password')) return;
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+  });
   ```
 
 
