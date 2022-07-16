@@ -1198,12 +1198,12 @@
   const tokenUser = createTokenUser(user);
   ```
 
-### [27. Implement updateUser controller ]()
-- [] add authenticateUser middleware in the route
-- [] check for name and email in the body
-- [] if one is missing, send 400 (optional)
-- [] use findOneAndUpdate()
-- [] create token user, attachCookiesToResponse and send back the tokenUser
+### [27. Implement updateUser controller]()
+- [X] add authenticateUser middleware in the route
+- [X] check for name and email in the body
+- [X] if one is missing, send 400 (optional)
+- [X] use findOneAndUpdate()
+- [X] create token user, attachCookiesToResponse and send back the tokenUser
 - There are two ways to update a user instance:
   - User.findOneAndUpdate() method
   - User.save() method
@@ -1276,7 +1276,7 @@
 - File: controllers/userController.js
   - First, call User.findOne() method to find the user by their id
   - Manually update the email and name properties
-  - Then call user.save() method to invoke the pre save hook on the user instance
+  - Then call user.save() method to invoke the pre save hook on the user instance. This updates the user instance in MongoDB
   ```js
   // update user with user.save()
   const updateUser = async (req, res) => {
@@ -1297,8 +1297,8 @@
   };
   ```
 - File: models/User.js
-  - The pre save hook hash the user password before saving the user instance to MongoDB
-  - We don't want this hook to hash the user password when we update the user information in the updateUser controller
+  - Note that the pre save hook hash the user password before saving the user instance to MongoDB
+  - We don't want this hook to hash the user password when we update the user info in the updateUser controller
   - We need to write a condition that only hash the user password if the password property has been modified/updated
   ```js
   // hash the password before saving the document
@@ -1308,12 +1308,79 @@
     // console.log(this.isModified('name'));
 
     // if password isn't modified/updated, return early
-    // this prevents re-hashing the password when update user info
+    // this prevents re-hashing the password when updating user info
     if (!this.isModified('password')) return;
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
   });
   ```
+
+### [28. Setup and apply checkPermissions function]()
+- The next task we want to work on is create a util function that checks whether the request user has permission to access another user resource. Only the authenticated user id (request user) that matches with the resource user id and the admin user have access to another user resource. This is in the getSingleUser controller. For example, David (the request user) should not have permission to access Susan's (the resource user) information. However, James, an admin user, has access to Susan's information
+- File: utils/checkPermissions.js
+  - This util function checks for permission whether the request user can have access to the resource user information
+  - Only an admin user and the request user id that matches with the resource user id can have access to the resource
+  - Otherwise, throw an unauthorized error
+  - This util function is used in the getSingleUser controller
+  ```js
+  const CustomError = require('../errors');
+
+  const checkPermissions = (requestUser, resourceUserId) => {
+    // console.log(requestUser);
+    // console.log(resourceUserId);
+    // console.log(typeof resourceUserId);
+
+    // if request user role is admin, return early
+    if (requestUser.role === 'admin') return;
+    // if request user id is equal to resource user id
+    // resourceUserId is an object. Need to convert it to a string
+    if (requestUser.userId === resourceUserId.toString()) return;
+
+    // if none of above conditions is met, throw error
+    throw new CustomError.UnauthorizedError(
+      'Not authorized to access this route'
+    );
+  };
+
+  module.exports = checkPermissions;
+  ```
+- File: utils/index.js
+  ```js
+  const checkPermissions = require('./checkPermissions');
+
+  module.exports = { checkPermissions };
+  ```
+- File: controllers/userController.js
+  - Import the checkPermissions util function
+  - In the getSingleUser controller, after getting back the user from the database, call the checkPermissions() function to check for user permission. Pass in the req.user and user._id as arguments
+    - The req.user is the authenticated and request user to this route
+    - The user._id is the id of the resource user
+  ```js
+  const { checkPermissions } = require('../utils');
+
+  const getSingleUser = async (req, res) => {
+    // find one user that has the match id from req.params.id
+    // then remove the password property from the found user object
+    const user = await User.findOne({ _id: req.params.id }).select('-password');
+    if (!user) {
+      throw new CustomError.NotFoundError(`No user with id: ${req.params.id}`);
+    }
+
+    // check the request user permission
+    // the req.user is the auth and request user to this route
+    // the user._id is the id of the resource user
+    checkPermissions(req.user, user._id);
+
+    res.status(StatusCodes.OK).json({ user });
+  };
+  ```
+- **Testing the checkPermissions function using Postman:**
+  - First, login a user who is an admin user in the 'Login user' route
+  - Then make a request to the 'Get all users' route. This should return a list of users since this is an admin user that makes the request. Copy one of the users id
+  - Go to the 'Get single user' route and paste in the user id to request route: {{URL}}/users/62c133d2b5407e43468f4ba3
+  - We should get back the resource user info because the request user is an admin user
+  - Also test by logging in another user who is a regular user and then make the same request to the 'Get single user' route
+  - Finally, test by logging in a regular user who tries to access their own information on the 'Get single user' route. They should have permission to do this
 
 
 
