@@ -1316,6 +1316,7 @@
   ```
 
 ### [28. Setup and apply checkPermissions function]()
+- [X] create checkPermissions util function
 - The next task we want to work on is create a util function that checks whether the request user has permission to access another user resource. Only the authenticated user id (request user) that matches with the resource user id and the admin user have access to another user resource. This is in the getSingleUser controller. For example, David (the request user) should not have permission to access Susan's (the resource user) information. However, James, an admin user, has access to Susan's information
 - File: utils/checkPermissions.js
   - This util function checks for permission whether the request user can have access to the resource user information
@@ -1382,6 +1383,94 @@
   - Also test by logging in another user who is a regular user and then make the same request to the 'Get single user' route
   - Finally, test by logging in a regular user who tries to access their own information on the 'Get single user' route. They should have permission to do this
 
+### [29. Setup ProductSchema model]()
+- [X] create Product.js in models folder
+- [X] create Schema
+- [X] name : {type:String}
+- [X] price: {type:Number}
+- [X] description: {type:String}
+- [X] image: {type:String}
+- [X] category: {type:String}
+- [X] company: {type:String}
+- [X] colors: {type:[]}
+- [X] featured: {type:Boolean}
+- [X] freeShipping: {type:Boolean}
+- [X] inventory:{type:Number}
+- [X] averageRating:{type:Number}
+- [X] user
+- [X] set timestamps
+- [X] export Product model
+- File: models/Product.js
+  ```js
+  const mongoose = require('mongoose');
+
+  const ProductSchema = new mongoose.Schema(
+    {
+      name: {
+        type: String,
+        trim: true,
+        required: [true, 'Please provide product name'],
+        maxlength: [100, 'Name can not be more than 100 characters']
+      },
+      price: {
+        type: Number,
+        required: [true, 'Please provide product price'],
+        default: 0
+      },
+      description: {
+        type: String,
+        required: [true, 'Please provide product description'],
+        maxlength: [1000, 'Description can not be more than 1000 characters']
+      },
+      image: {
+        type: String,
+        default: '/uploads/example.jpeg'
+      },
+      category: {
+        type: String,
+        required: [true, 'Please provide product category'],
+        enum: ['office', 'kitchen', 'bedroom']
+      },
+      company: {
+        type: String,
+        required: [true, 'Please provide company'],
+        enum: {
+          values: ['ikea', 'liddy', 'marcos'],
+          message: '{VALUES} is not supported'
+        }
+      },
+      colors: {
+        type: [String],
+        required: true
+      },
+      featured: {
+        type: Boolean,
+        default: false
+      },
+      freeShipping: {
+        type: Boolean,
+        default: false
+      },
+      inventory: {
+        type: Number,
+        required: true,
+        default: 15
+      },
+      averageRating: {
+        type: Number,
+        default: 0
+      },
+      user: {
+        type: mongoose.Types.ObjectId,
+        ref: 'User',
+        required: true
+      }
+    },
+    { timestamps: true }
+  );
+
+  module.exports = mongoose.model('Product', ProductSchema);
+  ```
 
 
 
