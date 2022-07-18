@@ -1472,6 +1472,99 @@
   module.exports = mongoose.model('Product', ProductSchema);
   ```
 
+### [30. Setup Product basic routes structure]()
+- [X] add productController file in controllers
+- [X] export (createProduct, getAllProducts,
+  getSingleProduct, updateProduct, deleteProduct, uploadImage) functions
+- [X] res.send('function name')
+- [X] setup productRoutes file in routes
+- [X] import all controllers
+- [X] only getAllProducts and getSingleProduct accessible to public
+- [X] rest only by admin (setup middlewares)
+- [X] typical setup
+- [X] router.route('/uploadImage').post(uploadImage)
+- [X] import productRoutes as productRouter in the app.js
+- [X] setup app.use('/api/v1/products', productRouter)
+- File: controllers/productController.js
+  - Create and export six controllers for the Product model
+  ```js
+  const createProduct = async (req, res) => {
+    res.send('create product');
+  };
+
+  const getAllProducts = async (req, res) => {
+    res.send('get all products');
+  };
+
+  const getSingleProduct = async (req, res) => {
+    res.send('get single product');
+  };
+
+  const updateProduct = async (req, res) => {
+    res.send('update product');
+  };
+
+  const deleteProduct = async (req, res) => {
+    res.send('delete product');
+  };
+
+  const uploadImage = async (req, res) => {
+    res.send('upload image');
+  };
+
+  module.exports = {
+    createProduct,
+    getAllProducts,
+    getSingleProduct,
+    updateProduct,
+    deleteProduct,
+    uploadImage
+  };
+  ```
+- File: routes/productRoutes.js
+  - Only the getAllProducts route does not have authentication middleware. The other five routes have
+  ```js
+  const express = require('express');
+  const router = express.Router();
+  const {
+    createProduct,
+    getAllProducts,
+    getSingleProduct,
+    updateProduct,
+    deleteProduct,
+    uploadImage
+  } = require('../controllers/productController');
+  const {
+    authenticateUser,
+    authorizePermissions
+  } = require('../middleware/authentication');
+
+  router
+    .route('/')
+    .post([authenticateUser, authorizePermissions('admin')], createProduct)
+    .get(getAllProducts);
+  router
+    .route('/uploadImage')
+    .post([authenticateUser, authorizePermissions('admin')], uploadImage);
+  router
+    .route('/:id')
+    .get(getSingleProduct)
+    .patch([authenticateUser, authorizePermissions('admin')], updateProduct)
+    .delete([authenticateUser, authorizePermissions('admin')], deleteProduct);
+
+  module.exports = router;
+  ```
+- File: app.js
+  ```js
+  const productRouter = require('./routes/productRoutes');
+
+  app.use('/api/v1/products', productRouter);
+  ```
+
+
+
+
+
 
 
 
