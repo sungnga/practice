@@ -1561,6 +1561,18 @@
   app.use('/api/v1/products', productRouter);
   ```
 
+### [31. Setup Product routes in Postman]()
+- The base route for product routes is: `'/api/v1/products'`
+- In Postman, the base route for product routes is: `{{URL}}/products`
+- Inside the project folder, create another folder called Product
+- In this folder, we're going to create six product routes:
+  - Create product - a POST request to: {{URL}}/products
+  - Get all products - a GET request to: {{URL}}/products
+  - Upload image - a POST request to: {{URL}}/products/uploadImage
+  - Get single product - a GET request to: {{URL}}/products/:id
+  - Update product - a PATCH request to: {{URL}}/products/:id
+  - Delete product - a DELETE request to: {{URL}}/products/:id
+- Other than the 'Get all products' request, all other requests we should get back the cookies response as well because we applied the authenticateUser middleware to these routes. These are private routes, a user must successfully logged sin before making requests
 
 
 
