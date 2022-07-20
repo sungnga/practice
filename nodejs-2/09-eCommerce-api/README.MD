@@ -1574,6 +1574,68 @@
   - Delete product - a DELETE request to: {{URL}}/products/:id
 - Other than the 'Get all products' request, all other requests we should get back the cookies response as well because we applied the authenticateUser middleware to these routes. These are private routes, a user must successfully logged sin before making requests
 
+### [32. Implement createProduct controller]()
+- [X] create user property on req.body and set it equal to userId (req.user)
+- [X] pass req.body into Product.create
+- [X] send back the product
+- File: controllers/productController.js
+  - Import the Product model, the StatusCode object, and the CustomError class
+  - In the createProduct controller:
+    - Add the user property on req.body and set it to req.user.userId
+    - Create a new product by calling the Product.create() method and pass in req.body as the argument
+    - Lastly, send back the response with status code of 201 created and the product object in json format
+  ```js
+  const Product = require('../models/Product');
+  const { StatusCodes } = require('http-status-codes');
+  const CustomError = require('../errors');
+
+  const createProduct = async (req, res) => {
+    req.body.user = req.user.userId;
+    const product = await Product.create(req.body);
+
+    res.status(StatusCodes.CREATED).json({ product });
+  };
+  ```
+- **Testing the createProduct controller using Postman:**
+  - First, successfully log in an admin user in the 'Login user' route: {{URL}}/auth/login
+  - Then make a POST request to the 'Create product' route: {{URL}}/products
+  - Test to see what happens if we don't provide any product data. We should get back the error message to provide the values for the properties that we setup in the ProductSchema model
+  - Then test by providing the product values in the Body tab
+    ```js
+    {
+      "name": "testing product",
+      "description": "some description",
+      "category": "office",
+      "company": "ikea"
+    }
+    ```
+  - If the createProduct controller is setup properly, 
+    - first, we should get back the product object along with the status code of 201 created
+      ```js
+      {
+        "product": {
+          "name": "testing product",
+          "price": 0,
+          "description": "some description",
+          "image": "/uploads/example.jpeg",
+          "category": "office",
+          "company": "ikea",
+          "colors": ["#222"],
+          "featured": false,
+          "freeShipping": false,
+          "inventory": 15,
+          "averageRating": 0,
+          "user": "62baa22c497b3555b890fa22",
+          "_id": "62d7a0db80da7b9f6b57cc48",
+          "createdAt": "2022-07-20T06:29:47.346Z",
+          "updatedAt": "2022-07-20T06:29:47.346Z",
+          "__v": 0
+        }
+      }
+      ```
+    - second, we get the user token stored in the cookies response
+    - third, product document has been created in the MongoDB database in 'products' collection
+    
 
 
 
