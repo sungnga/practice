@@ -1636,6 +1636,66 @@
     - second, we get the user token stored in the cookies response
     - third, product document has been created in the MongoDB database in 'products' collection
     
+### [32. Implement getAllProducts, getSingleProduct, updateProduct, deleteProduct]()
+- [X] getAllProducts
+- [X] getSingleProduct
+- [X] updateProduct
+- [X] deleteProduct
+- [X] typical CRUD, utilize (task or job) project
+- [X] remember we check already for role 'admin'
+- File: controllers/productController.js
+  ```js
+  const Product = require('../models/Product');
+  const { StatusCodes } = require('http-status-codes');
+  const CustomError = require('../errors');
+
+  const getAllProducts = async (req, res) => {
+    // passing in an empty object means get all products
+    const products = await Product.find({});
+
+    res.status(StatusCodes.OK).json({ products, count: products.length });
+  };
+
+  const getSingleProduct = async (req, res) => {
+    const { id: productId } = req.params;
+    const product = await Product.findOne({ _id: productId });
+    if (!product) {
+      throw new CustomError.NotFoundError(`No product with id: ${productId}`);
+    }
+
+    res.status(StatusCodes.OK).json({ product });
+  };
+
+  const updateProduct = async (req, res) => {
+    const { id: productId } = req.params;
+    const product = await Product.findOneAndUpdate({ _id: productId }, req.body, {
+      new: true,
+      runValidators: true
+    });
+    if (!product) {
+      throw new CustomError.NotFoundError(`No product with id: ${productId}`);
+    }
+
+    res.status(StatusCodes.OK).json({ product });
+  };
+
+  const deleteProduct = async (req, res) => {
+    const { id: productId } = req.params;
+    const product = await Product.findOne({ _id: productId });
+    if (!product) {
+      throw new CustomError.NotFoundError(`No product with id: ${productId}`);
+    }
+    await product.remove();
+
+    res.status(StatusCodes.OK).json({ msg: 'Success! Product removed.' });
+  };
+  ```
+- **Testing product CRUD functionality using Postman:**
+  - First, test by logging in as an admin user in the 'User login' route
+  - Then test the 'Get all products', 'Get single product', 'Update product', and 'Delete product' routes
+  - Then log in as a regular user and try to perform the same routes. Since this is a regular user, he or she can only access the 'Get all products' and 'Get single product' routes. This user can not update or delete product
+
+
 
 
 
