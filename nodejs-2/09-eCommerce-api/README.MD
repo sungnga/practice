@@ -1636,7 +1636,7 @@
     - second, we get the user token stored in the cookies response
     - third, product document has been created in the MongoDB database in 'products' collection
     
-### [32. Implement getAllProducts, getSingleProduct, updateProduct, deleteProduct]()
+### [33. Implement getAllProducts, getSingleProduct, updateProduct, deleteProduct]()
 - [X] getAllProducts
 - [X] getSingleProduct
 - [X] updateProduct
@@ -1696,9 +1696,92 @@
   - Then log in as a regular user and try to perform the same routes. Since this is a regular user, he or she can only access the 'Get all products' and 'Get single product' routes. This user can not update or delete product
 
 
+### [34. Implement uploadImage controller]()
+- [X] if unsure, review uploadImage controller in 07-file-upload project
+- We're uploading the image to our development server which stores the image in a public directory. We will create a separate folder to store the uploaded image as a path
+- **Uploading an image file using POSTMAN:**
+  - Make a POST request to the upload image route: `{{URL}}/products/uploadImage`
+  - Click on the Body tab and select form-data and select file type
+  - Provide a name for the image upload as the KEY. Call it `image` for example. For the VALUE, select an image file from the file system
+- A NOTE WHEN UPLOADING A FILE USING POSTMAN
+  - Since we're uploading a file (not providing raw data) in the Body content, by default, we don't have access to the file data in `req.body` object
+  - We need to use an external library `express-fileupload` in order to access the file data
+- At the root of the project directory, create a folder called public. Inside the public folder, create a folder called uploads
+- **Installing the express-fileupload package:**
+  - `npm i express-fileupload`
+- **Implementing the express-fileupload package, make the public folder public:**
+  - File: app.js
+    - Import the express-fileupload module
+    - Call the express.static() method to set the public folder as a public folder
+    - Then invoke the fileUpload module as middleware
+    ```js
+    const fileUpload = require('express-fileupload');
 
+    // file upload
+    // make the public folder as a public folder
+    app.use(express.static('./public'));
+    app.use(fileUpload());
+    ```
+- Stop and restart the server
+- **Storing the image data in a public path:**
+  - The next step we want to do is to create a public path that stores the uploaded image data. This in turn makes the image a public image asset
+  - Inside the `public` directory, create a folder called `uploads`
+  - Then, the express-fileupload library has a `.mv()` method that we can call on the file object to move the file/image to a specified path
+  - We use the `path` module that comes with Node.js to create the path in the `uploads` folder
+  - File: controllers/productController.js
+    - Import the path module that comes with Node.js
+    - Console log req.files to see the file data
+    - If no file is uploaded, throw an error
+    - If there is, store the file data in a productImage variable
+    - If the uploaded file isn't an image, throw an error
+    - Create an imagePath in the uploads folder in the public directory
+    - Call .mv() method on the productImage object to move the image data to the imagePath
+    - Then send back the status code along with an image object that contains the source to the image path
+    - If successful, the productImage object will be moved to the imagePath that we created in the `uploads` folder inside the `public` directory
+    - This officially uploads a file image to our development server that we can view in the browser
+    - Lastly, send back a status code along with the image data
+    ```js
+    const { StatusCodes } = require('http-status-codes');
+    const path = require('path');
 
+    const uploadImage = async (req, res) => {
+      // console.log(req.files);
+      if (!req.files) {
+        throw new CustomError.BadRequestError('No file uploaded.');
+      }
+      const productImage = req.files.image;
 
+      if (!productImage.mimetype.startsWith('image')) {
+        throw new CustomError.BadRequestError('Please upload image');
+      }
+      const maxSize = 1024 * 1024;
+
+      if (productImage.size > maxSize) {
+        throw new CustomError.BadRequestError('Please upload image small than 1MB');
+      }
+      // create a path in uploads folder
+      const imagePath = path.join(
+        __dirname,
+        '../public/uploads/' + `${productImage.name}`
+      );
+
+      // moving image data to the imagePath in uploads folder
+      // the .mv() method is provided by express-fileupload library
+      await productImage.mv(imagePath);
+      res.status(StatusCodes.OK).json({ image: `/uploads/${productImage.name}` });
+    };
+    ```
+- **Testing the uploadImage controller using POSTMAN:**
+  - Login as an admin user and upload an image in the 'Upload image' route: {{URL}}/products/uploadImage
+  - Click on the Body tab and upload an image file. The KEY name is `image`
+  - If successful, we should get back an image object that contains the path to the uploaded image
+  ```js
+  {
+    "image": "/uploads/example.jpeg"
+  }
+  ```
+- **To view the uploaded image file in the browser:**
+  - To see the image in the browser: http://localhost:5000/uploads/example.jpeg
 
 
 
@@ -1901,8 +1984,7 @@
 - [] remember we check already for role 'admin'
 
 #### Upload Image
-- [] if some question, re-watch 07-file-upload
-- [] images folder with two images
+- [] if unsure, review uploadImage controller in 07-file-upload project
 
 #### Review Model
 - [] create Review.js in models folder

@@ -10,6 +10,7 @@ const app = express();
 // other packages
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
+const fileUpload = require('express-fileupload');
 
 // database
 const connectDB = require('./db/connect');
@@ -30,6 +31,11 @@ app.use(morgan('tiny'));
 app.use(express.json());
 // middleware to parse a cookie
 app.use(cookieParser(process.env.JWT_SECRET));
+
+// file upload
+// make the public folder as a public folder
+app.use(express.static('./public'));
+app.use(fileUpload());
 
 // testing the root route
 app.get('/', (req, res) => {
