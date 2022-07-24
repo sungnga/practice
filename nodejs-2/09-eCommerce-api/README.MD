@@ -1837,9 +1837,83 @@
   module.exports = mongoose.model('Review', ReviewSchema);
   ```
 
+### [36. Setup Review basic routes structure]()
+- [X] add reviewController file in controllers
+- [X] export (createReview, getAllReviews, getSingleReview, updateReview, deleteReview) functions
+- [X] res.send('function name')
+- [X] setup reviewRoutes file in routes
+- [X] import all controllers
+- [X] only getAllReviews and getSingleReview accessible to public
+- [X] rest only to users (setup middleware)
+- [X] typical REST setup
+- [X] import reviewRoutes as reviewRouter in the app.js
+- [X] setup app.use('/api/v1/reviews', reviewRouter)
+- File: controllers/reviewController.js
+  - Create and export the basic structure of five controllers for the five review routes: createReview, getAllReviews, getSingleReview, updateReview, deleteReview
+  ```js
+  const createReview = async (req, res) => {
+    res.send('Create review');
+  };
 
+  const getAllReviews = async (req, res) => {
+    res.send('get all reviews');
+  };
 
+  const getSingleReview = async (req, res) => {
+    res.send('get single review');
+  };
 
+  const updateReview = async (req, res) => {
+    res.send('update review');
+  };
+
+  const deleteReview = async (req, res) => {
+    res.send('delete review');
+  };
+
+  module.exports = {
+    createReview,
+    getAllReviews,
+    getSingleReview,
+    updateReview,
+    deleteReview
+  };
+  ```
+- File: routes/reviewRoutes.js
+  - Import express library and then call express.Router() method to create the router
+  - Import the authenticateUser middleware
+  - Import the five review controllers
+  - Setup the routes for the five review controllers
+  - Export the review router object
+  ```js
+  const express = require('express');
+  const router = express.Router();
+  const { authenticateUser } = require('../middleware/authentication');
+  const {
+    createReview,
+    getAllReviews,
+    getSingleReview,
+    updateReview,
+    deleteReview
+  } = require('../controllers/reviewController');
+
+  router.route('/').post(authenticateUser, createReview).get(getAllReviews);
+  router
+    .route('/:id')
+    .get(getSingleReview)
+    .patch(authenticateUser, updateReview)
+    .delete(authenticateUser, deleteReview);
+
+  module.exports = router;
+  ```
+- File: app.js
+  - Import the review router
+  - Then call app.use() method to use the review router as a middleware. The first argument is the root path for the review routes
+  ```js
+  const reviewRouter = require('./routes/reviewRoutes');
+
+  app.use('/api/v1/reviews', reviewRouter);
+  ```
 
 
 
