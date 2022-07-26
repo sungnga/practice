@@ -272,17 +272,17 @@
   - Create a new Collection and give the project a name: Node.js-eCommerce-api
   - In the collection, create an Auth folder
   - In the Auth folder, create three auth routes
-  - Create a Logout User route:
+  - Create a 'Logout User' route:
     - This is a GET method
     - The path is: {{URL}}/auth/logout
     - In the Environment dropdown menu, select: Dev Environment
     - Click on the Send button. If everything is setup properly, we should get back "logout user"
-  - Create a Register User route:
+  - Create a 'Register User' route:
     - This is a POST method
     - The path is: {{URL}}/auth/register
     - The Environment is: Dev Environment
     - Click on the Send button. If everything is setup properly, we should get back "register user"
-  - Create a Login User route:
+  - Create a 'Login User' route:
     - This is a POST method
     - The path is: {{URL}}/auth/login
     - The Environment is: Dev Environment
@@ -330,7 +330,7 @@
     }
     ```
 
-### [10. Implement register controller: unique email]()
+### [11. Implement register controller: unique email]()
 - [X] check if email already in use (schema and controller)
 - We can validate the email to make sure that it is unique in two places:
   - Use Mongoose in the UserSchema model to add a `unique` property to the `email` object. Note that this DOES NOT validate the email, but rather checks to see if the email is unique. It'll throw an error if the value of email isn't unique
@@ -365,7 +365,7 @@
   };
   ```
 
-### [10. Implement register controller: setting role]()
+### [12. Implement register controller: setting role]()
 - [X] ignore 'role'
 - [X] alternative 'admin' setup
 - In our current setup in the UserSchema model, when we register a new user, it'll be assigned as a regular user role by default. Also in front-end, when a person registers as a new user, he or she doesn't get to choose a role either. We can, however, go to User collection in MongoDB to change a user role. In a more real life scenario, we can setup the project where we can change a user's permission and role
@@ -395,7 +395,7 @@
   };
   ```
 
-### [11. Handle password]()
+### [13. Handle password]()
 - [X] UserSchema.pre('save') - hook
 - [X] use simple function instead of arrow function - this points to User instance
 - [X] bcrypt.genSalt() method - number of rounds
@@ -445,7 +445,7 @@
     ```
   - Go to MongoDB dashboard page and navigate to the project's "users" collection. There should be a user document created with the hashed password
 
-### [12. JWT setup in authController]()
+### [14. JWT setup in authController]()
 - [X] initial jwt setup in authController
 - [X] require 'jsonwebtoken' package
 - [X] create jwt - jwt.sign(payload,secret,options)
@@ -503,7 +503,7 @@
     }
     ```
 
-### [13. Refactor JWT setup]()
+### [15. Refactor JWT setup]()
 - [X] add variables in .env - JWT_SECRET=jwtSecret and JWT_LIFETIME=1d
 - [X] restart the server !!!!
 - [X] refactor code, create jwt functions in utils folder
@@ -564,7 +564,7 @@
   const token = createJWT({ payload: tokenUser });
   ```
 
-### [14. Setup cookies in register controller]()
+### [16. Setup cookies in register controller]()
 - [X] Setup cookies in register controller
 - Up to this point in our register controller, once a new user has been created and a jwt has been issued, it sends back the user object and the token. Now, we want to store the token in the cookies instead. The register controller returns the user object and the cookie. The advantage of storing the token in a cookie is we can set it up in such a way that only the web browser(http) has access to it and the browser will automatically send the cookie upon the next http request
 - The Express package comes with the `res.cookie()` method to send a cookie as a response in a controller
@@ -598,7 +598,7 @@
   - We should get back a user object in the Body response tab
   - In the Cookies response tab, we get back the name of the token, the token value, expiration date and HttpOnly set to true
 
-### [15. Parse cookies]()
+### [17. Parse cookies]()
 - Now that we're able to deliver the jwt in a cookie, we want to retrieve the jwt coming back from the browser on a server. We want to see if the front-end really attaches a cookie for the upcoming requests. To do this, we need to use an external package, a middleware called cookie-parser, to parse the cookie
 - Install cookie-parser: `npm i cookie-parser`
 - After installing and using the middleware, we have access to the cookies in `req.cookies`
@@ -632,7 +632,7 @@
     GET /api/v1 200 9 - 4.813 ms
     ```
 
-### [16. Refactor cookies setup]()
+### [18. Refactor cookies setup]()
 - [X] refactor cookie code
 - [X] setup func attachCookiesToResponse
 - [X] accept payload(res, tokenUser)
@@ -703,7 +703,7 @@
   };
   ```
 
-### [17. Add signed and secure flags to cookie setup]()
+### [19. Add signed and secure flags to cookie setup]()
 - [X] add signed and secure flags to cookie setup
 - Let's finish setting up the res.cookie with the signed and secure flags
 - The secure flag marks the cookie to be used with HTTPS only. It restricts browsers to send cookies only over HTTPS. Set this flag to true when in production mode
@@ -733,7 +733,7 @@
   });
   ```
 
-### [18. Implement login controller]()
+### [20. Implement login controller]()
 - [X] check if email and password exist, if one missing return 400
 - [X] find user, if no user return 401
 - [X] check password, if does not match return 401
@@ -785,7 +785,7 @@
   - If the login controller is setup properly, we should get back the user object that has their name, userId, and role. We should also get back the user token in cookies response
   - To see the user token on the server, make a GET request to the home route and the user token should be printed in the console
 
-### [19. Implement logout controller]()
+### [21. Implement logout controller]()
 - [X] set token cookie equal to some string value
 - [X] set expires:new Date(Date.now())
 - When implementing the logout controller, there are two things we need to do. First thing is we need to set the value of token property in the cookie to a different value. Second set the cookie expiration date to something very small
@@ -812,7 +812,7 @@
   - If the logout controller is setup properly, we get back a 200 OK status code and response a message. Also, the cookie response has been removed
   - To double check that the cookie has been removed, make a GET request to the home page route. We should not see the token value printed in the console. This means that when we make a subsequent request, the browser did not send a cookie to the server
 
-### [20. Setup user routes structure]()
+### [22. Setup user routes structure]()
 - [X] add userController file in controllers folder
 - [X] export (getAllUsers,getSingleUser,showCurrentUser,updateUser,updateUserPassword) functions
 - [X] res.send('some string value')
@@ -887,6 +887,7 @@
   app.use('/api/v1/users', userRouter);
   ```
 - **Setup user routes in Postman:**
+  - The base route for user routes is: `'/api/v1/users'`
   - In main project folder, create a folder called User. Setup the five user routes in this folder
   - Create a 'Get all users' route with a GET method: {{URL}}/users
   - Create a 'Get single user' route with a GET method: {{URL}}/users/123
@@ -896,7 +897,7 @@
   - Create an 'Update user password' route with a PATCH method: {{URL}}/users/updateUserPassword
     - In the Body tab, update the password property in json format
     
-### [21. Implement getAllUsers and getSingleUser controllers]()
+### [23. Implement getAllUsers and getSingleUser controllers]()
 - [X] Get all users where role is 'user' and remove password
 - [X] Get Single User where id matches id param and remove password
 - [X] If no user 404
@@ -943,7 +944,7 @@
   - Make a GET request in the 'Get single user' route and pass in the user id as the params.id: {{URL}}/users/62c29041dab89f45151942a0
   - If the getSingleUser controller is setup properly, we should get back the matching user object. Also test with an incorrect user id
 
-### [22. Authenticate user: authenticateUser middleware]()
+### [24. Authenticate user: authenticateUser middleware]()
 - [X] Authenticate user
 - The next step we want to take is create a middleware that we can use to protect the user routes. Only authenticated users have access to the resources of these routes
 - **This is the user flow cycle:**
@@ -1014,7 +1015,7 @@
     - `{ name: 'Chris', userId: '62c29041dab89f45151942a0', role: 'user' }`
   - Also test the middleware by not logging in a user and then make a request to the 'Get all users' route. We should get back an error message "Authentication invalid"
 
-### [23. Authorize permissions: authorizePermissions middleware]()
+### [25. Authorize permissions: authorizePermissions middleware]()
 - [X] write a 2nd authentication middleware - checks user roles
 - [X] introduce params
 - How that we authenticated user in user routes, we also want to set permissions so that only users with certain roles can access certain routes. For example, in our application, only users with admin role have access to the 'getAllUsers' route
@@ -1083,7 +1084,7 @@
     .get(authenticateUser, authorizePermissions('admin', 'owner'), getAllUsers);
   ```
 
-### [24. Implement showCurrentUser controller]()
+### [26. Implement showCurrentUser controller]()
 - [X] get user from req
 - [X] send response with user
 - The task of the showCurrentUser controller simply checks to see if there's a user object on the current user page. The route is https://domain/api/v1/users/showMe. For example, if the user is on this page and they decide to refresh the page. This makes a GET request to the 'showMe' route and this controller just checks to see if a user exists on the `req.user` object after the user authentication process is completed. The `req.user` is created only if the authentication is successful, if the token in the signed cookies response is still valid. If the user hasn't logged in or registered or there's no token in the cookies, then there's no `req.user` object. This controller does not need to query the database for the user
@@ -1106,7 +1107,7 @@
   - If the showCurrentUser controller is setup properly, we should get back the user object, the authenticated user
   - Also test if a user is not logged in. We should get back an error message of "Authentication invalid" and status code of 401 Unauthorized
 
-### [25. Implement updateUserPassword controller]()
+### [27. Implement updateUserPassword controller]()
 - [X] almost identical to login user
 - [X] add authenticateUser middleware in the route
 - [X] check for oldPassword and newPassword in the body
@@ -1158,7 +1159,7 @@
   - If the updateUserPassword controller is setup properly, we should get back a success message with a 200 OK status code
   - Note that the user password has been hashed and updated in MongoDB database
 
-### [26. Create createTokenUser util function]()
+### [28. Create createTokenUser util function]()
 - [X] create a file in utils (createTokenUser)
 - [X] setup a function that accepts user object and returns userToken object
 - [X] export as default
@@ -1198,7 +1199,7 @@
   const tokenUser = createTokenUser(user);
   ```
 
-### [27. Implement updateUser controller]()
+### [29. Implement updateUser controller]()
 - [X] add authenticateUser middleware in the route
 - [X] check for name and email in the body
 - [X] if one is missing, send 400 (optional)
@@ -1315,7 +1316,7 @@
   });
   ```
 
-### [28. Setup and apply checkPermissions function]()
+### [30. Setup and apply checkPermissions function]()
 - [X] create checkPermissions util function
 - The next task we want to work on is create a util function that checks whether the request user has permission to access another user resource. Only the authenticated user id (request user) that matches with the resource user id and the admin user have access to another user resource. This is in the getSingleUser controller. For example, David (the request user) should not have permission to access Susan's (the resource user) information. However, James, an admin user, has access to Susan's information
 - File: utils/checkPermissions.js
@@ -1383,7 +1384,7 @@
   - Also test by logging in another user who is a regular user and then make the same request to the 'Get single user' route
   - Finally, test by logging in a regular user who tries to access their own information on the 'Get single user' route. They should have permission to do this
 
-### [29. Setup ProductSchema model]()
+### [31. Setup ProductSchema model]()
 - [X] create Product.js in models folder
 - [X] create Schema
 - [X] name : {type:String}
@@ -1472,7 +1473,7 @@
   module.exports = mongoose.model('Product', ProductSchema);
   ```
 
-### [30. Setup Product basic routes structure]()
+### [32. Setup Product basic routes structure]()
 - [X] add productController file in controllers
 - [X] export (createProduct, getAllProducts,
   getSingleProduct, updateProduct, deleteProduct, uploadImage) functions
@@ -1561,7 +1562,7 @@
   app.use('/api/v1/products', productRouter);
   ```
 
-### [31. Setup Product routes in Postman]()
+### [33. Setup Product routes in Postman]()
 - The base route for product routes is: `'/api/v1/products'`
 - In Postman, the base route for product routes is: `{{URL}}/products`
 - Inside the project folder, create another folder called Product
@@ -1572,9 +1573,9 @@
   - Get single product - a GET request to: {{URL}}/products/:id
   - Update product - a PATCH request to: {{URL}}/products/:id
   - Delete product - a DELETE request to: {{URL}}/products/:id
-- Other than the 'Get all products' request, all other requests we should get back the cookies response as well because we applied the authenticateUser middleware to these routes. These are private routes, a user must successfully logged sin before making requests
+- Other than the 'Get all products' request, all other requests we should get back the cookies response as well because we applied the authenticateUser middleware to these routes. These are private routes, a user must successfully logged in before making requests
 
-### [32. Implement createProduct controller]()
+### [34. Implement createProduct controller]()
 - [X] create user property on req.body and set it equal to userId (req.user)
 - [X] pass req.body into Product.create
 - [X] send back the product
@@ -1636,7 +1637,7 @@
     - second, we get the user token stored in the cookies response
     - third, product document has been created in the MongoDB database in 'products' collection
     
-### [33. Implement getAllProducts, getSingleProduct, updateProduct, deleteProduct]()
+### [35. Implement getAllProducts, getSingleProduct, updateProduct, deleteProduct]()
 - [X] getAllProducts
 - [X] getSingleProduct
 - [X] updateProduct
@@ -1696,7 +1697,7 @@
   - Then log in as a regular user and try to perform the same routes. Since this is a regular user, he or she can only access the 'Get all products' and 'Get single product' routes. This user can not update or delete product
 
 
-### [34. Implement uploadImage controller]()
+### [36. Implement uploadImage controller]()
 - [X] if unsure, review uploadImage controller in 07-file-upload project
 - We're uploading the image to our development server which stores the image in a public directory. We will create a separate folder to store the uploaded image as a path
 - **Uploading an image file using POSTMAN:**
@@ -1783,7 +1784,7 @@
 - **To view the uploaded image file in the browser:**
   - To see the image in the browser: http://localhost:5000/uploads/example.jpeg
 
-### [35. Setup ReviewSchema model]()
+### [37. Setup ReviewSchema model]()
 - [X] create Review.js in models folder
 - [X] create Schema
 - [X] rating : {type:Number}
@@ -1837,7 +1838,7 @@
   module.exports = mongoose.model('Review', ReviewSchema);
   ```
 
-### [36. Setup Review basic routes structure]()
+### [38. Setup Review basic routes structure]()
 - [X] add reviewController file in controllers
 - [X] export (createReview, getAllReviews, getSingleReview, updateReview, deleteReview) functions
 - [X] res.send('function name')
@@ -1915,7 +1916,17 @@
   app.use('/api/v1/reviews', reviewRouter);
   ```
 
-
+### [39. Setup Review routes in Postman]()
+- The base route for review routes is: `'/api/v1/reviews'`
+- In Postman, the base route for review routes is: `{{URL}}/reviews`
+- Inside the project folder, create another folder called Review
+- In this folder, we're going to create six review routes:
+  - Create review - a POST request to: {{URL}}/reviews
+  - Get all reviews - a GET request to: {{URL}}/reviews
+  - Get single review - a GET request to: {{URL}}/reviews/:id
+  - Update review - a PATCH request to: {{URL}}/reviews/:id
+  - Delete review - a DELETE request to: {{URL}}/reviews/:id
+- Note that the 'Create review', 'Update review', and 'Delete review' routes are private routes, a user must successfully logged in before making requests. We applied the authenticateUser middleware on these routes in the reviewRoutes.js file. Hence when we make requests to these routes, we should also get back the cookies response which contains the user token
 
 
 
