@@ -1928,6 +1928,84 @@
   - Delete review - a DELETE request to: {{URL}}/reviews/:id
 - Note that the 'Create review', 'Update review', and 'Delete review' routes are private routes, a user must successfully logged in before making requests. We applied the authenticateUser middleware on these routes in the reviewRoutes.js file. Hence when we make requests to these routes, we should also get back the cookies response which contains the user token
 
+### [40. Implement createReview controller]()
+- [X] check for product in the req.body
+- [X] attach user property (set it equal to req.user.userId) on to req.body
+- [X] create review
+- File: controllers/reviewController.js
+  ```js
+  const Review = require('../models/Review');
+  const Product = require('../models/Product');
+  const { StatusCodes } = require('http-status-codes');
+  const CustomError = require('../errors');
+  const { checkPermissions } = require('../utils');
+
+  const createReview = async (req, res) => {
+    // destructure product and assign an alias to productId
+    const { product: productId } = req.body;
+
+    // check if the submitted product exists
+    const isValidProduct = await Product.findOne({ _id: productId });
+    if (!isValidProduct) {
+      throw new CustomError.NotFoundError(`No product with id: ${productId}`);
+    }
+
+    // check if the review has already been submitted by
+    // this user on this product
+    const alreadySubmitted = await Review.findOne({
+      product: productId,
+      user: req.user.userId
+    });
+    if (alreadySubmitted) {
+      throw new CustomError.BadRequestError(
+        'Already submitted review for this product'
+      );
+    }
+
+    // add user property to req.body
+    req.body.user = req.user.userId;
+    // create review
+    const review = await Review.create(req.body);
+
+    res.status(StatusCodes.CREATED).json({ review });
+  };
+  ```
+- **Testing the createReview controller using Postman:**
+  - Login a user in the 'Login user' route: {{URL}}/auth/login
+  - Make a GET request to the 'Get all products' route: {{URL}}/products
+    - Copy one of the product ids to the clipboard
+  - Make a POST request to the 'Create review' route: {{URL}}/reviews
+  - In the Body tab, provide the review data in json format:
+    ```js
+    {
+      "product": "62d8d07fc7e3723c54f00bd4",
+      "rating": 2,
+      "title": "product came damaged",
+      "comment": "very disappointed"
+    }
+    ```
+  - If successful, we should get back the review object, the cookies response, and a review document is created in the 'Reviews' collection in MongoDB
+    ```js
+    {
+      "review": {
+        "rating": 2,
+        "title": "product came damaged",
+        "comment": "very disappointed",
+        "user": "62baa22c497b3555b890fa22",
+        "product": "62d8d07fc7e3723c54f00bd4",
+        "_id": "62e0d469914a01729beff70f",
+        "createdAt": "2022-07-27T06:00:09.299Z",
+        "updatedAt": "2022-07-27T06:00:09.299Z",
+        "__v": 0
+      }
+    }
+    ```
+  - Then make another request to create another review with the same review information. We should get an error message because a review has already been submitted by this user on this product
+    ```js
+    {
+      "msg": "Already submitted review for this product"
+    }
+    ```
 
 
 
@@ -2161,7 +2239,6 @@
 - [] check for product in the req.body
 - [] attach user property (set it equal to req.user.userId) on to req.body
 - [] create review
-- [] don't test yet
 
 #### Get All Reviews and Get Single Review
 - [] both public routes, typical setup
