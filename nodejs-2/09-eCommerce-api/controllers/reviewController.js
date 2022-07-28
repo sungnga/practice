@@ -35,11 +35,22 @@ const createReview = async (req, res) => {
 };
 
 const getAllReviews = async (req, res) => {
-	res.send('get all reviews');
+	// passing in an empty object means find all reviews
+	const reviews = await Review.find({});
+
+	res.status(StatusCodes.OK).json({ reviews, count: reviews.length });
 };
 
 const getSingleReview = async (req, res) => {
-	res.send('get single review');
+	// destructure the query params id and assign it to an alias
+	const { id: reviewId } = req.params;
+
+	const review = await Review.findOne({ _id: reviewId });
+	if (!review) {
+		throw new CustomError.NotFoundError(`No review with id: ${reviewId}`);
+	}
+
+	res.status(StatusCodes.OK).json({ review });
 };
 
 const updateReview = async (req, res) => {

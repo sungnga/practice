@@ -2007,6 +2007,41 @@
     }
     ```
 
+### [41. Implement getAllReviews, getSingleReview controllers]()
+- [X] both public routes, typical setup
+- File: controllers/reviewController.js
+  ```js
+  const Review = require('../models/Review');
+  const { StatusCodes } = require('http-status-codes');
+  const CustomError = require('../errors');
+
+  const getAllReviews = async (req, res) => {
+    // passing in an empty object means find all reviews
+    const reviews = await Review.find({});
+
+    res.status(StatusCodes.OK).json({ reviews, count: reviews.length });
+  };
+
+  const getSingleReview = async (req, res) => {
+    // destructure the query params id and assign it to an alias
+    const { id: reviewId } = req.params;
+
+    const review = await Review.findOne({ _id: reviewId });
+    if (!review) {
+      throw new CustomError.NotFoundError(`No review with id: ${reviewId}`);
+    }
+
+    res.status(StatusCodes.OK).json({ review });
+  };
+  ```
+
+
+
+
+
+
+
+
 
 
 
