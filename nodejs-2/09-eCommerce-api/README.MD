@@ -2035,7 +2035,35 @@
   };
   ```
 
+### [42. Implement deleteReview controller]()
+- [X] get id from req.params
+- [X] check if review exists
+- [X] if no review, 404
+- [X] check permissions (req.user, review.user)
+- [X] use await review.remove()
+- [X] send back 200
+- File: controllers/reviewController.js
+  ```js
+  const Review = require('../models/Review');
+  const { StatusCodes } = require('http-status-codes');
+  const CustomError = require('../errors');
+  const { checkPermissions } = require('../utils');
 
+  const deleteReview = async (req, res) => {
+    const { id: reviewId } = req.params;
+
+    const review = await Review.findOne({ _id: reviewId });
+    if (!review) {
+      throw new CustomError.NotFoundError(`No review with id: ${reviewId}`);
+    }
+
+    checkPermissions(req.user, review.user);
+
+    await review.remove();
+
+    res.status(StatusCodes.OK).json({ msg: 'Success! Review removed' });
+  };
+  ```
 
 
 
