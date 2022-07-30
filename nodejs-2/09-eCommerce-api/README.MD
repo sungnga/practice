@@ -2065,10 +2065,71 @@
   };
   ```
 
+### [43. Implement updateReview controller]()
+- [X] get id from req.params
+- [X] get {rating, title comment} from req.body
+- [X] check if review exists
+- [X] if no review, 404
+- [X] check permissions
+- [X] set review properties equal to rating, title, comment
+- [X] use await review.save()
+- [X] send back 200
+- File: controllers/reviewController.js
+  ```js
+  const Review = require('../models/Review');
+  const { StatusCodes } = require('http-status-codes');
+  const CustomError = require('../errors');
+  const { checkPermissions } = require('../utils');
 
+  const updateReview = async (req, res) => {
+    const { id: reviewId } = req.params;
+    const { rating, title, comment } = req.body;
 
+    const review = await Review.findOne({ _id: reviewId });
+    if (!review) {
+      throw new CustomError.NotFoundError(`No review with id: ${reviewId}`);
+    }
 
+    checkPermissions(req.user, review.user);
 
+    review.rating = rating;
+    review.title = title;
+    review.comment = comment;
+
+    await review.save();
+
+    res.status(StatusCodes.OK).json({ review });
+  };
+  ```
+- **Testing the updateReview controllers using Postman:**
+  - First, make sure to login a user who has permission to update a review
+  - Make a GET request to the 'Get all reviews' route to see the list of reviews. Copy a review id that the login user has submitted
+  - Make a PATCH request to the 'Update review' route and paste in the review id as a query params in the route path: {{URL}}/reviews/62e36eae1d055df570d889eb
+  - In the Body content, provide the values for the rating, title, and comment properties
+    ```js
+    {
+      "rating": 1,
+      "title": "not Great!",
+      "comment": "it is ok"
+    }
+    ```
+  - If everything is setup properly, we should get back the updated review object
+    ```js
+    {
+      "review": {
+        "_id": "62e36eae1d055df570d889eb",
+        "rating": 1,
+        "title": "not Great!",
+        "comment": "it is ok",
+        "user": "62baa22c497b3555b890fa22",
+        "product": "62d8d07fc7e3723c54f00bd4",
+        "createdAt": "2022-07-29T05:22:54.300Z",
+        "updatedAt": "2022-07-30T05:37:39.865Z",
+        "__v": 0
+      }
+    }
+    ```
+  - Try to login a different user and then update the same review. We should get a Forbidden 403 error - not authorized to access this route
 
 
 
