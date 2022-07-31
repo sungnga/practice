@@ -36,7 +36,13 @@ const createReview = async (req, res) => {
 
 const getAllReviews = async (req, res) => {
 	// passing in an empty object means find all reviews
-	const reviews = await Review.find({});
+	// the .populate() method reference other collections
+	// path option is the property name that reference the collection from ReviewSchema model
+	// selection option is to select the properties to populate
+	const reviews = await Review.find({}).populate({
+		path: 'product',
+		select: 'name company price'
+	});
 
 	res.status(StatusCodes.OK).json({ reviews, count: reviews.length });
 };

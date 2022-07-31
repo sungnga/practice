@@ -2131,6 +2131,50 @@
     ```
   - Try to login a different user and then update the same review. We should get a Forbidden 403 error - not authorized to access this route
 
+### [44. Using the populate method]()
+- The populate method enables us to reference other collections while querying a particular collection. We can also select specific properties we want from that reference collection. For example, while we're querying to get all reviews from the reviews collection, we want to get the product details (product properties) or user details (user properties) for each review. The .populate() method is used by chaining onto the model schema and can be chained multiple times to reference multiple collections
+- File: controllers/reviewController.js
+  - Chain on the .populate() method to the Review model to populate the product details for each review
+    - The name we pass to the path option is the property name we setup in the ReviewSchema model to reference the Product model
+    - Specify the list of properties in the select option that we want to populate from the reference collection. In our case, we want the name, company and price of the product from the products collection
+  ```js
+  const getAllReviews = async (req, res) => {
+    // passing in an empty object means find all reviews
+    // the .populate() method reference other collections
+    // path option is the property name that reference the collection from ReviewSchema model
+    // selection option is to select the properties to populate
+    const reviews = await Review.find({}).populate({
+      path: 'product',
+      select: 'name company price'
+    });
+
+    res.status(StatusCodes.OK).json({ reviews, count: reviews.length });
+  };
+  ```
+- **Testing the populate method using Postman:**
+  - Make a request to the 'Get all reviews' route to get all reviews. Because of the populate method, we now get the product details for each review
+    ```js
+    {
+      "_id": "62e36e831d055df570d889e4",
+      "rating": 3,
+      "title": "Not what I had expected",
+      "comment": "it is ok",
+      "user": "62baa22c497b3555b890fa22",
+      "product": {
+        "_id": "62e229738e66a4657756a9a6",
+        "name": "albany sectional",
+        "price": 109999,
+        "company": "liddy"
+      },
+      "createdAt": "2022-07-29T05:22:11.506Z",
+      "updatedAt": "2022-07-29T05:22:11.506Z",
+      "__v": 0
+    },
+    ```
+
+
+
+
 
 
 
