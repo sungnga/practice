@@ -2172,9 +2172,38 @@
     },
     ```
 
+### [45. Using Mongoose virtuals]()
+- Our next goal to work on is when we query for all products or query for a single product, we also want to get all reviews associated with that product. With our current Product model setup, we cannot just chain on the `.populate()` method onto the Product model to populate the reviews, because we don't have a property that's referencing the reviews collection. In other words, we haven't connected the product to the associated reviews
+- To accomplish this, we can use the Mongoose virtuals. The Mongoose virtuals are properties that do not persist or stored in the database. We create them on the fly when we want to compute something. So in the Product model, we're going to add the reviews as virtual property
+- **Setting up reviews virtual in Product model:**
+  - File: models/Product.js
+    - Step 1: setup the Product model to accept virtuals
+    - Step 2: setup the virtual property for reviews. This is where setup the reference
+    ```js
+    { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 
+    // setup virtual property for reviews
+    ProductSchema.virtual('reviews', {
+      ref: 'Review',
+      localField: '_id',
+      foreignField: 'product',
+      justOne: false
+    });
+    ```
+- **Populating the reviews:**
+  - File: controllers/productController.js
+    - In the getSingleProduct controller, chain on the .populate() method onto the Product model to populate the reviews associated with that product
+    ```js
+    const getSingleProduct = async (req, res) => {
+      const { id: productId } = req.params;
+      const product = await Product.findOne({ _id: productId }).populate('reviews');
+      if (!product) {
+        throw new CustomError.NotFoundError(`No product with id: ${productId}`);
+      }
 
-
+      res.status(StatusCodes.OK).json({ product });
+    };
+    ```
 
 
 

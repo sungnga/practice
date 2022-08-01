@@ -63,7 +63,15 @@ const ProductSchema = new mongoose.Schema(
 			required: true
 		}
 	},
-	{ timestamps: true }
+	{ timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
+
+// setup virtual property for reviews
+ProductSchema.virtual('reviews', {
+	ref: 'Review',
+	localField: '_id',
+	foreignField: 'product',
+	justOne: false
+});
 
 module.exports = mongoose.model('Product', ProductSchema);
