@@ -2205,6 +2205,41 @@
     };
     ```
 
+### [45. Alternative to getSingleProductReviews]()
+- An alternative to the virtual approach to get single product reviews is to setup a separate route and controller to get all reviews based on the product id
+- File: controllers/reviewController.js
+  - Create and export a getSingleProductReviews controller that gets the productId from req.params and finds all reviews in the reviews collection based on that productId
+  ```js
+  const getSingleProductReviews = async (req, res) => {
+    // get the product id from req.params
+    const { id: productId } = req.params;
+
+    const reviews = await Review.find({ product: productId });
+
+    res.status(getStatusCode.OK).json({ reviews, count: reviews.length });
+  };
+  ```
+- File: routes/productRoutes.js
+  - Import the getSingleProductReviews controller
+  - Create a route for the getSingleProductReviews controller. The full path route is: `'/products/:id/reviews'`. The `:id` is the productId that the user must provide 
+  ```js
+  const { getSingleProductReviews } = require('../controllers/reviewController');
+
+  router.route('/:id/reviews').get(getSingleProductReviews);
+  ```
+- **Setup getSingleProductReviews route in Postman:**
+  - In the Product folder, create a 'Get single product reviews' route
+  - Make a GET request to the 'Get single product reviews' route: {{URL}}/products/62d8d07fc7e3723c54f00bd4/reviews
+  - If the getSingleProductReviews controller is setup properly, we should get back an array of reviews for a product. If there's no reviews for that product, we get back an empty array of reviews
+
+
+
+
+
+
+
+
+
 
 
 
