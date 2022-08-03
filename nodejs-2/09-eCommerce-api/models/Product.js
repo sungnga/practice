@@ -74,4 +74,13 @@ ProductSchema.virtual('reviews', {
 	justOne: false
 });
 
+// remove all associated reviews when deleting a product
+ProductSchema.pre('remove', async function (next) {
+	// this keyword refers to the product instance
+	// the .model() method lets you access a different model
+	// delete all review docs that matches the product id
+	// product is the property on the Review model
+	await this.model('Review').deleteMany({ product: this._id });
+});
+
 module.exports = mongoose.model('Product', ProductSchema);

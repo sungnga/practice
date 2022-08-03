@@ -2205,7 +2205,7 @@
     };
     ```
 
-### [45. Alternative to getSingleProductReviews]()
+### [46. Alternative to getSingleProductReviews]()
 - An alternative to the virtual approach to get single product reviews is to setup a separate route and controller to get all reviews based on the product id
 - File: controllers/reviewController.js
   - Create and export a getSingleProductReviews controller that gets the productId from req.params and finds all reviews in the reviews collection based on that productId
@@ -2232,8 +2232,43 @@
   - Make a GET request to the 'Get single product reviews' route: {{URL}}/products/62d8d07fc7e3723c54f00bd4/reviews
   - If the getSingleProductReviews controller is setup properly, we should get back an array of reviews for a product. If there's no reviews for that product, we get back an empty array of reviews
 
+### [47. Remove all reviews with pre-remove hook]()
+- When we want to remove a product, we also want to remove all the reviews associated with that product. In our current setup of the deleteProduct controller, we simply call `product.remove()` to remove the product instance from the Product model. The `.remove()` method is part of the Mongoose library to remove an instance from the model. Like the pre-save hook, Mongoose also has a pre-remove hook that we can use to remove all associated reviews before removing the product instance. The pre-remove hook to remove all reviews when deleting a product is setup in the ProductSchema model. So whenever we call the `product.remove()` method (in the deleteProduct controller), it'll trigger the pre-remove hook
+- File: models/Product.js
+  - At the bottom of the file, call the ProductSchema.pre() method to setup the pre hook
+  - The 1st arg is the name of the pre hook
+  - The 2nd arg is the async callback function
+    - Here, we want to access the Review model by calling the .model() method on the product instance (referencing it by the `this` keyword)
+    - Then call the .deleteMany() method to delete all reviews based on the product id
+  ```js
+  // remove all associated reviews when deleting a product
+  ProductSchema.pre('remove', async function (next) {
+    // this keyword refers to the product instance
+    // the .model() method lets you access a different model
+    // delete all review docs that matches the product id
+    // product is the property on the Review model
+    await this.model('Review').deleteMany({ product: this._id });
+  });
+  ```
+- File: controllers/productController.js
+  - The `product.remove()` method will trigger the pre-remove hook. Therefore, when deleting a product, it'll also remove all associated reviews with that product
+  ```js
+  const deleteProduct = async (req, res) => {
+    const { id: productId } = req.params;
+    const product = await Product.findOne({ _id: productId });
+    if (!product) {
+      throw new CustomError.NotFoundError(`No product with id: ${productId}`);
+    }
+    await product.remove();
 
-
+    res.status(StatusCodes.OK).json({ msg: 'Success! Product removed.' });
+  };
+  ```
+- **Testing the pre-remove hook in Postman:**
+  - First, make sure to login as an admin user because we're deleting a product
+  - Then make a request to the 'Get all reviews' route to get all reviews. Copy the productId of one of the reviews
+  - Make a DELETE request to the 'Delete product' route and paste in the productId: {{URL}}/products/62e229738e66a4657756a9a6
+  - Head back to the 'Get all reviews' route and make a request again. There should not be any reviews that is associated with this particular productId
 
 
 
