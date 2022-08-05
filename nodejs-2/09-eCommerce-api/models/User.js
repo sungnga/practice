@@ -43,6 +43,8 @@ UserSchema.pre('save', async function () {
 	this.password = await bcrypt.hash(this.password, salt);
 });
 
+// creating a method to call on the user instance
+// once the user instance is created, it has this method
 // make sure to use simple function instead of arrow function
 // so that this.password points to User instance
 UserSchema.methods.comparePassword = async function (candidatePassword) {

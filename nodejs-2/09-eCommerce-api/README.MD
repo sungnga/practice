@@ -2270,8 +2270,69 @@
   - Make a DELETE request to the 'Delete product' route and paste in the productId: {{URL}}/products/62e229738e66a4657756a9a6
   - Head back to the 'Get all reviews' route and make a request again. There should not be any reviews that is associated with this particular productId
 
+### [48. Aggregation of product average rating and number of reviews]()
+- Let's calculate a product's average rating and total number of reviews. We can write a function that groups all of the reviews of a particular product and calculates an average rating, and also sums the number of reviews. The two properties that we want to update or calculate are the `averageRating` and `numOfReviews` of the Product model. And there are three scenarios where we want to invoke the function to perform this calculation - when a review is created, updated, or deleted
+- Mongoose has a feature where we can create a custom method where either an instance or a model can have access to
+  - Use `model.methods.methodName` to create a method that the *instance* has access to once the instance is created. We did this on the UserSchema model to create the compassPassword method: `UserSchema.methods.comparePassword`
+  - Use `model.statics.methodName` to create static method that the *model* has access to. Create a method that the Review model can call to calculate the reviews average rating and sum of reviews, and lastly, to update them in the Product model: `ReviewSchema.statics.calculateAverageRating`
+- The idea is when a review is created, updated, or deleted (in the review controllers), we want to trigger a hook that invokes the calculateAverageRating function. Mongoose happens to have built-in `save` and `remove` hooks and an instance of a model can access them. The createReview and updateReview controllers invoke the `review.save()` method and the deleteReview controller invokes the `review.delete()` method. These trigger the Mongoose's save and remove hooks that are setup in the ReviewSchema model
+- File: models/Product.js
+  - In the ProductSchema, add the numOfReviews property. We already have the averageRating property in the Product model
+  ```js
+  numOfReviews: {
+    type: Number,
+    default: 0
+  },
+  ```
+- File: models/Review.js
+  ```js
+  // creating a static method to call on the model schema. Review model has this method
+  // calculate product's average rating
+  // calculate product's total number of reviews
+  ReviewSchema.statics.calculateAverageRating = async function (productId) {
+    const result = await this.aggregate([
+      { $match: { product: productId } },
+      {
+        $group: {
+          _id: null,
+          averageRating: { $avg: '$rating' },
+          numOfReviews: { $sum: 1 }
+        }
+      }
+    ]);
+    console.log(result);
 
+    // update the product's averageRating and numOfReviews properties
+    // use this.model() method to access/reference a different model
+    // ?. is JS optional chaining
+    // if there's no averageRating or numOfReviews, set to 0
+    try {
+      await this.model('Product').findOneAndUpdate(
+        { _id: productId },
+        {
+          averageRating: Math.ceil(result[0]?.averageRating || 0),
+          numOfReviews: result[0]?.numOfReviews || 0
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
+  // this is a save hook
+  // this hook is triggered when a POST or PATCH request is made: createReview, updateReview
+  ReviewSchema.post('save', async function () {
+    // the calculateAverageRating method is called on the model
+    await this.constructor.calculateAverageRating(this.product);
+  });
+
+  // this is a remove hook
+  // this hook is triggered when a DELETE request is made: deleteReview
+  ReviewSchema.post('remove', async function () {
+    // the calculateAverageRating method is called on the model
+    await this.constructor.calculateAverageRating(this.product);
+  });
+  ```
 
 
 
@@ -2536,7 +2597,7 @@
 
 #### Remove All Reviews
 
-#### Aggregation Pipeline - Atlas and Code
+#### Aggregation Pipeline - Product averageRating & numOfReviews
 
 #### Order Schema
 - [] create Order.js in models folder
