@@ -2408,6 +2408,92 @@
   module.exports = mongoose.model('Order', OrderSchema);
   ```
 
+### [50. Setup Order routes structure]()
+- [X] add orderController file in controllers
+- [X] export (getAllOrders, getSingleOrder, getCurrentUserOrders,
+  createOrder, updateOrder) functions
+- [X] res.send('function name')
+- [X] setup orderRoutes file in routes
+- [X] import all controllers
+- [X] authenticate user in all routes
+- [X] getAllOrders admin only
+- [X] typical REST setup
+- [X] router.route('/showAllMyOrders').get(getCurrentUserOrders)
+- [X] import orderRoutes as orderRouter in the app.js
+- [X] setup app.use('/api/v1/orders', orderRouter)
+- File: controllers/orderController.js
+  - Setup the basic structure for all five order controllers
+  ```js
+  const createOrder = async (req, res) => {
+    res.send('create order');
+  };
+
+  const getAllOrders = async (req, res) => {
+    res.send('get all orders');
+  };
+
+  const getSingleOrder = async (req, res) => {
+    res.send('get single order');
+  };
+
+  const getCurrentUserOrders = async (req, res) => {
+    res.send('get current user orders');
+  };
+
+  const updateOrder = async (req, res) => {
+    res.send('update order');
+  };
+
+  module.exports = {
+    getAllOrders,
+    getSingleOrder,
+    getCurrentUserOrders,
+    createOrder,
+    updateOrder
+  };
+  ```
+- File: routes/orderRoutes.js
+  - Import the five order controllers
+  - Setup the routes for all five order controllers. Note that all routes have authenticateUser middleware applied to them. Also, the route for the getAllOrders controller has both the authenticateUser and authorizePermissions middleware. Only admin user has access to all orders
+  ```js
+  const express = require('express');
+  const router = express.Router();
+  const {
+    authenticateUser,
+    authorizePermissions
+  } = require('../middleware/authentication');
+  const {
+    getAllOrders,
+    getSingleOrder,
+    getCurrentUserOrders,
+    createOrder,
+    updateOrder
+  } = require('../controllers/orderController');
+
+  router
+    .route('/')
+    .post(authenticateUser, createOrder)
+    .get(authenticateUser, authorizePermissions('admin'), getAllOrders);
+
+  router.route('/showAllMyOrders').get(authenticateUser, getCurrentUserOrders);
+
+  // routes with id go last. Order is important
+  router
+    .route('/:id')
+    .get(authenticateUser, getSingleOrder)
+    .patch(authenticateUser, updateOrder);
+
+  module.exports = router;
+  ```
+- File: app.js
+  - Import the orderRouter
+  - Call app.use() method to use the orderRouter as a middleware. The base route for order routes is: `'/api/vi/orders'`
+  ```js
+  const orderRouter = require('./routes/orderRoutes');
+
+  app.use('/api/vi/orders', orderRouter);
+  ```
+
 
 
 
