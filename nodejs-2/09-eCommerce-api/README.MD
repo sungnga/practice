@@ -2334,6 +2334,79 @@
   });
   ```
 
+### [49. Setup OrderSchema model]()
+- [X] create Order.js in models folder
+- [X] create Schema
+- [X] tax : {type:Number}
+- [X] shippingFee: {type:Number}
+- [X] subtotal: {type:Number}
+- [X] total: {type:Number}
+- [X] cartItems:[]
+- [X] status:{type:String}
+- [X] user
+- [X] clientSecret:{type:String}
+- [X] paymentId:{type:String}
+- [X] set timestamps
+- [X] export Order model
+- File: models/Order.js
+  - Note that for the cartItems property, we're referencing another schema model
+  ```js
+  const mongoose = require('mongoose');
+
+  const SingleCartItemSchema = mongoose.Schema({
+    name: { type: String, require: true },
+    image: { type: String, require: true },
+    price: { type: Number, require: true },
+    amount: { type: Number, require: true },
+    product: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Product',
+      required: true
+    }
+  });
+
+  const OrderSchema = mongoose.Schema(
+    {
+      tax: {
+        type: Number,
+        required: true
+      },
+      shippingFee: {
+        type: Number,
+        required: true
+      },
+      subtotal: {
+        type: Number,
+        required: true
+      },
+      total: {
+        type: Number,
+        required: true
+      },
+      cartItems: [SingleCartItemSchema],
+      status: {
+        type: String,
+        enum: ['pending', 'failed', 'paid', 'delivered', 'canceled'],
+        default: 'pending'
+      },
+      user: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+        required: true
+      },
+      clientSecret: {
+        type: String,
+        required: true
+      },
+      paymentIntentId: {
+        type: String
+      }
+    },
+    { timestamps: true }
+  );
+
+  module.exports = mongoose.model('Order', OrderSchema);
+  ```
 
 
 
@@ -2606,7 +2679,7 @@
 - [] shippingFee: {type:Number}
 - [] subtotal: {type:Number}
 - [] total: {type:Number}
-- [] orderItems:[]
+- [] cartItems:[]
 - [] status:{type:String}
 - [] user
 - [] clientSecret:{type:String}
