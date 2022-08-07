@@ -1920,7 +1920,7 @@
 - The base route for review routes is: `'/api/v1/reviews'`
 - In Postman, the base route for review routes is: `{{URL}}/reviews`
 - Inside the project folder, create another folder called Review
-- In this folder, we're going to create six review routes:
+- In this folder, we're going to create five review routes:
   - Create review - a POST request to: {{URL}}/reviews
   - Get all reviews - a GET request to: {{URL}}/reviews
   - Get single review - a GET request to: {{URL}}/reviews/:id
@@ -2408,7 +2408,7 @@
   module.exports = mongoose.model('Order', OrderSchema);
   ```
 
-### [50. Setup Order routes structure]()
+### [50. Setup order routes structure]()
 - [X] add orderController file in controllers
 - [X] export (getAllOrders, getSingleOrder, getCurrentUserOrders,
   createOrder, updateOrder) functions
@@ -2491,8 +2491,21 @@
   ```js
   const orderRouter = require('./routes/orderRoutes');
 
-  app.use('/api/vi/orders', orderRouter);
+  app.use('/api/v1/orders', orderRouter);
   ```
+
+### [51. Setup order routes in Postman]()
+- The base route for order routes is: `'/api/v1/orders'`
+- In Postman, the base route for order routes is: `{{URL}}/orders`
+- Inside the project folder, create another folder called Order
+- In this folder, we're going to create five order routes:
+  - Create order - a POST request to: {{URL}}/orders
+  - Get all orders - a GET request to: {{URL}}/orders
+  - Get single order - a GET request to: {{URL}}/orders/:id
+  - Get all user orders - a GET request to: {{URL}}/orders/showAllMyOrders
+  - Update order - a PATCH request to: {{URL}}/orders/:id
+- Note that all routes are private routes, a user must successfully logged in before making requests. In addition, only an admin user can access the 'Get all orders' route. We applied the authenticateUser and authorizePermissions middleware on these routes in the orderRoutes.js file. Hence when we make requests to these routes, we should also get back the cookies response which contains the user token
+
 
 
 

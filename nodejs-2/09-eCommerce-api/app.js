@@ -56,7 +56,7 @@ app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/products', productRouter);
 app.use('/api/v1/reviews', reviewRouter);
-app.use('/api/vi/orders', orderRouter);
+app.use('/api/v1/orders', orderRouter);
 
 // the 404 error handler is placed after all the routes and before other error handlers
 // because this middleware doesn't call next(). Everything ends after this
