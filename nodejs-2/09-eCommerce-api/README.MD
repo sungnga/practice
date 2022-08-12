@@ -2595,9 +2595,135 @@
       .json({ order, clientSecret: order.clientSecret });
   };
   ```
+- **Testing the createOrder controller in Postman:**
+  - First, make a GET request to 'Get all products' route to get all products. We need to provide an existing product ids for the items in cart before creating the order 
+  - Then make a POST request to the 'Create order' route: {{URL}}/orders
+    - In the Body tab, provide the information for the tax, shippingFee, and items properties
+    ```js
+    {
+      "tax": 499,
+      "shippingFee": 799,
+      "items": [
+        {
+          "name": "bed",
+          "price": 2699,
+          "image": "https://dl.airtable.com/.attachmentThumbnails/e8bc3791196535af65f40e36993b9e1f/438bd160",
+          "amount": 3,
+          "product": "62d8d07fc7e3723c54f00bd4"
+        },
+        {
+          "name": "chair",
+          "price": 2999,
+          "image": "https://dl.airtable.com/.attachmentThumbnails/e8bc3791196535af65f40e36993b9e1f/438bd160",
+          "amount": 2,
+          "product": "62e229988e66a4657756a9a9"
+        }
+      ]
+    }
+    ```
+  - If successful, we should get back the order document and the clientSecret
+    ```js
+    {
+      "order": {
+        "tax": 499,
+        "shippingFee": 799,
+        "subtotal": 103195,
+        "total": 104493,
+        "orderItems": [
+          {
+            "name": "accent chair",
+            "image": "https://dl.airtable.com/.attachmentThumbnails/e8bc3791196535af65f40e36993b9e1f/438bd160",
+            "price": 25999,
+            "amount": 3,
+            "product": "62d8d07fc7e3723c54f00bd4",
+            "_id": "62f49a5f5aeeb4800124a5b2"
+          },
+          {
+            "name": "armchair",
+            "image": "https://dl.airtable.com/.attachmentThumbnails/530c07c5ade5acd9934c8dd334458b86/cf91397f",
+            "price": 12599,
+            "amount": 2,
+            "product": "62e229988e66a4657756a9a9",
+            "_id": "62f49a5f5aeeb4800124a5b3"
+          }
+        ],
+        "status": "pending",
+        "user": "62baa22c497b3555b890fa22",
+        "clientSecret": "someRandomValue",
+        "_id": "62f49a5f5aeeb4800124a5b1",
+        "createdAt": "2022-08-11T05:57:51.496Z",
+        "updatedAt": "2022-08-11T05:57:51.496Z",
+        "__v": 0
+      },
+      "clientSecret": "someRandomValue"
+    }
+    ```
 
+### [53. Implement the rest of order controllers]()
+- **getAllOrders and getSingleOrder controllers**
+  - [X] getAllOrders - admin only
+  - [X] getSingleOrder - checkPermissions
+- **getCurrentUserOrders controller**
+  - [X] find orders where user is equal to req.user.userId
+- **updateOrder controller**
+  - [X] get order id
+  - [X] get paymentIntentId (req.body)
+  - [X] get order
+  - [X] if does not exist - 404
+  - [X] check permissions
+  - [X] set paymentIntentId and status as 'paid'
+  - [X] order.save()
+- File: controllers/orderController.js
+  ```js
+  // this route is for admin user only
+  // the authorizePermissions middleware is applied to this route
+  const getAllOrders = async (req, res) => {
+    const orders = await Order.find({});
 
+    res.status(StatusCodes.OK).json({ orders, count: orders.length });
+  };
 
+  const getSingleOrder = async (req, res) => {
+    const { id: orderId } = req.params;
+    const order = await Order.findOne({ _id: orderId });
+    if (!order) {
+      throw new CustomError.NotFoundError(`No order with id: ${orderId}`);
+    }
+
+    // check if current user is equal to the user of the order
+    // req.user is the current user
+    checkPermissions(req.user, order.user);
+
+    res.status(StatusCodes.OK).json({ order });
+  };
+
+  const getCurrentUserOrders = async (req, res) => {
+    // find all orders based on the current userId
+    // Remember, we have access to the req.user object because
+    // we applied the authenticateUser middleware to this route
+    const orders = await Order.find({ user: req.user.userId });
+
+    res.status(StatusCodes.OK).json({ orders, count: orders.length });
+  };
+
+  const updateOrder = async (req, res) => {
+    const { id: orderId } = req.params;
+    const { paymentIntentId } = req.body;
+
+    const order = await Order.findOne({ _id: orderId });
+    if (!order) {
+      throw new CustomError.NotFoundError(`No order with id: ${orderId}`);
+    }
+
+    checkPermissions(req.user, order.order);
+
+    order.paymentIntentId = paymentIntentId;
+    order.status = 'paid';
+    await order.save();
+
+    res.status(StatusCodes.OK).json({ order });
+  };
+  ```
 
 
 
