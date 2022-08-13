@@ -2715,7 +2715,7 @@
       throw new CustomError.NotFoundError(`No order with id: ${orderId}`);
     }
 
-    checkPermissions(req.user, order.order);
+    checkPermissions(req.user, order.user);
 
     order.paymentIntentId = paymentIntentId;
     order.status = 'paid';
@@ -2724,6 +2724,32 @@
     res.status(StatusCodes.OK).json({ order });
   };
   ```
+
+### [54. Docgen - create docs]()
+- [X] Export Postman Collection
+- [X] docgen build -i fileName.json -o index.html
+- [X] create index.html in public
+- [Docgen Library] (https://github.com/thedevsaddam/docgen)
+- Docgen allows you to transform your Postman collection to HTML/Markdown documentation. Docgen is an alternative to Swagger UI and it's much easier to set up
+- **Install docgen:**
+  - Go to docgen github page and follow the instruction to install
+    - Installation for Mac:
+    ```js
+    curl https://raw.githubusercontent.com/thedevsaddam/docgen/v3/install.sh -o install.sh \
+    && sudo chmod +x install.sh \
+    && sudo ./install.sh \
+    && rm install.sh
+    ```
+  - To run docgen, at the terminal, run: `docgen`
+- **Export Postman collection:**
+  - In Postman, navigate to the main project folder and select 'Export' in the drop-down menu. Give the file a name: 09-eComm-docs.json. Save the file to the desktop
+- **Create index.html in public folder:**
+  - Open the exported file in a text editor (VSCode). We need to change the URL link. Currently it starts with `{{URL}}/`. We need to replace them all with `http://localhost:5000/` instead. Then save the file
+  - Open a new terminal and cd into desktop. Run the following command:
+    - `docgen build -i fileName.json -o index.html`
+    - An index.html file has generated on the desktop
+  - Drag and drop the index.html file into the `public` folder in the project
+  - Let's go check out our API docs in the browser. Navigate to: http://localhost:5000/
 
 
 

@@ -119,7 +119,7 @@ const updateOrder = async (req, res) => {
 		throw new CustomError.NotFoundError(`No order with id: ${orderId}`);
 	}
 
-	checkPermissions(req.user, order.order);
+	checkPermissions(req.user, order.user);
 
 	order.paymentIntentId = paymentIntentId;
 	order.status = 'paid';
