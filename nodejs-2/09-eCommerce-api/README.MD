@@ -2751,6 +2751,44 @@
   - Drag and drop the index.html file into the `public` folder in the project
   - Let's go check out our API docs in the browser. Navigate to: http://localhost:5000/
 
+### [55. Add security packages]()
+- [X] express-rate-limiter
+- [X] helmet
+- [X] xss-clean
+- [X] express-mongo-sanitize
+- [X] cors (cookies!!!!)
+- Since we will be deploying our app to Heroku, it's a good idea to add security packages to our app. Install the following security packages
+  - express-rate-limiter - to limit the number of requests made from each IP address
+  - helmet - to set security related http response headers
+  - xss-clean - to sanitize user input
+  - express-mongo-sanitize - to protect again MongoDB injection
+  - cors - to allow access from different domains. However, keep in mind that we are sending JWT with cookies and they will only work if the front-end is on the same domain
+- File: app.js
+  - Import the five security packages
+  - Call app.use() method to use the packages as middleware. Invoke each middleware
+  ```js
+  const rateLimiter = require('express-rate-limit');
+  const helmet = require('helmet');
+  const xss = require('xss-clean');
+  const cors = require('cors');
+  const mongoSanitize = require('express-mongo-sanitize');
+
+  // security
+  app.set('trust proxy', 1);
+  app.use(
+    rateLimiter({
+      windowMs: 15 * 60 * 1000,
+      max: 60
+    })
+  );
+  app.use(helmet());
+  app.use(cors());
+  app.use(xss());
+  app.use(mongoSanitize());
+  ```
+
+
+
 
 
 
