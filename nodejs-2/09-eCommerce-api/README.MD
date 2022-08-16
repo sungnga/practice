@@ -11,15 +11,15 @@
 
 ### [01. Initialize project with starter files]()
 - Get starter project files from https://github.com/john-smilga/node-express-course/tree/main/10-e-commerce-api
-- cd into project directory: `cd 08-send-email`
+- cd into project directory: `cd 09-eCommerce-api`
 - Run `rm -rf .git` to avoid any issues if pushing to your own github repo
 - Run `npm install` to install the nodemon, express, dotenv, express-async-errors, http-status-codes,jsonwebtoken, helmet, cors, joi, express-rate-limit, rate-limiter, validator, mongoose, morgan and cookie-parser libraries. This will also generate the package-lock.json file
 - Create a `.gitignore` file. Add these files to the list: package-lock.json, /node_modules, and .env
 - Then run the script `npm start` to start up the project. This will run nodemon on app.js file
 
 ### [02. Setup basic Express server]()
-- [] import express and assign to variable
-- [] setup start port variable (5000) and start function
+- [X] import express and assign to variable
+- [X] setup start port variable (5000) and start function
 - File: app.js
   ```js
   // express
@@ -148,13 +148,13 @@
   - Make a request to this route: `http://localhost:5000/apple`. You should see this printed in the console: `GET /apple 404 20 - 4.403 ms`
 
 ### [06. Setup UserSchema model]()
+- [X] create models folder and User.js file
+- [X] create schema with name,email, password, role (all type:String)
+- [X] export mongoose model
 - We have two types of users in our UserSchema model:
   - Admin user - can perform CRUD operations on product
   - Regular user - can checkout, cannot add or modify product
 - When we create a new user instance we want to specify their role, whether they're an admin user or regular user
-- [X] create models folder and User.js file
-- [X] create schema with name,email, password, role (all type:String)
-- [X] export mongoose model
 - File: models/User.js
   - This is a basic UserSchema model with no validations
   ```js
@@ -2729,7 +2729,7 @@
 - [X] Export Postman Collection
 - [X] docgen build -i fileName.json -o index.html
 - [X] create index.html in public
-- [Docgen Library] (https://github.com/thedevsaddam/docgen)
+- [Docgen Library](https://github.com/thedevsaddam/docgen)
 - Docgen allows you to transform your Postman collection to HTML/Markdown documentation. Docgen is an alternative to Swagger UI and it's much easier to set up
 - **Install docgen:**
   - Go to docgen github page and follow the instruction to install
@@ -2757,7 +2757,7 @@
 - [X] xss-clean
 - [X] express-mongo-sanitize
 - [X] cors (cookies!!!!)
-- Since we will be deploying our app to Heroku, it's a good idea to add security packages to our app. Install the following security packages
+- Since we will be deploying our app on Heroku, it's a good idea to add security packages to our app. Install the following security packages
   - express-rate-limiter - to limit the number of requests made from each IP address
   - helmet - to set security related http response headers
   - xss-clean - to sanitize user input
@@ -2787,19 +2787,94 @@
   app.use(mongoSanitize());
   ```
 
-
-
-
-
-
-
-
+### [56. Deploy project on Heroku]()
+- [X] heroku account and heroku cli
+- [X] remove/copy from the main repo
+- [X] add dev command "nodemon app.js"
+- [X] change start to "node app.js"
+- [X] setup node version in package.json
+- [X] "engines": {"node": "14.x"}
+- [X] clean up code
+- [X] Procfile "web: node app.js"
+- [X] remove existing git repo
+- [X] rm -rf .git - for Mac,
+- [X] git init
+- [X] git add .
+- [X] git commit -m "initial commit"
+- [X] heroku login
+- [X] heroku create "App Name"
+- [X] git remote -v
+- [X] setup env vars in GUI
+- [X] git push heroku master/main
+- Step 1: Make sure to have a Heroku account and install the Heroku CLI
+- Step 2: Make a copy of the main project repo. Name it: 09-eCommerce-api_prod
+  - Open this new project directory in the code editor
+- Step 3: In package.json file
+  - change the 'start' script
+  - add the 'dev' script
+  - setup the node version in 'engines' property
+  ```js
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "engines": {
+    "node": "14.x"
+  }
+  ```
+- Clean up code. In app.js file:
+  - remove the testing GET request to home route
+  - remove the testing signedCookies GET request
+  - remove the morgan middleware
+- Step 4: Setup the Profile file. IMPORTANT: make sure there's a space between the colon and the word node
+  ```js
+  web: node app.js
+  ```
+- Step 5: Remove any existing git repo. Run: `rm -rf .git`
+- Step 6: Setup .gitignore file
+  ```js
+  /node_modules
+  .env
+  ```
+- Step 7: Deploy the project. Run these commands in the terminal
+  - Initialize project: `git init`
+  - Add all files: `git add .`
+  - Commit with a message: `git commit -m "first commit"`
+  - Login to heroku: `heroku login`
+  - Create a new app in heroku: `heroku create <app_name>`
+  - Check to make sure the URL is pointing to heroku: `git remote -v`
+  - Setup env vars in heroku GUI
+    - Go to Heroku dashboard and click on the project name
+    - Click on the Settings tab
+    - Enter the env vars that we have in the .env file in the Config Vars section
+  - Push to heroku: `git push heroku master`
+- Step 8: Change the dev URL to production URL in docs
+  - When we exported our api collection in Postman, it generated a json file. Here, we want to replace the url that begins with `http://localhost:5000/` with the domain that Heroku generated for us when we created a new app in Heroku
+  - Open this json file in the code editor and replace all the URLs with `<heroku_domain>/api/v1/`
+  - Rebuild the index.html file using docgen
+    - cd to desktop and run: `docgen build -i 09-eComm-docs.json -o index.html`
+    - The index.html on the desktop has been updated with the new URLs
+    - Drag this index.html into the `public` folder to replace the old index.html file
+- Step 9: Change the script tag in index.html file
+  - Because we're using helmet security package we have some errors relating to inline in the index.html file. To fix this, we need to manually split the index.html file into two files
+  - In the public folder, create a new file called browser-app.js
+  - Open the index.html file. The file has been minified, but we want to format it to HTML. Right click anywhere and select 'Format Document With...' from the menu list and select 'HTML Language Features'. Scroll down to the `<script />` tag and copy all the content inside this tag. Paste this script content into the browser-app.js file and make sure to leave out the `<script />` tag. We just want the content in this file
+  - Back in the index.html file, now this is what the `<script />` tag looks like:
+    - `<script src="./browser-app.js"></script>`
+- Step 10: Testing our api project in dev mode
+  - cd into project directory and run: `npm run dev`
+  - In the browser, navigate to: http://localhost:5000
+  - We should see the updated URL with Heroku domain name
+- Step 11: Update changes on Heroku. Run these commands in the terminal
+  - Add all files: `git add .`
+  - Commit with a message: `git commit -m "added a few fixes"`
+  - Push to Heroku: `git push heroku master`
 
 
 
 
 ## PROJECT CHECKLIST
-------------------------
+
 ### Hosted Project
 [E-Commerce API Heroku URL](https://e-commerce-api-10.herokuapp.com/)
 
@@ -3124,6 +3199,7 @@
 - [] change start to "node app.js"
 - [] setup node version in package.json
 - [] "engines": {"node": "14.x"}
+- [] clean up code
 - [] Procfile "web: node app.js"
 - [] remove existing git repo
 - [] rm -rf .git - mac,
