@@ -105,6 +105,32 @@
     ```
   - In our MongoDB database, a user document has been created in the users collection
 
+### [03. Update the login controller]()
+- [X] right after isPasswordCorrect
+- [X] check if user.isVerified, if not 401
+- The login controller sends back the user token in cookies response. So we want to restrict access to this route unless the user isVerified
+- File: server/controllers/authController.js
+  - Right after checking the isPasswordCorrect, write an if statement to check if user.isVerified. If not, throw 401 Unauthorized custom error 
+  ```js
+  if (!user.isVerified) {
+    throw new CustomError.UnauthenticatedError('Please verify your email');
+  }
+  ```
+- **Testing the login controller using Postman:**
+  - Make a POST request to the 'Login user' route: {{URL}}/auth/login
+  - Provide the user email and password info in the Body tab
+    ```js
+    {
+      "email": "anna@example.com",
+      "password": "secret"
+    }
+    ```
+  - We should get back an error of '401 Unauthorized' and an error message, because by default, we have set the isVerified property on the user object to false
+
+
+
+
+
 
 
 
