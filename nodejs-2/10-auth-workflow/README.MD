@@ -110,7 +110,7 @@
 - [X] check if user.isVerified, if not 401
 - The login controller sends back the user token in cookies response. So we want to restrict access to this route unless the user isVerified
 - File: server/controllers/authController.js
-  - Right after checking the isPasswordCorrect, write an if statement to check if user.isVerified. If not, throw 401 Unauthorized custom error 
+  - In the login controller and right after checking the isPasswordCorrect, write an if statement to check if user.isVerified. If not, throw 401 Unauthorized custom error 
   ```js
   if (!user.isVerified) {
     throw new CustomError.UnauthenticatedError('Please verify your email');
@@ -127,8 +127,34 @@
     ```
   - We should get back an error of '401 Unauthorized' and an error message, because by default, we have set the isVerified property on the user object to false
 
+### [04. Create proper verification token]()
+- Right now our `verificationToken` property is just a hardcoded string. What we want is once a user registered to our application, we want to generate a verificationToken for this user. It's a unique id assigned to this user in order to verify their email, which is the next step. There are many options out there to generate a unique id, but Node.js has a built-in library called `crypto` that we can use to generate the unique id
+- File: server/controllers/authController.js
+  - Import the crypto library
+  - In the register controller, generate the unique id using crypto and assign the value to the verificationToken variable
+  - Calling .randomBytes(40) method on crypto will generate random bytes in 40 chars. Then we need to set it to hex, where each byte is going to be encoded as two hexadecimal chars. And lastly, convert it into string value
+  ```js
+  const crypto = require('crypto');
 
-
+  const verificationToken = crypto.randomBytes(40).toString('hex');
+  ```
+- **Testing verification token in Postman:**
+  - To generate the verificationToken for a user, let's register a new user
+  - Make a POST request to 'Register user' route: {{URL}}/auth/login
+  - Provide the user email and password info in the Body tab
+    ```js
+    {
+      "email": "anna@example.com",
+      "password": "secret"
+    }
+    ```
+  - If the verificationToken is setup correctly, we should get this back:
+    ```js
+    {
+      "msg": "Success! Please check your email to verify account",
+      "verificationToken": "26d09e2e96659dba4c72e79ff138fbf9f0d3ed7ea8162375cc3cb46d4ec82788ad686f05f4787e7c"
+    }
+    ```
 
 
 
