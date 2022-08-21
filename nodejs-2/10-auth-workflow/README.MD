@@ -156,6 +156,106 @@
     }
     ```
 
+### [05. Setup verifyEmail controller and route]()
+- [X] create verifyEmail in authController
+- [X] get verificationToken and email from req.body
+- [X] setup a '/verify-email' route in authRoutes
+- [X] test in a Postman
+- [X] check for user using email
+- [X] if no user 401
+- [X] if token does not match user token 401
+- [X] if correct set
+- [X] user.isVerified = true
+- [X] user.verified = Date.now()
+- [X] user.verificationToken = ''
+- [X] save use with instance method
+- [X] return msg:'email verified'
+- File: server/controllers/authController.js
+  - Create and export a verifyEmail controller
+    - This route should receive the user email and verificationToken in req.body
+    - Find the user by their email in the 'users' collection in DB
+    - If no such user, throw an error
+    - If the user's verificationToken in DB does not match with the provided verificationToken, throw an error
+    - If both conditions are met, then set the user instance properties
+    - Call user.save() to update the user info in DB
+    - Send back a success message 
+  ```js
+  const verifyEmail = async (req, res) => {
+    const { verificationToken, email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      throw new CustomError.UnauthenticatedError('Verification failed');
+    }
+
+    if (user.verificationToken !== verificationToken) {
+      throw new CustomError.UnauthenticatedError('Verification failed');
+    }
+
+    // if verify email successful, set the user instance
+    user.isVerified = true;
+    user.verified = Date.now();
+    user.verificationToken = verificationToken;
+
+    await user.save();
+
+    res.status(StatusCodes.OK).json({ msg: 'Email verified' });
+  };
+  ```
+- File: server/routes/authRoutes.js
+  - Import the verifyEmail controller
+  - Setup a post route for the verifyEmail controller. The route path is `/verify-email`
+  ```js
+  const { verifyEmail } = require('../controllers/authController');
+
+  router.post('/verify-email', verifyEmail);
+  ```
+- **Setup a verify email route in Postman:**
+  - In the Auth folder, create a 'Verify email' route:
+    - Verify email - a POST request to: {{URL}}/auth/verify-email
+- **Testing verifyEmail controller using Postman:**
+  - First, make sure to register a user. Once they're successfully registered, a verificationToken is generated for them
+    ```js
+    {
+      "msg": "Success! Please check your email to verify account",
+      "verificationToken": "8f2e051129fce5a590b757587239d496dc75ddeaf9fbabd96baf3aee559cce93e3ad788181224487"
+    }
+    ```
+  - Then make a POST request to the 'Verify email' route: {{URL}}/auth/verify-email
+  - Provide the user email and verificationToken values in the Body tab
+    ```js
+    {
+      "email": "david@example.com",
+      "verificationToken": "8f2e051129fce5a590b757587239d496dc75ddeaf9fbabd96baf3aee559cce93e3ad788181224487"
+    }
+    ```
+  - If the verifyEmail controller is setup correctly, we should get this message:
+    ```js
+    {
+      "msg": "Email verified"
+    }
+    ```
+  - Now that the email has been verified, try to login this user in the 'Login user' route
+    ```js
+    {
+      "email": "david@example.com",
+      "password": "secret"
+    }
+    ```
+  - Because their email has been verified, they should be able to login
+    ```js
+    {
+      "user": {
+        "name": "david",
+        "userId": "6301c8a41c828a1dbec761d9",
+        "role": "user"
+      }
+    }
+    ```
+
+
+
+
 
 
 
