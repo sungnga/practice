@@ -253,8 +253,165 @@
     }
     ```
 
+### [06. Setup send mail using Ethereal]()
+- [X] review project 08-send-email on sending emails
+- [X] ethereal credentials (create account/login)
+- [X] install nodemailer
+- [X] create (nodemailerConfig, sendEmail,
+  sendResetPasswordEmail, sendVerificationEmail) files in utils
+- **Send emails with Ethereal:**
+  - To test out the send email functionality during development, we will send it with Ethereal. It's a fake transporter service used with Nodemailer module during development. We will use a different transport service called SendGrid in production
+- **Nodemailer package:**
+  - The Nodemailer is a module for Node.js applications that does all the heavy lifting when it comes to email sending
+  - Docs: https://nodemailer.com/about/
+  - Install: `npm i nodemailer`
+- **Ethereal:**
+  - Ethereal is a fake SMTP service (transport service) used with Nodemailer during testing and development. Generate a vanity email account from Nodemailer, send an email using that account, and preview the sent message with Ethereal as no emails are actually delivered
+  - Docs: https://ethereal.email
+  - Click on the "Create Ethereal Account" button to create a new Ethereal test account
+    - We get the account credentials: the name, username, and password
+    - Can create as many accounts as we want, so we don't need to remember these credentials
+    - These credentials can be kept in a .env file when we setup the Nodemailer configuration
+- In the utils folder, create the following files: nodemailerConfig.js, sendEmail.js,
+  sendResetPasswordEmail.js, sendVerificationEmail.js
+- **Setup initial sendEmail functionality:**
+  - File: server/utils/sendEmail.js
+    - Import the nodemailer module
+    - Write and export a sendEmail function that sends emails with Ethereal
+    - Setup the nodemailer configuration. The values for the credentials came from when we created the Ethereal test account (when we click on the 'Create Ethereal Account' button). So under the 'Nodemailer configuration' section, copy the entire `const transporter` object and paste it in our sendEmail function. This gives us the `transporter` object
+    - Then call transporter.sendMail() method to send email. Pass in an object that contains the from, to, subject, and html body properties
+    ```js
+    const nodemailer = require('nodemailer');
+
+    const sendEmail = async () => {
+      let testAccount = await nodemailer.createTestAccount();
+
+      // this came from ethereal.email webpage
+      // when we Create Ethereal Account
+      const transporter = nodemailer.createTransport({
+        host: 'smtp.ethereal.email',
+        port: 587,
+        auth: {
+          user: 'hayden.gottlieb38@ethereal.email',
+          pass: 'FZPMc6ehrP4vu2KeKY'
+        }
+      });
+
+      // send mail with defined transport object
+      let info = await transporter.sendMail({
+        from: '"john" <john@example.com>', // sender address
+        to: 'nga@example.com', // list of receivers
+        subject: 'Hello ✔', // Subject line
+        text: 'Testing email', // plain text body
+        html: '<b>Testing email?</b>' // html body
+      });
+    };
+
+    module.exports = sendEmail;
+    ```
+  - File: server/controllers/authController.js
+    - Import the sendEmail module
+    - Right after creating a new user, invoke the sendEmail function to send email. This is an async operation, so add an await keyword in front of it
+    ```js
+    const sendEmail = require('../utils/sendEmail');
+
+    const register = async (req, res) => {
+      const { email, name, password } = req.body;
+
+      const emailAlreadyExists = await User.findOne({ email });
+      if (emailAlreadyExists) {
+        throw new CustomError.BadRequestError('Email already exists');
+      }
+
+      // first registered user is an admin
+      const isFirstAccount = (await User.countDocuments({})) === 0;
+      const role = isFirstAccount ? 'admin' : 'user';
+
+      const verificationToken = crypto.randomBytes(40).toString('hex');
+
+      const user = await User.create({
+        name,
+        email,
+        password,
+        role,
+        verificationToken
+      });
+
+      // send email
+      await sendEmail();
+
+      // send verification token back only while testing in Postman
+      res.status(StatusCodes.CREATED).json({
+        msg: 'Success! Please check your email to verify account'
+      });
+    };
+    ```
+- **Testing sendEmail functionality using Postman:**
+  - Register a new user in the 'Register user' route
+    - Notice that when we click on "Send" it takes a little longer before we get a response. That is because behind the scenes, the register controller is sending email and this is an async operation
+    ```js
+    {
+      "name": "john",
+      "email": "john@example.com",
+      "password": "secret"
+    }
+    ```
+    - If everything works out we should get back a success message to check email to verify account
+  - Return to Ethereal's page: https://ethereal.email/create and click on the "Open Mailbox" button to view the email account. In here we should get an email that we sent using Postman
+- **Testing sendEmail functionality using front-end:**
+  - In the root project directory is a `front-end` folder. It's the front-end app built with create-react-app framework to allow us to test our back-end project. Let's try to register a user here
+  - cd into the front-end directory and install the project packages: `npm install`
+  - Then start the dev server: `npm start`
+  - In the browser, navigate to the project homepage: http://localhost:3000/
+  - Register a new user by clicking on the "Register" button. Enter the user information. If everything works out, we should get back a success message to check email to verify account
+  - Go back to Ethereal account email page and we should see a new email has been sent
 
 
+
+
+
+
+
+
+- **Implementing the sendEmail controller:**
+-  File: server/controllers/sendEmail.js
+  - Import the nodemailer module
+  - Setup the nodemailer configuration. The values for the credentials came from when we generated the Ethereal test account. This gives us the `transporter` object
+  - Then call transporter.sendMail() method to send email. Pass in an object that contains the from, to, subject, and html body properties
+  ```js
+  const nodemailer = require('nodemailer');
+
+  const sendEmail = async (req, res) => {
+    let testAccount = await nodemailer.createTestAccount();
+
+    // nodemailer configuration
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.ethereal.email',
+      port: 587,
+      auth: {
+        user: 'nathan.zieme@ethereal.email',
+        pass: 'u9WzQZ495H9NdxKcnU'
+      }
+    });
+
+    // send mail with defined transport object
+    let info = await transporter.sendMail({
+      from: '"Nga", <nga@example.com>',
+      to: 'bar@example.com',
+      subject: 'Hello',
+      html: '<h2>Sending Emails with Node.js</h2>'
+    });
+
+    res.json(info);
+  };
+
+  module.exports = sendEmail;
+  ```
+- **Testing the sendEmail functionality:**
+  - Navigate to http://localhost:3000/ in the browser and click on the "Send email" button
+  - This will trigger the sendEmail controller function
+  - If successful, we should get back the send email info displayed on the page
+  - Head to https://ethereal.email dashboard page and click on "Open MailBox" button. Should see the sent email
 
 
 
@@ -307,11 +464,11 @@
 
 #### Email Setup
 
-- [] re-watch project 08
+- [] review project 08-send-email
 - [] ethereal credentials (create account/login)
 - [] install nodemailer
 - [] create (nodemailerConfig, sendEmail,
-  sendResetPasswordEmail, sendVerficationEmail) files in utils
+  sendResetPasswordEmail, sendVerificationEmail) files in utils
 
 #### Send Verification Link
 
