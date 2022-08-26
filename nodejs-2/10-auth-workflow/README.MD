@@ -253,7 +253,7 @@
     }
     ```
 
-### [06. Setup send mail using Ethereal]()
+### [06. Setup send email using Ethereal]()
 - [X] review project 08-send-email on sending emails
 - [X] ethereal credentials (create account/login)
 - [X] install nodemailer
@@ -366,52 +366,162 @@
   - Register a new user by clicking on the "Register" button. Enter the user information. If everything works out, we should get back a success message to check email to verify account
   - Go back to Ethereal account email page and we should see a new email has been sent
 
-
-
-
-
-
-
-
-- **Implementing the sendEmail controller:**
--  File: server/controllers/sendEmail.js
-  - Import the nodemailer module
-  - Setup the nodemailer configuration. The values for the credentials came from when we generated the Ethereal test account. This gives us the `transporter` object
-  - Then call transporter.sendMail() method to send email. Pass in an object that contains the from, to, subject, and html body properties
-  ```js
-  const nodemailer = require('nodemailer');
-
-  const sendEmail = async (req, res) => {
-    let testAccount = await nodemailer.createTestAccount();
-
-    // nodemailer configuration
-    const transporter = nodemailer.createTransport({
+### [07. Send verification link]()
+- [X] refactor sendEmail
+- [X] setup sendVerificationEmail
+- [X] pass arguments from register
+- The sendEmail function sends the email using the nodemailer package. It takes in three params: to, subject, and html. This function will be used in the sendVerificationEmail function
+- The sendVerificationEmail function contains the verifyEmail link (that takes to the verify-email route), the email message that tells the user to click on the verifyEmail link to verify their email, and lastly, calls the sendEmail() function
+- The sendVerificationEmail function is used in the `register` controller. This controller is responsible for creating a new user and then sends the verification email to the user to verify their email
+- **Refactor sendEmail function:**
+  - Move the transport config object that's in the sendEmail function to a separate file
+  - File:  server/utils/nodemailerConfig.js
+    - Cut and paste the transport config object from the sendEmail function. Then we just need to export the object
+    ```js
+    // these values came from ethereal.email webpage
+    // when we Create Ethereal Account
+    module.exports = {
       host: 'smtp.ethereal.email',
       port: 587,
       auth: {
-        user: 'nathan.zieme@ethereal.email',
-        pass: 'u9WzQZ495H9NdxKcnU'
+        user: 'hayden.gottlieb38@ethereal.email',
+        pass: 'FZPMc6ehrP4vu2KeKY'
       }
-    });
+    };
+    ```
+  - Refactor the sendEmail function
+  - File: server/utils/sendEmail.js
+    - Import the nodemailerConfig object
+    - The sendEmail function takes three args: to, subject, and html
+    - Pass in the nodemailerConfig object to the .createTransport() function
+    - Next, we will be using this sendEmail function multiple times in this project. Setup the sendEmail function to take three arguments: to, subject, and html. Set these arguments as an object, this way we don't have to worry about the order of the arguments that we pass in when we invoke it
+    - In the transporter.sendMail() function, we just set the values that we get from the sendEmail function for the to, subject, and html properties here
+    ```js
+    const nodemailer = require('nodemailer');
+    const nodemailerConfig = require('./nodemailerConfig');
 
-    // send mail with defined transport object
-    let info = await transporter.sendMail({
-      from: '"Nga", <nga@example.com>',
-      to: 'bar@example.com',
-      subject: 'Hello',
-      html: '<h2>Sending Emails with Node.js</h2>'
-    });
+    const sendEmail = async ({ to, subject, html }) => {
+      let testAccount = await nodemailer.createTestAccount();
 
-    res.json(info);
-  };
+      const transporter = nodemailer.createTransport(nodemailerConfig);
 
-  module.exports = sendEmail;
-  ```
-- **Testing the sendEmail functionality:**
-  - Navigate to http://localhost:3000/ in the browser and click on the "Send email" button
-  - This will trigger the sendEmail controller function
-  - If successful, we should get back the send email info displayed on the page
-  - Head to https://ethereal.email dashboard page and click on "Open MailBox" button. Should see the sent email
+      // since sendEmail is an async funct, it'll return a promise
+      // no need to use the await keyword here
+      return transporter.sendMail({
+        from: '"john" <john@example.com>', // sender address
+        to,
+        subject,
+        html
+      });
+    };
+
+    module.exports = sendEmail;
+    ```
+- **Setup sendVerificationEmail function:**
+  - File: server/utils/sendVerificationEmail.js
+    - Write and export an async sendVerificationEmail function that returns the sendEmail function. This function takes the following args: name, email, verificationToken, and origin. The origin is the URL to the front-end - where the user will navigate to once they click on the link from the verify email
+    - Setup the verifyEmail link. The `verifyEmail` variable is a link in the verify email that the user clicks on. It'll take them to the 'verify-email' route and we provide the verificationToken and email information here as query params. The verifyEmail controller is looking for these two pieces of info
+    - Setup the verify email message. The message contains the verifyEmail link
+    - Return the sendEmail function. Note that the sendEmail function is an async function and it will return a promise. So we don't need to add the await keyword here. Since we're invoking the sendEmail function here, we need to provide the values for the three required arguments
+    ```js
+    const sendEmail = require('./sendEmail');
+
+    // origin is the URL to the front-end
+    const sendVerificationEmail = async ({
+      name,
+      email,
+      verificationToken,
+      origin
+    }) => {
+      const verifyEmail = `${origin}/user/verify-email?token=${verificationToken}&email=${email}`;
+
+      const message = `<p>Please confirm your email by clicking on the following link: <a href="${verifyEmail}">Verify Email</a></p>`;
+
+      // sendEmail function is an async function. It returns a promise
+      return sendEmail({
+        to: email,
+        subject: 'Email Confirmation',
+        html: `<h4>Hello, ${name}</h4>
+        ${message}
+        `
+      });
+    };
+
+    module.export = sendVerificationEmail;
+    ```
+  - File: server/utils/index.js
+    - Import and export the sendVerificationEmail function
+    ```js
+    const sendVerificationEmail = require('./sendVerificationEmail');
+
+    module.exports = {
+      createJWT,
+      isTokenValid,
+      attachCookiesToResponse,
+      createTokenUser,
+      checkPermissions,
+      sendVerificationEmail
+    };
+    ```
+- **Using sendVerificationEmail in register controller:**
+  - File: server/controllers/authController.js
+    - Import the sendVerificationEmail function from utils/index.js file
+    - In the register controller:
+      - Instead of calling the sendEmail() function here, we're going to call the sendVerificationEmail() function. The sendVerificationEmail function returns the sendEmail function
+      - Right after creating a user, call the sendVerificationEmail() function. This is an async function so add the await keyword in front of it
+      - Pass in the values for the four arguments: name, email, verificationToken, and origin. Once a new user instance has been created, we have access to the user information
+      - Setup the origin link just above the sendVerificationEmail() function. The origin is the URL that the user navigates to when they click on the link in the verify email. While we're in dev mode, the URL is `http://localhost:3000`
+    ```js
+    const User = require('../models/User');
+    const { StatusCodes } = require('http-status-codes');
+    const CustomError = require('../errors');
+    const { sendVerificationEmail } = require('../utils');
+    const crypto = require('crypto');
+
+    const register = async (req, res) => {
+      const { email, name, password } = req.body;
+
+      const emailAlreadyExists = await User.findOne({ email });
+      if (emailAlreadyExists) {
+        throw new CustomError.BadRequestError('Email already exists');
+      }
+
+      // first registered user is an admin
+      const isFirstAccount = (await User.countDocuments({})) === 0;
+      const role = isFirstAccount ? 'admin' : 'user';
+
+      const verificationToken = crypto.randomBytes(40).toString('hex');
+
+      const user = await User.create({
+        name,
+        email,
+        password,
+        role,
+        verificationToken
+      });
+      const origin = 'http://localhost:3000';
+
+      // send email
+      await sendVerificationEmail({
+        name: user.name,
+        email: user.email,
+        verificationToken: user.verificationToken,
+        origin
+      });
+
+      // send verification token back only while testing in Postman
+      res.status(StatusCodes.CREATED).json({
+        msg: 'Success! Please check your email to verify account'
+      });
+    };
+    ```
+- **Testing sendVerificationEmail on front-end:**
+  - In the browser, navigate to: http://localhost:3000/register. Register a new user
+  - Go to Ethereal dashboard and click on the "Open Mailbox" button to get to test account email. We should see an email sent for the new user. In the email, there should be a "Verify Email" link that we can click on
+  - When we click on this link, it redirects user to the front-end route and specifically to the 'verify-email' route. Here we see that the user token and their email are passed as query params to the 'verify-email' route
+    `http://localhost:3000/user/verify-email?token=6cbed2278dc4a0128be4767c286307b604318055ea11aa866d006ca2a9eb02f9c1eea49d7d412b25&email=jane@example.com`
+  - The verifyEmail controller verifies the user token and email in the database. If it's successful, it updates the user's verified status to true in the database
+  - On the front-end, once the email is verified, the user gets a display message that the account is confirmed; and a Login button to direct them to the login page
 
 
 
