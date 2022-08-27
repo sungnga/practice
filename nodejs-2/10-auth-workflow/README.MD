@@ -523,6 +523,41 @@
   - The verifyEmail controller verifies the user token and email in the database. If it's successful, it updates the user's verified status to true in the database
   - On the front-end, once the email is verified, the user gets a display message that the account is confirmed; and a Login button to direct them to the login page
 
+### [08. Setup Token model]()
+- [X] create Token.js in models
+- [X] refreshToken,ip,userAgent - all String and required
+- [X] isValid - Boolean, default:true
+- [X] ref user
+- [X] timestamps true
+- File: models/Token.js
+  ```js
+  const mongoose = require('mongoose');
+
+  const TokenSchema = new mongoose.Schema(
+    {
+      refreshToken: { type: String, required: true },
+      ip: { type: String, required: true },
+      userAgent: { type: String, required: true },
+      isValid: { type: Boolean, default: true },
+      user: {
+        type: mongoose.Types.ObjectId,
+        ref: 'User',
+        required: true
+      }
+    },
+    { timestamps: true }
+  );
+
+  module.exports = mongoose.model('Token', TokenSchema);
+  ```
+
+
+
+
+
+
+
+
 
 
 
