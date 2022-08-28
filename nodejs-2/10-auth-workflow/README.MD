@@ -529,7 +529,7 @@
 - [X] isValid - Boolean, default:true
 - [X] ref user
 - [X] timestamps true
-- File: models/Token.js
+- File: server/models/Token.js
   ```js
   const mongoose = require('mongoose');
 
@@ -551,7 +551,83 @@
   module.exports = mongoose.model('Token', TokenSchema);
   ```
 
+### [09. Create user refreshToken in login controller]()
+- File: server/controllers/authController.js
+  - Import the Token model
+  - In the login controller and right after createTokenUser, create a userToken object that contains the refreshToken and other user information that can be found from the req object
+  - Use the crypto library to generate the refreshToken string
+  - Create a user token instance by calling the Token.create() method and pass in the userToken object
+  ```js
+  const Token = require('../models/Token');
 
+  const login = async (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      throw new CustomError.BadRequestError('Please provide email and password');
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new CustomError.UnauthenticatedError('Invalid Credentials');
+    }
+
+    const isPasswordCorrect = await user.comparePassword(password);
+    if (!isPasswordCorrect) {
+      throw new CustomError.UnauthenticatedError('Invalid Credentials');
+    }
+
+    if (!user.isVerified) {
+      throw new CustomError.UnauthenticatedError('Please verify your email');
+    }
+
+    const tokenUser = createTokenUser(user);
+
+    // create refresh token
+    let refreshToken = '';
+    // check for existing token
+
+    refreshToken = crypto.randomBytes(40).toString('hex');
+    const userAgent = req.headers['user-agent'];
+    const ip = req.ip;
+    const userToken = { refreshToken, ip, userAgent, user: user._id };
+
+    const token = await Token.create(userToken);
+
+    // attachCookiesToResponse({ res, user: tokenUser });
+
+    res.status(StatusCodes.OK).json({ user: tokenUser, token });
+  };
+  ```
+- **Testing userToken using Postman:**
+  - Login a registered and verified user in the 'Login user' route: {{URL}}/auth/login
+  - Provide the user email and password
+    ```js
+    {
+      "email": "jane@example.com",
+      "password": "secret"
+    }
+    ```
+  - If the userToken and the refreshToken are setup correctly in the login control, we should see the user object as well as the user token instance
+    ```js
+    {
+      "user": {
+        "name": "jane",
+        "userId": "630866abf4875b3fdff8afdb",
+        "role": "admin"
+      },
+      "token": {
+        "refreshToken": "f27c9bfbb2818e7852af2dc24d0bd52e8b94063976723d975798504583eb0226e9c4c3e21818c3dc",
+        "ip": "::1",
+        "userAgent": "PostmanRuntime/7.29.0",
+        "isValid": true,
+        "user": "630866abf4875b3fdff8afdb",
+        "_id": "630b0abdeb089960aa1042dd",
+        "createdAt": "2022-08-28T06:27:09.677Z",
+        "updatedAt": "2022-08-28T06:27:09.677Z",
+        "__v": 0
+      }
+    }
+    ```
 
 
 
