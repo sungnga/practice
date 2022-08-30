@@ -551,7 +551,7 @@
   module.exports = mongoose.model('Token', TokenSchema);
   ```
 
-### [09. Create user refreshToken in login controller]()
+### [09. Create user token in login controller]()
 - File: server/controllers/authController.js
   - Import the Token model
   - In the login controller and right after createTokenUser, create a userToken object that contains the refreshToken and other user information that can be found from the req object
@@ -600,7 +600,7 @@
   ```
 - **Testing userToken using Postman:**
   - Login a registered and verified user in the 'Login user' route: {{URL}}/auth/login
-  - Provide the user email and password
+  - Provide the user email and password in the Body tab
     ```js
     {
       "email": "jane@example.com",
@@ -629,9 +629,85 @@
     }
     ```
 
+### [10. Send multiple cookies]()
+- Up until this point we've been attaching a single cookie to the response. Now we want to setup two cookies in our response. We currently pass in the tokenUser in the cookies response, now we want to add the refreshToken to it as well   
+- File: server/controllers/authController.js
+  - In the login controller and right after creating the token instance, call the attachCookiesToResponse() method. Here, we pass in the refreshToken as a third arg
+  ```js
+  attachCookiesToResponse({ res, user: tokenUser, refreshToken });
+  ```
+- File: server/utils/jwt.js
+  - Before setting a function to attach multiple cookies to the response, make a duplicate copy of our current `attachCookiesToResponse` function and rename it to `attachSingleCookieToResponse`. Comment it out and keep it for future reference
+  - For the `createJWT` function, we don't need to set an expiration for the JWT because we can set the expiration for the cookies. Remove the `expiresIn` option
+  - Now let's modify the `attachCookiesToResponse` function:
+    - First, create accessTokenJWT and refreshTokenJWT by calling the createJWT() method. It'll generate a token for each. Note that we only pass in the `user` object as payload for the accessTokenJWT, so this token contains only the user info
+    - Pass in the refreshToken as third arg to this function. The refreshTokenJWT will have the user object as well as the refreshToken string value
+    - This function attaches two cookies to the response. Call the res.cookie() method twice to attach each cookie
+    - The first cookie is called 'accessToken'
+      - 1st arg is the name of the cookie
+      - 2nd arg is the accessTokenJWT
+      - 3rd arg is the options object. Here, we specify the expiration of the cookie. The accessToken cookie will expire sooner than the refreshToken cookie
+    - The second cookie is called 'refreshToken'. This cookie contains the user object as well as the refreshToken and has longer expiration time
+  ```js
+  const jwt = require('jsonwebtoken');
 
+  const createJWT = ({ payload }) => {
+    const token = jwt.sign(payload, process.env.JWT_SECRET);
+    return token;
+  };
 
+  const isTokenValid = ({ token }) => jwt.verify(token, process.env.JWT_SECRET);
 
+  const attachCookiesToResponse = ({ res, user, refreshToken }) => {
+    const accessTokenJWT = createJWT({ payload: { user } });
+    const refreshTokenJWT = createJWT({ payload: { user, refreshToken } });
+
+    const oneDay = 1000 * 60 * 60 * 24;
+
+    res.cookie('accessToken', accessTokenJWT, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      signed: true,
+      maxAge: 1000
+    });
+
+    res.cookie('refreshToken', refreshTokenJWT, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      signed: true,
+      expires: new Date(Date.now() + oneDay)
+    });
+  };
+
+  // const attachSingleCookieToResponse = ({ res, user }) => {
+  // 	const token = createJWT({ payload: user });
+
+  // 	const oneDay = 1000 * 60 * 60 * 24;
+
+  // 	res.cookie('token', token, {
+  // 		httpOnly: true,
+  // 		expires: new Date(Date.now() + oneDay),
+  // 		secure: process.env.NODE_ENV === 'production',
+  // 		signed: true
+  // 	});
+  // };
+
+  module.exports = {
+    createJWT,
+    isTokenValid,
+    attachCookiesToResponse
+  };
+  ```
+- **Testing send multiple cookies using Postman:**
+  - First make sure to register and verify a user. Then login user in the 'Login user' route: {{URL}}/auth/login
+  - Provide user email and password in the Body tab
+    ```js
+    {
+      "email": "john@example.com",
+      "password": "secret"
+    }
+    ```
+  - If the attachCookiesToResponse functionality is setup properly in the login controller, we should get back two cookies in Cookies response tab. One cookie is called 'accessToken' and the other is 'refreshToken'
 
 
 
