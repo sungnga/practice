@@ -709,6 +709,80 @@
     ```
   - If the attachCookiesToResponse functionality is setup properly in the login controller, we should get back two cookies in Cookies response tab. One cookie is called 'accessToken' and the other is 'refreshToken'
 
+### [11. Check for existing token]()
+- With our current setup, a new token is created (in the tokens collection) each time a user is logged in. This is not what we want. We want to check for existing token by this user in the 'tokens' collect. If there is a token, we'll use the same refreshToken when this user tries to login
+- File: server/controllers/authController.js
+  - In the login controller:
+    - Right after the refreshToken string value, check for existingToken in the 'tokens' collection based on the user id. If there is a token by this user, assign it to existingToken
+    - If there is an existingToken, we do the following things:
+      - destructure the isValid property from existingToken object. Note that the isValid property is true by default
+      - check if isValid is false, throw our custom unauthenticated error
+      - then set the existingToken.refreshToken property to the refreshToken
+      - call the attachCookiesToResponse() method and pass in the three args
+      - send back response with status code and the user object
+      - then return early. We don't want any code after this return statement to run. This means don't generate a refreshToken string, don't create a new token instance, don't attach cookies to response again, etc.
+  ```js
+  const login = async (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      throw new CustomError.BadRequestError('Please provide email and password');
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new CustomError.UnauthenticatedError('Invalid Credentials');
+    }
+
+    const isPasswordCorrect = await user.comparePassword(password);
+    if (!isPasswordCorrect) {
+      throw new CustomError.UnauthenticatedError('Invalid Credentials');
+    }
+
+    if (!user.isVerified) {
+      throw new CustomError.UnauthenticatedError('Please verify your email');
+    }
+
+    const tokenUser = createTokenUser(user);
+
+    // create refresh token
+    let refreshToken = '';
+
+    // check for existing token
+    const existingToken = await Token.findOne({ user: user._id });
+    // existingToken is an object
+    if (existingToken) {
+      // destructure isValid property from existingToken
+      const { isValid } = existingToken;
+      if (!isValid) {
+        throw new CustomError.UnauthenticatedError('Invalid credentials');
+      }
+
+      refreshToken = existingToken.refreshToken;
+      attachCookiesToResponse({ res, user: tokenUser, refreshToken });
+      res.status(StatusCodes.OK).json({ user: tokenUser });
+      return; // return early will prevent code underneath this to run
+    }
+
+    refreshToken = crypto.randomBytes(40).toString('hex');
+    const userAgent = req.headers['user-agent'];
+    const ip = req.ip;
+    const userToken = { refreshToken, ip, userAgent, user: user._id };
+
+    // create token instance for user
+    await Token.create(userToken);
+
+    attachCookiesToResponse({ res, user: tokenUser, refreshToken });
+
+    res.status(StatusCodes.OK).json({ user: tokenUser });
+  };
+  ```
+
+
+
+
+
+
+
 
 
 
