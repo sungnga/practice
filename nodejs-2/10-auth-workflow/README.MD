@@ -825,8 +825,58 @@
   };
   ```
 
+### [13. Implement logout controller]()
+- When it comes to logout functionality, we need to do two things. First, we need to remove the token associated with the user in the database and second, delete both the accessToken and refreshToken cookies
+- **Setup the logout route:**
+- File: server/routes/authRoutes.js
+  - Import the authenticateUser middleware
+  - Setup the delete route by calling the .delete() method on the router
+    - 1st arg is the logout path
+    - 2nd arg is the authenticateUser middleware
+    - 3rd arg is the logout controller
+  - Apply the auth middleware to the logout route
+  ```js
+  const express = require('express');
+  const router = express.Router();
+  const { authenticateUser } = require('../middleware/authentication');
+  const { logout } = require('../controllers/authController');
 
+  router.delete('/logout',  , logout);
+  ```
+- **Implement logout controller:**
+- File: server/controllers/authController.js
+  - First, delete the token associated with the user from the database
+  - Then remove both the accessToken and refreshToken cookies by setting the expires date to now
+  - It is not necessary to send a response message when logging out, but it's a good idea during development
+  ```js
+  const Token = require('../models/Token');
+  const { StatusCodes } = require('http-status-codes');
 
+  const logout = async (req, res) => {
+    await Token.findOneAndDelete({ user: req.user.userId });
+
+    res.cookie('accessToken', 'logout', {
+      httpOnly: true,
+      expires: new Date(Date.now())
+    });
+
+    res.cookie('refreshToken', 'logout', {
+      httpOnly: true,
+      expires: new Date(Date.now())
+    });
+
+    res.status(StatusCodes.OK).json({ msg: 'User logged out!' });
+  };
+  ```
+- **Testing logout controller using Postman:**
+  - First, make sure to login a user. We should have the accessToken and refreshToken cookies in the Cookies tab
+  - Then make a DELETE request to the 'Logout user' route: {{URL}}/auth/logout
+  - If the logout controller is setup properly, we should get back a success logout message as a response. Also there should be no cookies in the Cookies tab. The token associated with the user should be deleted from the 'tokens' collection in MongoDB
+- **Testing logout functionality on front-end:**
+  - In the browser, navigate to the homepage of our app: http://localhost:3000/
+  - Click on the Login button to login a registered user. If successful, the app would redirect to the user dashboard page
+    - Open the web browser console and click on the Application tab. Find the Storage section on the left menu and click on 'Cookies'. We should see the accessToken and refreshToken cookies listed here
+  - On the user dashboard page, click on the Logout button. If successful, the app would redirect back to homepage, the two cookies would disappear, and the token is deleted from the database
 
 
 
