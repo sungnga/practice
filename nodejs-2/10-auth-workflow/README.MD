@@ -878,6 +878,48 @@
     - Open the web browser console and click on the Application tab. Find the Storage section on the left menu and click on 'Cookies'. We should see the accessToken and refreshToken cookies listed here
   - On the user dashboard page, click on the Logout button. If successful, the app would redirect back to homepage, the two cookies would disappear, and the token is deleted from the database
 
+### [14. Setup forgot/reset password functionality]()
+- [X] User Model - setup
+- [X] passwordToken {type:String}
+- [X] passwordTokenExpirationDate {type:Date}
+- [X] authController - setup
+- [X] forgotPassword and resetPassword
+- [X] authRoutes - setup
+- [X] post '/forgot-password' '/reset-password'
+- File: server/models/User.js
+  - In the UserSchema, add these two properties: passwordToken and passwordTokenExpirationDate
+  ```js
+  passwordToken: { type: String },
+  passwordTokenExpirationDate: { type: Date }
+  ```
+- File: server/controllers/authController.js
+  - Create a basic structure of the forgotPassword and resetPassword controllers. Export both
+  ```js
+  const forgotPassword = async (req, res) => {
+    res.send('forgot password');
+  };
+
+  const resetPassword = async (req, res) => {
+    res.send('reset password');
+  };
+  ```
+- File: server/routes/authRoutes.js
+  - Import the forgotPassword and resetPassword controllers
+  - Setup two post routes for '/forgot-password' and '/reset-password'
+  ```js
+  const { forgotPassword, resetPassword } = require('../controllers/authController');
+
+  router.post('/forgot-password', forgotPassword);
+  router.post('/reset-password', resetPassword);
+  ```
+- **Setup routes in Postman:**
+- In the Auth folder, add two more routes:
+  - Forgot password - a POST request to: {{URL}}/auth/forgot-password
+  - Reset password - a POST request to: {{URL}}/auth/reset-password
+
+
+
+
 
 
 
