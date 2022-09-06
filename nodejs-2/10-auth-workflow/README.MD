@@ -917,6 +917,50 @@
   - Forgot password - a POST request to: {{URL}}/auth/forgot-password
   - Reset password - a POST request to: {{URL}}/auth/reset-password
 
+### [15. Implement forgotPassword controller]()
+- The scenario is if the user forgot their password when they're trying to login, they click on the 'Reset password' link and enter their email information. Then we send them a link in their email to reset their password
+- Note that to handle possible attacker trying to reset passwords, even if a user submits an email that doesn't exist in our database, we still send back a response message to check their email for reset password link
+- File: server/controllers/authController.js
+  - The user must provide their email to reset the password. Destructure the email from req.body. If there's no email provided, throw an error
+  - Then find the user in the database based on the email
+  - If there's a user, do the following things:
+    - generate a passwordToken using the crypto library
+    - set passwordToken expiration date
+    - set the passwordToken and passwordTokenExpirationDate properties on the user object
+    - update/save the user object in DB by calling user.save() method
+  - Send back a response with status code and a message to user check their email for reset password link regardless the user by this email is found or not
+  ```js
+  const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+    if (!email) {
+      throw new CustomError.BadRequestError('Please provide valid email');
+    }
+
+    const user = await User.findOne({ email });
+    if (user) {
+      const passwordToken = crypto.randomBytes(70).toString('hex');
+      // send email
+
+      // milliseconds * seconds * minutes
+      const tenMinutes = 1000 * 60 * 10;
+      const passwordTokenExpirationDate = new Date(Date.now() + tenMinutes);
+
+      user.passwordToken = passwordToken;
+      user.passwordTokenExpirationDate = passwordTokenExpirationDate;
+      await user.save();
+    }
+
+    res
+      .status(StatusCodes.OK)
+      .json({ msg: 'Please check your email for reset password link' });
+  };
+  ```
+- **Testing forgotPassword controller using Postman:**
+  - Make a POST request to the 'Forgot password' route: {{URL}}/auth/forgot-password
+  - Provide the email information in the Body tab
+  - The response we will always get back is: 'Please check your email for reset password link', regardless the user by this email exists or not
+
+
 
 
 
