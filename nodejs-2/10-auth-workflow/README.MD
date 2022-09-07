@@ -919,7 +919,7 @@
 
 ### [15. Implement forgotPassword controller]()
 - The scenario is if the user forgot their password when they're trying to login, they click on the 'Reset password' link and enter their email information. Then we send them a link in their email to reset their password
-- Note that to handle possible attacker trying to reset passwords, even if a user submits an email that doesn't exist in our database, we still send back a response message to check their email for reset password link
+- Note that to handle possible attackers who try to reset passwords, even if a user submits an email that doesn't exist in our database, we still send back a response message to check their email for reset password link
 - File: server/controllers/authController.js
   - The user must provide their email to reset the password. Destructure the email from req.body. If there's no email provided, throw an error
   - Then find the user in the database based on the email
@@ -959,11 +959,102 @@
   - Make a POST request to the 'Forgot password' route: {{URL}}/auth/forgot-password
   - Provide the email information in the Body tab
   - The response we will always get back is: 'Please check your email for reset password link', regardless the user by this email exists or not
+  - If there is a user by this email in the database, the passwordToken and passwordTokenExpirationDate properties will be added to the user document in DB
 
+### [16. Send reset password email]()
+- The functionality for sending reset password email is very similar to sending verification email. First we want to setup the sendResetPasswordEmail functionality as a util function. Then we call this function in the forgotPassword controller only if the user exists in the database
+- File: server/utils/sendResetPasswordEmail.js
+  - Import the sendEmail util function
+  - Write and export a sendResetPasswordEmail util function verifies the password token, composes the email message, and sends the email to the user
+    - This function accepts four arguments: name, email, token, and origin
+    - First, create the resetURL link. This link re-routes to the 'reset-password' route
+    - Then compose the email message that tells the user to click on the resetURL link to reset their password
+    - Lastly, this function returns the sendEmail function
+  ```js
+  const sendEmail = require('./sendEmail');
 
+  const sendResetPasswordEmail = async ({ name, email, token, origin }) => {
+    const resetURL = `${origin}/user/reset-password?token=${token}&email=${email}`;
+    const message = `<p>Please reset password by clicking on the following link:
+      <a href="${resetURL}">Reset Password</a></p>`;
 
+    return sendEmail({
+      to: email,
+      subject: 'Reset Password',
+      html: `<h4>Hello, ${name}</h4>
+      ${message}
+      `
+    });
+  };
 
+  module.exports = sendResetPasswordEmail;
+  ```
+- File: server/utils/index.js
+  - Import and export the sendResetPasswordEmail util function
+  ```js
+  const sendResetPasswordEmail = require('./sendResetPasswordEmail');
 
+  module.exports = {
+    createJWT,
+    isTokenValid,
+    attachCookiesToResponse,
+    createTokenUser,
+    checkPermissions,
+    sendVerificationEmail,
+    sendResetPasswordEmail
+  };
+  ```
+- File: server/controllers/authController.js
+  - Import the sendResetPasswordEmail util function
+  - In the forgotPassword controller:
+    - Inside the if the user exists statement and right after generating the passwordToken,
+      - setup the origin variable that points to 'http://localhost:3000'
+      - call the sendResetPasswordEmail() method and pass in the four necessary arguments as an object: name, email, token, and origin. This is an async operation so add the `await` keyword in front of it
+  ```js
+  const { sendResetPasswordEmail } = require('../utils');
+
+  const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+    if (!email) {
+      throw new CustomError.BadRequestError('Please provide valid email');
+    }
+
+    const user = await User.findOne({ email });
+    if (user) {
+      const passwordToken = crypto.randomBytes(70).toString('hex');
+
+      // send email
+      const origin = 'http://localhost:3000';
+      await sendResetPasswordEmail({
+        name: user.name,
+        email: user.email,
+        token: passwordToken,
+        origin
+      });
+
+      // milliseconds * seconds * minutes
+      const tenMinutes = 1000 * 60 * 10;
+      const passwordTokenExpirationDate = new Date(Date.now() + tenMinutes);
+
+      user.passwordToken = passwordToken;
+      user.passwordTokenExpirationDate = passwordTokenExpirationDate;
+      await user.save();
+    }
+
+    res
+      .status(StatusCodes.OK)
+      .json({ msg: 'Please check your email for reset password link' });
+  };
+  ```
+- **Testing the sendResetPasswordEmail functionality on front-end:**
+  - First, make sure to start up the dev server for the front-end project from the `front-end` directory
+  - Second, make sure to login to the Ethereal email account: https://ethereal.email/login
+    - The username and password is found in the nodemailerConfig.js file
+    - Click on the 'Messages' tab to go to the messages page
+  - Then in the browser, navigate to this link: http://localhost:3000/forgot-password
+  - Enter a registered user email information
+  - If the sendResetPasswordEmail functionality is setup correctly, we should see an email in the Ethereal email account. Click on the email to view the email message and click on the reset password link
+  - This will redirect the user to the 'Reset Password' page. Something else to note is the URL of this page. It's the 'reset-password' route that has the passwordToken and email values passed as query strings. We set up this URL in the sendResetPasswordEmail function
 
 
 
