@@ -1056,7 +1056,48 @@
   - If the sendResetPasswordEmail functionality is setup correctly, we should see an email in the Ethereal email account. Click on the email to view the email message and click on the reset password link
   - This will redirect the user to the 'Reset Password' page. Something else to note is the URL of this page. It's the 'reset-password' route that has the passwordToken and email values passed as query strings. We set up this URL in the sendResetPasswordEmail function
 
+### [17. Implement resetPassword controller]()
+- When implementing the resetPassword controller functionality, we get three things being passed to this controller: the token and email that came from the query strings, and the reset password that the user provides
+- File: server/controllers/authController.js
+  - In the resetPassword controller:
+    - Destructure the token, email, and password properties from req.body object
+    - Check if any one of the three properties does not exist, then throw bad request error
+    - Then get the user from DB based on the email
+    - If the user exists, we do the following things:
+      - First, check if the user's passwordToken is equal to the provided token AND if the user's passwordTokenExpirationDate is greater than the currentDate
+      - If it is, we set the user's password to the provided password. Set both the user's passwordToken and passwordTokenExpirationDate properties to null. Lastly, call user.save() method to update/save the user info in DB
+    - In handling the case of possible attackers, we still send back a success response with 200 status code. This way the attackers will not know whether the email or user exists or not
+  ```js
+  const User = require('../models/User');
+  const CustomError = require('../errors');
 
+  const resetPassword = async (req, res) => {
+    const { email, token, password } = req.body;
+    if (!token || !email || !password) {
+      throw new CustomError.BadRequestError('Please provide all values');
+    }
+
+    const user = await User.findOne({ email });
+    if (user) {
+      const currentDate = new Date();
+
+      if (
+        user.passwordToken === token &&
+        user.passwordTokenExpirationDate > currentDate
+      ) {
+        user.password = password;
+        user.passwordToken = null;
+        user.passwordTokenExpirationDate = null;
+        await user.save();
+      }
+    }
+
+    res.send('reset password');
+  };
+  ```
+- **Testing resetPassword controller on front-end:**
+  - Go through the steps to reset password again until you get to the reset password page (see the previous step). Then enter the reset password. If the resetPassword controller is setup properly, the front-end will redirect the user to the login page. The user should be able to login with the new password. If login is successful, the user will be redirected to their dashboard page
+  - Something to note in the user document in MongoDB database is both the passwordToken and passwordTokenExpirationDate properties are set to null. The resetPassword process is completed 
 
 
 
