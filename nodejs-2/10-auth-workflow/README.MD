@@ -1099,9 +1099,81 @@
   - Go through the steps to reset password again until you get to the reset password page (see the previous step). Then enter the reset password. If the resetPassword controller is setup properly, the front-end will redirect the user to the login page. The user should be able to login with the new password. If login is successful, the user will be redirected to their dashboard page
   - Something to note in the user document in MongoDB database is both the passwordToken and passwordTokenExpirationDate properties are set to null. The resetPassword process is completed 
 
+### [18. Hash the passwordToken]()
+- The last thing we want to do is hash the passwordToken before storing in the database. This makes the passwordToken more secured. The crypto library can hash the token for us. We're going to create a createHash util function because we'll be using it in multiple places
+- File: server/utils/createHash.js
+  - Import the crypto library
+  - Hashing the token is a one-way street. Once it is hashed, we cannot access the original value
+  ```js
+  const crypto = require('crypto');
 
+  // this function accepts a token string as an argument
+  const hashString = (string) =>
+    crypto.createHash('md5').update(string).digest('hex');
 
+  module.exports = hashString;
+  ```
+- File: server/utils/index.js
+  - Import and export the hashString util function, but we're going to call it createHash instead
+  ```js
+  const createHash = require('./createHash');
 
+  module.exports = {
+    createJWT,
+    isTokenValid,
+    attachCookiesToResponse,
+    createTokenUser,
+    checkPermissions,
+    sendVerificationEmail,
+    sendResetPasswordEmail,
+    createHash
+  };
+  ```
+- File: server/controllers/authController.js
+  - Import the createHash util function
+  - In the forgotPassword controller:
+    - We want to hash the passwordToken before saving it to the database
+  - In the resetPassword controller:
+    - When we're checking the user passwordToken against the token being passed to this controller, we also need to first hash the incoming token. Because the user passwordToken in DB has been hashed. We can only compare the hashed values
+  ```js
+  const { createHash } = require('../utils');
+
+  // ---forgotPassword controller---
+  if (user) {
+    const passwordToken = crypto.randomBytes(70).toString('hex');
+
+    // send email
+    const origin = 'http://localhost:3000';
+    await sendResetPasswordEmail({
+      name: user.name,
+      email: user.email,
+      token: passwordToken,
+      origin
+    });
+
+    // milliseconds * seconds * minutes
+    const tenMinutes = 1000 * 60 * 10;
+    const passwordTokenExpirationDate = new Date(Date.now() + tenMinutes);
+
+    // hash passwordToken before saving to DB
+    user.passwordToken = createHash(passwordToken);
+    user.passwordTokenExpirationDate = passwordTokenExpirationDate;
+    await user.save();
+  }
+
+  // ---resetPassword controller---
+  // the passwordToken in DB has been hashed
+  // need to hash the token before comparing
+  if (
+    user.passwordToken === createHash(token) &&
+    user.passwordTokenExpirationDate > currentDate
+  ) {
+    user.password = password;
+    user.passwordToken = null;
+    user.passwordTokenExpirationDate = null;
+    await user.save();
+  }
+  ```
 
 
 
