@@ -19,15 +19,10 @@
 
 ### [02. Refactor register controller](https://github.com/sungnga/practice/commit/173b8adce880d6d5bb1f5160c214b1fdb620a51b?ts=2)
 #### Update User model
-- [X] add following three properties
-- [X] verificationToken - String
-- [X] isVerified - {type:Boolean, default:false}
-- [X] verified - Date
-#### Update register controller
-- [X] setup fake verificationToken - 'fake token'
-- [X] remove everything after User.create()
-- [X] send back success message and token
-- We're going to change the functionality of register controller a little bit. After we created a user instance we don't want to send back the user JWT and attach the cookies response. Instead, we want to send back a success message and a verificationToken for the user to verify their email. For now, we going to setup a 'fakeToken' for verificationToken
+- [] add following three properties
+- [] verificationToken - String
+- [] isVerified - {type:Boolean, default:false}
+- [] verified - Date
 - File: server/models/User.js
   - Update the UserSchema model with three additional properties: verificationToken, isVerified, and verified
   ```js
@@ -40,6 +35,11 @@
     verified: Date
   }
   ```
+#### Update register controller
+- [] setup fake verificationToken - 'fake token'
+- [] remove everything after User.create()
+- [] send back success message and token
+- We're going to change the functionality of register controller a little bit. After we created a user instance we don't want to send back the user JWT and attach the cookies response. Instead, we want to send back a success message and a verificationToken for the user to verify their email. For now, we going to setup a 'fakeToken' for verificationToken
 - File: server/controllers/authController.js
   - We're modifying this existing register controller. We won't create user token and we won't attach cookies to response in this controller. 
   - Before creating a user instance, create a verificationToken variable and assign it to 'fake token' string
@@ -106,8 +106,8 @@
   - In our MongoDB database, a user document has been created in the users collection
 
 ### [03. Update the login controller](https://github.com/sungnga/practice/commit/6a27f38376d0268d9428eab54e7b9fe388e60e43?ts=2)
-- [X] right after isPasswordCorrect
-- [X] check if user.isVerified, if not 401
+- [] right after isPasswordCorrect
+- [] check if user.isVerified, if not 401
 - The login controller sends back the user token in cookies response. So we want to restrict access to this route unless the user isVerified
 - File: server/controllers/authController.js
   - In the login controller and right after checking the isPasswordCorrect, write an if statement to check if user.isVerified. If not, throw 401 Unauthorized custom error 
@@ -157,19 +157,19 @@
     ```
 
 ### [05. Setup verifyEmail controller and route](https://github.com/sungnga/practice/commit/1c745d4001493477f7516e634a32946c1ad699fd?ts=2)
-- [X] create verifyEmail in authController
-- [X] get verificationToken and email from req.body
-- [X] setup a '/verify-email' route in authRoutes
-- [X] test in a Postman
-- [X] check for user using email
-- [X] if no user 401
-- [X] if token does not match user token 401
-- [X] if correct set
-- [X] user.isVerified = true
-- [X] user.verified = Date.now()
-- [X] user.verificationToken = ''
-- [X] save use with instance method
-- [X] return msg:'email verified'
+- [] create verifyEmail in authController
+- [] get verificationToken and email from req.body
+- [] setup a '/verify-email' route in authRoutes
+- [] test in a Postman
+- [] check for user using email
+- [] if no user 401
+- [] if token does not match user token 401
+- [] if correct set
+- [] user.isVerified = true
+- [] user.verified = Date.now()
+- [] user.verificationToken = ''
+- [] save use with instance method
+- [] return msg:'email verified'
 - File: server/controllers/authController.js
   - Create and export a verifyEmail controller
     - This route should receive the user email and verificationToken in req.body
@@ -254,10 +254,10 @@
     ```
 
 ### [06. Setup send email using Ethereal](https://github.com/sungnga/practice/commit/bded96c2a11c70d4c25ac1ed3259bfc9136fafae?ts=2)
-- [X] review project 08-send-email on sending emails
-- [X] ethereal credentials (create account/login)
-- [X] install nodemailer
-- [X] create (nodemailerConfig, sendEmail,
+- [] review project 08-send-email on sending emails
+- [] ethereal credentials (create account/login)
+- [] install nodemailer
+- [] create (nodemailerConfig, sendEmail,
   sendResetPasswordEmail, sendVerificationEmail) files in utils
 - **Send emails with Ethereal:**
   - To test out the send email functionality during development, we will send it with Ethereal. It's a fake transporter service used with Nodemailer module during development. We will use a different transport service called SendGrid in production
@@ -367,9 +367,9 @@
   - Go back to Ethereal account email page and we should see a new email has been sent
 
 ### [07. Send verification link](https://github.com/sungnga/practice/commit/1c808a7931dd760ece0b8f2831992d89a279196c?ts=2)
-- [X] refactor sendEmail
-- [X] setup sendVerificationEmail
-- [X] pass arguments from register
+- [] refactor sendEmail
+- [] setup sendVerificationEmail
+- [] pass arguments from register
 - The sendEmail function sends the email using the nodemailer package. It takes in three params: to, subject, and html. This function will be used in the sendVerificationEmail function
 - The sendVerificationEmail function contains the verifyEmail link (that takes to the verify-email route), the email message that tells the user to click on the verifyEmail link to verify their email, and lastly, calls the sendEmail() function
 - The sendVerificationEmail function is used in the `register` controller. This controller is responsible for creating a new user and then sends the verification email to the user to verify their email
@@ -524,11 +524,11 @@
   - On the front-end, once the email is verified, the user gets a display message that the account is confirmed; and a Login button to direct them to the login page
 
 ### [08. Setup Token model](https://github.com/sungnga/practice/commit/47508fc359bd68072aaba223236c8d10c0b1b8b9?ts=2)
-- [X] create Token.js in models
-- [X] refreshToken,ip,userAgent - all String and required
-- [X] isValid - Boolean, default:true
-- [X] ref user
-- [X] timestamps true
+- [] create Token.js in models
+- [] refreshToken,ip,userAgent - all String and required
+- [] isValid - Boolean, default:true
+- [] ref user
+- [] timestamps true
 - File: server/models/Token.js
   ```js
   const mongoose = require('mongoose');
@@ -879,13 +879,13 @@
   - On the user dashboard page, click on the Logout button. If successful, the app would redirect back to homepage, the two cookies would disappear, and the token is deleted from the database
 
 ### [14. Setup forgot/reset password functionality](https://github.com/sungnga/practice/commit/a36a1ee6724e42bfae29bbd0aef31b72dc4dea4d?ts=2)
-- [X] User Model - setup
-- [X] passwordToken {type:String}
-- [X] passwordTokenExpirationDate {type:Date}
-- [X] authController - setup
-- [X] forgotPassword and resetPassword
-- [X] authRoutes - setup
-- [X] post '/forgot-password' '/reset-password'
+- [] User Model - setup
+- [] passwordToken {type:String}
+- [] passwordTokenExpirationDate {type:Date}
+- [] authController - setup
+- [] forgotPassword and resetPassword
+- [] authRoutes - setup
+- [] post '/forgot-password' '/reset-password'
 - File: server/models/User.js
   - In the UserSchema, add these two properties: passwordToken and passwordTokenExpirationDate
   ```js
