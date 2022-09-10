@@ -8,7 +8,7 @@
 - Using Ethereal for managing emails
 - Practice adding features and functionalities to large existing projects. The existing project is the last 09-eCommerce-api project
 
-### [01. Initialize project with starter files]()
+### [01. Initialize project with starter files](https://github.com/sungnga/practice/commit/256fdad8c0c388f3ff84b81e410361c670a98713?ts=2)
 - Get starter project files from https://github.com/john-smilga/node-express-course/tree/main/11-auth-workflow/starter
 - cd into project directory: `cd 10-auth-workflow`
 - Run `rm -rf .git` to avoid any issues if pushing to your own github repo
@@ -17,7 +17,7 @@
 - Create a `.env` file. Then copy and paste the all the env vars from the last 09-eCommerce-api project. For the `MONGO_URL` variable, change the project name to `10-auth-workflow`
 - Then run the script `npm start` to start up the project. This will run nodemon on app.js file
 
-### [02. Refactor register controller]()
+### [02. Refactor register controller](https://github.com/sungnga/practice/commit/173b8adce880d6d5bb1f5160c214b1fdb620a51b?ts=2)
 #### Update User model
 - [X] add following three properties
 - [X] verificationToken - String
@@ -105,7 +105,7 @@
     ```
   - In our MongoDB database, a user document has been created in the users collection
 
-### [03. Update the login controller]()
+### [03. Update the login controller](https://github.com/sungnga/practice/commit/6a27f38376d0268d9428eab54e7b9fe388e60e43?ts=2)
 - [X] right after isPasswordCorrect
 - [X] check if user.isVerified, if not 401
 - The login controller sends back the user token in cookies response. So we want to restrict access to this route unless the user isVerified
@@ -127,7 +127,7 @@
     ```
   - We should get back an error of '401 Unauthorized' and an error message, because by default, we have set the isVerified property on the user object to false
 
-### [04. Create proper verification token]()
+### [04. Create proper verification token](https://github.com/sungnga/practice/commit/09c0121e5070c071160cf13c44b2f5ddd388a9e1?ts=2)
 - Right now our `verificationToken` property is just a hardcoded string. What we want is once a user registered to our application, we want to generate a verificationToken for this user. It's a unique id assigned to this user in order to verify their email, which is the next step. There are many options out there to generate a unique id, but Node.js has a built-in library called `crypto` that we can use to generate the unique id
 - File: server/controllers/authController.js
   - Import the crypto library
@@ -156,7 +156,7 @@
     }
     ```
 
-### [05. Setup verifyEmail controller and route]()
+### [05. Setup verifyEmail controller and route](https://github.com/sungnga/practice/commit/1c745d4001493477f7516e634a32946c1ad699fd?ts=2)
 - [X] create verifyEmail in authController
 - [X] get verificationToken and email from req.body
 - [X] setup a '/verify-email' route in authRoutes
@@ -253,7 +253,7 @@
     }
     ```
 
-### [06. Setup send email using Ethereal]()
+### [06. Setup send email using Ethereal](https://github.com/sungnga/practice/commit/bded96c2a11c70d4c25ac1ed3259bfc9136fafae?ts=2)
 - [X] review project 08-send-email on sending emails
 - [X] ethereal credentials (create account/login)
 - [X] install nodemailer
@@ -366,7 +366,7 @@
   - Register a new user by clicking on the "Register" button. Enter the user information. If everything works out, we should get back a success message to check email to verify account
   - Go back to Ethereal account email page and we should see a new email has been sent
 
-### [07. Send verification link]()
+### [07. Send verification link](https://github.com/sungnga/practice/commit/1c808a7931dd760ece0b8f2831992d89a279196c?ts=2)
 - [X] refactor sendEmail
 - [X] setup sendVerificationEmail
 - [X] pass arguments from register
@@ -523,7 +523,7 @@
   - The verifyEmail controller verifies the user token and email in the database. If it's successful, it updates the user's verified status to true in the database
   - On the front-end, once the email is verified, the user gets a display message that the account is confirmed; and a Login button to direct them to the login page
 
-### [08. Setup Token model]()
+### [08. Setup Token model](https://github.com/sungnga/practice/commit/47508fc359bd68072aaba223236c8d10c0b1b8b9?ts=2)
 - [X] create Token.js in models
 - [X] refreshToken,ip,userAgent - all String and required
 - [X] isValid - Boolean, default:true
@@ -551,7 +551,7 @@
   module.exports = mongoose.model('Token', TokenSchema);
   ```
 
-### [09. Create user token in login controller]()
+### [09. Create user token in login controller](https://github.com/sungnga/practice/commit/d941ad68865ac595c5d471dae14b7d2a42e439e4?ts=2)
 - File: server/controllers/authController.js
   - Import the Token model
   - In the login controller and right after createTokenUser, create a userToken object that contains the refreshToken and other user information that can be found from the req object
@@ -629,7 +629,7 @@
     }
     ```
 
-### [10. Send multiple cookies]()
+### [10. Send multiple cookies](https://github.com/sungnga/practice/commit/a4da12ccb07f042c66ec718a122dcba49ea57c8b?ts=2)
 - Up until this point we've been attaching a single cookie to the response. Now we want to setup two cookies in our response. We currently pass in the tokenUser in the cookies response, now we want to add the refreshToken to it as well   
 - File: server/controllers/authController.js
   - In the login controller and right after creating the token instance, call the attachCookiesToResponse() method. Here, we pass in the refreshToken as a third arg
@@ -709,7 +709,7 @@
     ```
   - If the attachCookiesToResponse functionality is setup properly in the login controller, we should get back two cookies in Cookies response tab. One cookie is called 'accessToken' and the other is 'refreshToken'
 
-### [11. Check for existing token]()
+### [11. Check for existing token](https://github.com/sungnga/practice/commit/15d38e29d7fa4495bc0d6c733dcfdac9f7b111c1?ts=2)
 - With our current setup, a new token is created (in the tokens collection) each time a user is logged in. This is not what we want. We want to check for existing token by this user in the 'tokens' collect. If there is a token, we'll use the same refreshToken when this user tries to login
 - File: server/controllers/authController.js
   - In the login controller:
@@ -777,7 +777,7 @@
   };
   ```
 
-### [12. Refactor auth middleware]()
+### [12. Refactor auth middleware](https://github.com/sungnga/practice/commit/719e81e5c1cb8d7770c4ad34257d3aed48c8af28?ts=2)
 - Now that we have two tokens in the cookies response, we need to refactor our authenticateUser middleware to look for either the accessToken or refreshToken in the signedCookies to validate the user. The accessToken has shorter expiration date. If it exists, use it to validate the token and return early. If it doesn't, use the refreshToken to validate and attach two cookies to the response
 - File: server/middleware/authentication.js
   ```js
@@ -825,7 +825,7 @@
   };
   ```
 
-### [13. Implement logout controller]()
+### [13. Implement logout controller](https://github.com/sungnga/practice/commit/f9bcb896536b60fcecd2062590a5e658da62fc14?ts=2)
 - When it comes to logout functionality, we need to do two things. First, we need to remove the token associated with the user in the database and second, delete both the accessToken and refreshToken cookies
 - **Setup the logout route:**
 - File: server/routes/authRoutes.js
@@ -878,7 +878,7 @@
     - Open the web browser console and click on the Application tab. Find the Storage section on the left menu and click on 'Cookies'. We should see the accessToken and refreshToken cookies listed here
   - On the user dashboard page, click on the Logout button. If successful, the app would redirect back to homepage, the two cookies would disappear, and the token is deleted from the database
 
-### [14. Setup forgot/reset password functionality]()
+### [14. Setup forgot/reset password functionality](https://github.com/sungnga/practice/commit/a36a1ee6724e42bfae29bbd0aef31b72dc4dea4d?ts=2)
 - [X] User Model - setup
 - [X] passwordToken {type:String}
 - [X] passwordTokenExpirationDate {type:Date}
@@ -917,7 +917,7 @@
   - Forgot password - a POST request to: {{URL}}/auth/forgot-password
   - Reset password - a POST request to: {{URL}}/auth/reset-password
 
-### [15. Implement forgotPassword controller]()
+### [15. Implement forgotPassword controller](https://github.com/sungnga/practice/commit/349c442da6c51f360ffe8acd9d71366f3124b37d?ts=2)
 - The scenario is if the user forgot their password when they're trying to login, they click on the 'Reset password' link and enter their email information. Then we send them a link in their email to reset their password
 - Note that to handle possible attackers who try to reset passwords, even if a user submits an email that doesn't exist in our database, we still send back a response message to check their email for reset password link
 - File: server/controllers/authController.js
@@ -961,7 +961,7 @@
   - The response we will always get back is: 'Please check your email for reset password link', regardless the user by this email exists or not
   - If there is a user by this email in the database, the passwordToken and passwordTokenExpirationDate properties will be added to the user document in DB
 
-### [16. Send reset password email]()
+### [16. Send reset password email](https://github.com/sungnga/practice/commit/ab3451fce2e3af381e3ed0957db2b11f955c6e4c?ts=2)
 - The functionality for sending reset password email is very similar to sending verification email. First we want to setup the sendResetPasswordEmail functionality as a util function. Then we call this function in the forgotPassword controller only if the user exists in the database
 - File: server/utils/sendResetPasswordEmail.js
   - Import the sendEmail util function
@@ -1056,7 +1056,7 @@
   - If the sendResetPasswordEmail functionality is setup correctly, we should see an email in the Ethereal email account. Click on the email to view the email message and click on the reset password link
   - This will redirect the user to the 'Reset Password' page. Something else to note is the URL of this page. It's the 'reset-password' route that has the passwordToken and email values passed as query strings. We set up this URL in the sendResetPasswordEmail function
 
-### [17. Implement resetPassword controller]()
+### [17. Implement resetPassword controller](https://github.com/sungnga/practice/commit/2edcd2bc0d81dc3be555e8b164f0286a637a55e3?ts=2)
 - When implementing the resetPassword controller functionality, we get three things being passed to this controller: the token and email that came from the query strings, and the reset password that the user provides
 - File: server/controllers/authController.js
   - In the resetPassword controller:
@@ -1099,7 +1099,7 @@
   - Go through the steps to reset password again until you get to the reset password page (see the previous step). Then enter the reset password. If the resetPassword controller is setup properly, the front-end will redirect the user to the login page. The user should be able to login with the new password. If login is successful, the user will be redirected to their dashboard page
   - Something to note in the user document in MongoDB database is both the passwordToken and passwordTokenExpirationDate properties are set to null. The resetPassword process is completed 
 
-### [18. Hash the passwordToken]()
+### [18. Hash the passwordToken](https://github.com/sungnga/practice/commit/0f7610dbcb607d28ee31c42f01ae70b7b60e333b?ts=2)
 - The last thing we want to do is hash the passwordToken before storing in the database. This makes the passwordToken more secured. The crypto library can hash the token for us. We're going to create a createHash util function because we'll be using it in multiple places
 - File: server/utils/createHash.js
   - Import the crypto library
@@ -1174,7 +1174,8 @@
     await user.save();
   }
   ```
-
+- **Testing the hash passwordToken functionality in front-end:**
+  - Go through the process of resetting password. Right after submitting the email of a registered user, check the value of the passwordToken in the user document in MongoDB page. This value should be hashed. Then once we click on the Reset Password link (in the email from Ethereal) and enter the new password, this value should be set to null
 
 
 -------------------------------
