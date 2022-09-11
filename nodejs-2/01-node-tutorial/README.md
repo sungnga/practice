@@ -1,14 +1,14 @@
 ## SECTION 1: NODE TUTORIAL
 - Folder directory: /01-node-tutorial/
 
-### 01. Using the CLI
+### [01. Using the CLI](https://github.com/sungnga/practice/commit/96a63c59a0ac0803029228ef7802a23151492618?ts=2)
 - File: 01-cli.js
 - We can use the integrated VSCode terminal to execute our node files
 - Create an 01-cli.js file in this 01-node-tutorial directory
 - In the terminal, cd into 01-node-tutorial folder. Then run: `node 01-cli.js`
 - We should be able to see messages printed out in the terminal
 
-### 02. Globals - no window!
+### [02. Globals - no window!](https://github.com/sungnga/practice/commit/96a63c59a0ac0803029228ef7802a23151492618?ts=2)
 - File: 02-globals.js. In the terminal, run: `node 02-globals.js` to execute this file
 - In vanilla JS, we have access to the Window object from the browser and this gives us built-in methods to use. In Node.js, there's no Window object. There is, however, global variables that we have access to 
 - Here are some examples of global variables:
@@ -18,7 +18,7 @@
   - module - info about current module (file)
   - process - info about env where the problem is being executed
 
-### 03. Modules
+### [03. Modules](https://github.com/sungnga/practice/commit/236111c2c84687d1a692b3153bd9b94806dacacd?ts=2)
 - File: 03-modules.js
 - `module` is a global variable
 - Node uses the CommonJS library under the hood. So every file in Node is a module (by default)
@@ -59,7 +59,7 @@
       require('./file1');
       ```
   
-### 04. Built-in modules
+### [04. Built-in modules](https://github.com/sungnga/practice/commit/93919e3e5557ab8f7d5811be007a5a45b83f3e40?ts=2)
 - Some of useful Node's built-in modules:
   - OS
   - PATH
@@ -67,7 +67,7 @@
   - HTTP
 - We do not have to install built-in modules to use it. They come with Node
 - When require a built-in module, we don't need to provide a path to the module. We simply call the name of the module
-- **OS - built-in module:**
+#### [OS - built-in module:](https://github.com/sungnga/practice/commit/93919e3e5557ab8f7d5811be007a5a45b83f3e40?ts=2)
   - File: 08-os-module.js
   ```js
   // now we have access to all the properties and methods the os module provides
@@ -89,7 +89,7 @@
 
   console.log(currentOS);
   ```
-- **PATH - built-in module:**
+#### [PATH - built-in module:](https://github.com/sungnga/practice/commit/01479def5d5d39e4a7a86c312d600dc584187e90?ts=2)
   - File: 09-path-module.js
   ```js
   const path = require('path');
@@ -109,7 +109,7 @@
   const absolute = path.resolve(__dirname, 'content', 'subfolder', 'test.txt');
   console.log(absolute); // /Users/nga/Desktop/practice/nodejs-2/01-node-tutorial/content/subfolder/test.txt
   ```
-- **SYNC FS - built-in module:**
+#### [SYNC FS - built-in module:](https://github.com/sungnga/practice/commit/1f077991d65465883c21e17fc1f939bc48bbf1de?ts=2)
   - File: 10-fs-sync.js
   ```js
   // destructure the methods we want to use out of the fs module
@@ -133,7 +133,7 @@
     { flag: 'a' }
   );
   ```
-- **ASYNC FS - built-in module:**
+#### [ASYNC FS - built-in module:](https://github.com/sungnga/practice/commit/d02ccc748198f82441939822e78dee65a237d106?ts=2)
   - File: 11-fs-async.js
   - NOTE: This code is considered "a callback hell" because a callback function is nesting within a callback function within a callback function. An alternative to using callbacks is to use promises and async/await
   ```js
@@ -180,7 +180,7 @@
     });
   });
   ```
-- **HTTP - setup module:**
+#### [HTTP - setup module:](https://github.com/sungnga/practice/commit/db1b1c8021c82603d4fa2c1d61d1a1fd4b9b3edf?ts=2)
   - File: 12-http.js
   - Run this file in the terminal: `node 12-http.js`
   - Now the server is listening on port 5000
@@ -200,7 +200,7 @@
   // provide the port number the server is listening to
   server.listen(5000);
   ```
-- **HTTP - some features:**
+#### [HTTP - some features:](https://github.com/sungnga/practice/commit/946cfb24d4c538e5abbac867dd2e18318e33a710?ts=2)
   - File: 12-http.js
   ```js
   const http = require('http');
@@ -227,7 +227,7 @@
   server.listen(5000);
   ```
 
-### 04. NPM - Node Package Manager
+### [04. NPM - Node Package Manager](https://github.com/sungnga/practice/commit/c9532a3080bc5bf7f1d1bd4059749c077d1411f6?ts=2)
 - Node Package Manager (NPM) is a library, module, or dependency written by other developers and shared in the community
 - **NPM command:**
   - `npm` is a global command, comes with Node
@@ -268,7 +268,7 @@
     - To run the script, simply run: `npm run start` or `npm run dev`
   - To stop running nodemon, run: `control + c`
 
-### 05. The Node.js Event Loop
+### [05. The Node.js Event Loop](https://github.com/sungnga/practice/commit/dafed8a2ace7ad6fb89ca1453a1891f4bd03f950?ts=2)
 - The Node.js JavaScript code is synchronous and runs on a single thread. There is just one thing happening at a time. This is a limitation that's actually very helpful, as it simplifies a lot how we program without worrying about concurrency issues
 - We just need to pay attention to how you write your code and avoid anything that could block the thread, like synchronous network calls or infinite loops. In general, in most browsers there is an event loop for every browser tab, to make every process isolated and avoid a web page with infinite loops or heavy processing to block your entire browser
 - **Blocking the event loop**
@@ -313,7 +313,7 @@
   ```
   - That's a big difference between Promises (and Async/await, which is built on promises) and plain old asynchronous functions through setTimeout() or other platform APIs
 
-### 06. Blocking code, promises, and async/await patterns
+### [06. Blocking code, promises, and async/await patterns](https://github.com/sungnga/practice/commit/b2ca57d25244c98e0a31ea36dc03925a0c797fc5?ts=2)
 - File: 13-promises-async-await.js
 - **Blocking code:**
   - A `for` loop is a blocking code because it takes sometime to finish
@@ -406,7 +406,7 @@
   start();
   ```
 
-### 07. Events Emitter
+### [07. Events Emitter](https://github.com/sungnga/practice/commit/f2e18e993958c332acb4793663c3df26545de48f?ts=2)
 - File: 14-event-emitter.js
   ```js
   // get back the class from the events module
@@ -433,7 +433,7 @@
   customEmitter.emit('response', 'john', 34);
   ```
 
-### 08. Events emitter - HTTP module example
+### [08. Events emitter - HTTP module example](https://github.com/sungnga/practice/commit/4219cb99cd4b449dc5206e2065453f165866d477?ts=2)
 - File: 15-request-event.js
 - An example of `http` module is utilizing events emitter behind the scenes
   ```js
@@ -454,7 +454,7 @@
   server.listen(5000);
   ```
 
-### 09. Streams
+### [09. Streams](https://github.com/sungnga/practice/commit/5a03c38d8d54b174bfab09ee8a391be2d770b11c?ts=2)
 - Streams are used to read or write data sequentially
 - There are four types of streams
   - Writeable
