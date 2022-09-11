@@ -6,7 +6,7 @@
 - Host our application to the cloud by deploying to Heroku
 - Setup a document with Swagger UI
 
-### [01. Initialize project with starter files]()
+### [01. Initialize project with starter files](https://github.com/sungnga/practice/commit/1c4992de77e94dfc891401426fb705918bbc1e88?ts=2)
 - Get starter project files from https://github.com/john-smilga/node-express-course/tree/main/06-jobs-api/starter
 - cd into project directory: `cd 06-jobs-api`
 - Run `rm -rf .git` to avoid any issues if pushing to your own github repo
@@ -69,7 +69,7 @@ Email Validation Regex
       description: the job id
 ```
 
-### [02. Setup basic controllers]()
+### [02. Setup basic controllers](https://github.com/sungnga/practice/commit/d69121241e6dbc30adbb90e91f1bac2bcddfc7a3?ts=2)
 - Let's setup the basic structures for the auth and jobs controllers
 - Files: controllers/auth.js
   - Setup the auth controllers to register a new user and to login a user
@@ -119,7 +119,7 @@ Email Validation Regex
   };
   ```
 
-### [03. Setup routes for auth and jobs]()
+### [03. Setup routes for auth and jobs](https://github.com/sungnga/practice/commit/1a161a22ae590ea5a9beb93ca5d221e01a5af894?ts=2)
 - File: routes/auth.js
   ```js
   const express = require('express');
@@ -171,7 +171,7 @@ Email Validation Regex
   app.use('/api/v1/jobs', jobsRouter);
   ```
 
-### [04. Connect to the database]()
+### [04. Connect to the database](https://github.com/sungnga/practice/commit/222ee3a01178a3984c9292f813aae52d6682c306?ts=2)
 - File: db/connect.js
   ```s
   const mongoose = require('mongoose');
@@ -214,7 +214,7 @@ Email Validation Regex
   start();
   ```
 
-### [05. Create User schema/model]()
+### [05. Create User schema/model](https://github.com/sungnga/practice/commit/fcefc27715df35036396be9f4b11c75d59c8031e?ts=2)
 - Let's setup the User model and it'll have three properties: name, email, and password. When a user registers to our application they must provide all three
 - File: models/User.js
   ```js
@@ -248,7 +248,7 @@ Email Validation Regex
   module.exports = mongoose.model('User', UserSchema);
   ```
 
-### [06. Create user - basic setup]()
+### [06. Create user - basic setup](https://github.com/sungnga/practice/commit/e5b2ce9648828b3b10cad665849003f3f9519cba?ts=2)
 - For the register route, we want to:
   - Validate - name, email, password - with mongoose
   - Hash password (with bcryptjs)
@@ -288,7 +288,7 @@ Email Validation Regex
     ```
   - Also, a new user has been created in MongoDB in the `users` collection
 
-### [07. Hash user password using bcryptjs lib]()
+### [07. Hash user password using bcryptjs lib](https://github.com/sungnga/practice/commit/9feb0f6fb25f5cabc3b1c9c3788d8e882525fbaa?ts=2)
 - Next, we want to hash the password that the user provided. We never want to store their password string in our database as it is
 - We will use the library bcryptjs to hash the password
   - Install: `npm install bcryptjs`
@@ -341,7 +341,7 @@ Email Validation Regex
     }
     ```
 
-### [08. Create Mongoose middleware in UserSchema]()
+### [08. Create Mongoose middleware in UserSchema](https://github.com/sungnga/practice/commit/c47d9ba1763e4b5f48afbe26d0e323a85b3a0b79?ts=2)
 - At the moment, we're hashing the user password and then create a new user in the database in the `register` controller. In order to keep our controllers clean and simple, another option is to use Mongoose middleware function to hash the user password before passing on to the next task 
 - In Mongoose, pre middleware functions are executed one after another, when each middleware calls `next`. Also, instead of calling `next()` manually, we can use a use a function that returns a promise. In particular, use `async/await`
 - File: models/User.js
@@ -375,7 +375,7 @@ Email Validation Regex
   ```
 - By setting up a Mongoose middleware to hash the user password in the UserSchema model, the user password has been hashed before the `register` controller function runs. Now the register controller only creates a new user in the database and sends back a status code of user created and a json object
 
-### [09. Generate token - in register controller]()
+### [09. Generate token - in register controller](https://github.com/sungnga/practice/commit/d9713fdc835c5727190ab31024bc93bd21d49b18?ts=2)
 - Let's generate a token when we register a new user. For the time being, let's generate the token in the register controller. We will refactor our code where we will generate the token in the UserSchema using Mongoose instance method
 - File: controllers/auth.js
   - In the register controller, once we generated the token for the user, we send back a response that has the user name and the token
@@ -408,7 +408,7 @@ Email Validation Regex
   };
   ```
  
-### [10. Generate token using instance method in UserSchema]()
+### [10. Generate token using instance method in UserSchema](https://github.com/sungnga/practice/commit/dc339402b69ed7e54f660c9d583158bacc9e1e2c?ts=2)
 - In order to keep our business logic clean in the register controller, we should generate the user token in the UserSchema model instead, because generating a token is part of the process of creating a user instance from the UserSchema model
 - In Mongoose, instances of Models are documents. Documents have many of their own built-in instance methods and we can also define our own document instance methods
   - The pattern for creating document instance method looks like this:
@@ -454,7 +454,7 @@ Email Validation Regex
   };
   ```
 
-### [11. Using env variables]()
+### [11. Using env variables](https://github.com/sungnga/practice/commit/e50b35626bc49ad8eb17f94a62e5579a799f99e7?ts=2)
 - To make the JWT_SECRET key more secure, we can use a website to randomly generate keys for us
 - Website: allkeysgenerators.com
   - Click on the Encryption key tab and select 256bit for security level
@@ -482,7 +482,7 @@ Email Validation Regex
   };
   ```
 
-### [12. Setup login controller]()
+### [12. Setup login controller](https://github.com/sungnga/practice/commit/5d1a8a6c14988d5a6d9413167cb616b4621eb734?ts=2)
 - We start by setting a basic logic for the register controller. Here, we want to check if email and password was provided. If successful, we want to find the user by their email in the User DB. If that is successful, then we create a JWT token for the user. If not successful, we throw our custom error classes that we created. We will compare user password later
 - File: controllers/auth.js
   - Import the BadRequestError and UnauthenticatedError classes
@@ -522,7 +522,7 @@ Email Validation Regex
   - If no email or password is provided we should get back a 400 Bad Request status code
   - If email or password is incorrect we should get a 401 Unauthorized status code
 
-### [13. Compare password]()
+### [13. Compare password](https://github.com/sungnga/practice/commit/a968a0129ee0794e1977cc05b18bdc7a1a4db9e8?ts=2)
 - When we register a new user, we hash their password value using the bcrypt package before storing in the database. Now in the login controller we want to compare the user password against the hashed password in DB. The bcrypt package has a `.compare()` method that we can use to get this done. We're not going to do it in the login controller, but rather, we'll create an instance method on our UserSchema to compare the password
 - File: models/User.js
   - Write comparePassword instance method that compares the candidate's password with the document password in the database
@@ -546,7 +546,7 @@ Email Validation Regex
   }
   ```
 
-### [14. Setup auth middleware]()
+### [14. Setup auth middleware](https://github.com/sungnga/practice/commit/435f320bf303fe4deb6c1bd356b3adcb129783c7?ts=2)
 - The next thing we want to work on is job routes. We want to protect all job routes and only the authenticated user has access to the job routes. Since we have multiple job routes that we want to protect, it would make more sense to create an auth middleware function to call on any route we want to protect
 - File: middleware/authentication.js
   - Write an async auth middleware function that verifies the user token in the req.body headers
@@ -581,7 +581,7 @@ Email Validation Regex
   module.exports = auth;
   ```
 
-### [15. Testing auth middleware]()
+### [15. Testing auth middleware](https://github.com/sungnga/practice/commit/21da415343358624d0f324ac26dd7e262a58e7bb?ts=2)
 - The first option to applying the auth middleware to the job routes is to use it on the individual routes in jobs.js file in routes folder
 - The second option is to apply it on the jobs base rout which is in the app.js file. This way all the job routes are protected
 - File: app.js
@@ -607,7 +607,7 @@ Email Validation Regex
   - in the Headers authentication body, provide the token `Bearer <token>`. Must first register a user to generate a token
   - if successful, we should get back a user object
 
-### [16. Setup Job model: JobSchema]()
+### [16. Setup Job model: JobSchema](https://github.com/sungnga/practice/commit/40f2b9d08086cb78acb82240987f700bfde5b914?ts=2)
 - File: models/Job.js
   - Here, every time we create a new job we tie the job to the user. We do this by using `mongoose.Types.ObjectId` and referencing the model name. In our case, it's the User model
   ```js
@@ -644,7 +644,7 @@ Email Validation Regex
   module.exports = mongoose.model('Job', JobSchema);
   ```
 
-### [17. Implement createJob controller]()
+### [17. Implement createJob controller](https://github.com/sungnga/practice/commit/0e3b43298d98bebf32475a6d2b25f6f25c72aabf?ts=2)
 - File: controllers/jobs.js
   - Import the Job model, the StatusCodes, and the BadRequestError and NotFoundError classes
   ```js
@@ -660,7 +660,7 @@ Email Validation Regex
   };
   ```
 
-### [18. Implement getAllJobs controller]()
+### [18. Implement getAllJobs controller](https://github.com/sungnga/practice/commit/d8f318c00afaf799a758206a523b91e3087c0d8b?ts=2)
 - Since each job is tied to a userId who created the job, in the getAllJobs controller, we can find all jobs that belong to that user by the createdBy property
 - Since the getAllJobs route is protected, authentication token must be provided in the headers body of the query. And in our auth middleware, if authentication is successful, the user object is added to the jobs route. Hence, in the getAllJobs controller, we have access to the user object in `req.user` and we can get the userId here
 - File: controllers/jobs.js
@@ -673,7 +673,7 @@ Email Validation Regex
   };
   ```
 
-### [19. Set token dynamically in POSTMAN]()
+### [19. Set token dynamically in POSTMAN](https://github.com/sungnga/practice/commit/dcd7569c0d2f3f828e9857cd38987859b5857f6b?ts=2)
 - In our project, as we want to create more users or make different job queries, we don't want to type in the token value in the headers content every time. In the Postman we can set this up dynamically where if we successfully register a new user and we get back the token in json response, we can pass the token value as global variable to the jobs routes
 - **Setting up token dynamically:**
   - For the login and register routes:
@@ -693,7 +693,7 @@ Email Validation Regex
     - Click on the Authorization tab and select the "Bearer Token" type
     - Then provide the global variable as the token value: `{{accessToken}}`
 
-### [20. Implement getJob controller]()
+### [20. Implement getJob controller](https://github.com/sungnga/practice/commit/43e7adc0b43a0692fe14bee79a22be1c4c3313fc?ts=2)
 - The get single job route requires a job id in the query params. So the route looks like this: `/jobs/:id`
 - File: controllers/jobs.js
   ```js
@@ -738,7 +738,7 @@ Email Validation Regex
     }
     ```
 
-### [21. Implement updateJob controller]()
+### [21. Implement updateJob controller](https://github.com/sungnga/practice/commit/b029b6996db8437a6b77aad8a0f7fa38dfa05fd4?ts=2)
 - Updating a job is a PATCH request and it requires a jobId in the query params
 - The user must provide the values for company and position properties in the Body content
 - Since this route is protected, once the user has been authenticated, the user object is attached to the req object of this route
@@ -777,7 +777,7 @@ Email Validation Regex
   - If successful, we should get back the updated job object
   - Go back to getAllJobs route and make a request. Check to see if the job we want to job has been updated
 
-### [22. Implement deleteJob controller]()
+### [22. Implement deleteJob controller](https://github.com/sungnga/practice/commit/b7df80896cfa11675448b389bbfe859263f9c9dc?ts=2)
 - To remove a job, make a DELETE query and provide the jobId in the query params
 - File: controllers/jobs.js
   - Use the `.findOneAndRemove()` method on the Job model to remove a job
@@ -802,7 +802,7 @@ Email Validation Regex
   };
   ```
 
-### [23. Handle duplicate email error]()
+### [23. Handle duplicate email error](https://github.com/sungnga/practice/commit/2a8a7bbb82ff0a7e31237d08cb26f607efe2c45a?ts=2)
 - Let's work on error handling where we send back a more user-friendly response when an error occurs
 - Currently we have three Mongoose errors:
   - Validation errors - if the user doesn't provide the values
@@ -841,7 +841,7 @@ Email Validation Regex
   };
   ```
 
-### [24. Handle validation error]()
+### [24. Handle validation error](https://github.com/sungnga/practice/commit/dc619292ad1eae276eaf190c23a8b22cdfb80562?ts=2)
 - Let's handle validation errors. For example, if the user doesn't provide a value for name, email, or password in registration
 - File: middleware/error-handler.js
   - Console log the err.errors object to see what we have to work with
@@ -860,7 +860,7 @@ Email Validation Regex
   }
   ```
 
-### [25. Handle cast error]()
+### [25. Handle cast error](https://github.com/sungnga/practice/commit/7ea1807ade67fc8a9fce4d40d968f5dde34a8bf5?ts=2)
 - If we're updating a job, get a single job or deleting a job, we need to provide a job id to the query params. If we provide a jobId that's not in the database we get a 404 status code. However, if we provide a jobId that isn't correct (i.e if the number of characters is too long or too short or a syntax error), we get a casting error
   - Example of casting error
   ```js
@@ -947,7 +947,7 @@ Email Validation Regex
   module.exports = errorHandlerMiddleware;
   ```
 
-### [26. Setup security and install security packages]()
+### [26. Setup security and install security packages](https://github.com/sungnga/practice/commit/d4b8dabf76c47ef05751c8441657d6ef85a4e936?ts=2)
 - These are the security packages we will use to make our application a little more secured before deploying it to Heroku. These security packages are used as middleware in our application
   - helmet - a very popular security package securing the http headers
   - cors - ensures our API is accessible from different domain
@@ -977,7 +977,7 @@ Email Validation Regex
   app.use(xss());
   ```
 
-### [27. Deploy app to Heroku]()
+### [27. Deploy app to Heroku](https://github.com/sungnga/practice/commit/92f70f1ff7c3e10b3f1fda738ad757b3c158ac62?ts=2)
 - Need three things:
   - Sign up for Heroku account
   - GIT version control installed
@@ -1051,7 +1051,7 @@ Email Validation Regex
     - Click on the Authorization tab and select the Bearer Token type. The token value is `{{accessToken}}`
     - If successful, we should get back all the jobs
 
-### [28. How to clone existing Heroku project]()
+### [28. How to clone existing Heroku project](https://github.com/sungnga/practice/commit/48ca7b6116af1124ab99b325012ecee537afbc1a?ts=2)
 - The idea is we want to clone a copy of our project that we just deployed to Heroku. This project is now sitting in the cloud. If we want to make a change to the project, we can make the changes on our local machine and push it back up to Heroku
 - Clone a copy of Heroku project to computer desktop
   - In the terminal, cd into desktop adn run: `heroku git:clone -a <name_of_project>`
