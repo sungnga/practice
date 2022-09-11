@@ -4,7 +4,7 @@
 ### Goals of this project
 - Learn how to generate JWT (Json Web Token) for user authentication and allow access to certain data and routes
 
-### [01. Initialize project with starter files]()
+### [01. Initialize project with starter files](https://github.com/sungnga/practice/commit/5c3cc8f295d956b5f37afc31e46a5d59e6c22809?ts=2)
 - Get starter project files from https://github.com/john-smilga/node-express-course/tree/main/05-JWT-Basics/starter
 - cd into project directory: `cd 05-jwt-basics`
 - Run `rm -rf .git` to avoid any issues if pushing to your own github repo
@@ -17,7 +17,7 @@
 - All the static files in the public folder is served using express app
 - Setup port to either listen to process.env.PORT or port 3000
 
-### [02. Setup the controllers]()
+### [02. Setup the controllers](https://github.com/sungnga/practice/commit/5ee80599c1bae8014bb4d2f1a7fd16427a2b2637?ts=2)
 - File: controllers/main.js
   - Setup two routes for dashboard and login
   ```js
@@ -61,7 +61,7 @@
   app.use('/api/v1', mainRouter);
   ```
 
-### [03. Validate username and password]()
+### [03. Validate username and password](https://github.com/sungnga/practice/commit/3464c6ed979bb9e9846bb8cc87bdf17ea47482b0?ts=2)
 - **Steps for authenticating users:**
   - Check for username and password in POST(login) request in `req.body`
   - If exists, create a new JWT
@@ -92,7 +92,7 @@
   };
   ```
 
-### [JSON Web Token (JWT)]()
+### [04. JSON Web Token (JWT)](https://github.com/sungnga/practice/commit/a40452c537675d517989e60ab3a93053cdf446f8?ts=2)
 - JWT docs: https://jwt.io/introduction
 - Install the JSON Web Token package: `npm install jsonwebtoken`
 - **What is JSON Web Token?**
@@ -148,7 +148,7 @@
   - Whenever the user wants to access a protected route or resource, the user agent should send the JWT, typically in the Authorization header using the Bearer schema. The content of the header should look like the following:
     - `Authorization: Bearer <token>`
 
-### [04. Sign JWT]()
+### [05. Sign JWT](https://github.com/sungnga/practice/commit/0b745cde9efb54d40f60ad47f4dbe014324f275f?ts=2)
 - Install the jsonwebtoken package: `npm install jsonwebtoken`
 - File: controllers/main.js
   - Require in the jsonwebtoken module. From this package, we have access to the `jwt` object
@@ -225,7 +225,7 @@
       }
       ```
 
-### [05. Send bearer token]()
+### [06. Send bearer token](https://github.com/sungnga/practice/commit/fc16f782686bd5580d52e909da5efbb64aa88374?ts=2)
 - Once a JWT token is created and sent back to the front-end client, the client can use this token to query for data on a secured route. This token is sent in the Authorization headers as a bearer token. The content of the header should look like this:
     - `Authorization: Bearer <token>`
 - File: controllers/main.js
@@ -244,7 +244,7 @@
   - First, let's generate a token. In the login route, make a POST request and provide the username and password in the body. If successful, it should generate a JWT token. Copy this to the clipboard
   - Go to the dashboard route and make a GET request. In the Headers tab, provide the `Authorization` key and the value in this format: `Bearer <token>`. If successful, we should get back the data
 
-### [06. Check for auth header]()
+### [07. Check for auth header](https://github.com/sungnga/practice/commit/8969f976fb97aedbfb26e7a8203676d0bbf79beb?ts=2)
 - In the dashboard controller, let's check to see if the client provided a JWT token when making a request. We check for the token in the headers content
 - File: controllers/main.js
   - In the dashboard controller:
@@ -273,7 +273,7 @@
   };
   ```
 
-### [07. Verify token]()
+### [08. Verify token](https://github.com/sungnga/practice/commit/ef53663e93836d1a290cf8713cfbc3954eb8ce36?ts=2)
 - We used the jsonwebtoken package earlier to help us create a JSON Web Token using the `jwt.sign()` method. Now we're going to use this package again to verify the JSON Web Token using the `jwt.verify()` method
 - After successfully verifying a user's token we will have completed in setting up user authentication when they try to access secured data or routes
 - File: controllers/main.js
@@ -316,7 +316,7 @@
   };
   ```
 
-### [08. Create authenticationMiddleware]()
+### [09. Create authenticationMiddleware](https://github.com/sungnga/practice/commit/9a1ce01644f6ad6ab24e4e2524fabd46c964e546?ts=2)
 - With our current setup, we check for user authentication in the dashboard controller. In most real-life projects, we have many routes that require authentication and we don't want to write this over and over. It's better to create an authentication middleware and use it wherever a route requires authentication
 - File: middleware/auth.js
   - Require in the jsonwebtoken package
@@ -389,7 +389,7 @@
   router.route('/dashboard').get(authMiddleware, dashboard);
   ```
 
-### [09. Create more error classes]()
+### [10. Create more error classes](https://github.com/sungnga/practice/commit/a7842945e6fb52737bd99967deb4545ea78fb182?ts=2)
 - At the moment we only have one error handler, the CustomAPIError error class that extends from the Error class. In our project we need to handle the error of bad request (status code 400) and unauthorized error (status code 401). We want to create two more classes to handle these errors and they're going to extend from the CustomAPIError class
 - Also, instead of hard-coding the status code values in the classes, we're going to use an external library that allows us to write error codes that are easier to read and understand
   - Install: `npm install http-status-codes`
@@ -454,7 +454,7 @@
   };
   ```
 
-### [10. Refactor]()
+### [11. Refactor](https://github.com/sungnga/practice/commit/929a90b37d885303b984556e3b052407be660a66?ts=2)
 - Now we need to refactor our application to make use of the different error classes that we created earlier
 - File: middleware/auth.js
   - We're going to use the UnauthenticatedError class to handle Unauthorized errors in the authorizationMiddleware function
