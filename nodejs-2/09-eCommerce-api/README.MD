@@ -9,7 +9,7 @@
 - How to use MongoDB aggregate pipeline
 - How to publish docs via docgen package
 
-### [01. Initialize project with starter files]()
+### [01. Initialize project with starter files](https://github.com/sungnga/practice/commit/447e91c8dca808a9d23ad58bd77167dc45e641fe?ts=2)
 - Get starter project files from https://github.com/john-smilga/node-express-course/tree/main/10-e-commerce-api
 - cd into project directory: `cd 09-eCommerce-api`
 - Run `rm -rf .git` to avoid any issues if pushing to your own github repo
@@ -17,9 +17,9 @@
 - Create a `.gitignore` file. Add these files to the list: package-lock.json, /node_modules, and .env
 - Then run the script `npm start` to start up the project. This will run nodemon on app.js file
 
-### [02. Setup basic Express server]()
-- [X] import express and assign to variable
-- [X] setup start port variable (5000) and start function
+### [02. Setup basic Express server](https://github.com/sungnga/practice/commit/94e79d718aaadcd59157cbafb4d9c4ee9b3bff93?ts=2)
+- [] import express and assign to variable
+- [] setup start port variable (5000) and start function
 - File: app.js
   ```js
   // express
@@ -39,13 +39,13 @@
   start();
   ```
 
-### [03. Connect to database]()
-- [X] get connection string from MongoDB
-- [X] setup .env with MONGO_URL variable and assign the value
-- [X] import 'dotenv' and setup package
-- [X] import connect() and invoke in the starter
-- [X] restart the server
-- [X] mongoose V6 info
+### [03. Connect to database](https://github.com/sungnga/practice/commit/0807ab160cee65ebe46647f735db1cd833b706de?ts=2)
+- [] get connection string from MongoDB
+- [] setup .env with MONGO_URL variable and assign the value
+- [] import 'dotenv' and setup package
+- [] import connect() and invoke in the starter
+- [] restart the server
+- [] mongoose V6 info
 - File: .env
   - In the connection string, give the database a name and provide the password
   ```js
@@ -93,11 +93,11 @@
   start();
   ```
 
-### [04. Setup basic routes and middleware]()
-- [X] setup / GET Route
-- [X] setup express.json() middleware
-- [X] setup 404 and errorHandler middleware
-- [X] import 'express-async-errors' package
+### [04. Setup basic routes and middleware](https://github.com/sungnga/practice/commit/8896332a4636a9daa06ff0ae4ee9af760d360780?ts=2)
+- [] setup / GET Route
+- [] setup express.json() middleware
+- [] setup 404 and errorHandler middleware
+- [] import 'express-async-errors' package
   - This middleware automatically applies the async-await to all of the controllers
   - So we don't need to use the try-catch block in the controllers
 - **404 vs ErrorHandler Middleware**
@@ -131,7 +131,7 @@
   app.use(errorHandlerMiddleware);
   ```
 
-### [05. Using Morgan package for debugging]()
+### [05. Using Morgan package for debugging](https://github.com/sungnga/practice/commit/b6cf00e4275312d262239a289ff97ef59f783dd5?ts=2)
 - Morgan is a useful tool to help with debugging while in development. It logs useful route request information and prints it to the console. It tells the type of request method, the route path being made, the status code, and how long the request takes
 - Docs: https://www.npmjs.com/package/morgan
 - Install Morgan: `npm i morgan`
@@ -147,10 +147,10 @@
   - Go to the browser and make a request to the home page: `http://localhost:5000/`. You see this printed in the console: `GET / 304 - - 20.431 ms`
   - Make a request to this route: `http://localhost:5000/apple`. You should see this printed in the console: `GET /apple 404 20 - 4.403 ms`
 
-### [06. Setup UserSchema model]()
-- [X] create models folder and User.js file
-- [X] create schema with name,email, password, role (all type:String)
-- [X] export mongoose model
+### [06. Setup UserSchema model](https://github.com/sungnga/practice/commit/e5ae6b043e5ef8a7e3d3988bda1ca74abc47dd57?ts=2)
+- [] create models folder and User.js file
+- [] create schema with name,email, password, role (all type:String)
+- [] export mongoose model
 - We have two types of users in our UserSchema model:
   - Admin user - can perform CRUD operations on product
   - Regular user - can checkout, cannot add or modify product
@@ -186,7 +186,7 @@
   module.exports = mongoose.model('User', UserSchema);
   ```
 
-### [07. Using Validator package]()
+### [07. Using Validator package](https://github.com/sungnga/practice/commit/0e03ec6f5b38634a2fe2932ad1673c94db542cc8?ts=2)
 - [Validator docs](https://www.npmjs.com/package/validator)
 - Install Validator: `npm i validator`
 - In our UserSchema model, we want to validate the email that the client provides. One approach is to use Mongoose's built-in validators. We can also define our custom validators. We're going to use a very popular package called Validator
@@ -209,18 +209,18 @@
   },
   ```
 
-### [08. Setup structure for auth controllers and routes]()
-- [X] create controllers folder
-- [X] add authController file
-- [X] export (register,login,logout) functions
-- [X] res.send('some string value')
-- [X] create routes folder
-- [X] setup authRoutes file
-- [X] import all controllers
-- [X] setup three routes
-- [X] post('/register') post('/login') get('/logout')
-- [X] import authRoutes as authRouter in the app.js
-- [X] setup app.use('/api/v1/auth', authRouter)
+### [08. Setup structure for auth controllers and routes](https://github.com/sungnga/practice/commit/2ed42b3c9fe3d54c86d854154e360756a4e6a765?ts=2)
+- [] create controllers folder
+- [] add authController file
+- [] export (register,login,logout) functions
+- [] res.send('some string value')
+- [] create routes folder
+- [] setup authRoutes file
+- [] import all controllers
+- [] setup three routes
+- [] post('/register') post('/login') get('/logout')
+- [] import authRoutes as authRouter in the app.js
+- [] setup app.use('/api/v1/auth', authRouter)
 - File: controllers/authController.js
   - Setup the basic structure for the three auth controllers
   ```js
@@ -259,7 +259,7 @@
   app.use('/api/v1/auth', authRouter);
   ```
 
-### [09. Setup Postman environment, test routes]()
+### [09. Setup Postman environment, test routes](https://github.com/sungnga/practice/commit/e94071ba154a12f8c958cbb02010a1a3d8009f10?ts=2)
 - Postman environment is a way to setup different environment variables for different projects. For example, some projects may be localhost:3000 and others may be using localhost:5000
 - **Setup Postman environment:**
   - Click on the Eye icon and in the Environment section, click on the Add button
@@ -288,9 +288,9 @@
     - The Environment is: Dev Environment
     - Click on the Send button. If everything is setup properly, we should get back "login user"
 
-### [10. Initial setup for register controller]()
-- [X] create user
-- [X] send response with entire user (only while testing)
+### [10. Initial setup for register controller](https://github.com/sungnga/practice/commit/67f630d12333c50f5d315ae45af87166f8e54aeb?ts=2)
+- [] create user
+- [] send response with entire user (only while testing)
 - [] check if email already in use (schema and controller)
 - [] ignore 'role'
 - [] alternative 'admin' setup
@@ -330,8 +330,8 @@
     }
     ```
 
-### [11. Implement register controller: unique email]()
-- [X] check if email already in use (schema and controller)
+### [11. Implement register controller: unique email](https://github.com/sungnga/practice/commit/62b86bc05026987c8be1925de762fa3faf42cb60?ts=2)
+- [] check if email already in use (schema and controller)
 - We can validate the email to make sure that it is unique in two places:
   - Use Mongoose in the UserSchema model to add a `unique` property to the `email` object. Note that this DOES NOT validate the email, but rather checks to see if the email is unique. It'll throw an error if the value of email isn't unique
   - In the register controller, check to see if the email already exists in the User collection. If it does, we throw our CustomError class with an error message
@@ -365,9 +365,9 @@
   };
   ```
 
-### [12. Implement register controller: setting role]()
-- [X] ignore 'role'
-- [X] alternative 'admin' setup
+### [12. Implement register controller: setting role](https://github.com/sungnga/practice/commit/079effc9fac285a9c38995d89bb2b5eccbe13878?ts=2)
+- [] ignore 'role'
+- [] alternative 'admin' setup
 - In our current setup in the UserSchema model, when we register a new user, it'll be assigned as a regular user role by default. Also in front-end, when a person registers as a new user, he or she doesn't get to choose a role either. We can, however, go to User collection in MongoDB to change a user role. In a more real life scenario, we can setup the project where we can change a user's permission and role
 - In this project, we want to make the first registered user as an admin user. We can set this up in the register controller
 - File: controllers/authController.js
@@ -395,11 +395,11 @@
   };
   ```
 
-### [13. Handle password]()
-- [X] UserSchema.pre('save') - hook
-- [X] use simple function instead of arrow function - this points to User instance
-- [X] bcrypt.genSalt() method - number of rounds
-- [X] bcrypt.hash() method
+### [13. Handle password](https://github.com/sungnga/practice/commit/479c5a3ac677815632477a16b6e4c6dba680ec8d?ts=2)
+- [] UserSchema.pre('save') - hook
+- [] use simple function instead of arrow function - this points to User instance
+- [] bcrypt.genSalt() method - number of rounds
+- [] bcrypt.hash() method
 - Before saving the user object as a document in the database, we want to first hash the user password. We use a package called bcryptjs to help us with this
 - Install bcryptjs: `npm i bcryptjs`
 - File: models/User.js
@@ -445,10 +445,10 @@
     ```
   - Go to MongoDB dashboard page and navigate to the project's "users" collection. There should be a user document created with the hashed password
 
-### [14. JWT setup in authController]()
-- [X] initial jwt setup in authController
-- [X] require 'jsonwebtoken' package
-- [X] create jwt - jwt.sign(payload,secret,options)
+### [14. JWT setup in authController](https://github.com/sungnga/practice/commit/4c713eee84270965f3b13b20d10935d9ecb59afb?ts=2)
+- [] initial jwt setup in authController
+- [] require 'jsonwebtoken' package
+- [] create jwt - jwt.sign(payload,secret,options)
 - Let's issue json web token to users so we can start restricting access to certain resources
 - We're going to start setting up the jsonwebtoken in the authController and later we will refactor the code into a utils folder so we can use it in multiple places
 - Install jsonwebtoken package: `npm i jsonwebtoken`
@@ -503,13 +503,13 @@
     }
     ```
 
-### [15. Refactor JWT setup]()
-- [X] add variables in .env - JWT_SECRET=jwtSecret and JWT_LIFETIME=1d
-- [X] restart the server !!!!
-- [X] refactor code, create jwt functions in utils folder
-  - [X] require 'jsonwebtoken' package
-  - [X] create jwt - jwt.sign(payload,secret,options)
-  - [X] verify jwt - jwt.verify(token,secret)
+### [15. Refactor JWT setup](https://github.com/sungnga/practice/commit/009119964cd1fc9ec691aebe55b0120c7ed07b86?ts=2)
+- [] add variables in .env - JWT_SECRET=jwtSecret and JWT_LIFETIME=1d
+- [] restart the server !!!!
+- [] refactor code, create jwt functions in utils folder
+  - [] require 'jsonwebtoken' package
+  - [] create jwt - jwt.sign(payload,secret,options)
+  - [] verify jwt - jwt.verify(token,secret)
 - [] refactor cookie code
 - [] setup func attachCookiesToResponse
 - [] accept payload(res, tokenUser)
@@ -564,8 +564,8 @@
   const token = createJWT({ payload: tokenUser });
   ```
 
-### [16. Setup cookies in register controller]()
-- [X] Setup cookies in register controller
+### [16. Setup cookies in register controller](https://github.com/sungnga/practice/commit/b318c05578155f0ecb2a63ca6baa2ca37d6e7f90?ts=2)
+- [] Setup cookies in register controller
 - Up to this point in our register controller, once a new user has been created and a jwt has been issued, it sends back the user object and the token. Now, we want to store the token in the cookies instead. The register controller returns the user object and the cookie. The advantage of storing the token in a cookie is we can set it up in such a way that only the web browser(http) has access to it and the browser will automatically send the cookie upon the next http request
 - The Express package comes with the `res.cookie()` method to send a cookie as a response in a controller
   - `res.cookie(name, value, [, options])`
@@ -598,7 +598,7 @@
   - We should get back a user object in the Body response tab
   - In the Cookies response tab, we get back the name of the token, the token value, expiration date and HttpOnly set to true
 
-### [17. Parse cookies]()
+### [17. Parse cookies](https://github.com/sungnga/practice/commit/2a320466e17c743eef25442c9881cfbfc08e9dce?ts=2)
 - Now that we're able to deliver the jwt in a cookie, we want to retrieve the jwt coming back from the browser on a server. We want to see if the front-end really attaches a cookie for the upcoming requests. To do this, we need to use an external package, a middleware called cookie-parser, to parse the cookie
 - Install cookie-parser: `npm i cookie-parser`
 - After installing and using the middleware, we have access to the cookies in `req.cookies`
@@ -632,12 +632,12 @@
     GET /api/v1 200 9 - 4.813 ms
     ```
 
-### [18. Refactor cookies setup]()
-- [X] refactor cookie code
-- [X] setup func attachCookiesToResponse
-- [X] accept payload(res, tokenUser)
-- [X] create token, setup cookie
-- [X] optionally send back the response
+### [18. Refactor cookies setup](https://github.com/sungnga/practice/commit/c4703ed6b69e6e7581fdcec2c930d9a40e26de86?ts=2)
+- [] refactor cookie code
+- [] setup func attachCookiesToResponse
+- [] accept payload(res, tokenUser)
+- [] create token, setup cookie
+- [] optionally send back the response
 - In this step we're going to refactor the cookie setup as a util function and then use it in the register controller. We will also use this function in other places of the project in the future. The functionality of this function is first create a jwt by calling the createJWT() method that we created earlier and then call the res.cookie() method (provided by Express) to attach the jwt to the cookie response
 - File: utils/jwt.js
   - Create a attachCookiesToResponse util function that accepts a res object and user object as payload
@@ -703,8 +703,8 @@
   };
   ```
 
-### [19. Add signed and secure flags to cookie setup]()
-- [X] add signed and secure flags to cookie setup
+### [19. Add signed and secure flags to cookie setup](https://github.com/sungnga/practice/commit/1760754197621fefc476a64cbb3d5171735bf576?ts=2)
+- [] add signed and secure flags to cookie setup
 - Let's finish setting up the res.cookie with the signed and secure flags
 - The secure flag marks the cookie to be used with HTTPS only. It restricts browsers to send cookies only over HTTPS. Set this flag to true when in production mode
 - The signed flag indicates if the cookie is signed. It detects if the cookie has been tempered
@@ -733,11 +733,11 @@
   });
   ```
 
-### [20. Implement login controller]()
-- [X] check if email and password exist, if one missing return 400
-- [X] find user, if no user return 401
-- [X] check password, if does not match return 401
-- [X] if everything is correct, attach cookie
+### [20. Implement login controller](https://github.com/sungnga/practice/commit/e8eda02c9ee9162234ba07a69b66c2cbd12f6807?ts=2)
+- [] check if email and password exist, if one missing return 400
+- [] find user, if no user return 401
+- [] check password, if does not match return 401
+- [] if everything is correct, attach cookie
   and send back the same response as in register
 - File: controllers/authController.js
   ```js
@@ -785,9 +785,9 @@
   - If the login controller is setup properly, we should get back the user object that has their name, userId, and role. We should also get back the user token in cookies response
   - To see the user token on the server, make a GET request to the home route and the user token should be printed in the console
 
-### [21. Implement logout controller]()
-- [X] set token cookie equal to some string value
-- [X] set expires:new Date(Date.now())
+### [21. Implement logout controller](https://github.com/sungnga/practice/commit/792a9f40cde73cd6e5ec7e210dff1f6a9e57af9e?ts=2)
+- [] set token cookie equal to some string value
+- [] set expires:new Date(Date.now())
 - When implementing the logout controller, there are two things we need to do. First thing is we need to set the value of token property in the cookie to a different value. Second set the cookie expiration date to something very small
 - File: controllers/authController.js
   - In the logout controller:
@@ -812,15 +812,15 @@
   - If the logout controller is setup properly, we get back a 200 OK status code and response a message. Also, the cookie response has been removed
   - To double check that the cookie has been removed, make a GET request to the home page route. We should not see the token value printed in the console. This means that when we make a subsequent request, the browser did not send a cookie to the server
 
-### [22. Setup user routes structure]()
-- [X] add userController file in controllers folder
-- [X] export (getAllUsers,getSingleUser,showCurrentUser,updateUser,updateUserPassword) functions
-- [X] res.send('some string value')
-- [X] setup userRoutes file
-- [X] import all controllers
-- [X] setup just one route - router.route('/').get(getAllUsers);
-- [X] import userRoutes as userRouter in the app.js
-- [X] setup app.use('/api/v1/users', userRouter)
+### [22. Setup user routes structure](https://github.com/sungnga/practice/commit/3c24213879e36b2d9c4a0f049db0d8a75f3b216a?ts=2)
+- [] add userController file in controllers folder
+- [] export (getAllUsers,getSingleUser,showCurrentUser,updateUser,updateUserPassword) functions
+- [] res.send('some string value')
+- [] setup userRoutes file
+- [] import all controllers
+- [] setup just one route - router.route('/').get(getAllUsers);
+- [] import userRoutes as userRouter in the app.js
+- [] setup app.use('/api/v1/users', userRouter)
 - All the auth routes we have set up are public routes. Now, let's setup some secured user routes where only authenticated users have access to the routes
 - File: controllers/userController.js
   - Setup the basic structure of the five user controllers and export them
@@ -897,10 +897,10 @@
   - Create an 'Update user password' route with a PATCH method: {{URL}}/users/updateUserPassword
     - In the Body tab, update the password property in json format
     
-### [23. Implement getAllUsers and getSingleUser controllers]()
-- [X] Get all users where role is 'user' and remove password
-- [X] Get Single User where id matches id param and remove password
-- [X] If no user 404
+### [23. Implement getAllUsers and getSingleUser controllers](https://github.com/sungnga/practice/commit/00f46b09151eb9083f34748d16735a857d1b2c49?ts=2)
+- [] Get all users where role is 'user' and remove password
+- [] Get Single User where id matches id param and remove password
+- [] If no user 404
 - File: controllers/userController.js
   - Import the User model, the StatusCodes object, and the CustomError class
   ```js
@@ -944,8 +944,8 @@
   - Make a GET request in the 'Get single user' route and pass in the user id as the params.id: {{URL}}/users/62c29041dab89f45151942a0
   - If the getSingleUser controller is setup properly, we should get back the matching user object. Also test with an incorrect user id
 
-### [24. Authenticate user: authenticateUser middleware]()
-- [X] Authenticate user
+### [24. Authenticate user: authenticateUser middleware](https://github.com/sungnga/practice/commit/361c38a0d5b1f3850ab964838355e049fe7910ea?ts=2)
+- [] Authenticate user
 - The next step we want to take is create a middleware that we can use to protect the user routes. Only authenticated users have access to the resources of these routes
 - **This is the user flow cycle:**
   - When a user register to our application, they must provide their name, email and password. The password is encrypted and the user information is stored in the database. A jwt is issued and stored in a signed cookies response. The browser automatically sends this to the server for subsequent requests
@@ -1015,9 +1015,9 @@
     - `{ name: 'Chris', userId: '62c29041dab89f45151942a0', role: 'user' }`
   - Also test the middleware by not logging in a user and then make a request to the 'Get all users' route. We should get back an error message "Authentication invalid"
 
-### [25. Authorize permissions: authorizePermissions middleware]()
-- [X] write a 2nd authentication middleware - checks user roles
-- [X] introduce params
+### [25. Authorize permissions: authorizePermissions middleware](https://github.com/sungnga/practice/commit/e7839a84c723b85043e0b28acc9373cb942e0228?ts=2)
+- [] write a 2nd authentication middleware - checks user roles
+- [] introduce params
 - How that we authenticated user in user routes, we also want to set permissions so that only users with certain roles can access certain routes. For example, in our application, only users with admin role have access to the 'getAllUsers' route
 - We're going to write a second middleware that checks for the user role before they have access to the route. Note that this second middleware only runs after the first middleware (authenticateUser middleware) is successful, which is authenticate user 
 - File: errors/unauthorized.js
@@ -1084,9 +1084,9 @@
     .get(authenticateUser, authorizePermissions('admin', 'owner'), getAllUsers);
   ```
 
-### [26. Implement showCurrentUser controller]()
-- [X] get user from req
-- [X] send response with user
+### [26. Implement showCurrentUser controller](https://github.com/sungnga/practice/commit/621c28041856b83e91b61743c53984b55b073b29?ts=2)
+- [] get user from req
+- [] send response with user
 - The task of the showCurrentUser controller simply checks to see if there's a user object on the current user page. The route is https://domain/api/v1/users/showMe. For example, if the user is on this page and they decide to refresh the page. This makes a GET request to the 'showMe' route and this controller just checks to see if a user exists on the `req.user` object after the user authentication process is completed. The `req.user` is created only if the authentication is successful, if the token in the signed cookies response is still valid. If the user hasn't logged in or registered or there's no token in the cookies, then there's no `req.user` object. This controller does not need to query the database for the user
 - File: routes/userRoutes.js
   - In the 'showMe' route, add the authenticateUser middleware as the first arg
@@ -1107,16 +1107,16 @@
   - If the showCurrentUser controller is setup properly, we should get back the user object, the authenticated user
   - Also test if a user is not logged in. We should get back an error message of "Authentication invalid" and status code of 401 Unauthorized
 
-### [27. Implement updateUserPassword controller]()
-- [X] almost identical to login user
-- [X] add authenticateUser middleware in the route
-- [X] check for oldPassword and newPassword in the body
-- [X] if one missing 400
-- [X] look for user with req.user.userId
-- [X] check if oldPassword matches with user.comparePassword
-- [X] if no match 401
-- [X] if everything good set user.password equal to newPassword
-- [X] await user.save()
+### [27. Implement updateUserPassword controller](https://github.com/sungnga/practice/commit/7b1e7d1f2c8c0b8491f3d1c938e7cc6b1864a111?ts=2)
+- [] almost identical to login user
+- [] add authenticateUser middleware in the route
+- [] check for oldPassword and newPassword in the body
+- [] if one missing 400
+- [] look for user with req.user.userId
+- [] check if oldPassword matches with user.comparePassword
+- [] if no match 401
+- [] if everything good set user.password equal to newPassword
+- [] await user.save()
 - File: routes/userRoutes.js
   - Add the authenticateUser middleware to the updateUserPassword route
   - Adding the middleware serves two things on this route. The first is, we only want authenticated user to access this route. The second is, we get access to the `req.user` object
@@ -1159,11 +1159,11 @@
   - If the updateUserPassword controller is setup properly, we should get back a success message with a 200 OK status code
   - Note that the user password has been hashed and updated in MongoDB database
 
-### [28. Create createTokenUser util function]()
-- [X] create a file in utils (createTokenUser)
-- [X] setup a function that accepts user object and returns userToken object
-- [X] export as default
-- [X] setup all the correct imports/exports and refactor existing code
+### [28. Create createTokenUser util function](https://github.com/sungnga/practice/commit/c8d68e551faf1adc893baf05f6ad93c38f2914c0?ts=2)
+- [] create a file in utils (createTokenUser)
+- [] setup a function that accepts user object and returns userToken object
+- [] export as default
+- [] setup all the correct imports/exports and refactor existing code
 - At this point, we've been creating the `tokenUser` object on the fly at least twice now in our project (in register and login controllers). We are about to do this again. When something we repeat over and over, it's a good idea to create a util function for it so that we can simply call it when we need to use it 
 - File: utils/createTokenUser.js
   - Create and export a createTokenUser util function that takes a user object as an argument. It returns an object that has the user name, userId, and role
@@ -1199,12 +1199,12 @@
   const tokenUser = createTokenUser(user);
   ```
 
-### [29. Implement updateUser controller]()
-- [X] add authenticateUser middleware in the route
-- [X] check for name and email in the body
-- [X] if one is missing, send 400 (optional)
-- [X] use findOneAndUpdate()
-- [X] create token user, attachCookiesToResponse and send back the tokenUser
+### [29. Implement updateUser controller](https://github.com/sungnga/practice/commit/6598c3c214b0fc608283c7ffcb32a71dec3eec3a?ts=2)
+- [] add authenticateUser middleware in the route
+- [] check for name and email in the body
+- [] if one is missing, send 400 (optional)
+- [] use findOneAndUpdate()
+- [] create token user, attachCookiesToResponse and send back the tokenUser
 - There are two ways to update a user instance:
   - User.findOneAndUpdate() method
   - User.save() method
@@ -1316,8 +1316,8 @@
   });
   ```
 
-### [30. Setup and apply checkPermissions function]()
-- [X] create checkPermissions util function
+### [30. Setup and apply checkPermissions function](https://github.com/sungnga/practice/commit/fa2266a859d22a251188da92e20aa0c462fb8184?ts=2)
+- [] create checkPermissions util function
 - The next task we want to work on is create a util function that checks whether the request user has permission to access another user resource. Only the authenticated user id (request user) that matches with the resource user id and the admin user have access to another user resource. This is in the getSingleUser controller. For example, David (the request user) should not have permission to access Susan's (the resource user) information. However, James, an admin user, has access to Susan's information
 - File: utils/checkPermissions.js
   - This util function checks for permission whether the request user can have access to the resource user information
@@ -1384,23 +1384,23 @@
   - Also test by logging in another user who is a regular user and then make the same request to the 'Get single user' route
   - Finally, test by logging in a regular user who tries to access their own information on the 'Get single user' route. They should have permission to do this
 
-### [31. Setup ProductSchema model]()
-- [X] create Product.js in models folder
-- [X] create Schema
-- [X] name : {type:String}
-- [X] price: {type:Number}
-- [X] description: {type:String}
-- [X] image: {type:String}
-- [X] category: {type:String}
-- [X] company: {type:String}
-- [X] colors: {type:[]}
-- [X] featured: {type:Boolean}
-- [X] freeShipping: {type:Boolean}
-- [X] inventory:{type:Number}
-- [X] averageRating:{type:Number}
-- [X] user
-- [X] set timestamps
-- [X] export Product model
+### [31. Setup ProductSchema model](https://github.com/sungnga/practice/commit/9f3ad1a00c4bd48200cb99daabdc0f0110a08763?ts=2)
+- [] create Product.js in models folder
+- [] create Schema
+- [] name : {type:String}
+- [] price: {type:Number}
+- [] description: {type:String}
+- [] image: {type:String}
+- [] category: {type:String}
+- [] company: {type:String}
+- [] colors: {type:[]}
+- [] featured: {type:Boolean}
+- [] freeShipping: {type:Boolean}
+- [] inventory:{type:Number}
+- [] averageRating:{type:Number}
+- [] user
+- [] set timestamps
+- [] export Product model
 - File: models/Product.js
   ```js
   const mongoose = require('mongoose');
@@ -1473,19 +1473,19 @@
   module.exports = mongoose.model('Product', ProductSchema);
   ```
 
-### [32. Setup Product basic routes structure]()
-- [X] add productController file in controllers
-- [X] export (createProduct, getAllProducts,
+### [32. Setup Product basic routes structure](https://github.com/sungnga/practice/commit/94fbd66b4bad83e7fa7e05d4e0852f0506211075?ts=2)
+- [] add productController file in controllers
+- [] export (createProduct, getAllProducts,
   getSingleProduct, updateProduct, deleteProduct, uploadImage) functions
-- [X] res.send('function name')
-- [X] setup productRoutes file in routes
-- [X] import all controllers
-- [X] only getAllProducts and getSingleProduct accessible to public
-- [X] rest only by admin (setup middlewares)
-- [X] typical setup
-- [X] router.route('/uploadImage').post(uploadImage)
-- [X] import productRoutes as productRouter in the app.js
-- [X] setup app.use('/api/v1/products', productRouter)
+- [] res.send('function name')
+- [] setup productRoutes file in routes
+- [] import all controllers
+- [] only getAllProducts and getSingleProduct accessible to public
+- [] rest only by admin (setup middlewares)
+- [] typical setup
+- [] router.route('/uploadImage').post(uploadImage)
+- [] import productRoutes as productRouter in the app.js
+- [] setup app.use('/api/v1/products', productRouter)
 - File: controllers/productController.js
   - Create and export six controllers for the Product model
   ```js
@@ -1562,7 +1562,7 @@
   app.use('/api/v1/products', productRouter);
   ```
 
-### [33. Setup Product routes in Postman]()
+### [33. Setup Product routes in Postman](https://github.com/sungnga/practice/commit/5cba00b0f74efb3b36c30cf26edf927ecbe9a47a?ts=2)
 - The base route for product routes is: `'/api/v1/products'`
 - In Postman, the base route for product routes is: `{{URL}}/products`
 - Inside the project folder, create another folder called Product
@@ -1575,10 +1575,10 @@
   - Delete product - a DELETE request to: {{URL}}/products/:id
 - Other than the 'Get all products' request, all other requests we should get back the cookies response as well because we applied the authenticateUser middleware to these routes. These are private routes, a user must successfully logged in before making requests
 
-### [34. Implement createProduct controller]()
-- [X] create user property on req.body and set it equal to userId (req.user)
-- [X] pass req.body into Product.create
-- [X] send back the product
+### [34. Implement createProduct controller](https://github.com/sungnga/practice/commit/1f6556ccae0b8875be3a0082f4dd88fb699a08b7)
+- [] create user property on req.body and set it equal to userId (req.user)
+- [] pass req.body into Product.create
+- [] send back the product
 - File: controllers/productController.js
   - Import the Product model, the StatusCode object, and the CustomError class
   - In the createProduct controller:
@@ -1637,13 +1637,13 @@
     - second, we get the user token stored in the cookies response
     - third, product document has been created in the MongoDB database in 'products' collection
     
-### [35. Implement getAllProducts, getSingleProduct, updateProduct, deleteProduct]()
-- [X] getAllProducts
-- [X] getSingleProduct
-- [X] updateProduct
-- [X] deleteProduct
-- [X] typical CRUD, utilize (task or job) project
-- [X] remember we check already for role 'admin'
+### [35. Implement getAllProducts, getSingleProduct, updateProduct, deleteProduct](https://github.com/sungnga/practice/commit/6f2c659cc2776815aaa13fa291ac573287d6a457?ts=2)
+- [] getAllProducts
+- [] getSingleProduct
+- [] updateProduct
+- [] deleteProduct
+- [] typical CRUD, utilize (task or job) project
+- [] remember we check already for role 'admin'
 - File: controllers/productController.js
   ```js
   const Product = require('../models/Product');
@@ -1697,8 +1697,8 @@
   - Then log in as a regular user and try to perform the same routes. Since this is a regular user, he or she can only access the 'Get all products' and 'Get single product' routes. This user can not update or delete product
 
 
-### [36. Implement uploadImage controller]()
-- [X] if unsure, review uploadImage controller in 07-file-upload project
+### [36. Implement uploadImage controller](https://github.com/sungnga/practice/commit/8a9ea18edc6109ef96f4ca0d490bbbf5457c51d1?ts=2)
+- [] if unsure, review uploadImage controller in 07-file-upload project
 - We're uploading the image to our development server which stores the image in a public directory. We will create a separate folder to store the uploaded image as a path
 - **Uploading an image file using POSTMAN:**
   - Make a POST request to the upload image route: `{{URL}}/products/uploadImage`
@@ -1784,16 +1784,16 @@
 - **To view the uploaded image file in the browser:**
   - To see the image in the browser: http://localhost:5000/uploads/example.jpeg
 
-### [37. Setup ReviewSchema model]()
-- [X] create Review.js in models folder
-- [X] create Schema
-- [X] rating : {type:Number}
-- [X] title: {type:String}
-- [X] comment: {type:String}
-- [X] user
-- [X] product
-- [X] set timestamps
-- [X] export Review model
+### [37. Setup ReviewSchema model](https://github.com/sungnga/practice/commit/cd4aeff09cdb0106f1c594207921fbc83883ddd3?ts=2)
+- [] create Review.js in models folder
+- [] create Schema
+- [] rating : {type:Number}
+- [] title: {type:String}
+- [] comment: {type:String}
+- [] user
+- [] product
+- [] set timestamps
+- [] export Review model
 - The unique feature about the Review model is a user can only leave one review per product
 - File: models/Review.js
   ```js
@@ -1838,17 +1838,17 @@
   module.exports = mongoose.model('Review', ReviewSchema);
   ```
 
-### [38. Setup Review basic routes structure]()
-- [X] add reviewController file in controllers
-- [X] export (createReview, getAllReviews, getSingleReview, updateReview, deleteReview) functions
-- [X] res.send('function name')
-- [X] setup reviewRoutes file in routes
-- [X] import all controllers
-- [X] only getAllReviews and getSingleReview accessible to public
-- [X] rest only to users (setup middleware)
-- [X] typical REST setup
-- [X] import reviewRoutes as reviewRouter in the app.js
-- [X] setup app.use('/api/v1/reviews', reviewRouter)
+### [38. Setup Review basic routes structure](https://github.com/sungnga/practice/commit/5235600a5865f2fe8aefb9c8cb541a2253b74c86?ts=2)
+- [] add reviewController file in controllers
+- [] export (createReview, getAllReviews, getSingleReview, updateReview, deleteReview) functions
+- [] res.send('function name')
+- [] setup reviewRoutes file in routes
+- [] import all controllers
+- [] only getAllReviews and getSingleReview accessible to public
+- [] rest only to users (setup middleware)
+- [] typical REST setup
+- [] import reviewRoutes as reviewRouter in the app.js
+- [] setup app.use('/api/v1/reviews', reviewRouter)
 - File: controllers/reviewController.js
   - Create and export the basic structure of five controllers for the five review routes: createReview, getAllReviews, getSingleReview, updateReview, deleteReview
   ```js
@@ -1916,7 +1916,7 @@
   app.use('/api/v1/reviews', reviewRouter);
   ```
 
-### [39. Setup Review routes in Postman]()
+### [39. Setup Review routes in Postman](https://github.com/sungnga/practice/commit/64d35c2984f1d906c23c8cd9e82e4f32eb7a5b41?ts=2)
 - The base route for review routes is: `'/api/v1/reviews'`
 - In Postman, the base route for review routes is: `{{URL}}/reviews`
 - Inside the project folder, create another folder called Review
@@ -1928,10 +1928,10 @@
   - Delete review - a DELETE request to: {{URL}}/reviews/:id
 - Note that the 'Create review', 'Update review', and 'Delete review' routes are private routes, a user must successfully logged in before making requests. We applied the authenticateUser middleware on these routes in the reviewRoutes.js file. Hence when we make requests to these routes, we should also get back the cookies response which contains the user token
 
-### [40. Implement createReview controller]()
-- [X] check for product in the req.body
-- [X] attach user property (set it equal to req.user.userId) on to req.body
-- [X] create review
+### [40. Implement createReview controller](https://github.com/sungnga/practice/commit/d64784eab02f52b1368fe5f18d41195733c795b9?ts=2)
+- [] check for product in the req.body
+- [] attach user property (set it equal to req.user.userId) on to req.body
+- [] create review
 - File: controllers/reviewController.js
   ```js
   const Review = require('../models/Review');
@@ -2007,8 +2007,8 @@
     }
     ```
 
-### [41. Implement getAllReviews, getSingleReview controllers]()
-- [X] both public routes, typical setup
+### [41. Implement getAllReviews, getSingleReview controllers](https://github.com/sungnga/practice/commit/0a4b1d2472b03ed297f4bfa3287f29d5e561fd18?ts=2)
+- [] both public routes, typical setup
 - File: controllers/reviewController.js
   ```js
   const Review = require('../models/Review');
@@ -2035,13 +2035,13 @@
   };
   ```
 
-### [42. Implement deleteReview controller]()
-- [X] get id from req.params
-- [X] check if review exists
-- [X] if no review, 404
-- [X] check permissions (req.user, review.user)
-- [X] use await review.remove()
-- [X] send back 200
+### [42. Implement deleteReview controller](https://github.com/sungnga/practice/commit/5dea713f56333e8986a19467bc5181bc02cc8464?ts=2)
+- [] get id from req.params
+- [] check if review exists
+- [] if no review, 404
+- [] check permissions (req.user, review.user)
+- [] use await review.remove()
+- [] send back 200
 - File: controllers/reviewController.js
   ```js
   const Review = require('../models/Review');
@@ -2065,15 +2065,15 @@
   };
   ```
 
-### [43. Implement updateReview controller]()
-- [X] get id from req.params
-- [X] get {rating, title comment} from req.body
-- [X] check if review exists
-- [X] if no review, 404
-- [X] check permissions
-- [X] set review properties equal to rating, title, comment
-- [X] use await review.save()
-- [X] send back 200
+### [43. Implement updateReview controller](https://github.com/sungnga/practice/commit/5b463b9225e8255b26c4dc9a0be7231d8c83c29a?ts=2)
+- [] get id from req.params
+- [] get {rating, title comment} from req.body
+- [] check if review exists
+- [] if no review, 404
+- [] check permissions
+- [] set review properties equal to rating, title, comment
+- [] use await review.save()
+- [] send back 200
 - File: controllers/reviewController.js
   ```js
   const Review = require('../models/Review');
@@ -2131,7 +2131,7 @@
     ```
   - Try to login a different user and then update the same review. We should get a Forbidden 403 error - not authorized to access this route
 
-### [44. Using the populate method]()
+### [44. Using the populate method](https://github.com/sungnga/practice/commit/cd81986416272f0d961a914e50128a0f073b4c3d?ts=2)
 - The populate method enables us to reference other collections while querying a particular collection. We can also select specific properties we want from that reference collection. For example, while we're querying to get all reviews from the reviews collection, we want to get the product details (product properties) or user details (user properties) for each review. The .populate() method is used by chaining onto the model schema and can be chained multiple times to reference multiple collections
 - File: controllers/reviewController.js
   - Chain on the .populate() method to the Review model to populate the product details for each review
@@ -2172,7 +2172,7 @@
     },
     ```
 
-### [45. Using Mongoose virtuals]()
+### [45. Using Mongoose virtuals](https://github.com/sungnga/practice/commit/f7197ebf24f710d06785c44dfdc2511ae01f91fe?ts=2)
 - Our next goal to work on is when we query for all products or query for a single product, we also want to get all reviews associated with that product. With our current Product model setup, we cannot just chain on the `.populate()` method onto the Product model to populate the reviews, because we don't have a property that's referencing the reviews collection. In other words, we haven't connected the product to the associated reviews
 - To accomplish this, we can use the Mongoose virtuals. The Mongoose virtuals are properties that do not persist or stored in the database. We create them on the fly when we want to compute something. So in the Product model, we're going to add the reviews as virtual property
 - **Setting up reviews virtual in Product model:**
@@ -2205,7 +2205,7 @@
     };
     ```
 
-### [46. Alternative to getSingleProductReviews]()
+### [46. Alternative to getSingleProductReviews](https://github.com/sungnga/practice/commit/cc3b38ee3bdc7c7f6696aaa862772e7835ad12d4?ts=2)
 - An alternative to the virtual approach to get single product reviews is to setup a separate route and controller to get all reviews based on the product id
 - File: controllers/reviewController.js
   - Create and export a getSingleProductReviews controller that gets the productId from req.params and finds all reviews in the reviews collection based on that productId
@@ -2232,7 +2232,7 @@
   - Make a GET request to the 'Get single product reviews' route: {{URL}}/products/62d8d07fc7e3723c54f00bd4/reviews
   - If the getSingleProductReviews controller is setup properly, we should get back an array of reviews for a product. If there's no reviews for that product, we get back an empty array of reviews
 
-### [47. Remove all reviews with pre-remove hook]()
+### [47. Remove all reviews with pre-remove hook](https://github.com/sungnga/practice/commit/dd64ad5aaa1cf75184573f4b1baf544cf6343137?ts=2)
 - When we want to remove a product, we also want to remove all the reviews associated with that product. In our current setup of the deleteProduct controller, we simply call `product.remove()` to remove the product instance from the Product model. The `.remove()` method is part of the Mongoose library to remove an instance from the model. Like the pre-save hook, Mongoose also has a pre-remove hook that we can use to remove all associated reviews before removing the product instance. The pre-remove hook to remove all reviews when deleting a product is setup in the ProductSchema model. So whenever we call the `product.remove()` method (in the deleteProduct controller), it'll trigger the pre-remove hook
 - File: models/Product.js
   - At the bottom of the file, call the ProductSchema.pre() method to setup the pre hook
@@ -2270,7 +2270,7 @@
   - Make a DELETE request to the 'Delete product' route and paste in the productId: {{URL}}/products/62e229738e66a4657756a9a6
   - Head back to the 'Get all reviews' route and make a request again. There should not be any reviews that is associated with this particular productId
 
-### [48. Aggregation of product average rating and number of reviews]()
+### [48. Aggregation of product average rating and number of reviews](https://github.com/sungnga/practice/commit/aa02bb0f4ece70271bd36e4423de39e4fcc88f9d?ts=2)
 - Let's calculate a product's average rating and total number of reviews. We can write a function that groups all of the reviews of a particular product and calculates an average rating, and also sums the number of reviews. The two properties that we want to update or calculate are the `averageRating` and `numOfReviews` of the Product model. And there are three scenarios where we want to invoke the function to perform this calculation - when a review is created, updated, or deleted
 - Mongoose has a feature where we can create a custom method where either an instance or a model can have access to
   - Use `model.methods.methodName` to create a method that the *instance* has access to once the instance is created. We did this on the UserSchema model to create the compassPassword method: `UserSchema.methods.comparePassword`
@@ -2334,20 +2334,20 @@
   });
   ```
 
-### [49. Setup OrderSchema model]()
-- [X] create Order.js in models folder
-- [X] create Schema
-- [X] tax : {type:Number}
-- [X] shippingFee: {type:Number}
-- [X] subtotal: {type:Number}
-- [X] total: {type:Number}
-- [X] cartItems:[]
-- [X] status:{type:String}
-- [X] user
-- [X] clientSecret:{type:String}
-- [X] paymentId:{type:String}
-- [X] set timestamps
-- [X] export Order model
+### [49. Setup OrderSchema model](https://github.com/sungnga/practice/commit/ca0996fc6525ecfd5e03ecab03ed35d0e7d5a0f7?ts=2)
+- [] create Order.js in models folder
+- [] create Schema
+- [] tax : {type:Number}
+- [] shippingFee: {type:Number}
+- [] subtotal: {type:Number}
+- [] total: {type:Number}
+- [] cartItems:[]
+- [] status:{type:String}
+- [] user
+- [] clientSecret:{type:String}
+- [] paymentId:{type:String}
+- [] set timestamps
+- [] export Order model
 - File: models/Order.js
   - Note that for the cartItems property, we're referencing another schema model
   ```js
@@ -2408,19 +2408,19 @@
   module.exports = mongoose.model('Order', OrderSchema);
   ```
 
-### [50. Setup order routes structure]()
-- [X] add orderController file in controllers
-- [X] export (getAllOrders, getSingleOrder, getCurrentUserOrders,
+### [50. Setup order routes structure](https://github.com/sungnga/practice/commit/b3e329bda3002111288d3e4ee2aeb65ec30045a7?ts=2)
+- [] add orderController file in controllers
+- [] export (getAllOrders, getSingleOrder, getCurrentUserOrders,
   createOrder, updateOrder) functions
-- [X] res.send('function name')
-- [X] setup orderRoutes file in routes
-- [X] import all controllers
-- [X] authenticate user in all routes
-- [X] getAllOrders admin only
-- [X] typical REST setup
-- [X] router.route('/showAllMyOrders').get(getCurrentUserOrders)
-- [X] import orderRoutes as orderRouter in the app.js
-- [X] setup app.use('/api/v1/orders', orderRouter)
+- [] res.send('function name')
+- [] setup orderRoutes file in routes
+- [] import all controllers
+- [] authenticate user in all routes
+- [] getAllOrders admin only
+- [] typical REST setup
+- [] router.route('/showAllMyOrders').get(getCurrentUserOrders)
+- [] import orderRoutes as orderRouter in the app.js
+- [] setup app.use('/api/v1/orders', orderRouter)
 - File: controllers/orderController.js
   - Setup the basic structure for all five order controllers
   ```js
@@ -2494,7 +2494,7 @@
   app.use('/api/v1/orders', orderRouter);
   ```
 
-### [51. Setup order routes in Postman]()
+### [51. Setup order routes in Postman](https://github.com/sungnga/practice/commit/968c56f04456e177097dfa0fd6b87c05dd4bdffa?ts=2)
 - The base route for order routes is: `'/api/v1/orders'`
 - In Postman, the base route for order routes is: `{{URL}}/orders`
 - Inside the project folder, create another folder called Order
@@ -2506,7 +2506,7 @@
   - Update order - a PATCH request to: {{URL}}/orders/:id
 - Note that all routes are private routes, a user must successfully logged in before making requests. In addition, only an admin user can access the 'Get all orders' route. We applied the authenticateUser and authorizePermissions middleware on these routes in the orderRoutes.js file. Hence when we make requests to these routes, we should also get back the cookies response which contains the user token
 
-### [52. Implement createOrder controller]()
+### [52. Implement createOrder controller](https://github.com/sungnga/practice/commit/177e9e40e487c1f6c0698d01f1fb777ddcb19219?ts=2)
 - The createOrder controller performs the following tasks:
   - Checks each item in the cart (cartItems array) to see if the product exists in the products collection in the database
   - Communicates with Stripe API to get client_secret
@@ -2659,20 +2659,20 @@
     }
     ```
 
-### [53. Implement the rest of order controllers]()
+### [53. Implement the rest of order controllers](https://github.com/sungnga/practice/commit/7db74a9d5e4a1a85ba7e91e22cdce5101409eabf?ts=2)
 - **getAllOrders and getSingleOrder controllers**
-  - [X] getAllOrders - admin only
-  - [X] getSingleOrder - checkPermissions
+  - [] getAllOrders - admin only
+  - [] getSingleOrder - checkPermissions
 - **getCurrentUserOrders controller**
-  - [X] find orders where user is equal to req.user.userId
+  - [] find orders where user is equal to req.user.userId
 - **updateOrder controller**
-  - [X] get order id
-  - [X] get paymentIntentId (req.body)
-  - [X] get order
-  - [X] if does not exist - 404
-  - [X] check permissions
-  - [X] set paymentIntentId and status as 'paid'
-  - [X] order.save()
+  - [] get order id
+  - [] get paymentIntentId (req.body)
+  - [] get order
+  - [] if does not exist - 404
+  - [] check permissions
+  - [] set paymentIntentId and status as 'paid'
+  - [] order.save()
 - File: controllers/orderController.js
   ```js
   // this route is for admin user only
@@ -2725,10 +2725,10 @@
   };
   ```
 
-### [54. Docgen - create docs]()
-- [X] Export Postman Collection
-- [X] docgen build -i fileName.json -o index.html
-- [X] create index.html in public
+### [54. Docgen - create docs](https://github.com/sungnga/practice/commit/367ab363949493f6db864124636d1be8c4784ee5?ts=2)
+- [] Export Postman Collection
+- [] docgen build -i fileName.json -o index.html
+- [] create index.html in public
 - [Docgen Library](https://github.com/thedevsaddam/docgen)
 - Docgen allows you to transform your Postman collection to HTML/Markdown documentation. Docgen is an alternative to Swagger UI and it's much easier to set up
 - **Install docgen:**
@@ -2751,12 +2751,12 @@
   - Drag and drop the index.html file into the `public` folder in the project
   - Let's go check out our API docs in the browser. Navigate to: http://localhost:5000/
 
-### [55. Add security packages]()
-- [X] express-rate-limiter
-- [X] helmet
-- [X] xss-clean
-- [X] express-mongo-sanitize
-- [X] cors (cookies!!!!)
+### [55. Add security packages](https://github.com/sungnga/practice/commit/caec06d4d9deebc4625fabd668ca8289f2e78843?ts=2)
+  - [] express-rate-limiter
+  - [] helmet
+  - [] xss-clean
+  - [] express-mongo-sanitize
+  - [] cors (cookies!!!!)
 - Since we will be deploying our app on Heroku, it's a good idea to add security packages to our app. Install the following security packages
   - express-rate-limiter - to limit the number of requests made from each IP address
   - helmet - to set security related http response headers
@@ -2787,25 +2787,25 @@
   app.use(mongoSanitize());
   ```
 
-### [56. Deploy project on Heroku]()
-- [X] heroku account and heroku cli
-- [X] remove/copy from the main repo
-- [X] add dev command "nodemon app.js"
-- [X] change start to "node app.js"
-- [X] setup node version in package.json
-- [X] "engines": {"node": "14.x"}
-- [X] clean up code
-- [X] Procfile "web: node app.js"
-- [X] remove existing git repo
-- [X] rm -rf .git - for Mac,
-- [X] git init
-- [X] git add .
-- [X] git commit -m "initial commit"
-- [X] heroku login
-- [X] heroku create "App Name"
-- [X] git remote -v
-- [X] setup env vars in GUI
-- [X] git push heroku master/main
+### [56. Deploy project on Heroku](https://github.com/sungnga/practice/commit/f49916a9a357e1584b72b3208481b9b3e429ef5a?ts=2)
+- [] heroku account and heroku cli
+- [] remove/copy from the main repo
+- [] add dev command "nodemon app.js"
+- [] change start to "node app.js"
+- [] setup node version in package.json
+- [] "engines": {"node": "14.x"}
+- [] clean up code
+- [] Procfile "web: node app.js"
+- [] remove existing git repo
+- [] rm -rf .git - for Mac,
+- [] git init
+- [] git add .
+- [] git commit -m "initial commit"
+- [] heroku login
+- [] heroku create "App Name"
+- [] git remote -v
+- [] setup env vars in GUI
+- [] git push heroku master/main
 - Step 1: Make sure to have a Heroku account and install the Heroku CLI
 - Step 2: Make a copy of the main project repo. Name it: 09-eCommerce-api_prod
   - Open this new project directory in the code editor
@@ -2871,7 +2871,7 @@
   - Push to Heroku: `git push heroku master`
 
 
-
+----------------------------------
 
 ## PROJECT CHECKLIST
 
