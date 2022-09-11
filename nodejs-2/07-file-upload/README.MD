@@ -7,7 +7,7 @@
 - A small front-end app that has a form to upload an image file (onto Cloudinary) and then display the image on the page
 - Upload images using Postman
 
-### [01. Initialize project with starter files]()
+### [01. Initialize project with starter files](https://github.com/sungnga/practice/commit/f88154b9254c43bb3b08c9a49376312af6c10bf6?ts=2)
 - Get starter project files from https://github.com/john-smilga/node-express-course/tree/main/07-file-upload/starter
 - cd into project directory: `cd 07-file-upload`
 - Run `rm -rf .git` to avoid any issues if pushing to your own github repo
@@ -18,7 +18,7 @@
 - Create a `.gitignore` file. Add these files to the list: package-lock.json, /node_modules, and .env
 - Then run the script `npm start` to start up the project. This will run nodemon on app.js file
 
-### [02. Setup Product model]()
+### [02. Setup Product model](https://github.com/sungnga/practice/commit/9f599b021d4bc889eb84d43a5684cf6c37120d42?ts=2)
 - File: models/Product.js
   ```js
   const mongoose = require('mongoose');
@@ -41,7 +41,7 @@
   module.exports = mongoose.model('Product', ProductSchema);
   ```
 
-### [03. Setup basic structure for controllers and routes]()
+### [03. Setup basic structure for controllers and routes](https://github.com/sungnga/practice/commit/f01f14f287f11d5eccb3b063f80060e362535bed?ts=2)
 - Let's setup the basic structure for the controllers and their routes
 - We will have two types of controllers: productController and uploadsController
   - The product controllers (two of them) will go to the home route: `/`
@@ -99,7 +99,7 @@
   app.use('/api/v1/products', productRouter);
   ```
 
-### [04. Setup basic routes in Postman]()
+### [04. Setup basic routes in Postman](https://github.com/sungnga/practice/commit/2861d22e3253a6f2381cb1d15da81bdb7e0a001d?ts=2)
 - Let's setup the basic routes in Postman for this project
 - Create a new collection and give the collection a name
 - The base URL, which we created a global variable for is `http://localhost:3000/api/v1` and it's stored in `{{URL}}`
@@ -109,7 +109,7 @@
   - A GET route to get all products: `{{URL}}/products`
   - A POST route to upload image: `{{URL}}/products/uploads`
 
-### [05. Implement uploadProductImage controller]()
+### [05. Implement uploadProductImage controller](https://github.com/sungnga/practice/commit/d8e06c87665673601b685b8e12cbd29eada1a816?ts=2)
 - The way we set up our ProductSchema model is we must provide the values for name, price, and image properties. The value of the `image` property is a string and it's a path to the image that we must first upload to a cloud server (eventually to Cloudinary). For now, we're uploading it to our development server which stores the image in a public directory. We will create a separate folder to store the uploaded image as a path
 - **Uploading an image file using POSTMAN:**
   - Make a POST request to the upload image route: `{{URL}}/products/uploads`
@@ -181,7 +181,7 @@
     ```
   - To see the image in the browser: `http://localhost:3000/uploads/computer-2.jpeg`
 
-### [06. Implement createProduct, getAllProducts controllers]()
+### [06. Implement createProduct, getAllProducts controllers](https://github.com/sungnga/practice/commit/4519fc8171c5b3069d10213dcc3011f6bbb457f5?ts=2)
 - **Implementing createProduct functionality:**
 - File: controllers/productController.js
   - In the createProduct controller:
@@ -264,7 +264,7 @@
     }
     ```
 
-### [07. Additional validation for image upload]()
+### [07. Additional validation for image upload](https://github.com/sungnga/practice/commit/80a9e2eee6050af8a82375260519e366a69d5c40?ts=2)
 - Let's add additional checks to the uploadProductImage controller to see whether the user has uploaded a file, whether the file is an image file, and whether the file exceeds a specified size
 - File: controllers/uploadsController.js
   - First, console log the req.files object to see the properties that we're checking for
@@ -306,7 +306,7 @@
   };
   ```
 
-### [08. Setup Cloudinary]()
+### [08. Setup Cloudinary](https://github.com/sungnga/practice/commit/fc4387582e87143f7d08473308fc230968867083?ts=2)
 - **Sign up for Cloudinary account:**
   - Go to the Account Details section in the dashboard page and we're looking for these three things:
     - Cloud name
@@ -337,7 +337,7 @@
     ```
   - Restart the server. If everything is working properly, it should print "Server is listening to port 3000..."
 
-### [09. Upload image to Cloudinary]()
+### [09. Upload image to Cloudinary](https://github.com/sungnga/practice/commit/5350d33d210ee41bc50eb10c1247e88fc2ef9073?ts=2)
 - Up to this point, the uploadProductImage controller function that we wrote uploads an image file to our local server using Postman. Now we want to write controller that uploads the image file to Cloudinary and the steps are a little different. Rename the current `uploadProductImage` controller to `uploadProductImageLocal` and save it for reference
 - The controller that uploads an image file to Cloudinary takes the following steps:
   - First, we want to utilize the `express-fileupload` library in the app.js file to perform two tasks. The first is it parses the image file we get from the user. Second, it creates a `temp` folder inside our project directory. It stores the image data in this folder. To enable this feature, we set the `useTempFiles` option to true. After this, when an image is uploaded, we see the `tempFilePath` property in the `req.files.image` object. It's a path to the image file data
@@ -382,7 +382,7 @@
   - To see the image, visit this path in the browser
   - We can also see the image stored in the Nodejs-07-File-Upload folder on Cloudinary website
 
-### [10. Remove temp files]()
+### [10. Remove temp files](https://github.com/sungnga/practice/commit/fe22b0b9bec82b4556444d6ba7bde2aebd2e0e3c?ts=2)
 - Every time we upload an image file we're storing it on Cloudinary server and also on our local server in the `temp` folder. We can write a function inside the `uploadProductImage` controller to remove it from the file system once it has been successfully uploaded to Cloudinary
 - File: controllers/uploadsController.js
   - Import the file system library
