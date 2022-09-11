@@ -6,14 +6,14 @@
 - We are in charge of the store API and we are providing options for the clients to query the store database
 - Clients can make HTTP calls to search for products, search by category, filter by company name, filter by price, etc.
 
-### [01. Initialize project with starter files]()
+### [01. Initialize project with starter files](https://github.com/sungnga/practice/commit/c48dc4a8312d979371f469444ef762730c498e0f?ts=2)
 - Get starter project files from https://github.com/john-smilga/node-express-course/tree/main/04-store-api/starter
 - cd into project directory: `cd 04-store-api`
 - Run `rm -rf .git` to avoid any issues if pushing to your own github repo
 - Run `npm install` to install the nodemon, express, dotenv, express-async-errors, and mongoose libraries
 - Then run the script `npm start` to start up the project. This will run nodemon on app.js file
 
-### [02. Setup basic Express app]()
+### [02. Setup basic Express app](https://github.com/sungnga/practice/commit/e4b280f641c6adf9cc17eb30777f6c561c1c6fc0?ts=2)
 - File: app.js
   - The error middleware have already prepared for us, so we can use it here in `app.use()`
   - Write an async start function that starts the Express server only if we successfully connect to the database. We will connect to the database later
@@ -54,7 +54,7 @@
   start();
   ```
 
-### [03. Connect to the database]()
+### [03. Connect to the database](https://github.com/sungnga/practice/commit/f50b08be91c3dbe65551ce6174ca30626ae64524?ts=2)
 - Go to MongoDB dashboard page, in the Nodejs-03-Task-Manager project and under the Database menu item, click on the Connect button. Then select 'Connect your application'. Copy the connection string to the clipboard 
 - At the root of the project directory, create a file called .env
 - File: .env
@@ -98,7 +98,7 @@
   ```
 - Stop and restart the server. If the connection is successful, you should see 'Server is listening to port 3000...' printed in the console
 
-### [04. Setting up the router]()
+### [04. Setting up the router](https://github.com/sungnga/practice/commit/7406553df5d6d26864bfb83ca9df7bad488037a8?ts=2)
 - File: controllers/products.js
   - Create and export a basic getAllProductsStatic and getAllProducts controllers
   ```js
@@ -149,7 +149,7 @@
   - Testing base route: In the browser, navigate to `http://localhost:3000/api/v1/products`. If successful, we should see `"msg": "products route"` printed
   - Testing /static route: In the browser, navigate to `http://localhost:3000/api/v1/products/static`. If successful, we should see `"msg": "products testing route"` printed
 
-### [05. Using the express-async-errors library]()
+### [05. Using the express-async-errors library](https://github.com/sungnga/practice/commit/3dafdc8f7d8983dc29518db7a3aeac5e3ecdf592?ts=2)
 - Instead of writing our own async error wrapper, we're going to use a library to help us do this
 - With this library, it handles the try-catch block for us and has the `next()` method that passes the error to our error-handler middleware. We simply need to `throw new Error('write_message_here')` object in the controller and our `errorHandlerMiddleware` function in error-handler.js file will handle the error
   - Install: `npm install express-async-errors`
@@ -179,7 +179,7 @@
   module.exports = errorHandlerMiddleware;
   ```
 
-### [06. Setup Product model]()
+### [06. Setup Product model](https://github.com/sungnga/practice/commit/ba8e539aea95b6695213bce87f01c104b02599a2?ts=2)
 - Setup the product schema using the Mongoose library
 - File: models/product.js
   - Require in Mongoose package
@@ -223,7 +223,7 @@
   module.exports = mongoose.model('Product', productSchema);
   ```
 
-### [07. Populate the database with products]()
+### [07. Populate the database with products](https://github.com/sungnga/practice/commit/070d831f1264f0d8a609528326fbfd28582fc479?ts=2)
 - We already have an array of products in products.json file and we're going to write a function that connects to our MongoDB and populate these products into our database
 - File: populate.js
   - Write an async start function that
@@ -270,7 +270,7 @@
   - We should see the 04-STORE-API collection has been created
   - In it contains the 'products' collection of the products array
 
-### [08. Basic find]()
+### [08. Basic find](https://github.com/sungnga/practice/commit/ec1bbd1cfa401aea843a8898878f1a093ef94f44?ts=2)
 - Visit the Mongoose website to see all the query methods that we can use to interact with our database in MongoDB
 - File: controllers/products.js
   - Require in the Product model
@@ -293,7 +293,7 @@
   };
   ```
 
-### [09. Find products with query params]()
+### [09. Find products with query params](https://github.com/sungnga/practice/commit/8d6adcf8456996cf4fd0ec5a52c31af05868b42b?ts=2)
 - The next thing we want to work on is enable our users to filter the products collection by name of product, company, and product is featured or not
 - A user can send requests for specific products using the query string params
 - When a user queries our database using query string params, we have access to those values in `req.query`
@@ -311,7 +311,7 @@
   };
   ```
 
-### [10. Refactor to queryObject]()
+### [10. Refactor to queryObject](https://github.com/sungnga/practice/commit/21fb62876d18c94d9056350ad959e2a3701fe455?ts=2)
 - Right now with our current setup, if the user provides a query params that does not match any of the properties that we set up for the model, Mongoose will return the products of an empty array. What we want instead is if the query params doesn't math, we want to return the entire products collection
 - To make this work, we want to refactor our getAllProducts controller where we first create our own queryObject and append any properties we want to this object. Then pass this queryObject to the `Product.find()` method. If queryObject is an empty object, Mongoose will return all products items. By default, passing in an empty object `{}` to the `.find()` method will return all items in the collection
 - File: controllers/products.js
@@ -346,7 +346,7 @@
   };
   ```
 
-### [11. Query by name]()
+### [11. Query by name](https://github.com/sungnga/practice/commit/087f5783259e9751919935df9d3c1ecc4e0cf576?ts=2)
 - Google search 'MongoDB query operators' to get a list of all query operators
 - In our case, we want to use `$regex` to query for the name of a product and we want it to be case insensitive. In our project, the `name` property works very similar to search or query where the user can type anything they want to query products by name. We want to pass this `name` query string params as a pattern to the `$regex` query operator
 - File: controllers/products.js
@@ -387,7 +387,7 @@
   };
   ```
 
-### [12. Implementing sort]()
+### [12. Implementing sort](https://github.com/sungnga/practice/commit/513d2498658d1d581b8dfdfc2302067c44f9d2c8?ts=2)
 - We can use the `.sort()` method to sort the products by ascending or descending order or sort by number from lowest to highest or vice versa
 - A note that the `.sort()` method must be chained to one of the query methods, i.e. the `.find()` method. `Product.find({options}).sort({options})`
   - Add a negative `-` in front of alphabet sorting will result in descending order
@@ -427,7 +427,7 @@
   };
   ```
 
-### [13. Implementing select]()
+### [13. Implementing select](https://github.com/sungnga/practice/commit/0b47fb4ef08c4e6e9ddb9705f2996e017c4f10bb?ts=2)
 - The `.select()` method allows the users to specify which properties(fields) of the Product model they want to see. For example, they may only want to see the company and price properties of the products
 - The pattern is very similar to the `.sort()` method. Pass in the list of fields as a string to the `.select()` method
   - `.select('company price')`
@@ -469,7 +469,7 @@
   };
   ```
 
-### [14. Implementing limit, skip, pagination]()
+### [14. Implementing limit, skip, pagination](https://github.com/sungnga/practice/commit/787d66a4c12b5b9b271b6b97b3aea23f6904c0b8?ts=2)
 - Both the `.limit()` and `.skip()` methods can be chained to a query method
   - Limit is specifying the number of items the user wants from a request. Just pass in an integer value to the `.limit()` method
   - Skip is how many items the user wants to skip. Pass in an integer value to the `.skip()` method
@@ -504,7 +504,7 @@
   };
   ```
 
-### [15. Implementing numeric filters]()
+### [15. Implementing numeric filters](https://github.com/sungnga/practice/commit/4df723ff80ecc0fbff3bce37041b41a7984e6f1f?ts=2)
 - An example of numeric filter used in our project is search for products that are greater than $30
 - We're going to make use of Mongoose query operators such as `$gt`, `$lt`, etc to filter by number
 - File: controllers/products.js
