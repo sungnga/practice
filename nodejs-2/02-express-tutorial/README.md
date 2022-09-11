@@ -1,13 +1,13 @@
 ## SECTION 2: EXPRESS TUTORIAL
 - Folder directory: /02-express-tutorial/
 
-### [01. Initialize Express project with starter project]()
+### [01. Initialize Express project with starter project](https://github.com/sungnga/practice/commit/227b90d51b3a0ba60b377bf442f555223ab1faaf?ts=2)
 - Get starter project files from https://github.com/john-smilga/node-express-course/tree/main/02-express-tutorial
 - Run `rm -rf .git` to avoid any issues if pushing to your own github repo
 - Run `npm install` to install the nodemon and express libraries
 - Then run the script `npm start` to start up the project
 
-### [02. HTTP - basics]()
+### [02. HTTP - basics](https://github.com/sungnga/practice/commit/13df21741a4ac97e763b528a976bf2e8b460f02d?ts=2)
 - File: 01-http-basics.js
   ```js
   // Setup the server
@@ -36,7 +36,7 @@
   ```
   - In the web browser, navigate to `localhost:5000` and we should see the response message "Home page" displayed
 
-### [03. HTTP - headers, request objects, HTML files]()
+### [03. HTTP - headers, request objects, HTML files](https://github.com/sungnga/practice/commit/0e1e199d3c59065f31d418087f96956e1ae09a71?ts=2)
 - File: 02-http.js
 - **HTTP - headers**
   ```js
@@ -136,7 +136,7 @@
     server.listen(5000);
     ```
 
-### [04. HTTP - App example]()
+### [04. HTTP - App example](https://github.com/sungnga/practice/commit/67afc06dc14080eed9e1370c000d257d189d8588?ts=2)
 - File: 03-http-app-example.js
   ```js
   const http = require('http');
@@ -200,7 +200,7 @@
 - First, get all the files by calling the `readFileSync` method from the `fs` module
 - Then create the server using the `http.createServer` method from the `http` module. From this, we have access to the request and response object in a callback function. In this callback, the server can send the data and its content-type back to the client (browser) via the response object
 
-### [05. Express - basics]()
+### [05. Express - basics](https://github.com/sungnga/practice/commit/8b97c9ec9a223c75085d865898435e6d6741eaba?ts=2)
 - Express docs: www.expressjs.com
 - Express is a framework for Node.js designed to make developing web apps and APIs much faster and easier
 - Install Express: `npm i express --save`
@@ -242,7 +242,7 @@
   // app.listen - the port the server is listening on
   ```
 
-### [06. Express - App example]()
+### [06. Express - App example](https://github.com/sungnga/practice/commit/5c2910fa8885c168b617376fef8674ab3d540fa6?ts=2)
 - This app example is using the Express server instead of the `http` module that comes with Node. Express has built-in middleware, `express.static()` method, that allows us to easily serve static content
 - At the root of 02-express-tutorial folder, create a folder called `public`. Then copy the browser-app.js, logo.svg, and styles.css files from the navbar-app folder into this folder
 - File: 05-express-app-example.js
@@ -273,7 +273,7 @@
   });
   ```
 
-### [07. Express - all static]()
+### [07. Express - all static](https://github.com/sungnga/practice/commit/a139ab9530420ca12667927d9071d9a2291c9da2?ts=2)
 - Technically, the index.html file in the navbar-app folder is also a static asset file. We can place this index.html file in the public folder. The Express's middleware `static()` method will automatically serve this file in the static public folder. This is the entry point file for the public folder. So we don't need to make a get request to get this file to serve the home page
 - File: 06-all-static.js
   ```js
@@ -316,7 +316,7 @@
   - Send template - send back the entire HTML, CSS, and Javascript
   - `res.render()` - sends back the template with HTML, CSS, and Javascript
 
-### [08. JSON - basics]()
+### [08. JSON - basics](https://github.com/sungnga/practice/commit/693521c3f0a3017fd1e64a0aaf9eeefbcb5ea371?ts=2)
 - File: 07-json-basics.js
   ```js
   const express = require('express');
@@ -335,7 +335,7 @@
   ```
 - In the web browser, navigate to `http://localhost:5000` to see the JSON data. Also, go to the Network tab to see the content-type in the Response Headers section. It should say `application/json`
 
-### [09. Params, query string - setup]()
+### [09. Params, query string - setup](https://github.com/sungnga/practice/commit/fec8d2bb3ed97b7b49b42afddbcbc35febd06413?ts=2)
 - When a client queries for data, the server can specify what data and how much data to send back
 - File: 08-params-query.js
   ```js
@@ -367,7 +367,7 @@
   });
   ```
 
-### [10. Route parameters]()
+### [10. Route parameters](https://github.com/sungnga/practice/commit/7fc839da67b7330f4a44966a4e617c28322d68d7?ts=2)
 - File: 09-route-params.js
   ```js
   const express = require('express');
@@ -415,7 +415,7 @@
   });
   ```
 
-### [11. Query string params]()
+### [11. Query string params](https://github.com/sungnga/practice/commit/221d5fb1954a1161d597500a72a0d11babb3d864?ts=2)
 - Query string parameters or also called the URL parameters is a way to send a small amount of information using the URL. Send back only the data that matches the query string params
 - The way the query string params is setup is provide key-value pairs after the question mark `?`
 - If there are more than one query string params, use an `&` to separate between each key-value pair. For example, `/api/v1/query?search=a&limit=1`
@@ -455,7 +455,7 @@
   });
   ```
 
-### [12. Middleware - basics]()
+### [12. Middleware - basics](https://github.com/sungnga/practice/commit/47a17fa901b05aca204389a3512ed1868e4437bc?ts=2)
 - Middleware in Express.js are functions that execute during the request to the server. Each middleware function has access to the `request` and `response` object and `next` function. Middleware functions are everywhere in Express
 - Inside the HTTP method, the middleware sits between the request route params and the callback function
   - app.METHOD('ROUTE_PARAMS', MIDDLEWARE, CALLBACK_FUNCTION)
@@ -514,7 +514,7 @@
   });
   ```
 
-### [13. Middleware - app.use() method]()
+### [13. Middleware - app.use() method](https://github.com/sungnga/practice/commit/6377b2f121e557c2f38a902e91f254b9a20c1c73?ts=2)
 - File: 12-middleware-use-method.js
 - When working with middleware in Express.js, it is best practice to have all middleware in a separate file
 - Create a file called logger.js. Move the logger middleware function into this file and export it as a module
@@ -549,7 +549,7 @@
   });
   ```
 
-### [14. Multiple middleware, middleware options]()
+### [14. Multiple middleware, middleware options](https://github.com/sungnga/practice/commit/bb8da4f293b346bfac7be9e8eb2466fef55cf927?ts=2)
 - **Applying multiple middleware to all routes:**
   - We can apply multiple middleware functions to all routes simply by passing an array of middleware to the `app.use()` method. Note that the order of these middleware matters. They're being executed in this order
   - `app.use([logger, authorize]);`
@@ -617,7 +617,7 @@
     - Import the middleware: `const morgan = require('morgan);`
     - Use: `app.use(morgan('tiny'));`
 
-### [15. HTTP methods]()
+### [15. HTTP methods](https://github.com/sungnga/practice/commit/a3f43a305ade805d207669481716aefacdcae5cb?ts=2)
 - **HTTP methods:**
   - `app.get()` - read data - get data
   - `app.post()` - insert data - send data
@@ -645,7 +645,7 @@
     console.log('Server is listening on port 5000');
   });
   ```
-- **POST method - using form:**
+- [**POST method - using form:**](https://github.com/sungnga/practice/commit/42aea56a21dddb1990001a82db48a9eb2d0ccd2e?ts=2)
   - We cannot just perform a POST request from the browser. We either need to use an outside tool such as POSTMAN or a working application to make a POST request
   - The `methods-public` folder contains static assets that we're going to use in this example. Use `app.use()` method to invoke Express's built-in middleware `express.static()` and pass in the path to this public folder as an argument
     - `app.use(express.static('./methods-public'));`
@@ -686,7 +686,7 @@
     });
     ```
   - NOTE that the `Content-Type` in the Request Headers object is `application/x-www-form-urlencoded`
-- **POST method - using Javascript:**
+- [**POST method - using Javascript:**](https://github.com/sungnga/practice/commit/f9691f084c0ce1bece0fc2656f791a84d62ee2db?ts=2)
   - In this example, we're still using a form on front-end to submit the data, but we're going to use Javascript to send the HTTP request
   - We're also going to use Axios package to setup the HTTP request instead of using the built-in `fetch()`. Axios provides cleaner API and better error messages
   - File: methods-public/javascript.html
@@ -776,7 +776,7 @@
     });
     ```
   - NOTE that the `Content-Type` in the Request Headers object is `application/json`. Axios automatically adds this for us
-- **PUT method:**
+- [**PUT method:**](https://github.com/sungnga/practice/commit/27776226fabdd3807077de3fa29bbe4c99d66577?ts=2)
   - The PUT method is used to update a piece of data. We need to specify the route params that targets the data we want to update and we also provide the data that we want to update it to
   - File: 14-methods.js
     - Handling the PUT request
@@ -819,7 +819,7 @@
           "name": "Sarah"
       }
       ```
-- **DELETE method:**
+- [**DELETE method:**](https://github.com/sungnga/practice/commit/f08a269a88b7f5d207926c902c60c92593028abf?ts=2)
   - For the DELETE method, the route params convention is similar to the PUT method - we need to specify the item we want to delete. Unlike the PUT method, the DELETE method doesn't expect anything from the body
   - File: 14-methods.js
     - Handling the DELETE request
@@ -850,7 +850,7 @@
     - Provide the route params with the item to delete: `http://localhost:5000/api/people/2`
     - No need to provide anything in the `Body` tab
 
-### [16. Express router - setup]()
+### [16. Express router - setup](https://github.com/sungnga/practice/commit/439414999609651ac758ba8116a271a88f8c333a?ts=2)
 - Express has a `router` instance, from express.Router class, that we can use to group all of our routes together. Eventually we can setup the route functionalities in the controller. This router instance is then used in app.js file as an Express middleware. This helps organize our routes when the application grows and also not clutter the app.js file
 - Model View Controller
   - MVC is a pattern used to setup the API
@@ -920,7 +920,7 @@
   app.use('/login', auth);
   ```
 
-### [17. Express router - controllers]()
+### [17. Express router - controllers](https://github.com/sungnga/practice/commit/f4c4b57987140fa7aca65da233ec6610aa2e4aff?ts=2)
 - Even though we have separated the HTTP request routes into their separate files, by convention, we want to further split the controllers (the functionality of the requests) into their own files
   - `router.request_method('route', controller)`
   - The controller is the callback function (the logic) for an HTTP request route
