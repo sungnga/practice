@@ -4,7 +4,7 @@
 ### Goals of this project
 - Learn how to setup controller to send emil
 
-### [01. Initialize project with starter files]()
+### [01. Initialize project with starter files](https://github.com/sungnga/practice/commit/c5ed921702ddcd0bd1ebeb8bd51a629c7d5c6165?ts=2)
 - Get starter project files from https://github.com/john-smilga/node-express-course/tree/main/08-send-email/starter
 - cd into project directory: `cd 08-send-email`
 - Run `rm -rf .git` to avoid any issues if pushing to your own github repo
@@ -29,7 +29,7 @@
   app.get('/send', sendEmail);
   ```
 
-### [02. Send emails with Ethereal]()
+### [02. Send emails with Ethereal](https://github.com/sungnga/practice/commit/2596dca3743db940b3b7f0aa189a7bfa15e8feb5?ts=2)
 - To test out the send email functionality during development, we will send it with Ethereal. It's a fake transporter service used with Nodemailer module during development. We will use a different transport service called SendGrid in production
 - **Nodemailer package:**
   - The Nodemailer is a module for Node.js applications that does all the heavy lifting when it comes to email sending
@@ -80,7 +80,7 @@
   - If successful, we should get back the send email info displayed on the page
   - Head to https://ethereal.email dashboard page and click on "Open MailBox" button. Should see the sent email
 
-### [03. Send emails with SendGrid]()
+### [03. Send emails with SendGrid](https://github.com/sungnga/practice/commit/ac2cfe5bc20ee8c711e57498edc978ee5ecee936?ts=2)
 - SendGrid is one of the most popular email providers for production
 - **Sign up for SendGrid:**
   - Sign up for a SendGrid account
